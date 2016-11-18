@@ -4,7 +4,7 @@ import com.typesafe.sbt.SbtMultiJvm.MultiJvmKeys._
 import sbt.Keys._
 import sbt._
 
-version in ThisBuild := "v0.8.1-SNAPSHOT"
+version in ThisBuild := "v0.8-SNAPSHOT"
 
 scalaVersion in ThisBuild := "2.11.8"
 
