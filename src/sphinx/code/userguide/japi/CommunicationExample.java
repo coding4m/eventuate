@@ -75,7 +75,7 @@ public class CommunicationExample {
   //#
 
   public void main() {
-    final ActorSystem system = ActorSystem.create("system");
+    final ActorSystem system = ActorSystem.create("actorSystem");
     final ActorRef eventLog = null;
 
     //#event-driven-communication

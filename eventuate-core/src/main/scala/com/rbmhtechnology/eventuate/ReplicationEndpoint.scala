@@ -82,12 +82,12 @@ object ReplicationEndpoint {
   val DefaultApplicationVersion: ApplicationVersion = ApplicationVersion()
 
   /**
-   * Published to the actor system's event stream if a remote log is available.
+   * Published to the actor actorSystem's event stream if a remote log is available.
    */
   case class Available(endpointId: String, logName: String)
 
   /**
-   * Published to the actor system's event stream if a remote log is unavailable.
+   * Published to the actor actorSystem's event stream if a remote log is unavailable.
    */
   case class Unavailable(endpointId: String, logName: String, causes: Seq[Throwable])
 
@@ -279,7 +279,7 @@ class ReplicationEndpoint(
     new AtomicBoolean(false)
 
   /**
-   * The actor system's replication settings.
+   * The actor actorSystem's replication settings.
    */
   val settings =
     new ReplicationSettings(system.settings.config)

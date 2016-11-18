@@ -31,7 +31,7 @@ public class CrdtExample {
    *
    * @param serviceId Unique id of this service.
    * @param log Event log.
-   * @param system Actor system.
+   * @param system Actor actorSystem.
    * @tparam A [[ORSet]] entry type.
    */
   class ORSetService<A> extends CRDTService<ORSet<A>, Set<A>> {

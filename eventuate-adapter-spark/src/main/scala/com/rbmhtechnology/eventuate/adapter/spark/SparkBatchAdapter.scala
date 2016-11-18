@@ -72,7 +72,7 @@ private class DurableEventConverter(config: Config) extends TypeConverter[Durabl
   val converter = implicitly[TypeConverter[Array[Byte]]]
 
   // --------------------------------------
-  //  FIXME: how to shutdown actor system?
+  //  FIXME: how to shutdown actor actorSystem?
   // --------------------------------------
 
   @transient lazy val system = ActorSystem("TypeConverter", config)

@@ -266,7 +266,7 @@ abstract class EventLog[A <: EventLogState](id: String) extends Actor with Event
       context.system.dispatchers.lookup("eventuate.log.dispatchers.read-dispatcher")
 
     /**
-     * Scheduler of current actor system.
+     * Scheduler of current actor actorSystem.
      */
     implicit val scheduler: Scheduler =
       context.system.scheduler

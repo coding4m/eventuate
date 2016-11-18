@@ -51,7 +51,7 @@ public class Documentation {
 
     //#adapter-example
 
-    ActorSystem actorSystem = ActorSystem.create("system");
+    ActorSystem actorSystem = ActorSystem.create("actorSystem");
     Vertx vertx = Vertx.vertx();
 
     ReplicationEndpoint endpoint = ReplicationEndpoint.create("endpoint",

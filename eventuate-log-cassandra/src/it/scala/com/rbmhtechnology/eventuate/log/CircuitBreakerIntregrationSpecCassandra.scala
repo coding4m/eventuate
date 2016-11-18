@@ -201,7 +201,7 @@ class CircuitBreakerIntregrationSpecCassandra extends TestKit(ActorSystem("test"
         createLog(spec)
 
         val actor1 = system.actorOf(Props(new TestActor("1", log, stateSync = false)))
-        //val actor2 = system.actorOf(Props(new TestActor("2", log, stateSync = true)))
+        //val actor2 = actorSystem.actorOf(Props(new TestActor("2", log, stateSync = true)))
 
         request(actor1, "timeout")
         spec.appLatch.await()

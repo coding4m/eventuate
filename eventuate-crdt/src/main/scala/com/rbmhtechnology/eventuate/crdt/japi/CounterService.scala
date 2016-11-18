@@ -27,7 +27,7 @@ import java.lang.{ Integer => JInt, Long => JLong }
  *
  * @param serviceId Unique id of this service.
  * @param log       Event log.
- * @param system    Actor system.
+ * @param system    Actor actorSystem.
  * @tparam A Counter value type.
  */
 class CounterService[A](val serviceId: String, val log: ActorRef, implicit val system: ActorSystem)(implicit val integral: Integral[A])

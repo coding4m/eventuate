@@ -142,23 +142,42 @@ object ProjectSettings {
   //  Publish settings
   // ----------------------------------------------------------------------
 
+//  lazy val publishSettings: Seq[Setting[_]] = {
+//    val jFrogCredentials = Credentials(
+//      "Artifactory Realm",
+//      "oss.jfrog.org",
+//      sys.env.getOrElse("OSS_JFROG_USER", ""),
+//      sys.env.getOrElse("OSS_JFROG_PASS", "")
+//    )
+//
+//    val jFrogBase =
+//      "https://oss.jfrog.org/artifactory/"
+//
+//    val jFrogSnapshotRepo = Some("OJO Snapshots" at jFrogBase + "oss-snapshot-local")
+//    val jFrogReleaseRepo = Some("OJO Releases" at jFrogBase + "oss-release-local")
+//
+//    Seq(
+//      credentials += jFrogCredentials,
+//      publishTo := (if (isSnapshot.value) jFrogSnapshotRepo else jFrogReleaseRepo),
+//      publishMavenStyle := true
+//    )
+//  }
+
   lazy val publishSettings: Seq[Setting[_]] = {
-    val jFrogCredentials = Credentials(
-      "Artifactory Realm",
-      "oss.jfrog.org",
-      sys.env.getOrElse("OSS_JFROG_USER", ""),
-      sys.env.getOrElse("OSS_JFROG_PASS", "")
+    val dddlibCredentials = Credentials(
+      "Sonatype Nexus Repository Manager",
+      "nexus.dddlib.org",
+      sys.env.getOrElse("DDDLIB_USER", ""),
+      sys.env.getOrElse("DDDLIB_PASS", "")
     )
 
-    val jFrogBase =
-      "https://oss.jfrog.org/artifactory/"
-
-    val jFrogSnapshotRepo = Some("OJO Snapshots" at jFrogBase + "oss-snapshot-local")
-    val jFrogReleaseRepo = Some("OJO Releases" at jFrogBase + "oss-release-local")
+    val dddlibBase = "http://nexus.dddlib.org/content/repositories"
+    val dddlibSnapshotRepo = Some("DDDLib Snapshots" at dddlibBase + "/snapshots")
+    val dddlibReleaseRepo = Some("DDDLib Releases" at dddlibBase + "/releases")
 
     Seq(
-      credentials += jFrogCredentials,
-      publishTo := (if (isSnapshot.value) jFrogSnapshotRepo else jFrogReleaseRepo),
+      credentials += dddlibCredentials,
+      publishTo := (if (isSnapshot.value) dddlibSnapshotRepo else dddlibReleaseRepo),
       publishMavenStyle := true
     )
   }
