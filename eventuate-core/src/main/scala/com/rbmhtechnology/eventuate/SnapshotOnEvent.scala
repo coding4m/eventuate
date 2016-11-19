@@ -20,8 +20,8 @@ import akka.contrib.pattern.ReceivePipeline
 import akka.contrib.pattern.ReceivePipeline.Inner
 
 /**
-  * @author siuming
-  */
+ * @author siuming
+ */
 trait SnapshotOnEvent {
 
   this: EventsourcedView with ReceivePipeline =>
@@ -32,7 +32,7 @@ trait SnapshotOnEvent {
   private var snapshotInProgress: Boolean = false
   private val snapshotSettings = new SnapshotSettings(context.system.settings.config)
 
-  def snapshotOrDelay() = {
+  private def snapshotOrDelay() = {
     val extraOffset = if (snapshotInProgress) snapshotSettings.interval else 0
     if (snapshotOffset - extraOffset >= snapshotSettings.interval) {
       self ! Snapshotting
@@ -42,23 +42,23 @@ trait SnapshotOnEvent {
 
   pipelineOuter {
 
-    case ss@SaveSnapshotSuccess =>
+    case ss: SaveSnapshotSuccess =>
       snapshotOffset = 0
       snapshotInProgress = false
       Inner(ss)
 
-    case rs@ReplaySuccess(events, _, _) =>
+    case rs @ ReplaySuccess(events, _, _) =>
       snapshotOffset += events.size
       snapshotOrDelay()
       Inner(rs)
 
-    case ws@WriteSuccess(events, _, _) =>
+    case ws @ WriteSuccess(events, _, _) =>
       snapshotOffset += events.size
       snapshotOrDelay()
       Inner(ws)
 
     // sent by an event log when replicate success
-    case w@Written =>
+    case w: Written =>
       snapshotOffset += 1
       snapshotOrDelay()
       Inner(w)
@@ -68,5 +68,4 @@ trait SnapshotOnEvent {
   }
 
 }
-
 
