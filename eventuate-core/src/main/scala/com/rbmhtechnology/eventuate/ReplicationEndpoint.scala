@@ -24,7 +24,7 @@ import java.util.{Set => JSet}
 import akka.actor._
 import akka.pattern.ask
 import akka.util.Timeout
-import com.rbmhtechnology.eventuate.Controller.{ReplicationActivate, ReplicationRecover}
+import com.rbmhtechnology.eventuate.Controller.{EndpointRecover, ReplicationActivate, ReplicationRecover}
 import com.rbmhtechnology.eventuate.EndpointFilters.NoFilters
 import com.rbmhtechnology.eventuate.EventsourcingProtocol.{Delete, DeleteFailure, DeleteSuccess}
 import com.rbmhtechnology.eventuate.ReplicationFilter.NoFilter
@@ -363,7 +363,7 @@ class ReplicationEndpoint(
    */
   def recover(): Future[Unit] = if (active.compareAndSet(false, true)) {
     implicit val timeout = Timeout(settings.recoverTimeout)
-    (controller ? ReplicationRecover).asInstanceOf[Future[Unit]]
+    (controller ? EndpointRecover).asInstanceOf[Future[Unit]]
   } else Future.failed(new IllegalStateException("Recovery running or endpoint already activated"))
 
   /**
@@ -407,7 +407,7 @@ class ReplicationEndpoint(
    */
   def activate(): Future[Unit] = if (active.compareAndSet(false, true)) {
     implicit val timeout = Timeout(settings.activeTimeout)
-    (controller ? ReplicationActivate).asInstanceOf[Future[Unit]]
+    (controller ? EndpointActive).asInstanceOf[Future[Unit]]
   } else Future.failed(new IllegalStateException("Recovery running or endpoint already activated"))
 
   /**

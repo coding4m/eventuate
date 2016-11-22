@@ -405,7 +405,7 @@ private class Controller(endpoint: ReplicationEndpoint) extends Actor with Stash
   import Controller._
   import Networker._
 
-  var connectors: Set[ReplicationConnector] = Set.empty[ReplicationConnector]
+  var connectors: Set[ReplicationConnector] = Set.empty
   var connectorsRequestSchedule: Option[Cancellable] = None
 
   @scala.throws[Exception](classOf[Exception])
