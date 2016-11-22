@@ -21,8 +21,6 @@ import java.util.concurrent.TimeUnit
 import akka.actor._
 import akka.cluster.ClusterEvent.{MemberUp, UnreachableMember}
 import akka.cluster.{Cluster, Member}
-import akka.contrib.pattern.ReceivePipeline
-import akka.contrib.pattern.ReceivePipeline.Inner
 import akka.event.Logging
 import akka.pattern.{ask, pipe}
 import akka.util.Timeout
@@ -287,15 +285,10 @@ private object Acceptor {
     Props(classOf[Acceptor], endpoint)
 
   case object Process
-
   case class Recover(connectors: Set[ReplicationConnector], links: Set[RecoveryLink], promise: Promise[Unit])
-
   case object RecoverCompleted
-
   case class RecoverStepCompleted(link: RecoveryLink)
-
   case object MetadataRecoverCompleted
-
   case object EventRecoverCompleted
 
 }
@@ -425,8 +418,8 @@ private class Controller(endpoint: ReplicationEndpoint) extends Actor with Stash
 
   private def initiating: Receive = {
     case GetConnectionsSuccess(conns) =>
-      connectors = conns.map(new ReplicationConnector(endpoint, _))
       context become initiated
+      connectors = conns.map(ReplicationConnector(endpoint, _))
       connectorsRequestSchedule.foreach(_.cancel())
       unstashAll()
     case _ =>
@@ -439,9 +432,22 @@ private class Controller(endpoint: ReplicationEndpoint) extends Actor with Stash
     case EndpointRecover =>
       recover()
     case ConnectionUp(conn) =>
+      log.info(
+        "Replication connection[{}@{}:{}] up, activate it.",
+        conn.name,
+        conn.host,
+        conn.port
+      )
       activateConnector(conn)
     case ConnectionUnreachable(conn) =>
+      log.info(
+        "Replication connection[{}@{}:{}] unreachable, deactivate it.",
+        conn.name,
+        conn.host,
+        conn.port
+      )
       deactivateConnector(conn)
+    case _ =>
   }
 
   private def activate(): Unit = {
@@ -494,7 +500,7 @@ private class Controller(endpoint: ReplicationEndpoint) extends Actor with Stash
   }
 
   def activateConnector(conn: ReplicationConnection): Unit = {
-    val connector = new ReplicationConnector(endpoint, conn)
+    val connector = ReplicationConnector(endpoint, conn)
     if (!connectors.contains(connector)) {
       connector.activate(replicationLinks = None)
       connectors += connector
@@ -502,7 +508,7 @@ private class Controller(endpoint: ReplicationEndpoint) extends Actor with Stash
   }
 
   def deactivateConnector(conn: ReplicationConnection): Unit = {
-    val connector = new ReplicationConnector(endpoint, conn)
+    val connector = ReplicationConnector(endpoint, conn)
     if (connectors.contains(connector)) {
       connectors -= connector
       connector.deactivate()
@@ -553,20 +559,11 @@ private object Networker {
     }
   }
 
-  private class ClusterNetworker(roles: Set[String]) extends Actor with ReceivePipeline with Stash {
+  private class ClusterNetworker(roles: Set[String]) extends Actor with Stash {
 
     val cluster = Cluster(context.system)
     var connectionRegistry = ConnectionRegistry()
     var subscriberRegistry = SubscriberRegistry()
-
-    pipelineOuter {
-      case m@MemberUp(member) if avaliableMember(member) =>
-        Inner(m)
-      case m@UnreachableMember(member) if avaliableMember(member) =>
-        Inner(m)
-      case any =>
-        Inner(any)
-    }
 
     @scala.throws[Exception](classOf[Exception])
     override def preStart(): Unit = {
@@ -582,13 +579,17 @@ private object Networker {
     override def receive: Receive = initiating
 
     private def initiating: Receive = {
-      case MemberUp(member) =>
-        avaliableConnection(member).foreach { conn =>
-          connectionRegistry = connectionRegistry + conn
+      case MemberUp(member)  =>
+        if (avaliableMember(member)) {
+          avaliableConnection(member).foreach { conn =>
+            connectionRegistry = connectionRegistry + conn
+          }
         }
-      case UnreachableMember(member) =>
-        avaliableConnection(member).foreach { conn =>
-          connectionRegistry = connectionRegistry - conn
+      case UnreachableMember(member)  =>
+        if (avaliableMember(member)) {
+          avaliableConnection(member).foreach { conn =>
+            connectionRegistry = connectionRegistry - conn
+          }
         }
       case _ =>
         stash()
@@ -601,17 +602,22 @@ private object Networker {
           subscriberRegistry = subscriberRegistry + context.watch(sub)
         }
       case MemberUp(member) =>
-        avaliableConnection(member).foreach { conn =>
-          connectionRegistry = connectionRegistry + conn
-          subscriberRegistry ~> ConnectionUp(conn)
+        if (avaliableMember(member)) {
+          avaliableConnection(member).foreach { conn =>
+            connectionRegistry = connectionRegistry + conn
+            subscriberRegistry ~> ConnectionUp(conn)
+          }
         }
       case UnreachableMember(member) =>
-        avaliableConnection(member).foreach { conn =>
-          connectionRegistry = connectionRegistry - conn
-          subscriberRegistry ~> ConnectionUnreachable(conn)
+        if (avaliableMember(member)) {
+          avaliableConnection(member).foreach { conn =>
+            connectionRegistry = connectionRegistry - conn
+            subscriberRegistry ~> ConnectionUnreachable(conn)
+          }
         }
       case Terminated(subscriber) =>
         subscriberRegistry = subscriberRegistry - subscriber
+      case _ =>
     }
 
     private def avaliableMember(member: Member): Boolean = {
