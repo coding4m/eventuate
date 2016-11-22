@@ -19,10 +19,10 @@ package com.rbmhtechnology.eventuate
 import java.util.concurrent.TimeUnit
 
 import akka.actor._
-import akka.cluster.ClusterEvent.{ MemberRemoved, MemberUp }
-import akka.cluster.{ Cluster, Member }
+import akka.cluster.ClusterEvent.{MemberRemoved, MemberUp}
+import akka.cluster.{Cluster, Member}
 import akka.event.Logging
-import akka.pattern.{ ask, pipe }
+import akka.pattern.{ask, pipe}
 import akka.util.Timeout
 import com.rbmhtechnology.eventuate.Acceptor.Recover
 import com.rbmhtechnology.eventuate.EventsourcingProtocol._
@@ -433,10 +433,9 @@ private class Controller(endpoint: ReplicationEndpoint) extends Actor with Stash
 
   private def initiated: Receive = {
     case ReplicationActivate =>
-      activate(sender())
+      activate()
     case ReplicationRecover =>
-      recover(sender())
-
+      recover()
     case ReplicationConnectionActivated(conn) =>
       activatingConnectorOf(conn).foreach { connector =>
         connector.activate(replicationLinks = None)
@@ -446,15 +445,16 @@ private class Controller(endpoint: ReplicationEndpoint) extends Actor with Stash
       deactivatingConnectorOf(conn).foreach(_.deactivate())
   }
 
-  private def activate(sender: ActorRef): Unit = {
+  private def activate(): Unit = {
     import context.dispatcher
+    val requestor = sender()
     Future {
       endpoint.acceptor ! Process
       connectors.foreach(_.activate(replicationLinks = None))
-    } pipeTo sender
+    } pipeTo requestor
   }
 
-  private def recover(sender: ActorRef): Unit = {
+  private def recover(): Unit = {
     import context.dispatcher
 
     def recoveryFailure[U](partialUpdate: Boolean): PartialFunction[Throwable, Future[U]] = {
@@ -475,6 +475,7 @@ private class Controller(endpoint: ReplicationEndpoint) extends Actor with Stash
     // recovered as otherwise it could be less then the corresponding entriy in the
     // log's version vector
     val recovery = new Recovery(endpoint)
+    val requestor = sender()
     val connectors = this.connectors
 
     (for {
@@ -490,7 +491,7 @@ private class Controller(endpoint: ReplicationEndpoint) extends Actor with Stash
       _ <- recovery.adjustEventLogClocks.recoverWith(recoveryFailure(partialUpdate = true))
     } yield {
       endpoint.acceptor ! RecoverCompleted
-    }) pipeTo sender
+    }) pipeTo requestor
   }
 
   private def activatingConnectorOf(conn: ReplicationConnection): Option[ReplicationConnector] = {
@@ -529,16 +530,23 @@ private object Networker {
 
   def props(connections: Set[ReplicationConnection], roles: Set[String]): Props =
     if (connections.nonEmpty) {
-      Props(classOf[DirectoryNetworker], connections)
+      Props(classOf[DirectNetworker], connections)
     } else if (roles.nonEmpty) {
       Props(classOf[ClusterNetworker], roles)
     } else throw new IllegalArgumentException("")
 
   case class GetReplicationConnections(subscriber: Option[ActorRef] = None)
   case class GetReplicationConnectionsSuccess(conns: Set[ReplicationConnection])
-  case class GetReplicationConnectionsFailure()
   case class ReplicationConnectionActivated(conn: ReplicationConnection)
   case class ReplicationConnectionDeactivated(conn: ReplicationConnection)
+
+  private class DirectNetworker(conns: Set[ReplicationConnection]) extends Actor {
+
+    override def receive: Receive = {
+      case GetReplicationConnections(_) =>
+        sender() ! GetReplicationConnectionsSuccess(conns)
+    }
+  }
 
   private class ClusterNetworker(roles: Set[String]) extends Actor with Stash {
 
@@ -558,11 +566,11 @@ private object Networker {
     override def receive: Receive = initiating
 
     private def initiating: Receive = {
-      case MemberUp(member) if roles.intersect(member.roles).nonEmpty =>
+      case MemberUp(member) if avaliableMember(member) =>
         connectionOf(member).foreach { conn =>
           connectionSet = connectionSet + conn
         }
-      case MemberRemoved(member, _) if roles.intersect(member.roles).nonEmpty =>
+      case MemberRemoved(member, _) if avaliableMember(member) =>
         connectionOf(member).foreach { conn =>
           connectionSet = connectionSet - conn
         }
@@ -576,12 +584,12 @@ private object Networker {
         subscriber.foreach { sub =>
           subscriberSet = subscriberSet + context.watch(sub)
         }
-      case MemberUp(member) if roles.intersect(member.roles).nonEmpty =>
+      case MemberUp(member) if avaliableMember(member) =>
         connectionOf(member).foreach { conn =>
           connectionSet = connectionSet + conn
           subscriberSet ~> ReplicationConnectionActivated(conn)
         }
-      case MemberRemoved(member, _) if roles.intersect(member.roles).nonEmpty =>
+      case MemberRemoved(member, _) if avaliableMember(member) =>
         connectionOf(member).foreach { conn =>
           connectionSet = connectionSet - conn
           subscriberSet ~> ReplicationConnectionDeactivated(conn)
@@ -590,19 +598,15 @@ private object Networker {
         subscriberSet = subscriberSet - subscriber
     }
 
+    private def avaliableMember(member: Member): Boolean = {
+      cluster.selfUniqueAddress != member.uniqueAddress && roles.intersect(member.roles).nonEmpty
+    }
+
     private def connectionOf(member: Member): Option[ReplicationConnection] = for {
       host <- member.address.host
       port <- member.address.port
       system = member.address.system
     } yield ReplicationConnection(host, port, name = system)
-  }
-
-  private class DirectoryNetworker(conns: Set[ReplicationConnection]) extends Actor {
-
-    override def receive: Receive = {
-      case GetReplicationConnections(_) =>
-        sender() ! GetReplicationConnectionsSuccess(conns)
-    }
   }
 
   private case class ConnectionSet(connections: Set[ReplicationConnection] = Set.empty) {
