@@ -433,7 +433,7 @@ private class Controller(endpoint: ReplicationEndpoint) extends Actor with Stash
       recover()
     case ConnectionUp(conn) =>
       log.warning(
-        "Replication connection[{}@{}:{}] up, activate it.",
+        "replication connection[{}@{}:{}] up, activate it.",
         conn.name,
         conn.host,
         conn.port
@@ -441,7 +441,7 @@ private class Controller(endpoint: ReplicationEndpoint) extends Actor with Stash
       activateConnector(conn)
     case ConnectionUnreachable(conn) =>
       log.warning(
-        "Replication connection[{}@{}:{}] unreachable, deactivate it.",
+        "replication connection[{}@{}:{}] unreachable, deactivate it.",
         conn.name,
         conn.host,
         conn.port
