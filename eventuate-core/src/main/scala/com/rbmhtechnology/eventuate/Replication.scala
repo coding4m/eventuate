@@ -19,8 +19,10 @@ package com.rbmhtechnology.eventuate
 import java.util.concurrent.TimeUnit
 
 import akka.actor._
-import akka.cluster.ClusterEvent.{MemberRemoved, MemberUp}
+import akka.cluster.ClusterEvent.{MemberUp, UnreachableMember}
 import akka.cluster.{Cluster, Member}
+import akka.contrib.pattern.ReceivePipeline
+import akka.contrib.pattern.ReceivePipeline.Inner
 import akka.event.Logging
 import akka.pattern.{ask, pipe}
 import akka.util.Timeout
@@ -393,8 +395,8 @@ private object Controller {
   def props(endpoint: ReplicationEndpoint) =
     Props(classOf[Controller], endpoint)
 
-  case object ReplicationActivate
-  case object ReplicationRecover
+  case object EndpointActivate
+  case object EndpointRecover
 }
 
 private class Controller(endpoint: ReplicationEndpoint) extends Actor with Stash with ActorLogging {
@@ -415,14 +417,14 @@ private class Controller(endpoint: ReplicationEndpoint) extends Actor with Stash
   private def scheduleConnectorsRequest(): Cancellable = {
     import context.dispatcher
     context.system.scheduler.schedule(0.seconds, endpoint.settings.waitTimeout, new Runnable {
-      override def run() = endpoint.networker ! GetReplicationConnections(Some(self))
+      override def run() = endpoint.networker ! GetConnections(Some(self))
     })
   }
 
   override def receive: Receive = initiating
 
   private def initiating: Receive = {
-    case GetReplicationConnectionsSuccess(conns) =>
+    case GetConnectionsSuccess(conns) =>
       connectors = conns.map(new ReplicationConnector(endpoint, _))
       context become initiated
       connectorsRequestSchedule.foreach(_.cancel())
@@ -432,17 +434,14 @@ private class Controller(endpoint: ReplicationEndpoint) extends Actor with Stash
   }
 
   private def initiated: Receive = {
-    case ReplicationActivate =>
+    case EndpointActivate =>
       activate()
-    case ReplicationRecover =>
+    case EndpointRecover =>
       recover()
-    case ReplicationConnectionActivated(conn) =>
-      activatingConnectorOf(conn).foreach { connector =>
-        connector.activate(replicationLinks = None)
-        connectors += connector
-      }
-    case ReplicationConnectionDeactivated(conn) =>
-      deactivatingConnectorOf(conn).foreach(_.deactivate())
+    case ConnectionUp(conn) =>
+      activateConnector(conn)
+    case ConnectionUnreachable(conn) =>
+      deactivateConnector(conn)
   }
 
   private def activate(): Unit = {
@@ -479,9 +478,9 @@ private class Controller(endpoint: ReplicationEndpoint) extends Actor with Stash
     val connectors = this.connectors
 
     (for {
-      localEndpointInfo <- recovery.readEndpointInfo.recoverWith(recoveryFailure(partialUpdate = false))
-      _ = logRecoverySequenceNrs(localEndpointInfo)
-      recoveryLinks <- recovery.adjustReplicationProgresses(connectors, localEndpointInfo).recoverWith(recoveryFailure(partialUpdate = false))
+      endpointInfo <- recovery.readEndpointInfo.recoverWith(recoveryFailure(partialUpdate = false))
+      _ = logRecoverySequenceNrs(endpointInfo)
+      recoveryLinks <- recovery.adjustReplicationProgresses(connectors, endpointInfo).recoverWith(recoveryFailure(partialUpdate = false))
       unfilteredLinks = recoveryLinks.filterNot(recovery.isFilteredLink)
       _ = logRecoveryLinks(unfilteredLinks, "unfiltered")
       _ <- recovery.recoverLinks(connectors, unfilteredLinks).recoverWith(recoveryFailure(partialUpdate = true))
@@ -494,14 +493,20 @@ private class Controller(endpoint: ReplicationEndpoint) extends Actor with Stash
     }) pipeTo requestor
   }
 
-  private def activatingConnectorOf(conn: ReplicationConnection): Option[ReplicationConnector] = {
+  def activateConnector(conn: ReplicationConnection): Unit = {
     val connector = new ReplicationConnector(endpoint, conn)
-    if (connectors.contains(connector)) None else Some(connector)
+    if (!connectors.contains(connector)) {
+      connector.activate(replicationLinks = None)
+      connectors += connector
+    }
   }
 
-  private def deactivatingConnectorOf(conn: ReplicationConnection): Option[ReplicationConnector] = {
+  def deactivateConnector(conn: ReplicationConnection): Unit = {
     val connector = new ReplicationConnector(endpoint, conn)
-    connectors.find(_ == connector)
+    if (connectors.contains(connector)) {
+      connectors -= connector
+      connector.deactivate()
+    }
   }
 
   private def logRecoverySequenceNrs(info: ReplicationEndpointInfo): Unit = {
@@ -535,94 +540,107 @@ private object Networker {
       Props(classOf[ClusterNetworker], roles)
     } else throw new IllegalArgumentException("")
 
-  case class GetReplicationConnections(subscriber: Option[ActorRef] = None)
-  case class GetReplicationConnectionsSuccess(conns: Set[ReplicationConnection])
-  case class ReplicationConnectionActivated(conn: ReplicationConnection)
-  case class ReplicationConnectionDeactivated(conn: ReplicationConnection)
+  case class GetConnections(subscriber: Option[ActorRef] = None)
+  case class GetConnectionsSuccess(conns: Set[ReplicationConnection])
+  case class ConnectionUp(conn: ReplicationConnection)
+  case class ConnectionUnreachable(conn: ReplicationConnection)
 
   private class DirectNetworker(conns: Set[ReplicationConnection]) extends Actor {
 
     override def receive: Receive = {
-      case GetReplicationConnections(_) =>
-        sender() ! GetReplicationConnectionsSuccess(conns)
+      case GetConnections(_) =>
+        sender() ! GetConnectionsSuccess(conns)
     }
   }
 
-  private class ClusterNetworker(roles: Set[String]) extends Actor with Stash {
+  private class ClusterNetworker(roles: Set[String]) extends Actor with ReceivePipeline with Stash {
 
     val cluster = Cluster(context.system)
-    var connectionSet = ConnectionSet()
-    var subscriberSet = SubscriberSet()
+    var connectionRegistry = ConnectionRegistry()
+    var subscriberRegistry = SubscriberRegistry()
+
+    pipelineOuter {
+      case m@MemberUp(member) if avaliableMember(member) =>
+        Inner(m)
+      case m@UnreachableMember(member) if avaliableMember(member) =>
+        Inner(m)
+      case any =>
+        Inner(any)
+    }
 
     @scala.throws[Exception](classOf[Exception])
     override def preStart(): Unit = {
-      cluster.subscribe(self, classOf[MemberUp], classOf[MemberRemoved])
+      cluster.subscribe(self, classOf[MemberUp], classOf[UnreachableMember])
       cluster.registerOnMemberUp {
         context become initiated
         unstashAll()
       }
+
+      context become initiating
     }
 
     override def receive: Receive = initiating
 
     private def initiating: Receive = {
-      case MemberUp(member) if avaliableMember(member) =>
-        connectionOf(member).foreach { conn =>
-          connectionSet = connectionSet + conn
+      case MemberUp(member) =>
+        avaliableConnection(member).foreach { conn =>
+          connectionRegistry = connectionRegistry + conn
         }
-      case MemberRemoved(member, _) if avaliableMember(member) =>
-        connectionOf(member).foreach { conn =>
-          connectionSet = connectionSet - conn
+      case UnreachableMember(member) =>
+        avaliableConnection(member).foreach { conn =>
+          connectionRegistry = connectionRegistry - conn
         }
       case _ =>
         stash()
     }
 
     private def initiated: Receive = {
-      case GetReplicationConnections(subscriber) =>
-        sender ! GetReplicationConnectionsSuccess(connectionSet.connections)
+      case GetConnections(subscriber) =>
+        sender ! GetConnectionsSuccess(connectionRegistry.connections)
         subscriber.foreach { sub =>
-          subscriberSet = subscriberSet + context.watch(sub)
+          subscriberRegistry = subscriberRegistry + context.watch(sub)
         }
-      case MemberUp(member) if avaliableMember(member) =>
-        connectionOf(member).foreach { conn =>
-          connectionSet = connectionSet + conn
-          subscriberSet ~> ReplicationConnectionActivated(conn)
+      case MemberUp(member) =>
+        avaliableConnection(member).foreach { conn =>
+          connectionRegistry = connectionRegistry + conn
+          subscriberRegistry ~> ConnectionUp(conn)
         }
-      case MemberRemoved(member, _) if avaliableMember(member) =>
-        connectionOf(member).foreach { conn =>
-          connectionSet = connectionSet - conn
-          subscriberSet ~> ReplicationConnectionDeactivated(conn)
+      case UnreachableMember(member) =>
+        avaliableConnection(member).foreach { conn =>
+          connectionRegistry = connectionRegistry - conn
+          subscriberRegistry ~> ConnectionUnreachable(conn)
         }
       case Terminated(subscriber) =>
-        subscriberSet = subscriberSet - subscriber
+        subscriberRegistry = subscriberRegistry - subscriber
     }
 
     private def avaliableMember(member: Member): Boolean = {
       cluster.selfUniqueAddress != member.uniqueAddress && roles.intersect(member.roles).nonEmpty
     }
 
-    private def connectionOf(member: Member): Option[ReplicationConnection] = for {
+    private def avaliableConnection(member: Member): Option[ReplicationConnection] = for {
       host <- member.address.host
       port <- member.address.port
       system = member.address.system
     } yield ReplicationConnection(host, port, name = system)
+
+    override def postStop(): Unit = cluster.unsubscribe(self)
   }
 
-  private case class ConnectionSet(connections: Set[ReplicationConnection] = Set.empty) {
-    def +(connection: ReplicationConnection): ConnectionSet =
+  private case class ConnectionRegistry(connections: Set[ReplicationConnection] = Set.empty) {
+    def +(connection: ReplicationConnection): ConnectionRegistry =
       copy(connections = connections + connection)
 
-    def -(connection: ReplicationConnection): ConnectionSet =
+    def -(connection: ReplicationConnection): ConnectionRegistry =
       copy(connections = connections - connection)
   }
 
-  private case class SubscriberSet(subscribers: Set[ActorRef] = Set.empty) {
+  private case class SubscriberRegistry(subscribers: Set[ActorRef] = Set.empty) {
 
-    def +(subscriber: ActorRef): SubscriberSet =
+    def +(subscriber: ActorRef): SubscriberRegistry =
       copy(subscribers = subscribers + subscriber)
 
-    def -(subscriber: ActorRef): SubscriberSet =
+    def -(subscriber: ActorRef): SubscriberRegistry =
       copy(subscribers = subscribers - subscriber)
 
     def ~>(event: Any): Unit = subscribers.foreach(_ ! event)
