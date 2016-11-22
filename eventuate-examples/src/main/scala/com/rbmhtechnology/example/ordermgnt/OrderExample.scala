@@ -93,7 +93,7 @@ object OrderExample extends App {
   import system.dispatcher
 
   def initialize(): Future[Unit] =
-    if (recover) endpoint.recover() else Future.successful(endpoint.activate())
+    if (recover) endpoint.recover() else endpoint.activate()
 
   initialize() onComplete {
     case Failure(e) =>

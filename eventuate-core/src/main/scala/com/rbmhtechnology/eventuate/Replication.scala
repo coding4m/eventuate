@@ -600,7 +600,7 @@ private object Networker {
   private class DirectoryNetworker(conns: Set[ReplicationConnection]) extends Actor {
 
     override def receive: Receive = {
-      case GetReplicationConnections =>
+      case GetReplicationConnections(_) =>
         sender() ! GetReplicationConnectionsSuccess(conns)
     }
   }

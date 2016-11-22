@@ -279,7 +279,7 @@ class ReplicationEndpoint(
   val logNames: Set[String],
   val logFactory: String => Props,
   val connections: Set[ReplicationConnection],
-  val endpointRoles: Set[String],
+  val endpointRoles: Set[String] = Set.empty,
   val endpointFilters: EndpointFilters = NoFilters,
   val applicationName: String = ReplicationEndpoint.DefaultApplicationName,
   val applicationVersion: ApplicationVersion = ReplicationEndpoint.DefaultApplicationVersion
