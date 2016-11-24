@@ -373,7 +373,7 @@ private class Controller(endpoint: ReplicationEndpoint) extends Actor with Actor
   import Controller._
 
   var replicatorRegistry = ReplicatorRegistry()
-  val networkDetector = context.actorOf(NetworkDetector.props(endpoint.connections, endpoint.endpointRoles))
+  val networkDetector = context.actorOf(NetworkDetector.props(endpoint.connections, endpoint.connectionRoles))
 
   override def receive: Receive = {
 
@@ -422,12 +422,12 @@ private class Controller(endpoint: ReplicationEndpoint) extends Actor with Actor
 private object NetworkDetector {
   val Name = "replication-network-detector"
 
-  def props(connections: Set[ReplicationConnection], roles: Set[String]): Props =
+  def props(connections: Set[ReplicationConnection], connectionRoles: Set[String]): Props =
     if (connections.nonEmpty) {
       Props(classOf[DirectDetector], connections)
-    } else if (roles.nonEmpty) {
-      Props(classOf[ClusterDetector], roles)
-    } else throw new IllegalArgumentException("eventuate.endpoint.roles and eventuate.endpoint.connections both empty.")
+    } else if (connectionRoles.nonEmpty) {
+      Props(classOf[ClusterDetector], connectionRoles)
+    } else throw new IllegalArgumentException("eventuate.endpoint.connections and eventuate.endpoint.connection-roles both empty.")
 
   private class DirectDetector(conns: Set[ReplicationConnection]) extends Actor {
 
