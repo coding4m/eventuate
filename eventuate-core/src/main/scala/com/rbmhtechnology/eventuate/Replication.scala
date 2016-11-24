@@ -427,7 +427,7 @@ private object NetworkDetector {
       Props(classOf[DirectDetector], connections)
     } else if (roles.nonEmpty) {
       Props(classOf[ClusterDetector], roles)
-    } else throw new IllegalArgumentException("")
+    } else throw new IllegalArgumentException("eventuate.endpoint.roles and eventuate.endpoint.connections both empty.")
 
   private class DirectDetector(conns: Set[ReplicationConnection]) extends Actor {
 
