@@ -24,7 +24,6 @@ import akka.cluster.{Cluster, Member}
 import akka.event.Logging
 import akka.pattern.{ask, pipe}
 import akka.util.Timeout
-import com.rbmhtechnology.eventuate.Acceptor.Recover
 import com.rbmhtechnology.eventuate.EventsourcingProtocol._
 import com.rbmhtechnology.eventuate.ReplicationFilter.NoFilter
 import com.rbmhtechnology.eventuate.ReplicationProtocol._
@@ -83,11 +82,20 @@ private case class RecoveryLink(replicationLink: ReplicationLink, localSequenceN
 private class Recovery(endpoint: ReplicationEndpoint) {
   private val settings = new RecoverySettings(endpoint.system.settings.config)
 
+  import Acceptor._
+  import Controller._
   import endpoint.system.dispatcher
   import settings._
 
   private implicit val timeout = Timeout(remoteOperationTimeout)
   private implicit val scheduler = endpoint.system.scheduler
+
+  def getReplicationConnections(implicit ec: ExecutionContext): Future[Set[ReplicationConnection]] = {
+    implicit val timeout = Timeout(endpoint.settings.recoverTimeout)
+    (endpoint.controller ? GetReplicationConnections).asInstanceOf[Future[GetReplicationConnectionsSuccess]] map {
+      _.connections
+    }
+  }
 
   /**
    * Read [[ReplicationEndpointInfo]] from local [[ReplicationEndpoint]]
@@ -109,26 +117,29 @@ private class Recovery(endpoint: ReplicationEndpoint) {
    *
    * @return a set of [[RecoveryLink]]s indicating the events that need to be recovered
    */
-  def adjustReplicationProgresses(connectors: Set[ReplicationConnector], info: ReplicationEndpointInfo): Future[Set[RecoveryLink]] =
-    Future.traverse(connectors) { connector =>
-      adjustReplicationProgress(connector.remoteAcceptor, info).map { remoteInfo =>
-        connector.links(remoteInfo).map(toRecoveryLink(_, info, remoteInfo))
+  def adjustReplicationProgresses(connections: Set[ReplicationConnection], localInfo: ReplicationEndpointInfo): Future[Set[RecoveryLink]] =
+    Future.traverse(connections) { connection =>
+      adjustReplicationProgress(endpoint.replicationAcceptor(connection), localInfo).map { remoteInfo =>
+        endpoint.replicationLinks(connection, remoteInfo).map(toRecoveryLink(_, localInfo, remoteInfo))
       }
     } map (_.flatten)
 
-  private def toRecoveryLink(replicationLink: ReplicationLink, localInfo: ReplicationEndpointInfo, remoteInfo: ReplicationEndpointInfo): RecoveryLink =
+  private def toRecoveryLink(
+    replicationLink: ReplicationLink,
+    localInfo: ReplicationEndpointInfo,
+    remoteInfo: ReplicationEndpointInfo): RecoveryLink =
     RecoveryLink(replicationLink, localInfo.logSequenceNrs(replicationLink.target.logName), remoteInfo.logSequenceNrs(replicationLink.target.logName))
 
-  private def adjustReplicationProgress(remoteAcceptor: ActorSelection, info: ReplicationEndpointInfo): Future[ReplicationEndpointInfo] =
+  private def adjustReplicationProgress(remoteAcceptor: ActorSelection, localInfo: ReplicationEndpointInfo): Future[ReplicationEndpointInfo] =
     readResult[SynchronizeReplicationProgressSuccess, SynchronizeReplicationProgressFailure, ReplicationEndpointInfo](
-      Retry(remoteAcceptor.ask(SynchronizeReplicationProgress(info)), remoteOperationRetryDelay, remoteOperationRetryMax), _.info, _.cause)
+      Retry(remoteAcceptor.ask(SynchronizeReplicationProgress(localInfo)), remoteOperationRetryDelay, remoteOperationRetryMax), _.info, _.cause)
 
   /**
    * Update the locally stored replication progress of remote replicas with the sequence numbers given in ``info``.
    * Replication progress that is greater than the corresponding sequence number in ``info`` is reset to that
    */
   def synchronizeReplicationProgress(info: ReplicationEndpointInfo): Future[Unit] = {
-    Future.traverse(endpoint.commonLogNames(info)) { name =>
+    Future.traverse(endpoint.replicationLogNames(info)) { name =>
       val logActor = endpoint.logs(name)
       val logId = info.logId(name)
       val remoteSequenceNr = info.logSequenceNrs(name)
@@ -164,17 +175,24 @@ private class Recovery(endpoint: ReplicationEndpoint) {
    * Initiates event recovery for the given [[ReplicationLink]]s. The returned [[Future]] completes when
    * all events are successfully recovered.
    */
-  def recoverLinks(connectors: Set[ReplicationConnector], recoveryLinks: Set[RecoveryLink])(implicit ec: ExecutionContext): Future[Unit] = {
+  def recoverLinks(recoveryLinks: Set[RecoveryLink])(implicit ec: ExecutionContext): Future[Unit] = {
     if (recoveryLinks.isEmpty) {
       Future.successful(())
     } else {
       val recoveryFinishedPromise = Promise[Unit]()
       deleteSnapshots(recoveryLinks).onSuccess {
-        case _ => endpoint.acceptor ! Recover(connectors, recoveryLinks, recoveryFinishedPromise)
+        case _ =>
+          endpoint.acceptor ! Recover(recoveryLinks, recoveryFinishedPromise)
+          recoveryLinks.foreach { link =>
+            endpoint.controller ! ActivateReplication(link.replicationLink)
+          }
       }
       recoveryFinishedPromise.future
     }
   }
+
+  def recoverCompleted(): Unit =
+    endpoint.acceptor ! RecoverCompleted
 
   /**
    * Deletes all invalid snapshots from local event logs. A snapshot is invalid if it covers
@@ -221,12 +239,12 @@ private class Recovery(endpoint: ReplicationEndpoint) {
  *  - `initializing` -> `recovering` -> `processing` (when calling `endpoint.recover()`)
  *  - `initializing` -> `processing`                 (when calling `endpoint.activate()`)
  */
-private class Acceptor(endpoint: ReplicationEndpoint) extends Actor {
+private class Acceptor(replicationEndpoint: ReplicationEndpoint) extends Actor {
 
   import Acceptor._
   import context.dispatcher
 
-  private val recovery = new Recovery(endpoint)
+  private val recovery = new Recovery(replicationEndpoint)
 
   def initializing: Receive = recovering orElse {
     case Process =>
@@ -234,9 +252,8 @@ private class Acceptor(endpoint: ReplicationEndpoint) extends Actor {
   }
 
   def recovering: Receive = {
-    case Recover(connectors, links, promise) =>
-      connectors.foreach(_.activate(Some(links.map(_.replicationLink))))
-      val recoveryManager = context.actorOf(Props(new RecoveryManager(endpoint.id, links)))
+    case Recover(links, promise) =>
+      val recoveryManager = context.actorOf(Props(new RecoveryManager(replicationEndpoint.id, links)))
       context.become(recoveringEvents(recoveryManager, promise) orElse processing)
     case RecoverCompleted =>
       context.become(processing)
@@ -251,11 +268,11 @@ private class Acceptor(endpoint: ReplicationEndpoint) extends Actor {
   }
 
   def processing: Receive = {
-    case re: ReplicationReadEnvelope if re.incompatibleWith(endpoint.applicationName, endpoint.applicationVersion) =>
-      sender ! ReplicationReadFailure(IncompatibleApplicationVersionException(endpoint.id, endpoint.applicationVersion, re.targetApplicationVersion), re.payload.targetLogId)
+    case re: ReplicationReadEnvelope if re.incompatibleWith(replicationEndpoint.applicationName, replicationEndpoint.applicationVersion) =>
+      sender ! ReplicationReadFailure(IncompatibleApplicationVersionException(replicationEndpoint.id, replicationEndpoint.applicationVersion, re.targetApplicationVersion), re.payload.targetLogId)
     case ReplicationReadEnvelope(r, logName, _, _) =>
-      val r2 = r.copy(filter = endpoint.endpointFilters.filterFor(r.targetLogId, logName) and r.filter)
-      endpoint.logs(logName) forward r2
+      val r2 = r.copy(filter = replicationEndpoint.endpointFilters.filterFor(r.targetLogId, logName) and r.filter)
+      replicationEndpoint.logs(logName) forward r2
     case _: ReplicationWriteSuccess =>
   }
 
@@ -285,60 +302,12 @@ private object Acceptor {
     Props(classOf[Acceptor], endpoint)
 
   case object Process
-  case class Recover(connectors: Set[ReplicationConnector], links: Set[RecoveryLink], promise: Promise[Unit])
+  case class Recover(links: Set[RecoveryLink], promise: Promise[Unit])
   case object RecoverCompleted
   case class RecoverStepCompleted(link: RecoveryLink)
   case object MetadataRecoverCompleted
   case object EventRecoverCompleted
 
-}
-
-/**
- * If `replicationLinks` is [[None]] reliably sends [[GetReplicationEndpointInfo]] requests to the [[Acceptor]] at a source [[ReplicationEndpoint]].
- * On receiving a [[GetReplicationEndpointInfoSuccess]] reply, this connector sets up log [[Replicator]]s, one per
- * common log name between source and target endpoints.
- *
- * If `replicationLinks` is not [[None]] [[Replicator]]s will be setup for the given [[ReplicationLink]]s.
- */
-private class Connector(replicationConnector: ReplicationConnector, replicationLinks: Option[Set[ReplicationLink]]) extends Actor {
-
-  import context.dispatcher
-
-  private val acceptor = replicationConnector.remoteAcceptor
-  private var acceptorRequestSchedule: Option[Cancellable] = None
-
-  private var connected = false
-
-  def receive = {
-    case GetReplicationEndpointInfoSuccess(info) if !connected =>
-      replicationConnector.links(info).foreach(createReplicator)
-      connected = true
-      acceptorRequestSchedule.foreach(_.cancel())
-    case PoisonPill =>
-      context stop self
-  }
-
-  private def scheduleAcceptorRequest(acceptor: ActorSelection): Cancellable =
-    context.system.scheduler.schedule(0.seconds, replicationConnector.targetEndpoint.settings.retryDelay, new Runnable {
-      override def run() = acceptor ! GetReplicationEndpointInfo
-    })
-
-  private def createReplicator(link: ReplicationLink): Unit = {
-    val filter = replicationConnector.connection.filters.get(link.target.logName) match {
-      case Some(f) => f
-      case None    => NoFilter
-    }
-    context.actorOf(Props(new Replicator(link.target, link.source, filter)))
-  }
-
-  override def preStart(): Unit =
-    replicationLinks match {
-      case Some(links) => links.foreach(createReplicator)
-      case None        => acceptorRequestSchedule = Some(scheduleAcceptorRequest(acceptor))
-    }
-
-  override def postStop(): Unit =
-    acceptorRequestSchedule.foreach(_.cancel())
 }
 
 /**
@@ -388,182 +357,94 @@ private object Controller {
   def props(endpoint: ReplicationEndpoint) =
     Props(classOf[Controller], endpoint)
 
-  case object EndpointActivate
-  case object EndpointRecover
+  case object GetReplicationConnections
+  case class GetReplicationConnectionsSuccess(connections: Set[ReplicationConnection])
+  case class ReplicationConnectionUp(conn: ReplicationConnection)
+  case class ReplicationConnectionUnreachable(conn: ReplicationConnection)
+  case class ActivateReplicationConnection(connection: ReplicationConnection)
+  case class DeactivateReplicationConnection(connection: ReplicationConnection)
+
+  case class ActivateReplication(link: ReplicationLink)
+  case class DeactivateReplication(link: ReplicationLink)
 }
 
-private class Controller(endpoint: ReplicationEndpoint) extends Actor with Stash with ActorLogging {
+private class Controller(endpoint: ReplicationEndpoint) extends Actor with ActorLogging {
 
-  import Acceptor._
   import Controller._
-  import Networker._
 
-  var connectors: Set[ReplicationConnector] = Set.empty
-  var connectorsRequestSchedule: Option[Cancellable] = None
+  var replicatorRegistry = ReplicatorRegistry()
+  val networkDetector = context.actorOf(NetworkDetector.props(endpoint.connections, endpoint.endpointRoles))
 
-  @scala.throws[Exception](classOf[Exception])
-  override def preStart(): Unit = {
-    context become initiating
-    connectorsRequestSchedule = Some(scheduleConnectorsRequest())
-  }
+  override def receive: Receive = {
 
-  private def scheduleConnectorsRequest(): Cancellable = {
-    import context.dispatcher
-    context.system.scheduler.schedule(0.seconds, endpoint.settings.waitTimeout, new Runnable {
-      override def run() = endpoint.networker ! GetConnections(Some(self))
-    })
-  }
+    case GetReplicationConnections =>
+      networkDetector forward GetReplicationConnections
 
-  override def receive: Receive = initiating
+    case ActivateReplication(link) =>
+      val replicator = context.actorOf(Props(new Replicator(link.target, link.source, link.filter)))
+      context.watch(replicator)
+      replicatorRegistry = replicatorRegistry + (link, replicator)
 
-  private def initiating: Receive = {
-    case GetConnectionsSuccess(conns) =>
-      context become initiated
-      connectors = conns.map(ReplicationConnector(endpoint, _))
-      connectorsRequestSchedule.foreach(_.cancel())
-      unstashAll()
-    case _ =>
-      stash()
-  }
+    case DeactivateReplication(link) =>
+      replicatorRegistry(link).foreach { replicator =>
+        replicatorRegistry = replicatorRegistry - link
+        context stop replicator
+      }
 
-  private def initiated: Receive = {
-    case EndpointActivate =>
-      activate()
-    case EndpointRecover =>
-      recover()
-    case ConnectionUp(conn) =>
+    case ActivateReplicationConnection(connection) =>
+      context.actorOf(Props(new ReplicatorInitializer(endpoint, connection)))
+
+    case DeactivateReplicationConnection(connection) =>
+      replicatorRegistry.relicators.keys filter { link =>
+        endpoint.replicationAcceptor(connection) == link.source.acceptor
+      } foreach { link =>
+        self ! DeactivateReplication(link)
+      }
+
+    case ReplicationConnectionUp(conn) =>
       log.warning(
-        "replication connection[{}@{}:{}] up, activate it.",
-        conn.name,
-        conn.host,
-        conn.port
+        "replication connection[{}@{}:{}] up, activate it.", conn.name, conn.host, conn.port
       )
-      activateConnector(conn)
-    case ConnectionUnreachable(conn) =>
+      self ! ActivateReplicationConnection(conn)
+
+    case ReplicationConnectionUnreachable(conn) =>
       log.warning(
-        "replication connection[{}@{}:{}] unreachable, deactivate it.",
-        conn.name,
-        conn.host,
-        conn.port
+        "replication connection[{}@{}:{}] unreachable, deactivate it.", conn.name, conn.host, conn.port
       )
-      deactivateConnector(conn)
-    case _ =>
+
+      self ! DeactivateReplicationConnection(conn)
+
+    case Terminated(replicator) =>
+    //TODO
   }
-
-  private def activate(): Unit = {
-    import context.dispatcher
-    val requestor = sender()
-    Future {
-      endpoint.acceptor ! Process
-      connectors.foreach(_.activate(replicationLinks = None))
-    } pipeTo requestor
-  }
-
-  private def recover(): Unit = {
-    import context.dispatcher
-
-    def recoveryFailure[U](partialUpdate: Boolean): PartialFunction[Throwable, Future[U]] = {
-      case t => Future.failed(new RecoveryException(t, partialUpdate))
-    }
-
-    // Disaster recovery is executed in 3 steps:
-    // 1. synchronize metadata to
-    //    - reset replication progress of remote sites and
-    //    - determine after disaster progress of remote sites
-    // 2. Recover events from unfiltered links
-    // 3. Recover events from filtered links
-    // 4. Adjust the sequence numbers of local logs to their version vectors
-    // unfiltered links are recovered first to ensure that no events are recovered from a filtered connection
-    // where the causal predecessor is not yet recovered (from an unfiltered connection)
-    // as causal predecessors cannot be written after their successors to the event log.
-    // The sequence number of an event log needs to be adjusted if not all events could be
-    // recovered as otherwise it could be less then the corresponding entriy in the
-    // log's version vector
-    val recovery = new Recovery(endpoint)
-    val requestor = sender()
-    val connectors = this.connectors
-
-    (for {
-      endpointInfo <- recovery.readEndpointInfo.recoverWith(recoveryFailure(partialUpdate = false))
-      _ = logRecoverySequenceNrs(endpointInfo)
-      recoveryLinks <- recovery.adjustReplicationProgresses(connectors, endpointInfo).recoverWith(recoveryFailure(partialUpdate = false))
-      unfilteredLinks = recoveryLinks.filterNot(recovery.isFilteredLink)
-      _ = logRecoveryLinks(unfilteredLinks, "unfiltered")
-      _ <- recovery.recoverLinks(connectors, unfilteredLinks).recoverWith(recoveryFailure(partialUpdate = true))
-      filteredLinks = recoveryLinks.filter(recovery.isFilteredLink)
-      _ = logRecoveryLinks(filteredLinks, "filtered")
-      _ <- recovery.recoverLinks(connectors, filteredLinks).recoverWith(recoveryFailure(partialUpdate = true))
-      _ <- recovery.adjustEventLogClocks.recoverWith(recoveryFailure(partialUpdate = true))
-    } yield {
-      endpoint.acceptor ! RecoverCompleted
-    }) pipeTo requestor
-  }
-
-  def activateConnector(conn: ReplicationConnection): Unit = {
-    val connector = ReplicationConnector(endpoint, conn)
-    if (!connectors.contains(connector)) {
-      connector.activate(replicationLinks = None)
-      connectors += connector
-    }
-  }
-
-  def deactivateConnector(conn: ReplicationConnection): Unit = {
-    val connector = ReplicationConnector(endpoint, conn)
-    if (connectors.contains(connector)) {
-      connectors -= connector
-      connector.deactivate()
-    }
-  }
-
-  private def logRecoverySequenceNrs(info: ReplicationEndpointInfo): Unit = {
-    log.info(
-      "Disaster recovery initiated for endpoint {}. Sequence numbers of local logs are: {}",
-      info.endpointId, sequenceNrsLogString(info))
-    log.info(
-      "Need to reset replication progress stored at remote replicas {}",
-      connectors.map(_.remoteAcceptor).mkString(","))
-  }
-
-  private def logRecoveryLinks(links: Set[RecoveryLink], linkType: String): Unit = {
-    log.info(
-      "Start recovery for {} links: (from remote source log (target seq no) -> local target log (initial seq no))\n{}",
-      linkType, links.map(l => s"(${l.replicationLink.source.logId} (${l.remoteSequenceNr}) -> ${l.replicationLink.target.logName} (${l.localSequenceNr}))").mkString(", "))
-  }
-
-  private def sequenceNrsLogString(info: ReplicationEndpointInfo): String =
-    info.logSequenceNrs.map { case (logName, sequenceNr) => s"$logName:$sequenceNr" } mkString ","
-
-  override def postStop(): Unit = connectorsRequestSchedule.foreach(_.cancel())
 }
 
-private object Networker {
-  val Name = "replication-networker"
+private object NetworkDetector {
+  val Name = "replication-network-detector"
 
   def props(connections: Set[ReplicationConnection], roles: Set[String]): Props =
     if (connections.nonEmpty) {
-      Props(classOf[DirectNetworker], connections)
+      Props(classOf[DirectDetector], connections)
     } else if (roles.nonEmpty) {
-      Props(classOf[ClusterNetworker], roles)
+      Props(classOf[ClusterDetector], roles)
     } else throw new IllegalArgumentException("")
 
-  case class GetConnections(subscriber: Option[ActorRef] = None)
-  case class GetConnectionsSuccess(conns: Set[ReplicationConnection])
-  case class ConnectionUp(conn: ReplicationConnection)
-  case class ConnectionUnreachable(conn: ReplicationConnection)
+  private class DirectDetector(conns: Set[ReplicationConnection]) extends Actor {
 
-  private class DirectNetworker(conns: Set[ReplicationConnection]) extends Actor {
+    import Controller._
 
     override def receive: Receive = {
-      case GetConnections(_) =>
-        sender() ! GetConnectionsSuccess(conns)
+      case GetReplicationConnections =>
+        sender() ! GetReplicationConnectionsSuccess(conns)
     }
   }
 
-  private class ClusterNetworker(roles: Set[String]) extends Actor with Stash {
+  private class ClusterDetector(roles: Set[String]) extends Actor with Stash {
+
+    import Controller._
 
     val cluster = Cluster(context.system)
     var connectionRegistry = ConnectionRegistry()
-    var subscriberRegistry = SubscriberRegistry()
 
     @scala.throws[Exception](classOf[Exception])
     override def preStart(): Unit = {
@@ -579,13 +460,13 @@ private object Networker {
     override def receive: Receive = initiating
 
     private def initiating: Receive = {
-      case MemberUp(member)  =>
+      case MemberUp(member) =>
         if (avaliableMember(member)) {
           avaliableConnection(member).foreach { conn =>
             connectionRegistry = connectionRegistry + conn
           }
         }
-      case UnreachableMember(member)  =>
+      case UnreachableMember(member) =>
         if (avaliableMember(member)) {
           avaliableConnection(member).foreach { conn =>
             connectionRegistry = connectionRegistry - conn
@@ -596,27 +477,22 @@ private object Networker {
     }
 
     private def initiated: Receive = {
-      case GetConnections(subscriber) =>
-        sender ! GetConnectionsSuccess(connectionRegistry.connections)
-        subscriber.foreach { sub =>
-          subscriberRegistry = subscriberRegistry + context.watch(sub)
-        }
+      case GetReplicationConnections =>
+        sender ! GetReplicationConnectionsSuccess(connectionRegistry.connections)
       case MemberUp(member) =>
         if (avaliableMember(member)) {
           avaliableConnection(member).foreach { conn =>
             connectionRegistry = connectionRegistry + conn
-            subscriberRegistry ~> ConnectionUp(conn)
+            context.parent ! ReplicationConnectionUp(conn)
           }
         }
       case UnreachableMember(member) =>
         if (avaliableMember(member)) {
           avaliableConnection(member).foreach { conn =>
             connectionRegistry = connectionRegistry - conn
-            subscriberRegistry ~> ConnectionUnreachable(conn)
+            context.parent ! ReplicationConnectionUnreachable(conn)
           }
         }
-      case Terminated(subscriber) =>
-        subscriberRegistry = subscriberRegistry - subscriber
       case _ =>
     }
 
@@ -639,17 +515,6 @@ private object Networker {
 
     def -(connection: ReplicationConnection): ConnectionRegistry =
       copy(connections = connections - connection)
-  }
-
-  private case class SubscriberRegistry(subscribers: Set[ActorRef] = Set.empty) {
-
-    def +(subscriber: ActorRef): SubscriberRegistry =
-      copy(subscribers = subscribers + subscriber)
-
-    def -(subscriber: ActorRef): SubscriberRegistry =
-      copy(subscribers = subscribers - subscriber)
-
-    def ~>(event: Any): Unit = subscribers.foreach(_ ! event)
   }
 }
 
@@ -762,11 +627,65 @@ private class Replicator(target: ReplicationTarget, source: ReplicationSource, f
     readSchedule.foreach(_.cancel())
 }
 
+private case class ReplicatorRegistry(relicators: Map[ReplicationLink, ActorRef] = Map.empty) {
+
+  def +(link: ReplicationLink, replicator: ActorRef): ReplicatorRegistry = {
+    copy(relicators = relicators + (link -> replicator))
+  }
+
+  def -(link: ReplicationLink): ReplicatorRegistry = {
+    copy(relicators = relicators - link)
+  }
+
+  def apply(link: ReplicationLink): Option[ActorRef] = {
+    relicators.get(link)
+  }
+}
+
+/**
+ * If `replicationLinks` is [[None]] reliably sends [[GetReplicationEndpointInfo]] requests to the [[Acceptor]] at a source [[ReplicationEndpoint]].
+ * On receiving a [[GetReplicationEndpointInfoSuccess]] reply, this connector sets up log [[Replicator]]s, one per
+ * common log name between source and target endpoints.
+ *
+ * If `replicationLinks` is not [[None]] [[Replicator]]s will be setup for the given [[ReplicationLink]]s.
+ */
+private class ReplicatorInitializer(
+  endpoint: ReplicationEndpoint,
+  connection: ReplicationConnection) extends Actor {
+
+  import Controller._
+  import context.dispatcher
+
+  private val acceptor = endpoint.replicationAcceptor(connection)
+  private var acceptorRequestSchedule: Option[Cancellable] = None
+
+  def receive = {
+    case GetReplicationEndpointInfoSuccess(info) =>
+      acceptorRequestSchedule.foreach(_.cancel())
+      endpoint.replicationLinks(connection, info).foreach { link =>
+        context.parent ! ActivateReplication(link)
+      }
+      context stop self
+  }
+
+  private def scheduleAcceptorRequest(acceptor: ActorSelection): Cancellable =
+    context.system.scheduler.schedule(0.seconds, endpoint.settings.retryDelay, new Runnable {
+      override def run() = acceptor ! GetReplicationEndpointInfo
+    })
+
+  override def preStart(): Unit =
+    acceptorRequestSchedule = Some(scheduleAcceptorRequest(acceptor))
+
+  override def postStop(): Unit =
+    acceptorRequestSchedule.foreach(_.cancel())
+}
+
+
+
 private object FailureDetector {
   case object AvailabilityDetected
   case class FailureDetected(cause: Throwable)
   case class FailureDetectionLimitReached(counter: Int)
-
 }
 
 private class FailureDetector(sourceEndpointId: String, logName: String, failureDetectionLimit: FiniteDuration) extends Actor with ActorLogging {
@@ -806,5 +725,64 @@ private class FailureDetector(sourceEndpointId: String, logName: String, failure
   private def scheduleFailureDetectionLimitReached(): Cancellable = {
     counter += 1
     context.system.scheduler.scheduleOnce(failureDetectionLimit, self, FailureDetectionLimitReached(counter))
+  }
+}
+
+private class Activator(endpoint: ReplicationEndpoint) {
+  import Acceptor._
+  import Controller._
+
+  def getReplicationConnections(implicit ec: ExecutionContext): Future[Set[ReplicationConnection]] = {
+    implicit val timeout = Timeout(endpoint.settings.activeTimeout)
+    (endpoint.controller ? GetReplicationConnections).asInstanceOf[Future[GetReplicationConnectionsSuccess]] map {
+      _.connections
+    }
+  }
+
+  def activateReplicationConnections(connections: Set[ReplicationConnection]): Unit = {
+    endpoint.acceptor ! Process
+    for (conn <- connections) {
+      endpoint.controller ! ActivateReplicationConnection(conn)
+    }
+  }
+}
+
+/**
+ * References a remote event log at a source [[ReplicationEndpoint]].
+ */
+private case class ReplicationSource(
+  endpointId: String,
+  logName: String,
+  logId: String,
+  acceptor: ActorSelection
+)
+
+/**
+ * References a local event log at a target [[ReplicationEndpoint]].
+ */
+private case class ReplicationTarget(
+  endpoint: ReplicationEndpoint,
+  logName: String,
+  logId: String,
+  log: ActorRef
+) {
+}
+
+/**
+ * Represents an unidirectional replication link between a `source` and a `target`.
+ */
+private case class ReplicationLink(source: ReplicationSource, target: ReplicationTarget, filter: ReplicationFilter) {
+
+  override def equals(other: scala.Any): Boolean = other match {
+    case that: ReplicationLink =>
+      (that canEqual this) &&
+        source == that.source &&
+        target == that.target
+    case _ => false
+  }
+
+  override def hashCode(): Int = {
+    val state = Seq(source, target)
+    state.map(_.hashCode()).foldLeft(0)((a, b) => 31 * a + b)
   }
 }

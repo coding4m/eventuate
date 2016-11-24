@@ -24,7 +24,6 @@ import java.util.{ Set => JSet }
 import akka.actor._
 import akka.pattern.ask
 import akka.util.Timeout
-import com.rbmhtechnology.eventuate.Controller.{ EndpointActivate, EndpointRecover }
 import com.rbmhtechnology.eventuate.EndpointFilters.NoFilters
 import com.rbmhtechnology.eventuate.EventsourcingProtocol.{ Delete, DeleteFailure, DeleteSuccess }
 import com.rbmhtechnology.eventuate.ReplicationFilter.NoFilter
@@ -110,15 +109,14 @@ object ReplicationEndpoint {
     //      Some((hp(0), hp(1).toInt))
     //    }
 
-    val regex0 = new Regex("([^@]+)@([^:]+):(.+)")
-    val regex1 = new Regex("([^:]+):(.+)")
+    val hostAndPort = new Regex("([^:]+):(.+)")
+    val hostAndPortWithName = new Regex("([^@]+)@([^:]+):(.+)")
 
     def unapply(s: String): Option[(String, String, Int)] = s match {
-      case regex0(name, host, port) =>
-        Some((name, host, port.toInt))
-      case regex1(host, port) =>
+      case hostAndPort(host, port) =>
         Some((ReplicationConnection.DefaultRemoteSystemName, host, port.toInt))
-
+      case hostAndPortWithName(name, host, port) =>
+        Some((name, host, port.toInt))
     }
   }
 
@@ -343,18 +341,28 @@ class ReplicationEndpoint(
     system.actorOf(Acceptor.props(this), name = Acceptor.Name)
   acceptor // make sure acceptor is started
 
-  private[eventuate] lazy val networker: ActorRef =
-    system.actorOf(Networker.props(connections, endpointRoles), name = Networker.Name)
-  networker
-
   private[eventuate] lazy val controller: ActorRef =
     system.actorOf(Controller.props(this), name = Controller.Name)
+  controller
 
   /**
    * Returns the unique log id for given `logName`.
    */
   def logId(logName: String): String =
     ReplicationEndpointInfo.logId(id, logName)
+
+  /**
+   * Activates this endpoint by starting event replication from remote endpoints to this endpoint.
+   */
+  def activate(): Future[Unit] = if (active.compareAndSet(false, true)) {
+    import system.dispatcher
+    val activator = new Activator(this)
+    for {
+      connections <- activator.getReplicationConnections
+    } yield {
+      activator.activateReplicationConnections(connections)
+    }
+  } else Future.failed(new IllegalStateException("Recovery running or endpoint already activated"))
 
   /**
    * Runs an asynchronous disaster recovery procedure. This procedure recovers this endpoint in case of total or
@@ -373,9 +381,59 @@ class ReplicationEndpoint(
    * of [[RecoveryException]] is set to `false`.
    */
   def recover(): Future[Unit] = if (active.compareAndSet(false, true)) {
-    implicit val timeout = Timeout(settings.recoverTimeout)
-    (controller ? EndpointRecover).asInstanceOf[Future[Unit]]
+    import system.dispatcher
+
+    def recoveryFailure[U](partialUpdate: Boolean): PartialFunction[Throwable, Future[U]] = {
+      case t =>
+        Future.failed(new RecoveryException(t, partialUpdate))
+    }
+
+    // Disaster recovery is executed in 3 steps:
+    // 1. synchronize metadata to
+    //    - reset replication progress of remote sites and
+    //    - determine after disaster progress of remote sites
+    // 2. Recover events from unfiltered links
+    // 3. Recover events from filtered links
+    // 4. Adjust the sequence numbers of local logs to their version vectors
+    // unfiltered links are recovered first to ensure that no events are recovered from a filtered connection
+    // where the causal predecessor is not yet recovered (from an unfiltered connection)
+    // as causal predecessors cannot be written after their successors to the event log.
+    // The sequence number of an event log needs to be adjusted if not all events could be
+    // recovered as otherwise it could be less then the corresponding entriy in the
+    // log's version vector
+    val recovery = new Recovery(this)
+    for {
+      connections <- recovery.getReplicationConnections.recoverWith(recoveryFailure(partialUpdate = false))
+      endpointInfo <- recovery.readEndpointInfo.recoverWith(recoveryFailure(partialUpdate = false))
+      _ = logRecoverySequenceNrs(connections, endpointInfo)
+      recoveryLinks <- recovery.adjustReplicationProgresses(connections, endpointInfo).recoverWith(recoveryFailure(partialUpdate = false))
+      unfilteredLinks = recoveryLinks.filterNot(recovery.isFilteredLink)
+      _ = logRecoveryLinks(unfilteredLinks, "unfiltered")
+      _ <- recovery.recoverLinks(unfilteredLinks).recoverWith(recoveryFailure(partialUpdate = true))
+      filteredLinks = recoveryLinks.filter(recovery.isFilteredLink)
+      _ = logRecoveryLinks(filteredLinks, "filtered")
+      _ <- recovery.recoverLinks(filteredLinks).recoverWith(recoveryFailure(partialUpdate = true))
+      _ <- recovery.adjustEventLogClocks.recoverWith(recoveryFailure(partialUpdate = true))
+    } yield recovery.recoverCompleted()
   } else Future.failed(new IllegalStateException("Recovery running or endpoint already activated"))
+
+  private def logRecoverySequenceNrs(connections: Set[ReplicationConnection], info: ReplicationEndpointInfo): Unit = {
+    system.log.info(
+      "Disaster recovery initiated for endpoint {}. Sequence numbers of local logs are: {}",
+      info.endpointId, sequenceNrsLogString(info))
+    system.log.info(
+      "Need to reset replication progress stored at remote replicas {}",
+      connections.map(replicationAcceptor).mkString(","))
+  }
+
+  private def logRecoveryLinks(links: Set[RecoveryLink], linkType: String): Unit = {
+    system.log.info(
+      "Start recovery for {} links: (from remote source log (target seq no) -> local target log (initial seq no))\n{}",
+      linkType, links.map(l => s"(${l.replicationLink.source.logId} (${l.remoteSequenceNr}) -> ${l.replicationLink.target.logName} (${l.localSequenceNr}))").mkString(", "))
+  }
+
+  private def sequenceNrsLogString(info: ReplicationEndpointInfo): String =
+    info.logSequenceNrs.map { case (logName, sequenceNr) => s"$logName:$sequenceNr" } mkString ","
 
   /**
    * Delete events from a local log identified by `logName` with a sequence number less than or equal to
@@ -414,24 +472,54 @@ class ReplicationEndpoint(
   }
 
   /**
-   * Activates this endpoint by starting event replication from remote endpoints to this endpoint.
-   */
-  def activate(): Future[Unit] = if (active.compareAndSet(false, true)) {
-    implicit val timeout = Timeout(settings.activeTimeout)
-    (controller ? EndpointActivate).asInstanceOf[Future[Unit]]
-  } else Future.failed(new IllegalStateException("Recovery running or endpoint already activated"))
-
-  /**
    * Creates [[ReplicationTarget]] for given `logName`.
    */
-  private[eventuate] def target(logName: String): ReplicationTarget =
+  private[eventuate] def target(logName: String): ReplicationTarget = {
     ReplicationTarget(this, logName, logId(logName), logs(logName))
+  }
+
+  private[eventuate] def source(
+    logName: String,
+    connection: ReplicationConnection,
+    endpointInfo: ReplicationEndpointInfo): ReplicationSource = {
+    ReplicationSource(
+      endpointInfo.endpointId, logName, endpointInfo.logId(logName), replicationAcceptor(connection)
+    )
+  }
+
+  private[eventuate] def filter(
+    logName: String,
+    connection: ReplicationConnection): ReplicationFilter = {
+    connection.filters.get(logName) match {
+      case Some(f) => f
+      case None    => NoFilter
+    }
+  }
+
+  private[eventuate] def replicationLinks(
+    connection: ReplicationConnection,
+    endpointInfo: ReplicationEndpointInfo): Set[ReplicationLink] = {
+    replicationLogNames(endpointInfo).map { logName =>
+      ReplicationLink(source(logName, connection, endpointInfo), target(logName), filter(logName, connection))
+    }
+  }
 
   /**
    * Returns all log names this endpoint and `endpointInfo` have in common.
    */
-  private[eventuate] def commonLogNames(endpointInfo: ReplicationEndpointInfo) =
+  private[eventuate] def replicationLogNames(endpointInfo: ReplicationEndpointInfo) =
     this.logNames.intersect(endpointInfo.logNames)
+
+  private[eventuate] def replicationAcceptor(connection: ReplicationConnection): ActorSelection = {
+    import connection._
+    val actor = Acceptor.Name
+    val protocol = system match {
+      case sys: ExtendedActorSystem => sys.provider.getDefaultAddress.protocol
+      case sys                      => "akka.tcp"
+    }
+
+    system.actorSelection(s"""$protocol://$name@$host:$port/user/$actor""")
+  }
 }
 
 /**
@@ -517,72 +605,3 @@ object EndpointFilters {
   }
 }
 
-/**
- * References a remote event log at a source [[ReplicationEndpoint]].
- */
-private case class ReplicationSource(
-  endpointId: String,
-  logName: String,
-  logId: String,
-  acceptor: ActorSelection
-)
-
-/**
- * References a local event log at a target [[ReplicationEndpoint]].
- */
-private case class ReplicationTarget(
-  endpoint: ReplicationEndpoint,
-  logName: String,
-  logId: String,
-  log: ActorRef
-) {
-}
-
-/**
- * Represents an unidirectional replication link between a `source` and a `target`.
- */
-private case class ReplicationLink(
-  source: ReplicationSource,
-  target: ReplicationTarget
-)
-
-private object ReplicationConnector {
-  def apply(targetEndpoint: ReplicationEndpoint, connection: ReplicationConnection) =
-    new ReplicationConnector(targetEndpoint, connection)
-}
-
-private class ReplicationConnector(val targetEndpoint: ReplicationEndpoint, val connection: ReplicationConnection) {
-
-  private var connectorRef: Option[ActorRef] = None
-
-  def links(sourceInfo: ReplicationEndpointInfo): Set[ReplicationLink] =
-    targetEndpoint.commonLogNames(sourceInfo).map { logName =>
-      val sourceLogId = sourceInfo.logId(logName)
-      val source = ReplicationSource(sourceInfo.endpointId, logName, sourceLogId, remoteAcceptor)
-      ReplicationLink(source, targetEndpoint.target(logName))
-    }
-
-  def activate(replicationLinks: Option[Set[ReplicationLink]]): Unit =
-    connectorRef = Some(
-      targetEndpoint.system.actorOf(Props(new Connector(this, replicationLinks.map(_.filter(fromThisSource)))))
-    )
-
-  def deactivate(): Unit = connectorRef.foreach(_ ! PoisonPill)
-
-  private def fromThisSource(replicationLink: ReplicationLink): Boolean =
-    replicationLink.source.acceptor == remoteAcceptor
-
-  def remoteAcceptor: ActorSelection =
-    remoteActorSelection(Acceptor.Name)
-
-  def remoteActorSelection(actor: String): ActorSelection = {
-    import connection._
-
-    val protocol = targetEndpoint.system match {
-      case sys: ExtendedActorSystem => sys.provider.getDefaultAddress.protocol
-      case sys                      => "akka.tcp"
-    }
-
-    targetEndpoint.system.actorSelection(s"${protocol}://${name}@${host}:${port}/user/${actor}")
-  }
-}
