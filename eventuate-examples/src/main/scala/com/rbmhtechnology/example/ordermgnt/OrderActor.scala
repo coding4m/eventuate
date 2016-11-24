@@ -17,7 +17,8 @@
 package com.rbmhtechnology.example.ordermgnt
 
 import akka.actor._
-
+import akka.contrib.pattern.ReceivePipeline
+import com.rbmhtechnology.eventuate.EventsourcingProtocol.Snapshotting
 import com.rbmhtechnology.eventuate._
 import com.rbmhtechnology.eventuate.VersionedAggregate._
 
@@ -74,10 +75,10 @@ object OrderActor {
 /**
  * An event-sourced actor that manages a single order aggregate, identified by `orderId`.
  */
-class OrderActor(orderId: String, replicaId: String, val eventLog: ActorRef) extends EventsourcedActor {
+class OrderActor(orderId: String, replicaId: String, val eventLog: ActorRef) extends EventsourcedActor with ReceivePipeline with SnapshotOnEvent {
   import OrderActor._
 
-  override val id = s"s-${orderId}-${replicaId}"
+  override val id = s"s-$orderId-$replicaId"
   override val aggregateId = Some(orderId)
 
   private var order = VersionedAggregate(orderId, commandValidation, eventProjection)
@@ -95,7 +96,7 @@ class OrderActor(orderId: String, replicaId: String, val eventLog: ActorRef) ext
         case None            => GetStateSuccess(Map.empty)
       }
       sender() ! reply
-    case c: SaveSnapshot => order.aggregate match {
+    case Snapshotting => order.aggregate match {
       case None =>
         sender() ! SaveSnapshotFailure(orderId, new AggregateDoesNotExistException(orderId))
       case Some(aggregate) =>

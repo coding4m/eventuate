@@ -19,10 +19,10 @@ package com.rbmhtechnology.eventuate
 import java.util.concurrent.TimeUnit
 
 import akka.actor._
-import akka.cluster.ClusterEvent.{MemberUp, UnreachableMember}
-import akka.cluster.{Cluster, Member}
+import akka.cluster.ClusterEvent.{ MemberUp, UnreachableMember }
+import akka.cluster.{ Cluster, Member }
 import akka.event.Logging
-import akka.pattern.{ask, pipe}
+import akka.pattern.{ ask, pipe }
 import akka.util.Timeout
 import com.rbmhtechnology.eventuate.EventsourcingProtocol._
 import com.rbmhtechnology.eventuate.ReplicationFilter.NoFilter
@@ -676,8 +676,6 @@ private class ReplicatorInitializer(
   override def postStop(): Unit =
     acceptorRequestSchedule.foreach(_.cancel())
 }
-
-
 
 private object FailureDetector {
   case object AvailabilityDetected

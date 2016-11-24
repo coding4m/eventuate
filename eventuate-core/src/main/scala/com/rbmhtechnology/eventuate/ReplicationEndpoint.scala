@@ -18,14 +18,14 @@ package com.rbmhtechnology.eventuate
 
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicBoolean
-import java.util.function.{Function => JFunction}
-import java.util.{Set => JSet}
+import java.util.function.{ Function => JFunction }
+import java.util.{ Set => JSet }
 
 import akka.actor._
 import akka.pattern.ask
 import akka.util.Timeout
 import com.rbmhtechnology.eventuate.EndpointFilters.NoFilters
-import com.rbmhtechnology.eventuate.EventsourcingProtocol.{Delete, DeleteFailure, DeleteSuccess}
+import com.rbmhtechnology.eventuate.EventsourcingProtocol.{ Delete, DeleteFailure, DeleteSuccess }
 import com.rbmhtechnology.eventuate.ReplicationFilter.NoFilter
 import com.rbmhtechnology.eventuate.ReplicationProtocol.ReplicationEndpointInfo
 import com.typesafe.config.Config
@@ -305,15 +305,16 @@ object ReplicationEndpoint {
  * @param endpointFilters Replication filters applied to incoming replication read requests
  * @param applicationName Name of the application that creates this replication endpoint.
  * @param applicationVersion Version of the application that creates this replication endpoint.
-  */
-class ReplicationEndpoint(val id: String,
-                           val logNames: Set[String],
-                           val logFactory: String => Props,
-                           val connections: Set[ReplicationConnection],
-                           val connectionRoles: Set[String] = Set.empty,
-                           val endpointFilters: EndpointFilters = NoFilters,
-                           val applicationName: String = ReplicationEndpoint.DefaultApplicationName,
-                           val applicationVersion: ApplicationVersion = ReplicationEndpoint.DefaultApplicationVersion)(implicit val system: ActorSystem) {
+ */
+class ReplicationEndpoint(
+  val id: String,
+  val logNames: Set[String],
+  val logFactory: String => Props,
+  val connections: Set[ReplicationConnection],
+  val connectionRoles: Set[String] = Set.empty,
+  val endpointFilters: EndpointFilters = NoFilters,
+  val applicationName: String = ReplicationEndpoint.DefaultApplicationName,
+  val applicationVersion: ApplicationVersion = ReplicationEndpoint.DefaultApplicationVersion)(implicit val system: ActorSystem) {
 
   private val active: AtomicBoolean =
     new AtomicBoolean(false)
