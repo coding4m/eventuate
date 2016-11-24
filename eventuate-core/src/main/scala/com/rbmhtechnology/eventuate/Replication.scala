@@ -413,9 +413,6 @@ private class Controller(endpoint: ReplicationEndpoint) extends Actor with Actor
       )
 
       self ! DeactivateReplicationConnection(conn)
-
-    case Terminated(replicator) =>
-    //TODO
   }
 }
 
