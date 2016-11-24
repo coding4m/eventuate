@@ -55,9 +55,6 @@ class ReplicationSettings(config: Config) {
   val activeTimeout: FiniteDuration =
     config.getDuration("eventuate.log.replication.active-timeout", TimeUnit.MILLISECONDS).millis
 
-  val waitTimeout: FiniteDuration =
-    config.getDuration("eventuate.log.replication.wait-timeout", TimeUnit.MILLISECONDS).millis
-
   val recoverTimeout: FiniteDuration =
     config.getDuration("eventuate.log.replication.recover-timeout", TimeUnit.MILLISECONDS).millis
 
