@@ -84,13 +84,14 @@ private class Recovery(endpoint: ReplicationEndpoint) {
 
   import Acceptor._
   import Controller._
+
   import endpoint.system.dispatcher
   import settings._
 
   private implicit val timeout = Timeout(remoteOperationTimeout)
   private implicit val scheduler = endpoint.system.scheduler
 
-  def getReplicationConnections(implicit ec: ExecutionContext): Future[Set[ReplicationConnection]] = {
+  def awaitReplicationConnections(implicit ec: ExecutionContext): Future[Set[ReplicationConnection]] = {
     implicit val timeout = Timeout(endpoint.settings.recoverTimeout)
     (endpoint.controller ? GetReplicationConnections).asInstanceOf[Future[GetReplicationConnectionsSuccess]] map {
       _.connections
@@ -239,12 +240,12 @@ private class Recovery(endpoint: ReplicationEndpoint) {
  *  - `initializing` -> `recovering` -> `processing` (when calling `endpoint.recover()`)
  *  - `initializing` -> `processing`                 (when calling `endpoint.activate()`)
  */
-private class Acceptor(replicationEndpoint: ReplicationEndpoint) extends Actor {
+private class Acceptor(endpoint: ReplicationEndpoint) extends Actor {
 
   import Acceptor._
   import context.dispatcher
 
-  private val recovery = new Recovery(replicationEndpoint)
+  private val recovery = new Recovery(endpoint)
 
   def initializing: Receive = recovering orElse {
     case Process =>
@@ -253,7 +254,7 @@ private class Acceptor(replicationEndpoint: ReplicationEndpoint) extends Actor {
 
   def recovering: Receive = {
     case Recover(links, promise) =>
-      val recoveryManager = context.actorOf(Props(new RecoveryManager(replicationEndpoint.id, links)))
+      val recoveryManager = context.actorOf(Props(new RecoveryManager(endpoint.id, links)))
       context.become(recoveringEvents(recoveryManager, promise) orElse processing)
     case RecoverCompleted =>
       context.become(processing)
@@ -262,17 +263,17 @@ private class Acceptor(replicationEndpoint: ReplicationEndpoint) extends Actor {
   def recoveringEvents(recoveryManager: ActorRef, promise: Promise[Unit]): Receive = {
     case writeSuccess: ReplicationWriteSuccess =>
       recoveryManager forward writeSuccess
-    case EventRecoverCompleted =>
+    case RecoverEventCompleted =>
       promise.success(())
       context.become(recovering orElse processing)
   }
 
   def processing: Receive = {
-    case re: ReplicationReadEnvelope if re.incompatibleWith(replicationEndpoint.applicationName, replicationEndpoint.applicationVersion) =>
-      sender ! ReplicationReadFailure(IncompatibleApplicationVersionException(replicationEndpoint.id, replicationEndpoint.applicationVersion, re.targetApplicationVersion), re.payload.targetLogId)
+    case re: ReplicationReadEnvelope if re.incompatibleWith(endpoint.applicationName, endpoint.applicationVersion) =>
+      sender ! ReplicationReadFailure(IncompatibleApplicationVersionException(endpoint.id, endpoint.applicationVersion, re.targetApplicationVersion), re.payload.targetLogId)
     case ReplicationReadEnvelope(r, logName, _, _) =>
-      val r2 = r.copy(filter = replicationEndpoint.endpointFilters.filterFor(r.targetLogId, logName) and r.filter)
-      replicationEndpoint.logs(logName) forward r2
+      val r2 = r.copy(filter = endpoint.endpointFilters.filterFor(r.targetLogId, logName) and r.filter)
+      endpoint.logs(logName) forward r2
     case _: ReplicationWriteSuccess =>
   }
 
@@ -305,8 +306,8 @@ private object Acceptor {
   case class Recover(links: Set[RecoveryLink], promise: Promise[Unit])
   case object RecoverCompleted
   case class RecoverStepCompleted(link: RecoveryLink)
-  case object MetadataRecoverCompleted
-  case object EventRecoverCompleted
+  case object RecoverMetadataCompleted
+  case object RecoverEventCompleted
 
 }
 
@@ -329,7 +330,7 @@ private class RecoveryManager(endpointId: String, links: Set[RecoveryLink]) exte
       active.find(recoveryForLinkFinished(_, writeSuccess)).foreach { link =>
         val updatedActive = removeLink(active, link)
         if (updatedActive.isEmpty) {
-          context.parent ! EventRecoverCompleted
+          context.parent ! RecoverEventCompleted
           self ! PoisonPill
         } else
           context.become(recoveringEvents(updatedActive))
@@ -372,18 +373,16 @@ private class Controller(endpoint: ReplicationEndpoint) extends Actor with Actor
 
   import Controller._
 
-  val detector = context.actorOf(
-    NetworkDetector
-      .props(endpoint.connections, endpoint.connectionRoles)
-      .withDispatcher(endpoint.settings.controllerDispatcher),
-    NetworkDetector.Name
-  )
   var replicatorRegistry = ReplicatorRegistry()
+  val replicationDetector = context.actorOf(
+    ReplicationDetector.props(endpoint.connections, endpoint.connectionRoles).withDispatcher(endpoint.settings.controllerDispatcher),
+    ReplicationDetector.Name
+  )
 
   override def receive: Receive = {
 
     case GetReplicationConnections =>
-      detector forward GetReplicationConnections
+      replicationDetector forward GetReplicationConnections
 
     case ActivateReplication(link) =>
       log.warning("activate replication link with {}", link)
@@ -393,7 +392,7 @@ private class Controller(endpoint: ReplicationEndpoint) extends Actor with Actor
       }
 
       val replicator = context.actorOf(
-        Props(new Replicator(link.target, link.source, link.filter)).withDispatcher(endpoint.settings.controllerDispatcher)
+        Props(new Replicator(link.target, link.source)).withDispatcher(endpoint.settings.controllerDispatcher)
       )
       context.watch(replicator)
       replicatorRegistry = replicatorRegistry + (link, replicator)
@@ -419,7 +418,7 @@ private class Controller(endpoint: ReplicationEndpoint) extends Actor with Actor
 
     case ReplicationConnectionReachable(conn) =>
       log.warning(
-        "replication connection[{}@{}:{}] up, activate it.", conn.name, conn.host, conn.port
+        "replication connection[{}@{}:{}] reachable, activate it.", conn.name, conn.host, conn.port
       )
       self ! ReachableReplicationConnection(conn)
 
@@ -435,8 +434,8 @@ private class Controller(endpoint: ReplicationEndpoint) extends Actor with Actor
   }
 }
 
-private object NetworkDetector {
-  val Name = "network-detector"
+private object ReplicationDetector {
+  val Name = "replication-detector"
 
   def props(connections: Set[ReplicationConnection], connectionRoles: Set[String]): Props =
     if (connections.nonEmpty) {
@@ -547,7 +546,7 @@ private object NetworkDetector {
  * (which is an optimization) or at target (for correctness). Duplicate detection is based on tracked
  * event vector times.
  */
-private class Replicator(target: ReplicationTarget, source: ReplicationSource, filter: ReplicationFilter) extends Actor with ActorLogging {
+private class Replicator(target: ReplicationTarget, source: ReplicationSource) extends Actor with ActorLogging {
 
   import FailureDetector._
   import context.dispatcher
@@ -628,7 +627,7 @@ private class Replicator(target: ReplicationTarget, source: ReplicationSource, f
 
   private def read(storedReplicationProgress: Long, currentTargetVersionVector: VectorTime): Unit = {
     implicit val timeout = Timeout(settings.remoteReadTimeout)
-    val replicationRead = ReplicationRead(storedReplicationProgress + 1, settings.writeBatchSize, settings.remoteScanLimit, filter, target.logId, self, currentTargetVersionVector)
+    val replicationRead = ReplicationRead(storedReplicationProgress + 1, settings.writeBatchSize, settings.remoteScanLimit, NoFilter, target.logId, self, currentTargetVersionVector)
 
     (source.acceptor ? ReplicationReadEnvelope(replicationRead, source.logName, target.endpoint.applicationName, target.endpoint.applicationVersion)) recover {
       case t => ReplicationReadFailure(ReplicationReadTimeoutException(settings.remoteReadTimeout), target.logId)
@@ -753,7 +752,7 @@ private class Replication(endpoint: ReplicationEndpoint) {
   import Acceptor._
   import Controller._
 
-  def getReplicationConnections(implicit ec: ExecutionContext): Future[Set[ReplicationConnection]] = {
+  def awaitReplicationConnections(implicit ec: ExecutionContext): Future[Set[ReplicationConnection]] = {
     implicit val timeout = Timeout(endpoint.settings.activeTimeout)
     (endpoint.controller ? GetReplicationConnections).asInstanceOf[Future[GetReplicationConnectionsSuccess]] map {
       _.connections
@@ -792,7 +791,7 @@ private case class ReplicationTarget(
 /**
  * Represents an unidirectional replication link between a `source` and a `target`.
  */
-private case class ReplicationLink(source: ReplicationSource, target: ReplicationTarget, filter: ReplicationFilter) {
+private case class ReplicationLink(source: ReplicationSource, target: ReplicationTarget) {
 
   override def equals(other: scala.Any): Boolean = other match {
     case that: ReplicationLink =>
