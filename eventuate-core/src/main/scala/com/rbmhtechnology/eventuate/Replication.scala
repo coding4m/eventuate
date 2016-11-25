@@ -19,7 +19,7 @@ package com.rbmhtechnology.eventuate
 import java.util.concurrent.TimeUnit
 
 import akka.actor._
-import akka.cluster.ClusterEvent.{ InitialStateAsEvents, MemberUp, UnreachableMember }
+import akka.cluster.ClusterEvent.{ InitialStateAsEvents, MemberUp, ReachableMember, UnreachableMember }
 import akka.cluster.{ Cluster, Member }
 import akka.event.Logging
 import akka.pattern.{ ask, pipe }
@@ -299,7 +299,7 @@ private object Acceptor {
   val Name = "replication-acceptor"
 
   def props(endpoint: ReplicationEndpoint): Props =
-    Props(classOf[Acceptor], endpoint)
+    Props(classOf[Acceptor], endpoint).withDispatcher(endpoint.settings.acceptorDispatcher)
 
   case object Process
   case class Recover(links: Set[RecoveryLink], promise: Promise[Unit])
@@ -355,7 +355,7 @@ private object Controller {
   val Name = "replication-controller"
 
   def props(endpoint: ReplicationEndpoint) =
-    Props(classOf[Controller], endpoint)
+    Props(classOf[Controller], endpoint).withDispatcher(endpoint.settings.controllerDispatcher)
 
   case object GetReplicationConnections
   case class GetReplicationConnectionsSuccess(connections: Set[ReplicationConnection])
@@ -465,7 +465,7 @@ private object NetworkDetector {
 
     @scala.throws[Exception](classOf[Exception])
     override def preStart(): Unit = {
-      cluster.subscribe(self, initialStateMode = InitialStateAsEvents, classOf[MemberUp], classOf[UnreachableMember])
+      cluster.subscribe(self, initialStateMode = InitialStateAsEvents, classOf[MemberUp], classOf[ReachableMember], classOf[UnreachableMember])
       cluster.registerOnMemberUp(self ! ClusterInitiated)
       context become initiating
     }
@@ -479,18 +479,15 @@ private object NetworkDetector {
             connectionRegistry = connectionRegistry + conn
           }
         }
-      case UnreachableMember(member) =>
-        if (avaliableMember(member)) {
-          avaliableConnection(member).foreach { conn =>
-            connectionRegistry = connectionRegistry - conn
-          }
-        }
+
       case ClusterInitiated =>
         context become initiated
         unstashAll()
         log.warning("cluster size reached, network initiated.")
-      case _ =>
+
+      case GetReplicationConnections =>
         stash()
+      case _ =>
     }
 
     private def initiated: Receive = {
@@ -503,6 +500,15 @@ private object NetworkDetector {
             context.parent ! ReplicationConnectionUp(conn)
           }
         }
+
+      case ReachableMember(member) =>
+        if (avaliableMember(member)) {
+          avaliableConnection(member).foreach { conn =>
+            connectionRegistry = connectionRegistry + conn
+            context.parent ! ReplicationConnectionUp(conn)
+          }
+        }
+
       case UnreachableMember(member) =>
         if (avaliableMember(member)) {
           avaliableConnection(member).foreach { conn =>

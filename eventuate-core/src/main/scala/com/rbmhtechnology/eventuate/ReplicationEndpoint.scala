@@ -341,11 +341,11 @@ class ReplicationEndpoint(
   // lazy to make sure concurrently running (created actors) do not access null-reference
   // https://github.com/RBMHTechnology/eventuate/issues/183
   private[eventuate] lazy val acceptor: ActorRef =
-    system.actorOf(Acceptor.props(this).withDispatcher(settings.acceptorDispatcher), name = Acceptor.Name)
+    system.actorOf(Acceptor.props(this), name = Acceptor.Name)
   acceptor // make sure acceptor is started
 
   private[eventuate] lazy val controller: ActorRef =
-    system.actorOf(Controller.props(this).withDispatcher(settings.controllerDispatcher), name = Controller.Name)
+    system.actorOf(Controller.props(this), name = Controller.Name)
   controller
 
   /**
