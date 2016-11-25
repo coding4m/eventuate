@@ -229,6 +229,47 @@ private class Recovery(endpoint: ReplicationEndpoint) {
 }
 
 /**
+ * If disaster recovery is initiated events are recovered until
+ * a [[ReplicationWriteSuccess]] sent as notification from the local [[Replicator]] is received indicating that all
+ * events, known to exist remotely at the beginning of recovery, are replicated.
+ *
+ * When all replication links have been processed this actor
+ * notifies [[Acceptor]] (= parent) that recovery completed and ends itself.
+ */
+private class RecoveryManager(endpointId: String, links: Set[RecoveryLink]) extends Actor with ActorLogging {
+
+  import Acceptor._
+
+  def receive = recoveringEvents(links)
+
+  private def recoveringEvents(active: Set[RecoveryLink]): Receive = {
+    case writeSuccess: ReplicationWriteSuccess if active.exists(link => writeSuccess.metadata.contains(link.replicationLink.source.logId)) =>
+      active.find(recoveryForLinkFinished(_, writeSuccess)).foreach { link =>
+        val updatedActive = removeLink(active, link)
+        if (updatedActive.isEmpty) {
+          context.parent ! RecoverEventCompleted
+          self ! PoisonPill
+        } else
+          context.become(recoveringEvents(updatedActive))
+      }
+  }
+
+  private def recoveryForLinkFinished(link: RecoveryLink, writeSuccess: ReplicationWriteSuccess): Boolean =
+    writeSuccess.metadata.get(link.replicationLink.source.logId) match {
+      case Some(md) => link.remoteSequenceNr <= md.replicationProgress
+      case None     => false
+    }
+
+  private def removeLink(active: Set[RecoveryLink], link: RecoveryLink): Set[RecoveryLink] = {
+    val updatedActive = active - link
+    val finished = links.size - updatedActive.size
+    val all = links.size
+    log.info("[recovery of {}] Event recovery finished for remote log {} ({} of {})", endpointId, link.replicationLink.source.logId, finished, all)
+    updatedActive
+  }
+}
+
+/**
  * [[ReplicationEndpoint]]-scoped singleton that receives all requests from remote endpoints. These are
  *
  *  - [[GetReplicationEndpointInfo]] requests.
@@ -309,47 +350,6 @@ private object Acceptor {
   case object RecoverMetadataCompleted
   case object RecoverEventCompleted
 
-}
-
-/**
- * If disaster recovery is initiated events are recovered until
- * a [[ReplicationWriteSuccess]] sent as notification from the local [[Replicator]] is received indicating that all
- * events, known to exist remotely at the beginning of recovery, are replicated.
- *
- * When all replication links have been processed this actor
- * notifies [[Acceptor]] (= parent) that recovery completed and ends itself.
- */
-private class RecoveryManager(endpointId: String, links: Set[RecoveryLink]) extends Actor with ActorLogging {
-
-  import Acceptor._
-
-  def receive = recoveringEvents(links)
-
-  private def recoveringEvents(active: Set[RecoveryLink]): Receive = {
-    case writeSuccess: ReplicationWriteSuccess if active.exists(link => writeSuccess.metadata.contains(link.replicationLink.source.logId)) =>
-      active.find(recoveryForLinkFinished(_, writeSuccess)).foreach { link =>
-        val updatedActive = removeLink(active, link)
-        if (updatedActive.isEmpty) {
-          context.parent ! RecoverEventCompleted
-          self ! PoisonPill
-        } else
-          context.become(recoveringEvents(updatedActive))
-      }
-  }
-
-  private def recoveryForLinkFinished(link: RecoveryLink, writeSuccess: ReplicationWriteSuccess): Boolean =
-    writeSuccess.metadata.get(link.replicationLink.source.logId) match {
-      case Some(md) => link.remoteSequenceNr <= md.replicationProgress
-      case None     => false
-    }
-
-  private def removeLink(active: Set[RecoveryLink], link: RecoveryLink): Set[RecoveryLink] = {
-    val updatedActive = active - link
-    val finished = links.size - updatedActive.size
-    val all = links.size
-    log.info("[recovery of {}] Event recovery finished for remote log {} ({} of {})", endpointId, link.replicationLink.source.logId, finished, all)
-    updatedActive
-  }
 }
 
 private object Controller {
@@ -702,52 +702,6 @@ private class ReplicatorInitializer(
     acceptorRequestSchedule.foreach(_.cancel())
 }
 
-private object FailureDetector {
-  case object AvailabilityDetected
-  case class FailureDetected(cause: Throwable)
-  case class FailureDetectionLimitReached(counter: Int)
-}
-
-private class FailureDetector(sourceEndpointId: String, logName: String, failureDetectionLimit: FiniteDuration) extends Actor with ActorLogging {
-
-  import FailureDetector._
-  import ReplicationEndpoint._
-  import context.dispatcher
-
-  private var counter: Int = 0
-  private var causes: Vector[Throwable] = Vector.empty
-  private var schedule: Cancellable = scheduleFailureDetectionLimitReached()
-
-  private val failureDetectionLimitNanos = failureDetectionLimit.toNanos
-  private var lastReportedAvailability: Long = 0L
-
-  def receive = {
-    case AvailabilityDetected =>
-      val currentTime = System.nanoTime()
-      val lastInterval = currentTime - lastReportedAvailability
-      if (lastInterval >= failureDetectionLimitNanos) {
-        context.system.eventStream.publish(Available(sourceEndpointId, logName))
-        lastReportedAvailability = currentTime
-      }
-      schedule.cancel()
-      schedule = scheduleFailureDetectionLimitReached()
-      causes = Vector.empty
-    case FailureDetected(cause) =>
-      causes = causes :+ cause
-    case FailureDetectionLimitReached(scheduledCount) if scheduledCount == counter =>
-      log.error(causes.lastOption.getOrElse(Logging.Error.NoCause), "replication failure detection limit reached ({})," +
-        " publishing Unavailable for {}/{} (last exception being reported)", failureDetectionLimit, sourceEndpointId, logName)
-      context.system.eventStream.publish(Unavailable(sourceEndpointId, logName, causes))
-      schedule = scheduleFailureDetectionLimitReached()
-      causes = Vector.empty
-  }
-
-  private def scheduleFailureDetectionLimitReached(): Cancellable = {
-    counter += 1
-    context.system.scheduler.scheduleOnce(failureDetectionLimit, self, FailureDetectionLimitReached(counter))
-  }
-}
-
 private class Replication(endpoint: ReplicationEndpoint) {
   import Acceptor._
   import Controller._
@@ -804,5 +758,51 @@ private case class ReplicationLink(source: ReplicationSource, target: Replicatio
   override def hashCode(): Int = {
     val state = Seq(source, target)
     state.map(_.hashCode()).foldLeft(0)((a, b) => 31 * a + b)
+  }
+}
+
+private object FailureDetector {
+  case object AvailabilityDetected
+  case class FailureDetected(cause: Throwable)
+  case class FailureDetectionLimitReached(counter: Int)
+}
+
+private class FailureDetector(sourceEndpointId: String, logName: String, failureDetectionLimit: FiniteDuration) extends Actor with ActorLogging {
+
+  import FailureDetector._
+  import ReplicationEndpoint._
+  import context.dispatcher
+
+  private var counter: Int = 0
+  private var causes: Vector[Throwable] = Vector.empty
+  private var schedule: Cancellable = scheduleFailureDetectionLimitReached()
+
+  private val failureDetectionLimitNanos = failureDetectionLimit.toNanos
+  private var lastReportedAvailability: Long = 0L
+
+  def receive = {
+    case AvailabilityDetected =>
+      val currentTime = System.nanoTime()
+      val lastInterval = currentTime - lastReportedAvailability
+      if (lastInterval >= failureDetectionLimitNanos) {
+        context.system.eventStream.publish(Available(sourceEndpointId, logName))
+        lastReportedAvailability = currentTime
+      }
+      schedule.cancel()
+      schedule = scheduleFailureDetectionLimitReached()
+      causes = Vector.empty
+    case FailureDetected(cause) =>
+      causes = causes :+ cause
+    case FailureDetectionLimitReached(scheduledCount) if scheduledCount == counter =>
+      log.error(causes.lastOption.getOrElse(Logging.Error.NoCause), "replication failure detection limit reached ({})," +
+        " publishing Unavailable for {}/{} (last exception being reported)", failureDetectionLimit, sourceEndpointId, logName)
+      context.system.eventStream.publish(Unavailable(sourceEndpointId, logName, causes))
+      schedule = scheduleFailureDetectionLimitReached()
+      causes = Vector.empty
+  }
+
+  private def scheduleFailureDetectionLimitReached(): Cancellable = {
+    counter += 1
+    context.system.scheduler.scheduleOnce(failureDetectionLimit, self, FailureDetectionLimitReached(counter))
   }
 }
