@@ -113,10 +113,10 @@ class FilesystemSnapshotStore(settings: FilesystemSnapshotStoreSettings, logId: 
     new File(rootDir, URLEncoder.encode(emitterId, "UTF-8"))
 
   private[eventuate] def dstFile(dstDir: File, sequenceNr: Long): File =
-    new File(dstDir, s"snr-${sequenceNr}")
+    new File(dstDir, s"snr-$sequenceNr")
 
   private[eventuate] def tmpFile(dstDir: File, sequenceNr: Long): File =
-    new File(dstDir, s"tmp-${sequenceNr}")
+    new File(dstDir, s"tmp-$sequenceNr")
 
   private[eventuate] def decreasingSequenceNrs(dir: File): Seq[Long] =
     if (!dir.exists) Nil else dir.listFiles.map(_.getName).collect { case DstFilenamePattern(snr) => snr.toLong }.toList.sorted.reverse
