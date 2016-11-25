@@ -426,7 +426,6 @@ private class Controller(endpoint: ReplicationEndpoint) extends Actor with Actor
       log.warning(
         "replication connection[{}@{}:{}] unreachable, deactivate it.", conn.name, conn.host, conn.port
       )
-
       self ! UnreachableReplicationConnection(conn)
 
     case Terminated(actor) =>
