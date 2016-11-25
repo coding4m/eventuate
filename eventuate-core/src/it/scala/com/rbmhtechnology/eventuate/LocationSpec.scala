@@ -186,7 +186,7 @@ class Location(val id: String, logFactory: String => Props, customPort: Int, cus
     applicationVersion: ApplicationVersion = DefaultApplicationVersion,
     activate: Boolean = true): ReplicationEndpoint = {
 
-    val endpoint = new ReplicationEndpoint(id, logNames, logFactory, connections,Set.empty, endpointFilters, applicationName, applicationVersion)(system)
+    val endpoint = new ReplicationEndpoint(id, logNames, logFactory, connections, Set.empty, endpointFilters, applicationName, applicationVersion)(system)
     if (activate) endpoint.activate()
     endpoint
   }
