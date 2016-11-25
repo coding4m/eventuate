@@ -37,6 +37,7 @@ import scala.concurrent.duration._
 import scala.util.matching.Regex
 
 class ReplicationSettings(config: Config) {
+
   val writeBatchSize: Int =
     config.getInt("eventuate.log.write-batch-size")
 
@@ -63,6 +64,12 @@ class ReplicationSettings(config: Config) {
 
   val failureDetectionLimit: FiniteDuration =
     config.getDuration("eventuate.log.replication.failure-detection-limit", TimeUnit.MILLISECONDS).millis
+
+  val acceptorDispatcher: String =
+    "eventuate.log.replication.acceptor-dispatcher"
+
+  val controllerDispatcher: String =
+    "eventuate.log.replication.controller-dispatcher"
 
   require(failureDetectionLimit >= remoteReadTimeout + retryDelay, s"""
      |eventuate.log.replication.failure-detection-limit ($failureDetectionLimit) must be at least the sum of
@@ -334,11 +341,11 @@ class ReplicationEndpoint(
   // lazy to make sure concurrently running (created actors) do not access null-reference
   // https://github.com/RBMHTechnology/eventuate/issues/183
   private[eventuate] lazy val acceptor: ActorRef =
-    system.actorOf(Acceptor.props(this), name = Acceptor.Name)
+    system.actorOf(Acceptor.props(this).withDispatcher(settings.acceptorDispatcher), name = Acceptor.Name)
   acceptor // make sure acceptor is started
 
   private[eventuate] lazy val controller: ActorRef =
-    system.actorOf(Controller.props(this), name = Controller.Name)
+    system.actorOf(Controller.props(this).withDispatcher(settings.controllerDispatcher), name = Controller.Name)
   controller
 
   /**
@@ -352,11 +359,11 @@ class ReplicationEndpoint(
    */
   def activate(): Future[Unit] = if (active.compareAndSet(false, true)) {
     import system.dispatcher
-    val activator = new Activator(this)
+    val replication = new Replication(this)
     for {
-      connections <- activator.getReplicationConnections
+      connections <- replication.getReplicationConnections
     } yield {
-      activator.activateReplicationConnections(connections)
+      replication.activateReplicationConnections(connections)
     }
   } else Future.failed(new IllegalStateException("Recovery running or endpoint already activated"))
 
@@ -483,27 +490,18 @@ class ReplicationEndpoint(
     )
   }
 
-  private[eventuate] def filter(
-    logName: String,
-    connection: ReplicationConnection): ReplicationFilter = {
-    connection.filters.get(logName) match {
-      case Some(f) => f
-      case None    => NoFilter
-    }
-  }
-
   private[eventuate] def replicationLinks(
     connection: ReplicationConnection,
     endpointInfo: ReplicationEndpointInfo): Set[ReplicationLink] = {
-    replicationLogNames(endpointInfo).map { logName =>
-      ReplicationLink(source(logName, connection, endpointInfo), target(logName), filter(logName, connection))
+    replicationLogs(endpointInfo).map { logName =>
+      ReplicationLink(source(logName, connection, endpointInfo), target(logName), endpointFilters.filterFor(logId(logName), logName))
     }
   }
 
   /**
    * Returns all log names this endpoint and `endpointInfo` have in common.
    */
-  private[eventuate] def replicationLogNames(endpointInfo: ReplicationEndpointInfo) =
+  private[eventuate] def replicationLogs(endpointInfo: ReplicationEndpointInfo) =
     this.logNames.intersect(endpointInfo.logNames)
 
   private[eventuate] def replicationAcceptor(connection: ReplicationConnection): ActorSelection = {

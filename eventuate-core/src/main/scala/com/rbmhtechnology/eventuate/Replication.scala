@@ -19,7 +19,7 @@ package com.rbmhtechnology.eventuate
 import java.util.concurrent.TimeUnit
 
 import akka.actor._
-import akka.cluster.ClusterEvent.{ MemberUp, UnreachableMember }
+import akka.cluster.ClusterEvent.{ InitialStateAsEvents, MemberUp, UnreachableMember }
 import akka.cluster.{ Cluster, Member }
 import akka.event.Logging
 import akka.pattern.{ ask, pipe }
@@ -139,7 +139,7 @@ private class Recovery(endpoint: ReplicationEndpoint) {
    * Replication progress that is greater than the corresponding sequence number in ``info`` is reset to that
    */
   def synchronizeReplicationProgress(info: ReplicationEndpointInfo): Future[Unit] = {
-    Future.traverse(endpoint.replicationLogNames(info)) { name =>
+    Future.traverse(endpoint.replicationLogs(info)) { name =>
       val logActor = endpoint.logs(name)
       val logId = info.logId(name)
       val remoteSequenceNr = info.logSequenceNrs(name)
@@ -372,27 +372,43 @@ private class Controller(endpoint: ReplicationEndpoint) extends Actor with Actor
 
   import Controller._
 
+  val detector = context.actorOf(
+    NetworkDetector
+      .props(endpoint.connections, endpoint.connectionRoles)
+      .withDispatcher(endpoint.settings.controllerDispatcher),
+    NetworkDetector.Name
+  )
   var replicatorRegistry = ReplicatorRegistry()
-  val networkDetector = context.actorOf(NetworkDetector.props(endpoint.connections, endpoint.connectionRoles))
 
   override def receive: Receive = {
 
     case GetReplicationConnections =>
-      networkDetector forward GetReplicationConnections
+      detector forward GetReplicationConnections
 
     case ActivateReplication(link) =>
-      val replicator = context.actorOf(Props(new Replicator(link.target, link.source, link.filter)))
+      log.warning("activate replication link with {}", link)
+      replicatorRegistry(link).foreach { replicator =>
+        replicatorRegistry = replicatorRegistry - link
+        context stop replicator
+      }
+
+      val replicator = context.actorOf(
+        Props(new Replicator(link.target, link.source, link.filter)).withDispatcher(endpoint.settings.controllerDispatcher)
+      )
       context.watch(replicator)
       replicatorRegistry = replicatorRegistry + (link, replicator)
 
     case DeactivateReplication(link) =>
+      log.warning("deactivate replication link with {}", link)
       replicatorRegistry(link).foreach { replicator =>
         replicatorRegistry = replicatorRegistry - link
         context stop replicator
       }
 
     case ActivateReplicationConnection(connection) =>
-      context.actorOf(Props(new ReplicatorInitializer(endpoint, connection)))
+      context.actorOf(
+        Props(new ReplicatorInitializer(endpoint, connection)).withDispatcher(endpoint.settings.controllerDispatcher)
+      )
 
     case DeactivateReplicationConnection(connection) =>
       replicatorRegistry.relicators.keys filter { link =>
@@ -413,11 +429,14 @@ private class Controller(endpoint: ReplicationEndpoint) extends Actor with Actor
       )
 
       self ! DeactivateReplicationConnection(conn)
+
+    case Terminated(actor) =>
+      log.warning("replicator {} terminated.", actor)
   }
 }
 
 private object NetworkDetector {
-  val Name = "replication-network-detector"
+  val Name = "network-detector"
 
   def props(connections: Set[ReplicationConnection], connectionRoles: Set[String]): Props =
     if (connections.nonEmpty) {
@@ -436,7 +455,8 @@ private object NetworkDetector {
     }
   }
 
-  private class ClusterDetector(roles: Set[String]) extends Actor with Stash {
+  private case object ClusterInitiated
+  private class ClusterDetector(roles: Set[String]) extends Actor with ActorLogging with Stash {
 
     import Controller._
 
@@ -445,12 +465,8 @@ private object NetworkDetector {
 
     @scala.throws[Exception](classOf[Exception])
     override def preStart(): Unit = {
-      cluster.subscribe(self, classOf[MemberUp], classOf[UnreachableMember])
-      cluster.registerOnMemberUp {
-        context become initiated
-        unstashAll()
-      }
-
+      cluster.subscribe(self, initialStateMode = InitialStateAsEvents, classOf[MemberUp], classOf[UnreachableMember])
+      cluster.registerOnMemberUp(self ! ClusterInitiated)
       context become initiating
     }
 
@@ -469,6 +485,10 @@ private object NetworkDetector {
             connectionRegistry = connectionRegistry - conn
           }
         }
+      case ClusterInitiated =>
+        context become initiated
+        unstashAll()
+        log.warning("cluster size reached, network initiated.")
       case _ =>
         stash()
     }
@@ -723,7 +743,7 @@ private class FailureDetector(sourceEndpointId: String, logName: String, failure
   }
 }
 
-private class Activator(endpoint: ReplicationEndpoint) {
+private class Replication(endpoint: ReplicationEndpoint) {
   import Acceptor._
   import Controller._
 
