@@ -355,7 +355,7 @@ private object Acceptor {
 private object Controller {
   val Name = "replication-controller"
 
-  def props(endpoint: ReplicationEndpoint) =
+  def props(endpoint: ReplicationEndpoint): Props =
     Props(classOf[Controller], endpoint).withDispatcher(endpoint.settings.controllerDispatcher)
 
   case object GetReplicationConnections
@@ -373,8 +373,8 @@ private class Controller(endpoint: ReplicationEndpoint) extends Actor with Actor
 
   import Controller._
 
-  var replicatorRegistry = ReplicatorRegistry()
-  val replicationDetector = context.actorOf(
+  private var replicatorRegistry = ReplicatorRegistry()
+  private val replicationDetector = context.actorOf(
     ReplicationDetector.props(endpoint.connections, endpoint.connectionRoles).withDispatcher(endpoint.settings.controllerDispatcher),
     ReplicationDetector.Name
   )
@@ -552,10 +552,10 @@ private class Replicator(target: ReplicationTarget, source: ReplicationSource) e
   import context.dispatcher
   import target.endpoint.settings
 
-  val scheduler = context.system.scheduler
-  val detector = context.actorOf(Props(new FailureDetector(source.endpointId, source.logName, settings.failureDetectionLimit)))
+  private val scheduler = context.system.scheduler
+  private val detector = context.actorOf(Props(new FailureDetector(source.endpointId, source.logName, settings.failureDetectionLimit)))
 
-  var readSchedule: Option[Cancellable] = None
+  private var readSchedule: Option[Cancellable] = None
 
   val fetching: Receive = {
     case GetReplicationProgressSuccess(_, storedReplicationProgress, currentTargetVersionVector) =>
