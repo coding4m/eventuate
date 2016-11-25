@@ -359,10 +359,10 @@ private object Controller {
 
   case object GetReplicationConnections
   case class GetReplicationConnectionsSuccess(connections: Set[ReplicationConnection])
-  case class ReplicationConnectionUp(conn: ReplicationConnection)
+  case class ReplicationConnectionReachable(conn: ReplicationConnection)
   case class ReplicationConnectionUnreachable(conn: ReplicationConnection)
-  case class ActivateReplicationConnection(connection: ReplicationConnection)
-  case class DeactivateReplicationConnection(connection: ReplicationConnection)
+  case class ReachableReplicationConnection(connection: ReplicationConnection)
+  case class UnreachableReplicationConnection(connection: ReplicationConnection)
 
   case class ActivateReplication(link: ReplicationLink)
   case class DeactivateReplication(link: ReplicationLink)
@@ -405,33 +405,33 @@ private class Controller(endpoint: ReplicationEndpoint) extends Actor with Actor
         context stop replicator
       }
 
-    case ActivateReplicationConnection(connection) =>
+    case ReachableReplicationConnection(connection) =>
       context.actorOf(
         Props(new ReplicatorInitializer(endpoint, connection)).withDispatcher(endpoint.settings.controllerDispatcher)
       )
 
-    case DeactivateReplicationConnection(connection) =>
+    case UnreachableReplicationConnection(connection) =>
       replicatorRegistry.relicators.keys filter { link =>
         endpoint.replicationAcceptor(connection) == link.source.acceptor
       } foreach { link =>
         self ! DeactivateReplication(link)
       }
 
-    case ReplicationConnectionUp(conn) =>
+    case ReplicationConnectionReachable(conn) =>
       log.warning(
         "replication connection[{}@{}:{}] up, activate it.", conn.name, conn.host, conn.port
       )
-      self ! ActivateReplicationConnection(conn)
+      self ! ReachableReplicationConnection(conn)
 
     case ReplicationConnectionUnreachable(conn) =>
       log.warning(
         "replication connection[{}@{}:{}] unreachable, deactivate it.", conn.name, conn.host, conn.port
       )
 
-      self ! DeactivateReplicationConnection(conn)
+      self ! UnreachableReplicationConnection(conn)
 
     case Terminated(actor) =>
-      log.warning("replicator {} terminated.", actor)
+      log.warning("replicator[path={}] terminated.", actor.path)
   }
 }
 
@@ -497,7 +497,7 @@ private object NetworkDetector {
         if (avaliableMember(member)) {
           avaliableConnection(member).foreach { conn =>
             connectionRegistry = connectionRegistry + conn
-            context.parent ! ReplicationConnectionUp(conn)
+            context.parent ! ReplicationConnectionReachable(conn)
           }
         }
 
@@ -505,7 +505,7 @@ private object NetworkDetector {
         if (avaliableMember(member)) {
           avaliableConnection(member).foreach { conn =>
             connectionRegistry = connectionRegistry + conn
-            context.parent ! ReplicationConnectionUp(conn)
+            context.parent ! ReplicationConnectionReachable(conn)
           }
         }
 
@@ -763,7 +763,7 @@ private class Replication(endpoint: ReplicationEndpoint) {
   def activateReplicationConnections(connections: Set[ReplicationConnection]): Unit = {
     endpoint.acceptor ! Process
     for (conn <- connections) {
-      endpoint.controller ! ActivateReplicationConnection(conn)
+      endpoint.controller ! ReachableReplicationConnection(conn)
     }
   }
 }
