@@ -605,7 +605,7 @@ private class Replicator(target: ReplicationTarget, source: ReplicationSource) e
 
   override def unhandled(message: Any): Unit = message match {
     case ReplicationDue => // currently replicating, ignore
-    case other          => super.unhandled(message)
+    case other          => super.unhandled(other)
   }
 
   private def notifyLocalAcceptor(writeSuccess: ReplicationWriteSuccess): Unit =
