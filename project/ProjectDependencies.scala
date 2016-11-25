@@ -35,6 +35,7 @@ object ProjectDependencies {
   val Protobuf =             "com.google.protobuf"        % "protobuf-java"             % ProtobufVersion
   val JunitInterface =       "com.novocode"               % "junit-interface"           % "0.11"
   val AkkaContrib =          "com.typesafe.akka"         %% "akka-contrib"              % AkkaVersion
+  val AkkaCluster =          "com.typesafe.akka"         %% "akka-cluster"              % AkkaVersion
   val AkkaRemote =           "com.typesafe.akka"         %% "akka-remote"               % AkkaVersion
   val AkkaStream =           "com.typesafe.akka"         %% "akka-stream"               % AkkaVersion
   val AkkaStreamTestkit =    "com.typesafe.akka"         %% "akka-stream-testkit"       % AkkaVersion
