@@ -19,8 +19,10 @@ package com.rbmhtechnology.eventuate
 import java.util.concurrent.TimeUnit
 
 import akka.actor._
-import akka.cluster.ClusterEvent.{ InitialStateAsEvents, MemberUp, ReachableMember, UnreachableMember }
+import akka.cluster.ClusterEvent._
 import akka.cluster.{ Cluster, Member }
+import akka.contrib.pattern.ReceivePipeline
+import akka.contrib.pattern.ReceivePipeline.{ HandledCompletely, Inner }
 import akka.event.Logging
 import akka.pattern.{ ask, pipe }
 import akka.util.Timeout
@@ -84,14 +86,13 @@ private class Recovery(endpoint: ReplicationEndpoint) {
 
   import Acceptor._
   import Controller._
-
   import endpoint.system.dispatcher
   import settings._
 
   private implicit val timeout = Timeout(remoteOperationTimeout)
   private implicit val scheduler = endpoint.system.scheduler
 
-  def awaitReplicationConnections(implicit ec: ExecutionContext): Future[Set[ReplicationConnection]] = {
+  def getReplicationConnections(implicit ec: ExecutionContext): Future[Set[ReplicationConnection]] = {
     implicit val timeout = Timeout(endpoint.settings.recoverTimeout)
     (endpoint.controller ? GetReplicationConnections).asInstanceOf[Future[GetReplicationConnectionsSuccess]] map {
       _.connections
@@ -360,8 +361,10 @@ private object Controller {
 
   case object GetReplicationConnections
   case class GetReplicationConnectionsSuccess(connections: Set[ReplicationConnection])
+  case class ReplicationConnectionUp(conn: ReplicationConnection)
   case class ReplicationConnectionReachable(conn: ReplicationConnection)
   case class ReplicationConnectionUnreachable(conn: ReplicationConnection)
+  case class ReplicationConnectionDown(conn: ReplicationConnection)
   case class ReachableReplicationConnection(connection: ReplicationConnection)
   case class UnreachableReplicationConnection(connection: ReplicationConnection)
 
@@ -369,7 +372,7 @@ private object Controller {
   case class DeactivateReplication(link: ReplicationLink)
 }
 
-private class Controller(endpoint: ReplicationEndpoint) extends Actor with ActorLogging {
+private class Controller(endpoint: ReplicationEndpoint) extends Actor with ActorLogging with ReceivePipeline {
 
   import Controller._
 
@@ -379,13 +382,46 @@ private class Controller(endpoint: ReplicationEndpoint) extends Actor with Actor
     ReplicationDetector.Name
   )
 
+  pipelineOuter {
+    case cmd @ ActivateReplication(link) =>
+      log.warning("activate replication link with {}", link)
+      Inner(cmd)
+    case cmd @ DeactivateReplication(link) =>
+      log.warning("deactivate replication link with {}", link)
+      Inner(cmd)
+    case event @ ReplicationConnectionUp(conn) =>
+      log.warning(
+        "replication connection[{}@{}:{}] up.", conn.name, conn.host, conn.port
+      )
+      Inner(event)
+    case event @ ReplicationConnectionDown(conn) =>
+      log.warning(
+        "replication connection[{}@{}:{}] down.", conn.name, conn.host, conn.port
+      )
+      Inner(event)
+    case event @ ReplicationConnectionReachable(conn) =>
+      log.warning(
+        "replication connection[{}@{}:{}] reachable.", conn.name, conn.host, conn.port
+      )
+      Inner(event)
+    case event @ ReplicationConnectionUnreachable(conn) =>
+      log.warning(
+        "replication connection[{}@{}:{}] unreachable.", conn.name, conn.host, conn.port
+      )
+      Inner(event)
+    case Terminated(actor) =>
+      log.warning("replicator[path={}] terminated.", actor.path)
+      HandledCompletely
+    case any =>
+      Inner(any)
+  }
+
   override def receive: Receive = {
 
     case GetReplicationConnections =>
       replicationDetector forward GetReplicationConnections
 
     case ActivateReplication(link) =>
-      log.warning("activate replication link with {}", link)
       replicatorRegistry(link).foreach { replicator =>
         replicatorRegistry = replicatorRegistry - link
         context stop replicator
@@ -398,7 +434,6 @@ private class Controller(endpoint: ReplicationEndpoint) extends Actor with Actor
       replicatorRegistry = replicatorRegistry + (link, replicator)
 
     case DeactivateReplication(link) =>
-      log.warning("deactivate replication link with {}", link)
       replicatorRegistry(link).foreach { replicator =>
         replicatorRegistry = replicatorRegistry - link
         context stop replicator
@@ -416,20 +451,19 @@ private class Controller(endpoint: ReplicationEndpoint) extends Actor with Actor
         self ! DeactivateReplication(link)
       }
 
+    case ReplicationConnectionUp(conn) =>
+      self ! ReachableReplicationConnection(conn)
+
     case ReplicationConnectionReachable(conn) =>
-      log.warning(
-        "replication connection[{}@{}:{}] reachable, activate it.", conn.name, conn.host, conn.port
-      )
       self ! ReachableReplicationConnection(conn)
 
     case ReplicationConnectionUnreachable(conn) =>
-      log.warning(
-        "replication connection[{}@{}:{}] unreachable, deactivate it.", conn.name, conn.host, conn.port
-      )
       self ! UnreachableReplicationConnection(conn)
 
-    case Terminated(actor) =>
-      log.warning("replicator[path={}] terminated.", actor.path)
+    case ReplicationConnectionDown(conn) =>
+      self ! UnreachableReplicationConnection(conn)
+
+    case _ =>
   }
 }
 
@@ -463,7 +497,11 @@ private object ReplicationDetector {
 
     @scala.throws[Exception](classOf[Exception])
     override def preStart(): Unit = {
-      cluster.subscribe(self, initialStateMode = InitialStateAsEvents, classOf[MemberUp], classOf[ReachableMember], classOf[UnreachableMember])
+      cluster.subscribe(
+        self,
+        initialStateMode = InitialStateAsEvents,
+        classOf[MemberUp], classOf[MemberRemoved], classOf[ReachableMember], classOf[UnreachableMember]
+      )
       cluster.registerOnMemberUp(self ! ClusterInitiated)
       context become initiating
     }
@@ -491,11 +529,12 @@ private object ReplicationDetector {
     private def initiated: Receive = {
       case GetReplicationConnections =>
         sender ! GetReplicationConnectionsSuccess(connectionRegistry.connections)
+
       case MemberUp(member) =>
         if (avaliableMember(member)) {
           avaliableConnection(member).foreach { conn =>
             connectionRegistry = connectionRegistry + conn
-            context.parent ! ReplicationConnectionReachable(conn)
+            context.parent ! ReplicationConnectionUp(conn)
           }
         }
 
@@ -512,6 +551,14 @@ private object ReplicationDetector {
           avaliableConnection(member).foreach { conn =>
             connectionRegistry = connectionRegistry - conn
             context.parent ! ReplicationConnectionUnreachable(conn)
+          }
+        }
+
+      case MemberRemoved(member, _) =>
+        if (avaliableMember(member)) {
+          avaliableConnection(member).foreach { conn =>
+            connectionRegistry = connectionRegistry - conn
+            context.parent ! ReplicationConnectionDown(conn)
           }
         }
       case _ =>
@@ -705,7 +752,7 @@ private class Replication(endpoint: ReplicationEndpoint) {
   import Acceptor._
   import Controller._
 
-  def awaitReplicationConnections(implicit ec: ExecutionContext): Future[Set[ReplicationConnection]] = {
+  def getReplicationConnections(implicit ec: ExecutionContext): Future[Set[ReplicationConnection]] = {
     implicit val timeout = Timeout(endpoint.settings.activeTimeout)
     (endpoint.controller ? GetReplicationConnections).asInstanceOf[Future[GetReplicationConnectionsSuccess]] map {
       _.connections
@@ -744,21 +791,7 @@ private case class ReplicationTarget(
 /**
  * Represents an unidirectional replication link between a `source` and a `target`.
  */
-private case class ReplicationLink(source: ReplicationSource, target: ReplicationTarget) {
-
-  override def equals(other: scala.Any): Boolean = other match {
-    case that: ReplicationLink =>
-      (that canEqual this) &&
-        source == that.source &&
-        target == that.target
-    case _ => false
-  }
-
-  override def hashCode(): Int = {
-    val state = Seq(source, target)
-    state.map(_.hashCode()).foldLeft(0)((a, b) => 31 * a + b)
-  }
-}
+private case class ReplicationLink(source: ReplicationSource, target: ReplicationTarget)
 
 private object FailureDetector {
   case object AvailabilityDetected

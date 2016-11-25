@@ -344,7 +344,7 @@ class ReplicationEndpoint(
     import system.dispatcher
     val replication = new Replication(this)
     for {
-      connections <- replication.awaitReplicationConnections
+      connections <- replication.getReplicationConnections
     } yield {
       replication.activateReplicationConnections(connections)
     }
@@ -389,7 +389,7 @@ class ReplicationEndpoint(
     // log's version vector
     val recovery = new Recovery(this)
     for {
-      connections <- recovery.awaitReplicationConnections.recoverWith(recoveryFailure(partialUpdate = false))
+      connections <- recovery.getReplicationConnections.recoverWith(recoveryFailure(partialUpdate = false))
       endpointInfo <- recovery.readEndpointInfo.recoverWith(recoveryFailure(partialUpdate = false))
       _ = logRecoverySequenceNrs(connections, endpointInfo)
       recoveryLinks <- recovery.adjustReplicationProgresses(connections, endpointInfo).recoverWith(recoveryFailure(partialUpdate = false))
