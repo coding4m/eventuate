@@ -785,8 +785,7 @@ private case class ReplicationTarget(
   logName: String,
   logId: String,
   log: ActorRef
-) {
-}
+)
 
 /**
  * Represents an unidirectional replication link between a `source` and a `target`.
