@@ -86,11 +86,9 @@ private class Recovery(endpoint: ReplicationEndpoint) {
 
   import Acceptor._
   import Controller._
-  import endpoint.system.dispatcher
   import settings._
 
   private implicit val timeout = Timeout(remoteOperationTimeout)
-  private implicit val scheduler = endpoint.system.scheduler
 
   def getReplicationConnections(implicit ec: ExecutionContext): Future[Set[ReplicationConnection]] = {
     implicit val timeout = Timeout(endpoint.settings.recoverTimeout)
@@ -102,16 +100,16 @@ private class Recovery(endpoint: ReplicationEndpoint) {
   /**
    * Read [[ReplicationEndpointInfo]] from local [[ReplicationEndpoint]]
    */
-  def readEndpointInfo: Future[ReplicationEndpointInfo] =
+  def readEndpointInfo(implicit ec: ExecutionContext): Future[ReplicationEndpointInfo] =
     readLogSequenceNrs.map(ReplicationEndpointInfo(endpoint.id, _))
 
-  private def readLogSequenceNrs: Future[Map[String, Long]] =
+  private def readLogSequenceNrs(implicit ec: ExecutionContext): Future[Map[String, Long]] =
     readEventLogClocks.map(_.mapValues(_.sequenceNr).view.force)
 
   /**
    * Reads the clocks from local event logs.
    */
-  def readEventLogClocks: Future[Map[String, EventLogClock]] =
+  def readEventLogClocks(implicit ec: ExecutionContext): Future[Map[String, EventLogClock]] =
     Future.traverse(endpoint.logNames)(name => readEventLogClock(endpoint.logs(name)).map(name -> _)).map(_.toMap)
 
   /**
@@ -119,7 +117,7 @@ private class Recovery(endpoint: ReplicationEndpoint) {
    *
    * @return a set of [[RecoveryLink]]s indicating the events that need to be recovered
    */
-  def adjustReplicationProgresses(connections: Set[ReplicationConnection], localInfo: ReplicationEndpointInfo): Future[Set[RecoveryLink]] =
+  def adjustReplicationProgresses(connections: Set[ReplicationConnection], localInfo: ReplicationEndpointInfo)(implicit ec: ExecutionContext, s: Scheduler): Future[Set[RecoveryLink]] =
     Future.traverse(connections) { connection =>
       adjustReplicationProgress(endpoint.replicationAcceptor(connection), localInfo).map { remoteInfo =>
         endpoint.replicationLinks(connection, remoteInfo).map(toRecoveryLink(_, localInfo, remoteInfo))
@@ -132,7 +130,7 @@ private class Recovery(endpoint: ReplicationEndpoint) {
     remoteInfo: ReplicationEndpointInfo): RecoveryLink =
     RecoveryLink(replicationLink, localInfo.logSequenceNrs(replicationLink.target.logName), remoteInfo.logSequenceNrs(replicationLink.target.logName))
 
-  private def adjustReplicationProgress(remoteAcceptor: ActorSelection, localInfo: ReplicationEndpointInfo): Future[ReplicationEndpointInfo] =
+  private def adjustReplicationProgress(remoteAcceptor: ActorSelection, localInfo: ReplicationEndpointInfo)(implicit ec: ExecutionContext, s: Scheduler): Future[ReplicationEndpointInfo] =
     readResult[SynchronizeReplicationProgressSuccess, SynchronizeReplicationProgressFailure, ReplicationEndpointInfo](
       Retry(remoteAcceptor.ask(SynchronizeReplicationProgress(localInfo)), remoteOperationRetryDelay, remoteOperationRetryMax), _.info, _.cause)
 
@@ -140,7 +138,7 @@ private class Recovery(endpoint: ReplicationEndpoint) {
    * Update the locally stored replication progress of remote replicas with the sequence numbers given in ``info``.
    * Replication progress that is greater than the corresponding sequence number in ``info`` is reset to that
    */
-  def synchronizeReplicationProgress(info: ReplicationEndpointInfo): Future[Unit] = {
+  def synchronizeReplicationProgress(info: ReplicationEndpointInfo)(implicit ec: ExecutionContext): Future[Unit] = {
     Future.traverse(endpoint.replicationLogs(info)) { name =>
       val logActor = endpoint.logs(name)
       val logId = info.logId(name)
@@ -153,7 +151,7 @@ private class Recovery(endpoint: ReplicationEndpoint) {
     } map (_ => ())
   }
 
-  private def readReplicationProgress(logActor: ActorRef, logId: String): Future[Long] =
+  private def readReplicationProgress(logActor: ActorRef, logId: String)(implicit ec: ExecutionContext): Future[Long] =
     readResult[GetReplicationProgressSuccess, GetReplicationProgressFailure, Long](
       logActor.ask(GetReplicationProgress(logId))(localReadTimeout), _.storedReplicationProgress, _.cause)
 
@@ -161,7 +159,7 @@ private class Recovery(endpoint: ReplicationEndpoint) {
    * Sets the replication progress for the remote replicate with id `logId` to `replicationProgress`
    * and clears the cached version vector.
    */
-  private def updateReplicationMetadata(logActor: ActorRef, logId: String, replicationProgress: Long): Future[Long] = {
+  private def updateReplicationMetadata(logActor: ActorRef, logId: String, replicationProgress: Long)(implicit ec: ExecutionContext): Future[Long] = {
     readResult[ReplicationWriteSuccess, ReplicationWriteFailure, Long](
       logActor.ask(ReplicationWrite(Seq.empty, Map(logId -> ReplicationMetadata(replicationProgress, VectorTime.Zero))))(localWriteTimeout), _ => replicationProgress, _.cause)
   }
@@ -200,13 +198,13 @@ private class Recovery(endpoint: ReplicationEndpoint) {
    * Deletes all invalid snapshots from local event logs. A snapshot is invalid if it covers
    * events that have been lost.
    */
-  private def deleteSnapshots(links: Set[RecoveryLink]): Future[Unit] =
+  private def deleteSnapshots(links: Set[RecoveryLink])(implicit ec: ExecutionContext): Future[Unit] =
     Future.sequence(links.map(deleteSnapshots)).map(_ => ())
 
-  def readEventLogClock(targetLog: ActorRef): Future[EventLogClock] =
+  def readEventLogClock(targetLog: ActorRef)(implicit ec: ExecutionContext): Future[EventLogClock] =
     targetLog.ask(GetEventLogClock)(localReadTimeout).mapTo[GetEventLogClockSuccess].map(_.clock)
 
-  private def deleteSnapshots(link: RecoveryLink): Future[Unit] =
+  private def deleteSnapshots(link: RecoveryLink)(implicit ec: ExecutionContext): Future[Unit] =
     readResult[DeleteSnapshotsSuccess.type, DeleteSnapshotsFailure, Unit](
       endpoint.logs(link.replicationLink.target.logName).ask(DeleteSnapshots(link.localSequenceNr + 1L))(Timeout(snapshotDeletionTimeout)), _ => (), _.cause)
 
@@ -215,15 +213,15 @@ private class Recovery(endpoint: ReplicationEndpoint) {
    * the local sequence no must be adjusted to the log's version vector to avoid events being
    * written in the causal past.
    */
-  def adjustEventLogClocks: Future[Unit] =
+  def adjustEventLogClocks(implicit ec: ExecutionContext): Future[Unit] =
     Future.traverse(endpoint.logs.values)(adjustEventLogClock).map(_ => ())
 
-  private def adjustEventLogClock(log: ActorRef): Future[Unit] = {
+  private def adjustEventLogClock(log: ActorRef)(implicit ec: ExecutionContext): Future[Unit] = {
     readResult[AdjustEventLogClockSuccess, AdjustEventLogClockFailure, Unit](
       log ? AdjustEventLogClock, _ => (), _.cause)
   }
 
-  private def readResult[S: ClassTag, F: ClassTag, R](f: Future[Any], result: S => R, cause: F => Throwable): Future[R] = f.flatMap {
+  private def readResult[S: ClassTag, F: ClassTag, R](f: Future[Any], result: S => R, cause: F => Throwable)(implicit ec: ExecutionContext): Future[R] = f.flatMap {
     case success: S => Future.successful(result(success))
     case failure: F => Future.failed(cause(failure))
   }
@@ -350,7 +348,6 @@ private object Acceptor {
   case class RecoverStepCompleted(link: RecoveryLink)
   case object RecoverMetadataCompleted
   case object RecoverEventCompleted
-
 }
 
 private object Controller {

@@ -368,6 +368,7 @@ class ReplicationEndpoint(
    */
   def recover(): Future[Unit] = if (active.compareAndSet(false, true)) {
     import system.dispatcher
+    implicit val scheduler = system.scheduler
 
     def recoveryFailure[U](partialUpdate: Boolean): PartialFunction[Throwable, Future[U]] = {
       case t =>
