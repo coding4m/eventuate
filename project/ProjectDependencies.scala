@@ -31,7 +31,7 @@ object ProjectDependencies {
 
   val CassandraDriver =      "com.datastax.cassandra"     % "cassandra-driver-core"     % "3.0.2"
   val CassandraConnector =   "com.datastax.spark"        %% "spark-cassandra-connector" % "1.6.0-M2"
-  val Javaslang =            "com.javaslang"              % "javaslang"                 % "2.0.0-RC3"
+  val Javaslang =            "io.javaslang"              % "javaslang"                 % "2.0.5"
   val Protobuf =             "com.google.protobuf"        % "protobuf-java"             % ProtobufVersion
   val JunitInterface =       "com.novocode"               % "junit-interface"           % "0.11"
   val AkkaContrib =          "com.typesafe.akka"         %% "akka-contrib"              % AkkaVersion

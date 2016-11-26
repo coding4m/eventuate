@@ -26,7 +26,7 @@ import akka.util.Timeout
 import com.rbmhtechnology.eventuate.EndpointFilters.NoFilters
 import com.rbmhtechnology.eventuate.EventsourcingProtocol.{ Delete, DeleteFailure, DeleteSuccess }
 import com.rbmhtechnology.eventuate.ReplicationFilter.NoFilter
-import com.rbmhtechnology.eventuate.ReplicationProtocol.ReplicationEndpointInfo
+import com.rbmhtechnology.eventuate.ReplicationProtocol.ReplicationInfo
 
 import scala.collection.JavaConverters._
 import scala.collection.immutable.Seq
@@ -335,19 +335,17 @@ class ReplicationEndpoint(
    * Returns the unique log id for given `logName`.
    */
   def logId(logName: String): String =
-    ReplicationEndpointInfo.logId(id, logName)
+    ReplicationInfo.logId(id, logName)
 
   /**
    * Activates this endpoint by starting event replication from remote endpoints to this endpoint.
    */
   def activate(): Future[Unit] = if (active.compareAndSet(false, true)) {
     import system.dispatcher
-    val replication = new Replication(this)
+    val recovery = new Recovery(this)
     for {
-      connections <- replication.getReplicationConnections
-    } yield {
-      replication.activateReplicationConnections(connections)
-    }
+      connections <- recovery.awaitConnections
+    } yield recovery.activateConnections(connections)
   } else Future.failed(new IllegalStateException("Recovery running or endpoint already activated"))
 
   /**
@@ -390,21 +388,21 @@ class ReplicationEndpoint(
     // log's version vector
     val recovery = new Recovery(this)
     for {
-      connections <- recovery.getReplicationConnections.recoverWith(recoveryFailure(partialUpdate = false))
-      endpointInfo <- recovery.readEndpointInfo.recoverWith(recoveryFailure(partialUpdate = false))
+      connections <- recovery.awaitConnections.recoverWith(recoveryFailure(partialUpdate = false))
+      endpointInfo <- recovery.readReplicationInfo.recoverWith(recoveryFailure(partialUpdate = false))
       _ = logRecoverySequenceNrs(connections, endpointInfo)
-      recoveryLinks <- recovery.adjustReplicationProgresses(connections, endpointInfo).recoverWith(recoveryFailure(partialUpdate = false))
-      unfilteredLinks = recoveryLinks.filterNot(recovery.isFilteredLink)
+      recoveryLinks <- recovery.recoveryLinks(connections, endpointInfo).recoverWith(recoveryFailure(partialUpdate = false))
+      unfilteredLinks = recoveryLinks.filterNot(recovery.isFilteredRecoveryLink)
       _ = logRecoveryLinks(unfilteredLinks, "unfiltered")
       _ <- recovery.recoverLinks(unfilteredLinks).recoverWith(recoveryFailure(partialUpdate = true))
-      filteredLinks = recoveryLinks.filter(recovery.isFilteredLink)
+      filteredLinks = recoveryLinks.filter(recovery.isFilteredRecoveryLink)
       _ = logRecoveryLinks(filteredLinks, "filtered")
       _ <- recovery.recoverLinks(filteredLinks).recoverWith(recoveryFailure(partialUpdate = true))
       _ <- recovery.adjustEventLogClocks.recoverWith(recoveryFailure(partialUpdate = true))
     } yield recovery.recoverCompleted()
   } else Future.failed(new IllegalStateException("Recovery running or endpoint already activated"))
 
-  private def logRecoverySequenceNrs(connections: Set[ReplicationConnection], info: ReplicationEndpointInfo): Unit = {
+  private def logRecoverySequenceNrs(connections: Set[ReplicationConnection], info: ReplicationInfo): Unit = {
     system.log.info(
       "Disaster recovery initiated for endpoint {}. Sequence numbers of local logs are: {}",
       info.endpointId, sequenceNrsLogString(info))
@@ -419,7 +417,7 @@ class ReplicationEndpoint(
       linkType, links.map(l => s"(${l.replicationLink.source.logId} (${l.remoteSequenceNr}) -> ${l.replicationLink.target.logName} (${l.localSequenceNr}))").mkString(", "))
   }
 
-  private def sequenceNrsLogString(info: ReplicationEndpointInfo): String =
+  private def sequenceNrsLogString(info: ReplicationInfo): String =
     info.logSequenceNrs.map { case (logName, sequenceNr) => s"$logName:$sequenceNr" } mkString ","
 
   /**
@@ -452,7 +450,7 @@ class ReplicationEndpoint(
   def delete(logName: String, toSequenceNr: Long, remoteEndpointIds: Set[String]): Future[Long] = {
     import system.dispatcher
     implicit val timeout = Timeout(settings.writeTimeout)
-    (logs(logName) ? Delete(toSequenceNr, remoteEndpointIds.map(ReplicationEndpointInfo.logId(_, logName)))).flatMap {
+    (logs(logName) ? Delete(toSequenceNr, remoteEndpointIds.map(ReplicationInfo.logId(_, logName)))).flatMap {
       case DeleteSuccess(deletedTo) => Future.successful(deletedTo)
       case DeleteFailure(ex)        => Future.failed(ex)
     }
@@ -468,7 +466,7 @@ class ReplicationEndpoint(
   private[eventuate] def source(
     logName: String,
     connection: ReplicationConnection,
-    endpointInfo: ReplicationEndpointInfo): ReplicationSource = {
+    endpointInfo: ReplicationInfo): ReplicationSource = {
     ReplicationSource(
       endpointInfo.endpointId, logName, endpointInfo.logId(logName), replicationAcceptor(connection)
     )
@@ -476,7 +474,7 @@ class ReplicationEndpoint(
 
   private[eventuate] def replicationLinks(
     connection: ReplicationConnection,
-    endpointInfo: ReplicationEndpointInfo): Set[ReplicationLink] = {
+    endpointInfo: ReplicationInfo): Set[ReplicationLink] = {
     replicationLogs(endpointInfo).map { logName =>
       ReplicationLink(source(logName, connection, endpointInfo), target(logName))
     }
@@ -485,7 +483,7 @@ class ReplicationEndpoint(
   /**
    * Returns all log names this endpoint and `endpointInfo` have in common.
    */
-  private[eventuate] def replicationLogs(endpointInfo: ReplicationEndpointInfo) =
+  private[eventuate] def replicationLogs(endpointInfo: ReplicationInfo) =
     this.logNames.intersect(endpointInfo.logNames)
 
   private[eventuate] def replicationAcceptor(connection: ReplicationConnection): ActorSelection = {

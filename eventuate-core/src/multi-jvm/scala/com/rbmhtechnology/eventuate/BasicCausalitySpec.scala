@@ -21,7 +21,7 @@ import akka.remote.testkit._
 import akka.remote.transport.ThrottlerTransportAdapter.Direction
 import akka.testkit.TestProbe
 
-import com.rbmhtechnology.eventuate.ReplicationProtocol.ReplicationEndpointInfo
+import com.rbmhtechnology.eventuate.ReplicationProtocol.ReplicationInfo
 import com.typesafe.config._
 
 import scala.util._
@@ -54,8 +54,8 @@ abstract class BasicCausalitySpec(config: BasicCausalityConfig) extends MultiNod
   import BasicCausalitySpec._
   import config._
 
-  val logIdA = ReplicationEndpointInfo.logId(nodeA.name, logName)
-  val logIdB = ReplicationEndpointInfo.logId(nodeB.name, logName)
+  val logIdA = ReplicationInfo.logId(nodeA.name, logName)
+  val logIdB = ReplicationInfo.logId(nodeB.name, logName)
 
   muteDeadLetters(classOf[AnyRef])(system)
 

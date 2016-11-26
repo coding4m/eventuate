@@ -30,10 +30,10 @@ import org.scalatest._
 object ReplicationProtocolSerializerSpec {
   import ReplicationFilterSerializerSpec._
 
-  private val endpointInfo = ReplicationEndpointInfo("A", Map("B" -> 0l, "C" -> 10l))
+  private val endpointInfo = ReplicationInfo("A", Map("B" -> 0l, "C" -> 10l))
 
   val getReplicationEndpointInfoSuccess =
-    GetReplicationEndpointInfoSuccess(endpointInfo)
+    GetReplicationInfoSuccess(endpointInfo)
 
   val synchronizeReplicationProgress =
     SynchronizeReplicationProgress(endpointInfo)
@@ -85,11 +85,11 @@ class ReplicationProtocolSerializerSpec extends WordSpec with Matchers with Befo
   val dl2 = systems(1).deadLetters
 
   "A ReplicationProtocolSerializer" must {
-    "serialize GetReplicationEndpointInfo messages" in {
-      serializations(0).deserialize(serializations(0).serialize(GetReplicationEndpointInfo).get, GetReplicationEndpointInfo.getClass).get should be(GetReplicationEndpointInfo)
+    "serialize GetReplicationInfo messages" in {
+      serializations(0).deserialize(serializations(0).serialize(GetReplicationInfo).get, GetReplicationInfo.getClass).get should be(GetReplicationInfo)
     }
-    "serialize GetReplicationEndpointInfoSuccess messages" in {
-      serializations(0).deserialize(serializations(0).serialize(getReplicationEndpointInfoSuccess).get, classOf[GetReplicationEndpointInfoSuccess]).get should be(getReplicationEndpointInfoSuccess)
+    "serialize GetReplicationInfoSuccess messages" in {
+      serializations(0).deserialize(serializations(0).serialize(getReplicationEndpointInfoSuccess).get, classOf[GetReplicationInfoSuccess]).get should be(getReplicationEndpointInfoSuccess)
     }
     "serialize SynchronizeReplicationProgress messages" in {
       serializations(0).deserialize(serializations(0).serialize(synchronizeReplicationProgress).get, classOf[SynchronizeReplicationProgress]).get should be(synchronizeReplicationProgress)
@@ -117,11 +117,11 @@ class ReplicationProtocolSerializerSpec extends WordSpec with Matchers with Befo
     "serialize ReplicationReadFailure messages with an ApplicationVersionIncompatibleException cause" in {
       serializations(0).deserialize(serializations(0).serialize(replicationReadFailureWithIncompatibleApplicationVersionException).get, classOf[ReplicationReadFailure]).get should be(replicationReadFailureWithIncompatibleApplicationVersionException)
     }
-    "support remoting of GetReplicationEndpointInfo messages" in {
-      senderActor ! GetReplicationEndpointInfo
-      receiverProbe.expectMsg(GetReplicationEndpointInfo)
+    "support remoting of GetReplicationInfo messages" in {
+      senderActor ! GetReplicationInfo
+      receiverProbe.expectMsg(GetReplicationInfo)
     }
-    "support remoting of GetReplicationEndpointInfoSuccess messages" in {
+    "support remoting of GetReplicationInfoSuccess messages" in {
       senderActor ! getReplicationEndpointInfoSuccess
       receiverProbe.expectMsg(getReplicationEndpointInfoSuccess)
     }

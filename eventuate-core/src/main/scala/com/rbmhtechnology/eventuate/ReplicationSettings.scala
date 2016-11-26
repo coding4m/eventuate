@@ -42,12 +42,6 @@ class ReplicationSettings(config: Config) {
   val remoteScanLimit: Int =
     config.getInt("eventuate.log.replication.remote-scan-limit")
 
-  val activeTimeout: FiniteDuration =
-    config.getDuration("eventuate.log.replication.active-timeout", TimeUnit.MILLISECONDS).millis
-
-  val recoverTimeout: FiniteDuration =
-    config.getDuration("eventuate.log.replication.recover-timeout", TimeUnit.MILLISECONDS).millis
-
   val retryDelay: FiniteDuration =
     config.getDuration("eventuate.log.replication.retry-delay", TimeUnit.MILLISECONDS).millis
 

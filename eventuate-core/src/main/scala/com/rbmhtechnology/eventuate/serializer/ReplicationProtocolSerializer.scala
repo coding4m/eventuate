@@ -36,8 +36,8 @@ class ReplicationProtocolSerializer(system: ExtendedActorSystem) extends Seriali
   import eventSerializer.commonSerializer
   import commonSerializer.payloadSerializer
 
-  val GetReplicationEndpointInfoClass = GetReplicationEndpointInfo.getClass
-  val GetReplicationEndpointInfoSuccessClass = classOf[GetReplicationEndpointInfoSuccess]
+  val GetReplicationInfoClass = GetReplicationInfo.getClass
+  val GetReplicationInfoSuccessClass = classOf[GetReplicationInfoSuccess]
   val SynchronizeReplicationProgressClass = classOf[SynchronizeReplicationProgress]
   val SynchronizeReplicationProgressSuccessClass = classOf[SynchronizeReplicationProgressSuccess]
   val SynchronizeReplicationProgressFailureClass = classOf[SynchronizeReplicationProgressFailure]
@@ -55,10 +55,10 @@ class ReplicationProtocolSerializer(system: ExtendedActorSystem) extends Seriali
 
   override def toBinary(o: AnyRef): Array[Byte] = {
     o match {
-      case GetReplicationEndpointInfo =>
-        GetReplicationEndpointInfoFormat.newBuilder().build().toByteArray
-      case m: GetReplicationEndpointInfoSuccess =>
-        getReplicationEndpointInfoSuccessFormatBuilder(m).build().toByteArray
+      case GetReplicationInfo =>
+        GetReplicationInfoFormat.newBuilder().build().toByteArray
+      case m: GetReplicationInfoSuccess =>
+        getReplicationInfoSuccessFormatBuilder(m).build().toByteArray
       case m: SynchronizeReplicationProgress =>
         synchronizeReplicationProgressFormatBuilder(m).build().toByteArray
       case m: SynchronizeReplicationProgressSuccess =>
@@ -89,10 +89,10 @@ class ReplicationProtocolSerializer(system: ExtendedActorSystem) extends Seriali
   override def fromBinary(bytes: Array[Byte], manifest: Option[Class[_]]): AnyRef = manifest match {
     case None => throw new IllegalArgumentException("manifest required")
     case Some(clazz) => clazz match {
-      case GetReplicationEndpointInfoClass =>
-        GetReplicationEndpointInfo
-      case GetReplicationEndpointInfoSuccessClass =>
-        getReplicationEndpointInfoSuccess(GetReplicationEndpointInfoSuccessFormat.parseFrom(bytes))
+      case GetReplicationInfoClass =>
+        GetReplicationInfo
+      case GetReplicationInfoSuccessClass =>
+        getReplicationInfoSuccess(GetReplicationInfoSuccessFormat.parseFrom(bytes))
       case SynchronizeReplicationProgressClass =>
         synchronizeReplicationProgress(SynchronizeReplicationProgressFormat.parseFrom(bytes))
       case SynchronizeReplicationProgressSuccessClass =>
@@ -162,20 +162,20 @@ class ReplicationProtocolSerializer(system: ExtendedActorSystem) extends Seriali
     builder
   }
 
-  private def getReplicationEndpointInfoSuccessFormatBuilder(message: GetReplicationEndpointInfoSuccess): GetReplicationEndpointInfoSuccessFormat.Builder =
-    GetReplicationEndpointInfoSuccessFormat.newBuilder().setInfo(replicationEndpointInfoFormatBuilder(message.info))
+  private def getReplicationInfoSuccessFormatBuilder(message: GetReplicationInfoSuccess): GetReplicationInfoSuccessFormat.Builder =
+    GetReplicationInfoSuccessFormat.newBuilder().setInfo(replicationInfoFormatBuilder(message.info))
 
   private def synchronizeReplicationProgressFormatBuilder(message: SynchronizeReplicationProgress): SynchronizeReplicationProgressFormat.Builder =
-    SynchronizeReplicationProgressFormat.newBuilder().setInfo(replicationEndpointInfoFormatBuilder(message.info))
+    SynchronizeReplicationProgressFormat.newBuilder().setInfo(replicationInfoFormatBuilder(message.info))
 
   private def synchronizeReplicationProgressSuccessFormatBuilder(message: SynchronizeReplicationProgressSuccess): SynchronizeReplicationProgressSuccessFormat.Builder =
-    SynchronizeReplicationProgressSuccessFormat.newBuilder().setInfo(replicationEndpointInfoFormatBuilder(message.info))
+    SynchronizeReplicationProgressSuccessFormat.newBuilder().setInfo(replicationInfoFormatBuilder(message.info))
 
   private def synchronizeReplicationProgressFailureFormatBuilder(message: SynchronizeReplicationProgressFailure): SynchronizeReplicationProgressFailureFormat.Builder =
     SynchronizeReplicationProgressFailureFormat.newBuilder().setCause(payloadSerializer.payloadFormatBuilder(message.cause))
 
-  private def replicationEndpointInfoFormatBuilder(info: ReplicationEndpointInfo): ReplicationEndpointInfoFormat.Builder = {
-    val builder = ReplicationEndpointInfoFormat.newBuilder()
+  private def replicationInfoFormatBuilder(info: ReplicationInfo): ReplicationInfoFormat.Builder = {
+    val builder = ReplicationInfoFormat.newBuilder()
     builder.setEndpointId(info.endpointId)
     info.logSequenceNrs.foreach(logInfo => builder.addLogInfos(logInfoFormatBuilder(logInfo)))
     builder
@@ -253,20 +253,20 @@ class ReplicationProtocolSerializer(system: ExtendedActorSystem) extends Seriali
       messageFormat.getTargetApplicationName,
       applicationVersion(messageFormat.getTargetApplicationVersion))
 
-  private def getReplicationEndpointInfoSuccess(messageFormat: GetReplicationEndpointInfoSuccessFormat) =
-    GetReplicationEndpointInfoSuccess(replicationEndpointInfo(messageFormat.getInfo))
+  private def getReplicationInfoSuccess(messageFormat: GetReplicationInfoSuccessFormat) =
+    GetReplicationInfoSuccess(replicationInfo(messageFormat.getInfo))
 
   private def synchronizeReplicationProgress(messageFormat: SynchronizeReplicationProgressFormat) =
-    SynchronizeReplicationProgress(replicationEndpointInfo(messageFormat.getInfo))
+    SynchronizeReplicationProgress(replicationInfo(messageFormat.getInfo))
 
   private def synchronizeReplicationProgressSuccess(messageFormat: SynchronizeReplicationProgressSuccessFormat) =
-    SynchronizeReplicationProgressSuccess(replicationEndpointInfo(messageFormat.getInfo))
+    SynchronizeReplicationProgressSuccess(replicationInfo(messageFormat.getInfo))
 
   private def synchronizeReplicationProgressFailure(messageFormat: SynchronizeReplicationProgressFailureFormat): SynchronizeReplicationProgressFailure =
     SynchronizeReplicationProgressFailure(payloadSerializer.payload(messageFormat.getCause).asInstanceOf[SynchronizeReplicationProgressException])
 
-  private def replicationEndpointInfo(infoFormat: ReplicationEndpointInfoFormat): ReplicationEndpointInfo = {
-    ReplicationEndpointInfo(
+  private def replicationInfo(infoFormat: ReplicationInfoFormat): ReplicationInfo = {
+    ReplicationInfo(
       infoFormat.getEndpointId,
       infoFormat.getLogInfosList.asScala.map(logInfo)(breakOut))
   }

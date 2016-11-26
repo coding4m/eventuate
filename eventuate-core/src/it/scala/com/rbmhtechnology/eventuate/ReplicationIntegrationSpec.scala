@@ -27,7 +27,7 @@ import akka.testkit.TestProbe
 import com.rbmhtechnology.eventuate.EndpointFilters.sourceFilters
 import com.rbmhtechnology.eventuate.EndpointFilters.targetOverwritesSourceFilters
 import com.rbmhtechnology.eventuate.ReplicationFilter.NoFilter
-import com.rbmhtechnology.eventuate.ReplicationProtocol.ReplicationEndpointInfo.logId
+import com.rbmhtechnology.eventuate.ReplicationProtocol.ReplicationInfo.logId
 import com.rbmhtechnology.eventuate.ReplicationProtocol._
 import com.rbmhtechnology.eventuate.serializer.DurableEventSerializerWithBinaryPayload
 import com.typesafe.config.Config

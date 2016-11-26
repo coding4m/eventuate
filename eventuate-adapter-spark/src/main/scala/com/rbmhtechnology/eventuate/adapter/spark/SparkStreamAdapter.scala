@@ -85,7 +85,7 @@ private class DurableEventReceiver(id: String, connection: ReplicationConnection
     private var connected = false
 
     def receive = {
-      case GetReplicationEndpointInfoSuccess(info) if !connected =>
+      case GetReplicationInfoSuccess(info) if !connected =>
         if (info.logNames.contains(logName)) {
           val sourceLogId = info.logId(logName)
           val source = ReplicationSource(info.endpointId, logName, sourceLogId, acceptor)
@@ -97,7 +97,7 @@ private class DurableEventReceiver(id: String, connection: ReplicationConnection
 
     private def scheduleAcceptorRequest(acceptor: ActorSelection): Cancellable =
       context.system.scheduler.schedule(0.seconds, 5.seconds, new Runnable {
-        override def run() = acceptor ! GetReplicationEndpointInfo
+        override def run() = acceptor ! GetReplicationInfo
       })
 
     private def remoteAcceptor: ActorSelection =

@@ -29,7 +29,7 @@ object ReplicationProtocol {
    */
   trait Format extends Serializable
 
-  object ReplicationEndpointInfo {
+  object ReplicationInfo {
     /**
      * Creates a log identifier from `endpointId` and `logName`.
      */
@@ -43,7 +43,7 @@ object ReplicationProtocol {
    * @param endpointId Replication endpoint id.
    * @param logSequenceNrs sequence numbers of logs managed by the replication endpoint.
    */
-  case class ReplicationEndpointInfo(endpointId: String, logSequenceNrs: Map[String, Long]) extends Format {
+  case class ReplicationInfo(endpointId: String, logSequenceNrs: Map[String, Long]) extends Format {
     /**
      * The names of logs managed by the [[ReplicationEndpoint]].
      */
@@ -53,18 +53,18 @@ object ReplicationProtocol {
      * Creates a log identifier from this info object's `endpointId` and `logName`.
      */
     def logId(logName: String): String =
-      ReplicationEndpointInfo.logId(endpointId, logName)
+      ReplicationInfo.logId(endpointId, logName)
   }
 
   /**
-   * Instructs a remote [[ReplicationEndpoint]] to return a [[ReplicationEndpointInfo]] object.
+   * Instructs a remote [[ReplicationEndpoint]] to return a [[ReplicationInfo]] object.
    */
-  private[eventuate] case object GetReplicationEndpointInfo extends Format
+  private[eventuate] case object GetReplicationInfo extends Format
 
   /**
-   * Success reply to [[GetReplicationEndpointInfo]].
+   * Success reply to [[GetReplicationInfo]].
    */
-  private[eventuate] case class GetReplicationEndpointInfoSuccess(info: ReplicationEndpointInfo) extends Format
+  private[eventuate] case class GetReplicationInfoSuccess(info: ReplicationInfo) extends Format
 
   /**
    * Used to synchronize replication progress between two [[ReplicationEndpoint]]s when disaster recovery
@@ -72,14 +72,14 @@ object ReplicationProtocol {
    * that is recovered to instruct a remote [[ReplicationEndpoint]] to
    *
    * - reset locally stored replication progress according to the sequence numbers given in ``info`` and
-   * - respond with a [[ReplicationEndpointInfo]] containing the after disaster progress of its logs
+   * - respond with a [[ReplicationInfo]] containing the after disaster progress of its logs
    */
-  private[eventuate] case class SynchronizeReplicationProgress(info: ReplicationEndpointInfo) extends Format
+  private[eventuate] case class SynchronizeReplicationProgress(info: ReplicationInfo) extends Format
 
   /**
    * Successful response to a [[SynchronizeReplicationProgress]] request.
    */
-  private[eventuate] case class SynchronizeReplicationProgressSuccess(info: ReplicationEndpointInfo) extends Format
+  private[eventuate] case class SynchronizeReplicationProgressSuccess(info: ReplicationInfo) extends Format
 
   /**
    * Failure response to a [[SynchronizeReplicationProgress]] request.

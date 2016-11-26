@@ -1085,7 +1085,7 @@ public final class ReplicationProtocolFormats {
     // @@protoc_insertion_point(class_scope:LogInfoFormat)
   }
 
-  public interface ReplicationEndpointInfoFormatOrBuilder
+  public interface ReplicationInfoFormatOrBuilder
       extends com.google.protobuf.MessageOrBuilder {
 
     // required string endpointId = 1;
@@ -1129,24 +1129,24 @@ public final class ReplicationProtocolFormats {
         int index);
   }
   /**
-   * Protobuf type {@code ReplicationEndpointInfoFormat}
+   * Protobuf type {@code ReplicationInfoFormat}
    */
-  public static final class ReplicationEndpointInfoFormat extends
+  public static final class ReplicationInfoFormat extends
       com.google.protobuf.GeneratedMessage
-      implements ReplicationEndpointInfoFormatOrBuilder {
-    // Use ReplicationEndpointInfoFormat.newBuilder() to construct.
-    private ReplicationEndpointInfoFormat(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+      implements ReplicationInfoFormatOrBuilder {
+    // Use ReplicationInfoFormat.newBuilder() to construct.
+    private ReplicationInfoFormat(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
       super(builder);
       this.unknownFields = builder.getUnknownFields();
     }
-    private ReplicationEndpointInfoFormat(boolean noInit) { this.unknownFields = com.google.protobuf.UnknownFieldSet.getDefaultInstance(); }
+    private ReplicationInfoFormat(boolean noInit) { this.unknownFields = com.google.protobuf.UnknownFieldSet.getDefaultInstance(); }
 
-    private static final ReplicationEndpointInfoFormat defaultInstance;
-    public static ReplicationEndpointInfoFormat getDefaultInstance() {
+    private static final ReplicationInfoFormat defaultInstance;
+    public static ReplicationInfoFormat getDefaultInstance() {
       return defaultInstance;
     }
 
-    public ReplicationEndpointInfoFormat getDefaultInstanceForType() {
+    public ReplicationInfoFormat getDefaultInstanceForType() {
       return defaultInstance;
     }
 
@@ -1156,7 +1156,7 @@ public final class ReplicationProtocolFormats {
         getUnknownFields() {
       return this.unknownFields;
     }
-    private ReplicationEndpointInfoFormat(
+    private ReplicationInfoFormat(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
@@ -1209,28 +1209,28 @@ public final class ReplicationProtocolFormats {
     }
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.internal_static_ReplicationEndpointInfoFormat_descriptor;
+      return com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.internal_static_ReplicationInfoFormat_descriptor;
     }
 
     protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.internal_static_ReplicationEndpointInfoFormat_fieldAccessorTable
+      return com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.internal_static_ReplicationInfoFormat_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationEndpointInfoFormat.class, com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationEndpointInfoFormat.Builder.class);
+              com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormat.class, com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormat.Builder.class);
     }
 
-    public static com.google.protobuf.Parser<ReplicationEndpointInfoFormat> PARSER =
-        new com.google.protobuf.AbstractParser<ReplicationEndpointInfoFormat>() {
-      public ReplicationEndpointInfoFormat parsePartialFrom(
+    public static com.google.protobuf.Parser<ReplicationInfoFormat> PARSER =
+        new com.google.protobuf.AbstractParser<ReplicationInfoFormat>() {
+      public ReplicationInfoFormat parsePartialFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws com.google.protobuf.InvalidProtocolBufferException {
-        return new ReplicationEndpointInfoFormat(input, extensionRegistry);
+        return new ReplicationInfoFormat(input, extensionRegistry);
       }
     };
 
     @java.lang.Override
-    public com.google.protobuf.Parser<ReplicationEndpointInfoFormat> getParserForType() {
+    public com.google.protobuf.Parser<ReplicationInfoFormat> getParserForType() {
       return PARSER;
     }
 
@@ -1375,53 +1375,53 @@ public final class ReplicationProtocolFormats {
       return super.writeReplace();
     }
 
-    public static com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationEndpointInfoFormat parseFrom(
+    public static com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormat parseFrom(
         com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationEndpointInfoFormat parseFrom(
+    public static com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormat parseFrom(
         com.google.protobuf.ByteString data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationEndpointInfoFormat parseFrom(byte[] data)
+    public static com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormat parseFrom(byte[] data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationEndpointInfoFormat parseFrom(
+    public static com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormat parseFrom(
         byte[] data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationEndpointInfoFormat parseFrom(java.io.InputStream input)
+    public static com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormat parseFrom(java.io.InputStream input)
         throws java.io.IOException {
       return PARSER.parseFrom(input);
     }
-    public static com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationEndpointInfoFormat parseFrom(
+    public static com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormat parseFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return PARSER.parseFrom(input, extensionRegistry);
     }
-    public static com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationEndpointInfoFormat parseDelimitedFrom(java.io.InputStream input)
+    public static com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormat parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
       return PARSER.parseDelimitedFrom(input);
     }
-    public static com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationEndpointInfoFormat parseDelimitedFrom(
+    public static com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormat parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return PARSER.parseDelimitedFrom(input, extensionRegistry);
     }
-    public static com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationEndpointInfoFormat parseFrom(
+    public static com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormat parseFrom(
         com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
       return PARSER.parseFrom(input);
     }
-    public static com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationEndpointInfoFormat parseFrom(
+    public static com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormat parseFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
@@ -1430,7 +1430,7 @@ public final class ReplicationProtocolFormats {
 
     public static Builder newBuilder() { return Builder.create(); }
     public Builder newBuilderForType() { return newBuilder(); }
-    public static Builder newBuilder(com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationEndpointInfoFormat prototype) {
+    public static Builder newBuilder(com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormat prototype) {
       return newBuilder().mergeFrom(prototype);
     }
     public Builder toBuilder() { return newBuilder(this); }
@@ -1442,24 +1442,24 @@ public final class ReplicationProtocolFormats {
       return builder;
     }
     /**
-     * Protobuf type {@code ReplicationEndpointInfoFormat}
+     * Protobuf type {@code ReplicationInfoFormat}
      */
     public static final class Builder extends
         com.google.protobuf.GeneratedMessage.Builder<Builder>
-       implements com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationEndpointInfoFormatOrBuilder {
+       implements com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormatOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.internal_static_ReplicationEndpointInfoFormat_descriptor;
+        return com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.internal_static_ReplicationInfoFormat_descriptor;
       }
 
       protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.internal_static_ReplicationEndpointInfoFormat_fieldAccessorTable
+        return com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.internal_static_ReplicationInfoFormat_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
-                com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationEndpointInfoFormat.class, com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationEndpointInfoFormat.Builder.class);
+                com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormat.class, com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormat.Builder.class);
       }
 
-      // Construct using com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationEndpointInfoFormat.newBuilder()
+      // Construct using com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormat.newBuilder()
       private Builder() {
         maybeForceBuilderInitialization();
       }
@@ -1497,23 +1497,23 @@ public final class ReplicationProtocolFormats {
 
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
-        return com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.internal_static_ReplicationEndpointInfoFormat_descriptor;
+        return com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.internal_static_ReplicationInfoFormat_descriptor;
       }
 
-      public com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationEndpointInfoFormat getDefaultInstanceForType() {
-        return com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationEndpointInfoFormat.getDefaultInstance();
+      public com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormat getDefaultInstanceForType() {
+        return com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormat.getDefaultInstance();
       }
 
-      public com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationEndpointInfoFormat build() {
-        com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationEndpointInfoFormat result = buildPartial();
+      public com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormat build() {
+        com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormat result = buildPartial();
         if (!result.isInitialized()) {
           throw newUninitializedMessageException(result);
         }
         return result;
       }
 
-      public com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationEndpointInfoFormat buildPartial() {
-        com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationEndpointInfoFormat result = new com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationEndpointInfoFormat(this);
+      public com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormat buildPartial() {
+        com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormat result = new com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormat(this);
         int from_bitField0_ = bitField0_;
         int to_bitField0_ = 0;
         if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
@@ -1535,16 +1535,16 @@ public final class ReplicationProtocolFormats {
       }
 
       public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationEndpointInfoFormat) {
-          return mergeFrom((com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationEndpointInfoFormat)other);
+        if (other instanceof com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormat) {
+          return mergeFrom((com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormat)other);
         } else {
           super.mergeFrom(other);
           return this;
         }
       }
 
-      public Builder mergeFrom(com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationEndpointInfoFormat other) {
-        if (other == com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationEndpointInfoFormat.getDefaultInstance()) return this;
+      public Builder mergeFrom(com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormat other) {
+        if (other == com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormat.getDefaultInstance()) return this;
         if (other.hasEndpointId()) {
           bitField0_ |= 0x00000001;
           endpointId_ = other.endpointId_;
@@ -1598,11 +1598,11 @@ public final class ReplicationProtocolFormats {
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
-        com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationEndpointInfoFormat parsedMessage = null;
+        com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormat parsedMessage = null;
         try {
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
         } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          parsedMessage = (com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationEndpointInfoFormat) e.getUnfinishedMessage();
+          parsedMessage = (com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormat) e.getUnfinishedMessage();
           throw e;
         } finally {
           if (parsedMessage != null) {
@@ -1927,43 +1927,43 @@ public final class ReplicationProtocolFormats {
         return logInfosBuilder_;
       }
 
-      // @@protoc_insertion_point(builder_scope:ReplicationEndpointInfoFormat)
+      // @@protoc_insertion_point(builder_scope:ReplicationInfoFormat)
     }
 
     static {
-      defaultInstance = new ReplicationEndpointInfoFormat(true);
+      defaultInstance = new ReplicationInfoFormat(true);
       defaultInstance.initFields();
     }
 
-    // @@protoc_insertion_point(class_scope:ReplicationEndpointInfoFormat)
+    // @@protoc_insertion_point(class_scope:ReplicationInfoFormat)
   }
 
-  public interface GetReplicationEndpointInfoFormatOrBuilder
+  public interface GetReplicationInfoFormatOrBuilder
       extends com.google.protobuf.MessageOrBuilder {
   }
   /**
-   * Protobuf type {@code GetReplicationEndpointInfoFormat}
+   * Protobuf type {@code GetReplicationInfoFormat}
    *
    * <pre>
    * no fields
    * </pre>
    */
-  public static final class GetReplicationEndpointInfoFormat extends
+  public static final class GetReplicationInfoFormat extends
       com.google.protobuf.GeneratedMessage
-      implements GetReplicationEndpointInfoFormatOrBuilder {
-    // Use GetReplicationEndpointInfoFormat.newBuilder() to construct.
-    private GetReplicationEndpointInfoFormat(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+      implements GetReplicationInfoFormatOrBuilder {
+    // Use GetReplicationInfoFormat.newBuilder() to construct.
+    private GetReplicationInfoFormat(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
       super(builder);
       this.unknownFields = builder.getUnknownFields();
     }
-    private GetReplicationEndpointInfoFormat(boolean noInit) { this.unknownFields = com.google.protobuf.UnknownFieldSet.getDefaultInstance(); }
+    private GetReplicationInfoFormat(boolean noInit) { this.unknownFields = com.google.protobuf.UnknownFieldSet.getDefaultInstance(); }
 
-    private static final GetReplicationEndpointInfoFormat defaultInstance;
-    public static GetReplicationEndpointInfoFormat getDefaultInstance() {
+    private static final GetReplicationInfoFormat defaultInstance;
+    public static GetReplicationInfoFormat getDefaultInstance() {
       return defaultInstance;
     }
 
-    public GetReplicationEndpointInfoFormat getDefaultInstanceForType() {
+    public GetReplicationInfoFormat getDefaultInstanceForType() {
       return defaultInstance;
     }
 
@@ -1973,7 +1973,7 @@ public final class ReplicationProtocolFormats {
         getUnknownFields() {
       return this.unknownFields;
     }
-    private GetReplicationEndpointInfoFormat(
+    private GetReplicationInfoFormat(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
@@ -2009,28 +2009,28 @@ public final class ReplicationProtocolFormats {
     }
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.internal_static_GetReplicationEndpointInfoFormat_descriptor;
+      return com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.internal_static_GetReplicationInfoFormat_descriptor;
     }
 
     protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.internal_static_GetReplicationEndpointInfoFormat_fieldAccessorTable
+      return com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.internal_static_GetReplicationInfoFormat_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.GetReplicationEndpointInfoFormat.class, com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.GetReplicationEndpointInfoFormat.Builder.class);
+              com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.GetReplicationInfoFormat.class, com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.GetReplicationInfoFormat.Builder.class);
     }
 
-    public static com.google.protobuf.Parser<GetReplicationEndpointInfoFormat> PARSER =
-        new com.google.protobuf.AbstractParser<GetReplicationEndpointInfoFormat>() {
-      public GetReplicationEndpointInfoFormat parsePartialFrom(
+    public static com.google.protobuf.Parser<GetReplicationInfoFormat> PARSER =
+        new com.google.protobuf.AbstractParser<GetReplicationInfoFormat>() {
+      public GetReplicationInfoFormat parsePartialFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws com.google.protobuf.InvalidProtocolBufferException {
-        return new GetReplicationEndpointInfoFormat(input, extensionRegistry);
+        return new GetReplicationInfoFormat(input, extensionRegistry);
       }
     };
 
     @java.lang.Override
-    public com.google.protobuf.Parser<GetReplicationEndpointInfoFormat> getParserForType() {
+    public com.google.protobuf.Parser<GetReplicationInfoFormat> getParserForType() {
       return PARSER;
     }
 
@@ -2069,53 +2069,53 @@ public final class ReplicationProtocolFormats {
       return super.writeReplace();
     }
 
-    public static com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.GetReplicationEndpointInfoFormat parseFrom(
+    public static com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.GetReplicationInfoFormat parseFrom(
         com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.GetReplicationEndpointInfoFormat parseFrom(
+    public static com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.GetReplicationInfoFormat parseFrom(
         com.google.protobuf.ByteString data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.GetReplicationEndpointInfoFormat parseFrom(byte[] data)
+    public static com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.GetReplicationInfoFormat parseFrom(byte[] data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.GetReplicationEndpointInfoFormat parseFrom(
+    public static com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.GetReplicationInfoFormat parseFrom(
         byte[] data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.GetReplicationEndpointInfoFormat parseFrom(java.io.InputStream input)
+    public static com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.GetReplicationInfoFormat parseFrom(java.io.InputStream input)
         throws java.io.IOException {
       return PARSER.parseFrom(input);
     }
-    public static com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.GetReplicationEndpointInfoFormat parseFrom(
+    public static com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.GetReplicationInfoFormat parseFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return PARSER.parseFrom(input, extensionRegistry);
     }
-    public static com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.GetReplicationEndpointInfoFormat parseDelimitedFrom(java.io.InputStream input)
+    public static com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.GetReplicationInfoFormat parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
       return PARSER.parseDelimitedFrom(input);
     }
-    public static com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.GetReplicationEndpointInfoFormat parseDelimitedFrom(
+    public static com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.GetReplicationInfoFormat parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return PARSER.parseDelimitedFrom(input, extensionRegistry);
     }
-    public static com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.GetReplicationEndpointInfoFormat parseFrom(
+    public static com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.GetReplicationInfoFormat parseFrom(
         com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
       return PARSER.parseFrom(input);
     }
-    public static com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.GetReplicationEndpointInfoFormat parseFrom(
+    public static com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.GetReplicationInfoFormat parseFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
@@ -2124,7 +2124,7 @@ public final class ReplicationProtocolFormats {
 
     public static Builder newBuilder() { return Builder.create(); }
     public Builder newBuilderForType() { return newBuilder(); }
-    public static Builder newBuilder(com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.GetReplicationEndpointInfoFormat prototype) {
+    public static Builder newBuilder(com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.GetReplicationInfoFormat prototype) {
       return newBuilder().mergeFrom(prototype);
     }
     public Builder toBuilder() { return newBuilder(this); }
@@ -2136,7 +2136,7 @@ public final class ReplicationProtocolFormats {
       return builder;
     }
     /**
-     * Protobuf type {@code GetReplicationEndpointInfoFormat}
+     * Protobuf type {@code GetReplicationInfoFormat}
      *
      * <pre>
      * no fields
@@ -2144,20 +2144,20 @@ public final class ReplicationProtocolFormats {
      */
     public static final class Builder extends
         com.google.protobuf.GeneratedMessage.Builder<Builder>
-       implements com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.GetReplicationEndpointInfoFormatOrBuilder {
+       implements com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.GetReplicationInfoFormatOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.internal_static_GetReplicationEndpointInfoFormat_descriptor;
+        return com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.internal_static_GetReplicationInfoFormat_descriptor;
       }
 
       protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.internal_static_GetReplicationEndpointInfoFormat_fieldAccessorTable
+        return com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.internal_static_GetReplicationInfoFormat_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
-                com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.GetReplicationEndpointInfoFormat.class, com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.GetReplicationEndpointInfoFormat.Builder.class);
+                com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.GetReplicationInfoFormat.class, com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.GetReplicationInfoFormat.Builder.class);
       }
 
-      // Construct using com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.GetReplicationEndpointInfoFormat.newBuilder()
+      // Construct using com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.GetReplicationInfoFormat.newBuilder()
       private Builder() {
         maybeForceBuilderInitialization();
       }
@@ -2186,38 +2186,38 @@ public final class ReplicationProtocolFormats {
 
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
-        return com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.internal_static_GetReplicationEndpointInfoFormat_descriptor;
+        return com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.internal_static_GetReplicationInfoFormat_descriptor;
       }
 
-      public com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.GetReplicationEndpointInfoFormat getDefaultInstanceForType() {
-        return com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.GetReplicationEndpointInfoFormat.getDefaultInstance();
+      public com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.GetReplicationInfoFormat getDefaultInstanceForType() {
+        return com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.GetReplicationInfoFormat.getDefaultInstance();
       }
 
-      public com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.GetReplicationEndpointInfoFormat build() {
-        com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.GetReplicationEndpointInfoFormat result = buildPartial();
+      public com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.GetReplicationInfoFormat build() {
+        com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.GetReplicationInfoFormat result = buildPartial();
         if (!result.isInitialized()) {
           throw newUninitializedMessageException(result);
         }
         return result;
       }
 
-      public com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.GetReplicationEndpointInfoFormat buildPartial() {
-        com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.GetReplicationEndpointInfoFormat result = new com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.GetReplicationEndpointInfoFormat(this);
+      public com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.GetReplicationInfoFormat buildPartial() {
+        com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.GetReplicationInfoFormat result = new com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.GetReplicationInfoFormat(this);
         onBuilt();
         return result;
       }
 
       public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.GetReplicationEndpointInfoFormat) {
-          return mergeFrom((com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.GetReplicationEndpointInfoFormat)other);
+        if (other instanceof com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.GetReplicationInfoFormat) {
+          return mergeFrom((com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.GetReplicationInfoFormat)other);
         } else {
           super.mergeFrom(other);
           return this;
         }
       }
 
-      public Builder mergeFrom(com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.GetReplicationEndpointInfoFormat other) {
-        if (other == com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.GetReplicationEndpointInfoFormat.getDefaultInstance()) return this;
+      public Builder mergeFrom(com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.GetReplicationInfoFormat other) {
+        if (other == com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.GetReplicationInfoFormat.getDefaultInstance()) return this;
         this.mergeUnknownFields(other.getUnknownFields());
         return this;
       }
@@ -2230,11 +2230,11 @@ public final class ReplicationProtocolFormats {
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
-        com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.GetReplicationEndpointInfoFormat parsedMessage = null;
+        com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.GetReplicationInfoFormat parsedMessage = null;
         try {
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
         } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          parsedMessage = (com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.GetReplicationEndpointInfoFormat) e.getUnfinishedMessage();
+          parsedMessage = (com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.GetReplicationInfoFormat) e.getUnfinishedMessage();
           throw e;
         } finally {
           if (parsedMessage != null) {
@@ -2244,53 +2244,53 @@ public final class ReplicationProtocolFormats {
         return this;
       }
 
-      // @@protoc_insertion_point(builder_scope:GetReplicationEndpointInfoFormat)
+      // @@protoc_insertion_point(builder_scope:GetReplicationInfoFormat)
     }
 
     static {
-      defaultInstance = new GetReplicationEndpointInfoFormat(true);
+      defaultInstance = new GetReplicationInfoFormat(true);
       defaultInstance.initFields();
     }
 
-    // @@protoc_insertion_point(class_scope:GetReplicationEndpointInfoFormat)
+    // @@protoc_insertion_point(class_scope:GetReplicationInfoFormat)
   }
 
-  public interface GetReplicationEndpointInfoSuccessFormatOrBuilder
+  public interface GetReplicationInfoSuccessFormatOrBuilder
       extends com.google.protobuf.MessageOrBuilder {
 
-    // required .ReplicationEndpointInfoFormat info = 1;
+    // required .ReplicationInfoFormat info = 1;
     /**
-     * <code>required .ReplicationEndpointInfoFormat info = 1;</code>
+     * <code>required .ReplicationInfoFormat info = 1;</code>
      */
     boolean hasInfo();
     /**
-     * <code>required .ReplicationEndpointInfoFormat info = 1;</code>
+     * <code>required .ReplicationInfoFormat info = 1;</code>
      */
-    com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationEndpointInfoFormat getInfo();
+    com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormat getInfo();
     /**
-     * <code>required .ReplicationEndpointInfoFormat info = 1;</code>
+     * <code>required .ReplicationInfoFormat info = 1;</code>
      */
-    com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationEndpointInfoFormatOrBuilder getInfoOrBuilder();
+    com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormatOrBuilder getInfoOrBuilder();
   }
   /**
-   * Protobuf type {@code GetReplicationEndpointInfoSuccessFormat}
+   * Protobuf type {@code GetReplicationInfoSuccessFormat}
    */
-  public static final class GetReplicationEndpointInfoSuccessFormat extends
+  public static final class GetReplicationInfoSuccessFormat extends
       com.google.protobuf.GeneratedMessage
-      implements GetReplicationEndpointInfoSuccessFormatOrBuilder {
-    // Use GetReplicationEndpointInfoSuccessFormat.newBuilder() to construct.
-    private GetReplicationEndpointInfoSuccessFormat(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+      implements GetReplicationInfoSuccessFormatOrBuilder {
+    // Use GetReplicationInfoSuccessFormat.newBuilder() to construct.
+    private GetReplicationInfoSuccessFormat(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
       super(builder);
       this.unknownFields = builder.getUnknownFields();
     }
-    private GetReplicationEndpointInfoSuccessFormat(boolean noInit) { this.unknownFields = com.google.protobuf.UnknownFieldSet.getDefaultInstance(); }
+    private GetReplicationInfoSuccessFormat(boolean noInit) { this.unknownFields = com.google.protobuf.UnknownFieldSet.getDefaultInstance(); }
 
-    private static final GetReplicationEndpointInfoSuccessFormat defaultInstance;
-    public static GetReplicationEndpointInfoSuccessFormat getDefaultInstance() {
+    private static final GetReplicationInfoSuccessFormat defaultInstance;
+    public static GetReplicationInfoSuccessFormat getDefaultInstance() {
       return defaultInstance;
     }
 
-    public GetReplicationEndpointInfoSuccessFormat getDefaultInstanceForType() {
+    public GetReplicationInfoSuccessFormat getDefaultInstanceForType() {
       return defaultInstance;
     }
 
@@ -2300,7 +2300,7 @@ public final class ReplicationProtocolFormats {
         getUnknownFields() {
       return this.unknownFields;
     }
-    private GetReplicationEndpointInfoSuccessFormat(
+    private GetReplicationInfoSuccessFormat(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
@@ -2324,11 +2324,11 @@ public final class ReplicationProtocolFormats {
               break;
             }
             case 10: {
-              com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationEndpointInfoFormat.Builder subBuilder = null;
+              com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormat.Builder subBuilder = null;
               if (((bitField0_ & 0x00000001) == 0x00000001)) {
                 subBuilder = info_.toBuilder();
               }
-              info_ = input.readMessage(com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationEndpointInfoFormat.PARSER, extensionRegistry);
+              info_ = input.readMessage(com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormat.PARSER, extensionRegistry);
               if (subBuilder != null) {
                 subBuilder.mergeFrom(info_);
                 info_ = subBuilder.buildPartial();
@@ -2350,56 +2350,56 @@ public final class ReplicationProtocolFormats {
     }
     public static final com.google.protobuf.Descriptors.Descriptor
         getDescriptor() {
-      return com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.internal_static_GetReplicationEndpointInfoSuccessFormat_descriptor;
+      return com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.internal_static_GetReplicationInfoSuccessFormat_descriptor;
     }
 
     protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
         internalGetFieldAccessorTable() {
-      return com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.internal_static_GetReplicationEndpointInfoSuccessFormat_fieldAccessorTable
+      return com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.internal_static_GetReplicationInfoSuccessFormat_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
-              com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.GetReplicationEndpointInfoSuccessFormat.class, com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.GetReplicationEndpointInfoSuccessFormat.Builder.class);
+              com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.GetReplicationInfoSuccessFormat.class, com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.GetReplicationInfoSuccessFormat.Builder.class);
     }
 
-    public static com.google.protobuf.Parser<GetReplicationEndpointInfoSuccessFormat> PARSER =
-        new com.google.protobuf.AbstractParser<GetReplicationEndpointInfoSuccessFormat>() {
-      public GetReplicationEndpointInfoSuccessFormat parsePartialFrom(
+    public static com.google.protobuf.Parser<GetReplicationInfoSuccessFormat> PARSER =
+        new com.google.protobuf.AbstractParser<GetReplicationInfoSuccessFormat>() {
+      public GetReplicationInfoSuccessFormat parsePartialFrom(
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws com.google.protobuf.InvalidProtocolBufferException {
-        return new GetReplicationEndpointInfoSuccessFormat(input, extensionRegistry);
+        return new GetReplicationInfoSuccessFormat(input, extensionRegistry);
       }
     };
 
     @java.lang.Override
-    public com.google.protobuf.Parser<GetReplicationEndpointInfoSuccessFormat> getParserForType() {
+    public com.google.protobuf.Parser<GetReplicationInfoSuccessFormat> getParserForType() {
       return PARSER;
     }
 
     private int bitField0_;
-    // required .ReplicationEndpointInfoFormat info = 1;
+    // required .ReplicationInfoFormat info = 1;
     public static final int INFO_FIELD_NUMBER = 1;
-    private com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationEndpointInfoFormat info_;
+    private com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormat info_;
     /**
-     * <code>required .ReplicationEndpointInfoFormat info = 1;</code>
+     * <code>required .ReplicationInfoFormat info = 1;</code>
      */
     public boolean hasInfo() {
       return ((bitField0_ & 0x00000001) == 0x00000001);
     }
     /**
-     * <code>required .ReplicationEndpointInfoFormat info = 1;</code>
+     * <code>required .ReplicationInfoFormat info = 1;</code>
      */
-    public com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationEndpointInfoFormat getInfo() {
+    public com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormat getInfo() {
       return info_;
     }
     /**
-     * <code>required .ReplicationEndpointInfoFormat info = 1;</code>
+     * <code>required .ReplicationInfoFormat info = 1;</code>
      */
-    public com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationEndpointInfoFormatOrBuilder getInfoOrBuilder() {
+    public com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormatOrBuilder getInfoOrBuilder() {
       return info_;
     }
 
     private void initFields() {
-      info_ = com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationEndpointInfoFormat.getDefaultInstance();
+      info_ = com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormat.getDefaultInstance();
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
@@ -2449,53 +2449,53 @@ public final class ReplicationProtocolFormats {
       return super.writeReplace();
     }
 
-    public static com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.GetReplicationEndpointInfoSuccessFormat parseFrom(
+    public static com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.GetReplicationInfoSuccessFormat parseFrom(
         com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.GetReplicationEndpointInfoSuccessFormat parseFrom(
+    public static com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.GetReplicationInfoSuccessFormat parseFrom(
         com.google.protobuf.ByteString data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.GetReplicationEndpointInfoSuccessFormat parseFrom(byte[] data)
+    public static com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.GetReplicationInfoSuccessFormat parseFrom(byte[] data)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data);
     }
-    public static com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.GetReplicationEndpointInfoSuccessFormat parseFrom(
+    public static com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.GetReplicationInfoSuccessFormat parseFrom(
         byte[] data,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
       return PARSER.parseFrom(data, extensionRegistry);
     }
-    public static com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.GetReplicationEndpointInfoSuccessFormat parseFrom(java.io.InputStream input)
+    public static com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.GetReplicationInfoSuccessFormat parseFrom(java.io.InputStream input)
         throws java.io.IOException {
       return PARSER.parseFrom(input);
     }
-    public static com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.GetReplicationEndpointInfoSuccessFormat parseFrom(
+    public static com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.GetReplicationInfoSuccessFormat parseFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return PARSER.parseFrom(input, extensionRegistry);
     }
-    public static com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.GetReplicationEndpointInfoSuccessFormat parseDelimitedFrom(java.io.InputStream input)
+    public static com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.GetReplicationInfoSuccessFormat parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
       return PARSER.parseDelimitedFrom(input);
     }
-    public static com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.GetReplicationEndpointInfoSuccessFormat parseDelimitedFrom(
+    public static com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.GetReplicationInfoSuccessFormat parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
       return PARSER.parseDelimitedFrom(input, extensionRegistry);
     }
-    public static com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.GetReplicationEndpointInfoSuccessFormat parseFrom(
+    public static com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.GetReplicationInfoSuccessFormat parseFrom(
         com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
       return PARSER.parseFrom(input);
     }
-    public static com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.GetReplicationEndpointInfoSuccessFormat parseFrom(
+    public static com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.GetReplicationInfoSuccessFormat parseFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
@@ -2504,7 +2504,7 @@ public final class ReplicationProtocolFormats {
 
     public static Builder newBuilder() { return Builder.create(); }
     public Builder newBuilderForType() { return newBuilder(); }
-    public static Builder newBuilder(com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.GetReplicationEndpointInfoSuccessFormat prototype) {
+    public static Builder newBuilder(com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.GetReplicationInfoSuccessFormat prototype) {
       return newBuilder().mergeFrom(prototype);
     }
     public Builder toBuilder() { return newBuilder(this); }
@@ -2516,24 +2516,24 @@ public final class ReplicationProtocolFormats {
       return builder;
     }
     /**
-     * Protobuf type {@code GetReplicationEndpointInfoSuccessFormat}
+     * Protobuf type {@code GetReplicationInfoSuccessFormat}
      */
     public static final class Builder extends
         com.google.protobuf.GeneratedMessage.Builder<Builder>
-       implements com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.GetReplicationEndpointInfoSuccessFormatOrBuilder {
+       implements com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.GetReplicationInfoSuccessFormatOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
-        return com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.internal_static_GetReplicationEndpointInfoSuccessFormat_descriptor;
+        return com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.internal_static_GetReplicationInfoSuccessFormat_descriptor;
       }
 
       protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
           internalGetFieldAccessorTable() {
-        return com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.internal_static_GetReplicationEndpointInfoSuccessFormat_fieldAccessorTable
+        return com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.internal_static_GetReplicationInfoSuccessFormat_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
-                com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.GetReplicationEndpointInfoSuccessFormat.class, com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.GetReplicationEndpointInfoSuccessFormat.Builder.class);
+                com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.GetReplicationInfoSuccessFormat.class, com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.GetReplicationInfoSuccessFormat.Builder.class);
       }
 
-      // Construct using com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.GetReplicationEndpointInfoSuccessFormat.newBuilder()
+      // Construct using com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.GetReplicationInfoSuccessFormat.newBuilder()
       private Builder() {
         maybeForceBuilderInitialization();
       }
@@ -2555,7 +2555,7 @@ public final class ReplicationProtocolFormats {
       public Builder clear() {
         super.clear();
         if (infoBuilder_ == null) {
-          info_ = com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationEndpointInfoFormat.getDefaultInstance();
+          info_ = com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormat.getDefaultInstance();
         } else {
           infoBuilder_.clear();
         }
@@ -2569,23 +2569,23 @@ public final class ReplicationProtocolFormats {
 
       public com.google.protobuf.Descriptors.Descriptor
           getDescriptorForType() {
-        return com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.internal_static_GetReplicationEndpointInfoSuccessFormat_descriptor;
+        return com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.internal_static_GetReplicationInfoSuccessFormat_descriptor;
       }
 
-      public com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.GetReplicationEndpointInfoSuccessFormat getDefaultInstanceForType() {
-        return com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.GetReplicationEndpointInfoSuccessFormat.getDefaultInstance();
+      public com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.GetReplicationInfoSuccessFormat getDefaultInstanceForType() {
+        return com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.GetReplicationInfoSuccessFormat.getDefaultInstance();
       }
 
-      public com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.GetReplicationEndpointInfoSuccessFormat build() {
-        com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.GetReplicationEndpointInfoSuccessFormat result = buildPartial();
+      public com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.GetReplicationInfoSuccessFormat build() {
+        com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.GetReplicationInfoSuccessFormat result = buildPartial();
         if (!result.isInitialized()) {
           throw newUninitializedMessageException(result);
         }
         return result;
       }
 
-      public com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.GetReplicationEndpointInfoSuccessFormat buildPartial() {
-        com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.GetReplicationEndpointInfoSuccessFormat result = new com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.GetReplicationEndpointInfoSuccessFormat(this);
+      public com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.GetReplicationInfoSuccessFormat buildPartial() {
+        com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.GetReplicationInfoSuccessFormat result = new com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.GetReplicationInfoSuccessFormat(this);
         int from_bitField0_ = bitField0_;
         int to_bitField0_ = 0;
         if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
@@ -2602,16 +2602,16 @@ public final class ReplicationProtocolFormats {
       }
 
       public Builder mergeFrom(com.google.protobuf.Message other) {
-        if (other instanceof com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.GetReplicationEndpointInfoSuccessFormat) {
-          return mergeFrom((com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.GetReplicationEndpointInfoSuccessFormat)other);
+        if (other instanceof com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.GetReplicationInfoSuccessFormat) {
+          return mergeFrom((com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.GetReplicationInfoSuccessFormat)other);
         } else {
           super.mergeFrom(other);
           return this;
         }
       }
 
-      public Builder mergeFrom(com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.GetReplicationEndpointInfoSuccessFormat other) {
-        if (other == com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.GetReplicationEndpointInfoSuccessFormat.getDefaultInstance()) return this;
+      public Builder mergeFrom(com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.GetReplicationInfoSuccessFormat other) {
+        if (other == com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.GetReplicationInfoSuccessFormat.getDefaultInstance()) return this;
         if (other.hasInfo()) {
           mergeInfo(other.getInfo());
         }
@@ -2635,11 +2635,11 @@ public final class ReplicationProtocolFormats {
           com.google.protobuf.CodedInputStream input,
           com.google.protobuf.ExtensionRegistryLite extensionRegistry)
           throws java.io.IOException {
-        com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.GetReplicationEndpointInfoSuccessFormat parsedMessage = null;
+        com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.GetReplicationInfoSuccessFormat parsedMessage = null;
         try {
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
         } catch (com.google.protobuf.InvalidProtocolBufferException e) {
-          parsedMessage = (com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.GetReplicationEndpointInfoSuccessFormat) e.getUnfinishedMessage();
+          parsedMessage = (com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.GetReplicationInfoSuccessFormat) e.getUnfinishedMessage();
           throw e;
         } finally {
           if (parsedMessage != null) {
@@ -2650,20 +2650,20 @@ public final class ReplicationProtocolFormats {
       }
       private int bitField0_;
 
-      // required .ReplicationEndpointInfoFormat info = 1;
-      private com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationEndpointInfoFormat info_ = com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationEndpointInfoFormat.getDefaultInstance();
+      // required .ReplicationInfoFormat info = 1;
+      private com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormat info_ = com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormat.getDefaultInstance();
       private com.google.protobuf.SingleFieldBuilder<
-          com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationEndpointInfoFormat, com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationEndpointInfoFormat.Builder, com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationEndpointInfoFormatOrBuilder> infoBuilder_;
+          com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormat, com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormat.Builder, com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormatOrBuilder> infoBuilder_;
       /**
-       * <code>required .ReplicationEndpointInfoFormat info = 1;</code>
+       * <code>required .ReplicationInfoFormat info = 1;</code>
        */
       public boolean hasInfo() {
         return ((bitField0_ & 0x00000001) == 0x00000001);
       }
       /**
-       * <code>required .ReplicationEndpointInfoFormat info = 1;</code>
+       * <code>required .ReplicationInfoFormat info = 1;</code>
        */
-      public com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationEndpointInfoFormat getInfo() {
+      public com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormat getInfo() {
         if (infoBuilder_ == null) {
           return info_;
         } else {
@@ -2671,9 +2671,9 @@ public final class ReplicationProtocolFormats {
         }
       }
       /**
-       * <code>required .ReplicationEndpointInfoFormat info = 1;</code>
+       * <code>required .ReplicationInfoFormat info = 1;</code>
        */
-      public Builder setInfo(com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationEndpointInfoFormat value) {
+      public Builder setInfo(com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormat value) {
         if (infoBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -2687,10 +2687,10 @@ public final class ReplicationProtocolFormats {
         return this;
       }
       /**
-       * <code>required .ReplicationEndpointInfoFormat info = 1;</code>
+       * <code>required .ReplicationInfoFormat info = 1;</code>
        */
       public Builder setInfo(
-          com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationEndpointInfoFormat.Builder builderForValue) {
+          com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormat.Builder builderForValue) {
         if (infoBuilder_ == null) {
           info_ = builderForValue.build();
           onChanged();
@@ -2701,14 +2701,14 @@ public final class ReplicationProtocolFormats {
         return this;
       }
       /**
-       * <code>required .ReplicationEndpointInfoFormat info = 1;</code>
+       * <code>required .ReplicationInfoFormat info = 1;</code>
        */
-      public Builder mergeInfo(com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationEndpointInfoFormat value) {
+      public Builder mergeInfo(com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormat value) {
         if (infoBuilder_ == null) {
           if (((bitField0_ & 0x00000001) == 0x00000001) &&
-              info_ != com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationEndpointInfoFormat.getDefaultInstance()) {
+              info_ != com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormat.getDefaultInstance()) {
             info_ =
-              com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationEndpointInfoFormat.newBuilder(info_).mergeFrom(value).buildPartial();
+              com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormat.newBuilder(info_).mergeFrom(value).buildPartial();
           } else {
             info_ = value;
           }
@@ -2720,11 +2720,11 @@ public final class ReplicationProtocolFormats {
         return this;
       }
       /**
-       * <code>required .ReplicationEndpointInfoFormat info = 1;</code>
+       * <code>required .ReplicationInfoFormat info = 1;</code>
        */
       public Builder clearInfo() {
         if (infoBuilder_ == null) {
-          info_ = com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationEndpointInfoFormat.getDefaultInstance();
+          info_ = com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormat.getDefaultInstance();
           onChanged();
         } else {
           infoBuilder_.clear();
@@ -2733,17 +2733,17 @@ public final class ReplicationProtocolFormats {
         return this;
       }
       /**
-       * <code>required .ReplicationEndpointInfoFormat info = 1;</code>
+       * <code>required .ReplicationInfoFormat info = 1;</code>
        */
-      public com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationEndpointInfoFormat.Builder getInfoBuilder() {
+      public com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormat.Builder getInfoBuilder() {
         bitField0_ |= 0x00000001;
         onChanged();
         return getInfoFieldBuilder().getBuilder();
       }
       /**
-       * <code>required .ReplicationEndpointInfoFormat info = 1;</code>
+       * <code>required .ReplicationInfoFormat info = 1;</code>
        */
-      public com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationEndpointInfoFormatOrBuilder getInfoOrBuilder() {
+      public com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormatOrBuilder getInfoOrBuilder() {
         if (infoBuilder_ != null) {
           return infoBuilder_.getMessageOrBuilder();
         } else {
@@ -2751,14 +2751,14 @@ public final class ReplicationProtocolFormats {
         }
       }
       /**
-       * <code>required .ReplicationEndpointInfoFormat info = 1;</code>
+       * <code>required .ReplicationInfoFormat info = 1;</code>
        */
       private com.google.protobuf.SingleFieldBuilder<
-          com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationEndpointInfoFormat, com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationEndpointInfoFormat.Builder, com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationEndpointInfoFormatOrBuilder> 
+          com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormat, com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormat.Builder, com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormatOrBuilder> 
           getInfoFieldBuilder() {
         if (infoBuilder_ == null) {
           infoBuilder_ = new com.google.protobuf.SingleFieldBuilder<
-              com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationEndpointInfoFormat, com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationEndpointInfoFormat.Builder, com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationEndpointInfoFormatOrBuilder>(
+              com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormat, com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormat.Builder, com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormatOrBuilder>(
                   info_,
                   getParentForChildren(),
                   isClean());
@@ -2767,33 +2767,33 @@ public final class ReplicationProtocolFormats {
         return infoBuilder_;
       }
 
-      // @@protoc_insertion_point(builder_scope:GetReplicationEndpointInfoSuccessFormat)
+      // @@protoc_insertion_point(builder_scope:GetReplicationInfoSuccessFormat)
     }
 
     static {
-      defaultInstance = new GetReplicationEndpointInfoSuccessFormat(true);
+      defaultInstance = new GetReplicationInfoSuccessFormat(true);
       defaultInstance.initFields();
     }
 
-    // @@protoc_insertion_point(class_scope:GetReplicationEndpointInfoSuccessFormat)
+    // @@protoc_insertion_point(class_scope:GetReplicationInfoSuccessFormat)
   }
 
   public interface SynchronizeReplicationProgressFormatOrBuilder
       extends com.google.protobuf.MessageOrBuilder {
 
-    // optional .ReplicationEndpointInfoFormat info = 1;
+    // optional .ReplicationInfoFormat info = 1;
     /**
-     * <code>optional .ReplicationEndpointInfoFormat info = 1;</code>
+     * <code>optional .ReplicationInfoFormat info = 1;</code>
      */
     boolean hasInfo();
     /**
-     * <code>optional .ReplicationEndpointInfoFormat info = 1;</code>
+     * <code>optional .ReplicationInfoFormat info = 1;</code>
      */
-    com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationEndpointInfoFormat getInfo();
+    com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormat getInfo();
     /**
-     * <code>optional .ReplicationEndpointInfoFormat info = 1;</code>
+     * <code>optional .ReplicationInfoFormat info = 1;</code>
      */
-    com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationEndpointInfoFormatOrBuilder getInfoOrBuilder();
+    com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormatOrBuilder getInfoOrBuilder();
   }
   /**
    * Protobuf type {@code SynchronizeReplicationProgressFormat}
@@ -2847,11 +2847,11 @@ public final class ReplicationProtocolFormats {
               break;
             }
             case 10: {
-              com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationEndpointInfoFormat.Builder subBuilder = null;
+              com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormat.Builder subBuilder = null;
               if (((bitField0_ & 0x00000001) == 0x00000001)) {
                 subBuilder = info_.toBuilder();
               }
-              info_ = input.readMessage(com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationEndpointInfoFormat.PARSER, extensionRegistry);
+              info_ = input.readMessage(com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormat.PARSER, extensionRegistry);
               if (subBuilder != null) {
                 subBuilder.mergeFrom(info_);
                 info_ = subBuilder.buildPartial();
@@ -2899,30 +2899,30 @@ public final class ReplicationProtocolFormats {
     }
 
     private int bitField0_;
-    // optional .ReplicationEndpointInfoFormat info = 1;
+    // optional .ReplicationInfoFormat info = 1;
     public static final int INFO_FIELD_NUMBER = 1;
-    private com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationEndpointInfoFormat info_;
+    private com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormat info_;
     /**
-     * <code>optional .ReplicationEndpointInfoFormat info = 1;</code>
+     * <code>optional .ReplicationInfoFormat info = 1;</code>
      */
     public boolean hasInfo() {
       return ((bitField0_ & 0x00000001) == 0x00000001);
     }
     /**
-     * <code>optional .ReplicationEndpointInfoFormat info = 1;</code>
+     * <code>optional .ReplicationInfoFormat info = 1;</code>
      */
-    public com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationEndpointInfoFormat getInfo() {
+    public com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormat getInfo() {
       return info_;
     }
     /**
-     * <code>optional .ReplicationEndpointInfoFormat info = 1;</code>
+     * <code>optional .ReplicationInfoFormat info = 1;</code>
      */
-    public com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationEndpointInfoFormatOrBuilder getInfoOrBuilder() {
+    public com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormatOrBuilder getInfoOrBuilder() {
       return info_;
     }
 
     private void initFields() {
-      info_ = com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationEndpointInfoFormat.getDefaultInstance();
+      info_ = com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormat.getDefaultInstance();
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
@@ -3076,7 +3076,7 @@ public final class ReplicationProtocolFormats {
       public Builder clear() {
         super.clear();
         if (infoBuilder_ == null) {
-          info_ = com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationEndpointInfoFormat.getDefaultInstance();
+          info_ = com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormat.getDefaultInstance();
         } else {
           infoBuilder_.clear();
         }
@@ -3169,20 +3169,20 @@ public final class ReplicationProtocolFormats {
       }
       private int bitField0_;
 
-      // optional .ReplicationEndpointInfoFormat info = 1;
-      private com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationEndpointInfoFormat info_ = com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationEndpointInfoFormat.getDefaultInstance();
+      // optional .ReplicationInfoFormat info = 1;
+      private com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormat info_ = com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormat.getDefaultInstance();
       private com.google.protobuf.SingleFieldBuilder<
-          com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationEndpointInfoFormat, com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationEndpointInfoFormat.Builder, com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationEndpointInfoFormatOrBuilder> infoBuilder_;
+          com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormat, com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormat.Builder, com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormatOrBuilder> infoBuilder_;
       /**
-       * <code>optional .ReplicationEndpointInfoFormat info = 1;</code>
+       * <code>optional .ReplicationInfoFormat info = 1;</code>
        */
       public boolean hasInfo() {
         return ((bitField0_ & 0x00000001) == 0x00000001);
       }
       /**
-       * <code>optional .ReplicationEndpointInfoFormat info = 1;</code>
+       * <code>optional .ReplicationInfoFormat info = 1;</code>
        */
-      public com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationEndpointInfoFormat getInfo() {
+      public com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormat getInfo() {
         if (infoBuilder_ == null) {
           return info_;
         } else {
@@ -3190,9 +3190,9 @@ public final class ReplicationProtocolFormats {
         }
       }
       /**
-       * <code>optional .ReplicationEndpointInfoFormat info = 1;</code>
+       * <code>optional .ReplicationInfoFormat info = 1;</code>
        */
-      public Builder setInfo(com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationEndpointInfoFormat value) {
+      public Builder setInfo(com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormat value) {
         if (infoBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -3206,10 +3206,10 @@ public final class ReplicationProtocolFormats {
         return this;
       }
       /**
-       * <code>optional .ReplicationEndpointInfoFormat info = 1;</code>
+       * <code>optional .ReplicationInfoFormat info = 1;</code>
        */
       public Builder setInfo(
-          com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationEndpointInfoFormat.Builder builderForValue) {
+          com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormat.Builder builderForValue) {
         if (infoBuilder_ == null) {
           info_ = builderForValue.build();
           onChanged();
@@ -3220,14 +3220,14 @@ public final class ReplicationProtocolFormats {
         return this;
       }
       /**
-       * <code>optional .ReplicationEndpointInfoFormat info = 1;</code>
+       * <code>optional .ReplicationInfoFormat info = 1;</code>
        */
-      public Builder mergeInfo(com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationEndpointInfoFormat value) {
+      public Builder mergeInfo(com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormat value) {
         if (infoBuilder_ == null) {
           if (((bitField0_ & 0x00000001) == 0x00000001) &&
-              info_ != com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationEndpointInfoFormat.getDefaultInstance()) {
+              info_ != com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormat.getDefaultInstance()) {
             info_ =
-              com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationEndpointInfoFormat.newBuilder(info_).mergeFrom(value).buildPartial();
+              com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormat.newBuilder(info_).mergeFrom(value).buildPartial();
           } else {
             info_ = value;
           }
@@ -3239,11 +3239,11 @@ public final class ReplicationProtocolFormats {
         return this;
       }
       /**
-       * <code>optional .ReplicationEndpointInfoFormat info = 1;</code>
+       * <code>optional .ReplicationInfoFormat info = 1;</code>
        */
       public Builder clearInfo() {
         if (infoBuilder_ == null) {
-          info_ = com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationEndpointInfoFormat.getDefaultInstance();
+          info_ = com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormat.getDefaultInstance();
           onChanged();
         } else {
           infoBuilder_.clear();
@@ -3252,17 +3252,17 @@ public final class ReplicationProtocolFormats {
         return this;
       }
       /**
-       * <code>optional .ReplicationEndpointInfoFormat info = 1;</code>
+       * <code>optional .ReplicationInfoFormat info = 1;</code>
        */
-      public com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationEndpointInfoFormat.Builder getInfoBuilder() {
+      public com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormat.Builder getInfoBuilder() {
         bitField0_ |= 0x00000001;
         onChanged();
         return getInfoFieldBuilder().getBuilder();
       }
       /**
-       * <code>optional .ReplicationEndpointInfoFormat info = 1;</code>
+       * <code>optional .ReplicationInfoFormat info = 1;</code>
        */
-      public com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationEndpointInfoFormatOrBuilder getInfoOrBuilder() {
+      public com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormatOrBuilder getInfoOrBuilder() {
         if (infoBuilder_ != null) {
           return infoBuilder_.getMessageOrBuilder();
         } else {
@@ -3270,14 +3270,14 @@ public final class ReplicationProtocolFormats {
         }
       }
       /**
-       * <code>optional .ReplicationEndpointInfoFormat info = 1;</code>
+       * <code>optional .ReplicationInfoFormat info = 1;</code>
        */
       private com.google.protobuf.SingleFieldBuilder<
-          com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationEndpointInfoFormat, com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationEndpointInfoFormat.Builder, com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationEndpointInfoFormatOrBuilder> 
+          com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormat, com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormat.Builder, com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormatOrBuilder> 
           getInfoFieldBuilder() {
         if (infoBuilder_ == null) {
           infoBuilder_ = new com.google.protobuf.SingleFieldBuilder<
-              com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationEndpointInfoFormat, com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationEndpointInfoFormat.Builder, com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationEndpointInfoFormatOrBuilder>(
+              com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormat, com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormat.Builder, com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormatOrBuilder>(
                   info_,
                   getParentForChildren(),
                   isClean());
@@ -3300,19 +3300,19 @@ public final class ReplicationProtocolFormats {
   public interface SynchronizeReplicationProgressSuccessFormatOrBuilder
       extends com.google.protobuf.MessageOrBuilder {
 
-    // optional .ReplicationEndpointInfoFormat info = 1;
+    // optional .ReplicationInfoFormat info = 1;
     /**
-     * <code>optional .ReplicationEndpointInfoFormat info = 1;</code>
+     * <code>optional .ReplicationInfoFormat info = 1;</code>
      */
     boolean hasInfo();
     /**
-     * <code>optional .ReplicationEndpointInfoFormat info = 1;</code>
+     * <code>optional .ReplicationInfoFormat info = 1;</code>
      */
-    com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationEndpointInfoFormat getInfo();
+    com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormat getInfo();
     /**
-     * <code>optional .ReplicationEndpointInfoFormat info = 1;</code>
+     * <code>optional .ReplicationInfoFormat info = 1;</code>
      */
-    com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationEndpointInfoFormatOrBuilder getInfoOrBuilder();
+    com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormatOrBuilder getInfoOrBuilder();
   }
   /**
    * Protobuf type {@code SynchronizeReplicationProgressSuccessFormat}
@@ -3366,11 +3366,11 @@ public final class ReplicationProtocolFormats {
               break;
             }
             case 10: {
-              com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationEndpointInfoFormat.Builder subBuilder = null;
+              com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormat.Builder subBuilder = null;
               if (((bitField0_ & 0x00000001) == 0x00000001)) {
                 subBuilder = info_.toBuilder();
               }
-              info_ = input.readMessage(com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationEndpointInfoFormat.PARSER, extensionRegistry);
+              info_ = input.readMessage(com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormat.PARSER, extensionRegistry);
               if (subBuilder != null) {
                 subBuilder.mergeFrom(info_);
                 info_ = subBuilder.buildPartial();
@@ -3418,30 +3418,30 @@ public final class ReplicationProtocolFormats {
     }
 
     private int bitField0_;
-    // optional .ReplicationEndpointInfoFormat info = 1;
+    // optional .ReplicationInfoFormat info = 1;
     public static final int INFO_FIELD_NUMBER = 1;
-    private com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationEndpointInfoFormat info_;
+    private com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormat info_;
     /**
-     * <code>optional .ReplicationEndpointInfoFormat info = 1;</code>
+     * <code>optional .ReplicationInfoFormat info = 1;</code>
      */
     public boolean hasInfo() {
       return ((bitField0_ & 0x00000001) == 0x00000001);
     }
     /**
-     * <code>optional .ReplicationEndpointInfoFormat info = 1;</code>
+     * <code>optional .ReplicationInfoFormat info = 1;</code>
      */
-    public com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationEndpointInfoFormat getInfo() {
+    public com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormat getInfo() {
       return info_;
     }
     /**
-     * <code>optional .ReplicationEndpointInfoFormat info = 1;</code>
+     * <code>optional .ReplicationInfoFormat info = 1;</code>
      */
-    public com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationEndpointInfoFormatOrBuilder getInfoOrBuilder() {
+    public com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormatOrBuilder getInfoOrBuilder() {
       return info_;
     }
 
     private void initFields() {
-      info_ = com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationEndpointInfoFormat.getDefaultInstance();
+      info_ = com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormat.getDefaultInstance();
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
@@ -3595,7 +3595,7 @@ public final class ReplicationProtocolFormats {
       public Builder clear() {
         super.clear();
         if (infoBuilder_ == null) {
-          info_ = com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationEndpointInfoFormat.getDefaultInstance();
+          info_ = com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormat.getDefaultInstance();
         } else {
           infoBuilder_.clear();
         }
@@ -3688,20 +3688,20 @@ public final class ReplicationProtocolFormats {
       }
       private int bitField0_;
 
-      // optional .ReplicationEndpointInfoFormat info = 1;
-      private com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationEndpointInfoFormat info_ = com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationEndpointInfoFormat.getDefaultInstance();
+      // optional .ReplicationInfoFormat info = 1;
+      private com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormat info_ = com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormat.getDefaultInstance();
       private com.google.protobuf.SingleFieldBuilder<
-          com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationEndpointInfoFormat, com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationEndpointInfoFormat.Builder, com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationEndpointInfoFormatOrBuilder> infoBuilder_;
+          com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormat, com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormat.Builder, com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormatOrBuilder> infoBuilder_;
       /**
-       * <code>optional .ReplicationEndpointInfoFormat info = 1;</code>
+       * <code>optional .ReplicationInfoFormat info = 1;</code>
        */
       public boolean hasInfo() {
         return ((bitField0_ & 0x00000001) == 0x00000001);
       }
       /**
-       * <code>optional .ReplicationEndpointInfoFormat info = 1;</code>
+       * <code>optional .ReplicationInfoFormat info = 1;</code>
        */
-      public com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationEndpointInfoFormat getInfo() {
+      public com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormat getInfo() {
         if (infoBuilder_ == null) {
           return info_;
         } else {
@@ -3709,9 +3709,9 @@ public final class ReplicationProtocolFormats {
         }
       }
       /**
-       * <code>optional .ReplicationEndpointInfoFormat info = 1;</code>
+       * <code>optional .ReplicationInfoFormat info = 1;</code>
        */
-      public Builder setInfo(com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationEndpointInfoFormat value) {
+      public Builder setInfo(com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormat value) {
         if (infoBuilder_ == null) {
           if (value == null) {
             throw new NullPointerException();
@@ -3725,10 +3725,10 @@ public final class ReplicationProtocolFormats {
         return this;
       }
       /**
-       * <code>optional .ReplicationEndpointInfoFormat info = 1;</code>
+       * <code>optional .ReplicationInfoFormat info = 1;</code>
        */
       public Builder setInfo(
-          com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationEndpointInfoFormat.Builder builderForValue) {
+          com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormat.Builder builderForValue) {
         if (infoBuilder_ == null) {
           info_ = builderForValue.build();
           onChanged();
@@ -3739,14 +3739,14 @@ public final class ReplicationProtocolFormats {
         return this;
       }
       /**
-       * <code>optional .ReplicationEndpointInfoFormat info = 1;</code>
+       * <code>optional .ReplicationInfoFormat info = 1;</code>
        */
-      public Builder mergeInfo(com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationEndpointInfoFormat value) {
+      public Builder mergeInfo(com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormat value) {
         if (infoBuilder_ == null) {
           if (((bitField0_ & 0x00000001) == 0x00000001) &&
-              info_ != com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationEndpointInfoFormat.getDefaultInstance()) {
+              info_ != com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormat.getDefaultInstance()) {
             info_ =
-              com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationEndpointInfoFormat.newBuilder(info_).mergeFrom(value).buildPartial();
+              com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormat.newBuilder(info_).mergeFrom(value).buildPartial();
           } else {
             info_ = value;
           }
@@ -3758,11 +3758,11 @@ public final class ReplicationProtocolFormats {
         return this;
       }
       /**
-       * <code>optional .ReplicationEndpointInfoFormat info = 1;</code>
+       * <code>optional .ReplicationInfoFormat info = 1;</code>
        */
       public Builder clearInfo() {
         if (infoBuilder_ == null) {
-          info_ = com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationEndpointInfoFormat.getDefaultInstance();
+          info_ = com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormat.getDefaultInstance();
           onChanged();
         } else {
           infoBuilder_.clear();
@@ -3771,17 +3771,17 @@ public final class ReplicationProtocolFormats {
         return this;
       }
       /**
-       * <code>optional .ReplicationEndpointInfoFormat info = 1;</code>
+       * <code>optional .ReplicationInfoFormat info = 1;</code>
        */
-      public com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationEndpointInfoFormat.Builder getInfoBuilder() {
+      public com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormat.Builder getInfoBuilder() {
         bitField0_ |= 0x00000001;
         onChanged();
         return getInfoFieldBuilder().getBuilder();
       }
       /**
-       * <code>optional .ReplicationEndpointInfoFormat info = 1;</code>
+       * <code>optional .ReplicationInfoFormat info = 1;</code>
        */
-      public com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationEndpointInfoFormatOrBuilder getInfoOrBuilder() {
+      public com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormatOrBuilder getInfoOrBuilder() {
         if (infoBuilder_ != null) {
           return infoBuilder_.getMessageOrBuilder();
         } else {
@@ -3789,14 +3789,14 @@ public final class ReplicationProtocolFormats {
         }
       }
       /**
-       * <code>optional .ReplicationEndpointInfoFormat info = 1;</code>
+       * <code>optional .ReplicationInfoFormat info = 1;</code>
        */
       private com.google.protobuf.SingleFieldBuilder<
-          com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationEndpointInfoFormat, com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationEndpointInfoFormat.Builder, com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationEndpointInfoFormatOrBuilder> 
+          com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormat, com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormat.Builder, com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormatOrBuilder> 
           getInfoFieldBuilder() {
         if (infoBuilder_ == null) {
           infoBuilder_ = new com.google.protobuf.SingleFieldBuilder<
-              com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationEndpointInfoFormat, com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationEndpointInfoFormat.Builder, com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationEndpointInfoFormatOrBuilder>(
+              com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormat, com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormat.Builder, com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormatOrBuilder>(
                   info_,
                   getParentForChildren(),
                   isClean());
@@ -10659,20 +10659,20 @@ public final class ReplicationProtocolFormats {
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_LogInfoFormat_fieldAccessorTable;
   private static com.google.protobuf.Descriptors.Descriptor
-    internal_static_ReplicationEndpointInfoFormat_descriptor;
+    internal_static_ReplicationInfoFormat_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
-      internal_static_ReplicationEndpointInfoFormat_fieldAccessorTable;
+      internal_static_ReplicationInfoFormat_fieldAccessorTable;
   private static com.google.protobuf.Descriptors.Descriptor
-    internal_static_GetReplicationEndpointInfoFormat_descriptor;
+    internal_static_GetReplicationInfoFormat_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
-      internal_static_GetReplicationEndpointInfoFormat_fieldAccessorTable;
+      internal_static_GetReplicationInfoFormat_fieldAccessorTable;
   private static com.google.protobuf.Descriptors.Descriptor
-    internal_static_GetReplicationEndpointInfoSuccessFormat_descriptor;
+    internal_static_GetReplicationInfoSuccessFormat_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
-      internal_static_GetReplicationEndpointInfoSuccessFormat_fieldAccessorTable;
+      internal_static_GetReplicationInfoSuccessFormat_fieldAccessorTable;
   private static com.google.protobuf.Descriptors.Descriptor
     internal_static_SynchronizeReplicationProgressFormat_descriptor;
   private static
@@ -10742,46 +10742,45 @@ public final class ReplicationProtocolFormats {
       "to\032\036ReplicationFilterFormats.proto\"8\n\030Ap" +
       "plicationVersionFormat\022\r\n\005major\030\001 \002(\005\022\r\n" +
       "\005minor\030\002 \002(\005\"4\n\rLogInfoFormat\022\017\n\007logName" +
-      "\030\001 \002(\t\022\022\n\nsequenceNr\030\002 \002(\003\"U\n\035Replicatio" +
-      "nEndpointInfoFormat\022\022\n\nendpointId\030\001 \002(\t\022" +
-      " \n\010logInfos\030\002 \003(\0132\016.LogInfoFormat\"\"\n Get" +
-      "ReplicationEndpointInfoFormat\"W\n\'GetRepl" +
-      "icationEndpointInfoSuccessFormat\022,\n\004info",
-      "\030\001 \002(\0132\036.ReplicationEndpointInfoFormat\"T" +
-      "\n$SynchronizeReplicationProgressFormat\022," +
-      "\n\004info\030\001 \001(\0132\036.ReplicationEndpointInfoFo" +
-      "rmat\"[\n+SynchronizeReplicationProgressSu" +
-      "ccessFormat\022,\n\004info\030\001 \001(\0132\036.ReplicationE" +
-      "ndpointInfoFormat\"L\n+SynchronizeReplicat" +
-      "ionProgressFailureFormat\022\035\n\005cause\030\001 \001(\0132" +
-      "\016.PayloadFormat\"F\n3SynchronizeReplicatio" +
-      "nProgressSourceExceptionFormat\022\017\n\007messag" +
-      "e\030\001 \001(\t\"\265\001\n\035ReplicationReadEnvelopeForma",
-      "t\022\'\n\007payload\030\001 \001(\0132\026.ReplicationReadForm" +
-      "at\022\017\n\007logName\030\002 \001(\t\022\035\n\025targetApplication" +
-      "Name\030\003 \001(\t\022;\n\030targetApplicationVersion\030\004" +
-      " \001(\0132\031.ApplicationVersionFormat\"\335\001\n\025Repl" +
-      "icationReadFormat\022\026\n\016fromSequenceNr\030\001 \001(" +
-      "\003\022\013\n\003max\030\002 \001(\005\022\021\n\tscanLimit\030\003 \001(\005\022,\n\006fil" +
-      "ter\030\004 \001(\0132\034.ReplicationFilterTreeFormat\022" +
-      "\023\n\013targetLogId\030\005 \001(\t\022\022\n\nreplicator\030\006 \001(\t" +
-      "\0225\n\032currentTargetVersionVector\030\007 \001(\0132\021.V" +
-      "ectorTimeFormat\"\304\001\n\034ReplicationReadSucce",
-      "ssFormat\022#\n\006events\030\001 \003(\0132\023.DurableEventF" +
-      "ormat\022\026\n\016fromSequenceNr\030\002 \001(\003\022\033\n\023replica" +
-      "tionProgress\030\003 \001(\003\022\023\n\013targetLogId\030\004 \001(\t\022" +
-      "5\n\032currentSourceVersionVector\030\005 \001(\0132\021.Ve" +
-      "ctorTimeFormat\"R\n\034ReplicationReadFailure" +
-      "Format\022\035\n\005cause\030\001 \001(\0132\016.PayloadFormat\022\023\n" +
-      "\013targetLogId\030\002 \001(\t\"7\n$ReplicationReadSou" +
-      "rceExceptionFormat\022\017\n\007message\030\001 \001(\t\"\303\001\n-" +
-      "IncompatibleApplicationVersionExceptionF" +
-      "ormat\022\030\n\020sourceEndpointId\030\001 \001(\t\022;\n\030sourc",
-      "eApplicationVersion\030\002 \001(\0132\031.ApplicationV" +
-      "ersionFormat\022;\n\030targetApplicationVersion" +
-      "\030\003 \001(\0132\031.ApplicationVersionFormat\"\026\n\024Rep" +
-      "licationDueFormatB+\n\'com.rbmhtechnology." +
-      "eventuate.serializerH\001"
+      "\030\001 \002(\t\022\022\n\nsequenceNr\030\002 \002(\003\"M\n\025Replicatio" +
+      "nInfoFormat\022\022\n\nendpointId\030\001 \002(\t\022 \n\010logIn" +
+      "fos\030\002 \003(\0132\016.LogInfoFormat\"\032\n\030GetReplicat" +
+      "ionInfoFormat\"G\n\037GetReplicationInfoSucce" +
+      "ssFormat\022$\n\004info\030\001 \002(\0132\026.ReplicationInfo",
+      "Format\"L\n$SynchronizeReplicationProgress" +
+      "Format\022$\n\004info\030\001 \001(\0132\026.ReplicationInfoFo" +
+      "rmat\"S\n+SynchronizeReplicationProgressSu" +
+      "ccessFormat\022$\n\004info\030\001 \001(\0132\026.ReplicationI" +
+      "nfoFormat\"L\n+SynchronizeReplicationProgr" +
+      "essFailureFormat\022\035\n\005cause\030\001 \001(\0132\016.Payloa" +
+      "dFormat\"F\n3SynchronizeReplicationProgres" +
+      "sSourceExceptionFormat\022\017\n\007message\030\001 \001(\t\"" +
+      "\265\001\n\035ReplicationReadEnvelopeFormat\022\'\n\007pay" +
+      "load\030\001 \001(\0132\026.ReplicationReadFormat\022\017\n\007lo",
+      "gName\030\002 \001(\t\022\035\n\025targetApplicationName\030\003 \001" +
+      "(\t\022;\n\030targetApplicationVersion\030\004 \001(\0132\031.A" +
+      "pplicationVersionFormat\"\335\001\n\025ReplicationR" +
+      "eadFormat\022\026\n\016fromSequenceNr\030\001 \001(\003\022\013\n\003max" +
+      "\030\002 \001(\005\022\021\n\tscanLimit\030\003 \001(\005\022,\n\006filter\030\004 \001(" +
+      "\0132\034.ReplicationFilterTreeFormat\022\023\n\013targe" +
+      "tLogId\030\005 \001(\t\022\022\n\nreplicator\030\006 \001(\t\0225\n\032curr" +
+      "entTargetVersionVector\030\007 \001(\0132\021.VectorTim" +
+      "eFormat\"\304\001\n\034ReplicationReadSuccessFormat" +
+      "\022#\n\006events\030\001 \003(\0132\023.DurableEventFormat\022\026\n",
+      "\016fromSequenceNr\030\002 \001(\003\022\033\n\023replicationProg" +
+      "ress\030\003 \001(\003\022\023\n\013targetLogId\030\004 \001(\t\0225\n\032curre" +
+      "ntSourceVersionVector\030\005 \001(\0132\021.VectorTime" +
+      "Format\"R\n\034ReplicationReadFailureFormat\022\035" +
+      "\n\005cause\030\001 \001(\0132\016.PayloadFormat\022\023\n\013targetL" +
+      "ogId\030\002 \001(\t\"7\n$ReplicationReadSourceExcep" +
+      "tionFormat\022\017\n\007message\030\001 \001(\t\"\303\001\n-Incompat" +
+      "ibleApplicationVersionExceptionFormat\022\030\n" +
+      "\020sourceEndpointId\030\001 \001(\t\022;\n\030sourceApplica" +
+      "tionVersion\030\002 \001(\0132\031.ApplicationVersionFo",
+      "rmat\022;\n\030targetApplicationVersion\030\003 \001(\0132\031" +
+      ".ApplicationVersionFormat\"\026\n\024Replication" +
+      "DueFormatB+\n\'com.rbmhtechnology.eventuat" +
+      "e.serializerH\001"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
       new com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner() {
@@ -10800,23 +10799,23 @@ public final class ReplicationProtocolFormats {
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_LogInfoFormat_descriptor,
               new java.lang.String[] { "LogName", "SequenceNr", });
-          internal_static_ReplicationEndpointInfoFormat_descriptor =
+          internal_static_ReplicationInfoFormat_descriptor =
             getDescriptor().getMessageTypes().get(2);
-          internal_static_ReplicationEndpointInfoFormat_fieldAccessorTable = new
+          internal_static_ReplicationInfoFormat_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-              internal_static_ReplicationEndpointInfoFormat_descriptor,
+              internal_static_ReplicationInfoFormat_descriptor,
               new java.lang.String[] { "EndpointId", "LogInfos", });
-          internal_static_GetReplicationEndpointInfoFormat_descriptor =
+          internal_static_GetReplicationInfoFormat_descriptor =
             getDescriptor().getMessageTypes().get(3);
-          internal_static_GetReplicationEndpointInfoFormat_fieldAccessorTable = new
+          internal_static_GetReplicationInfoFormat_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-              internal_static_GetReplicationEndpointInfoFormat_descriptor,
+              internal_static_GetReplicationInfoFormat_descriptor,
               new java.lang.String[] { });
-          internal_static_GetReplicationEndpointInfoSuccessFormat_descriptor =
+          internal_static_GetReplicationInfoSuccessFormat_descriptor =
             getDescriptor().getMessageTypes().get(4);
-          internal_static_GetReplicationEndpointInfoSuccessFormat_fieldAccessorTable = new
+          internal_static_GetReplicationInfoSuccessFormat_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
-              internal_static_GetReplicationEndpointInfoSuccessFormat_descriptor,
+              internal_static_GetReplicationInfoSuccessFormat_descriptor,
               new java.lang.String[] { "Info", });
           internal_static_SynchronizeReplicationProgressFormat_descriptor =
             getDescriptor().getMessageTypes().get(5);

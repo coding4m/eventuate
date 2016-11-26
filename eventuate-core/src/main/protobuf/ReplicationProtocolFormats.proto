@@ -31,25 +31,25 @@ message LogInfoFormat {
   required int64 sequenceNr = 2;
 }
 
-message ReplicationEndpointInfoFormat {
+message ReplicationInfoFormat {
   required string endpointId = 1;
   repeated LogInfoFormat logInfos = 2;
 }
 
-message GetReplicationEndpointInfoFormat {
+message GetReplicationInfoFormat {
   // no fields
 }
 
-message GetReplicationEndpointInfoSuccessFormat {
-  required ReplicationEndpointInfoFormat info = 1;
+message GetReplicationInfoSuccessFormat {
+  required ReplicationInfoFormat info = 1;
 }
 
 message SynchronizeReplicationProgressFormat {
-  optional ReplicationEndpointInfoFormat info = 1;
+  optional ReplicationInfoFormat info = 1;
 }
 
 message SynchronizeReplicationProgressSuccessFormat {
-  optional ReplicationEndpointInfoFormat info = 1;
+  optional ReplicationInfoFormat info = 1;
 }
 
 message SynchronizeReplicationProgressFailureFormat {
