@@ -492,7 +492,7 @@ private object ReplicationDetector {
 
     override def receive: Receive = {
       case GetReplicationConnections =>
-        sender() ! GetReplicationConnectionsSuccess(conns)
+        sender ! GetReplicationConnectionsSuccess(conns)
     }
   }
 
