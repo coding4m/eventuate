@@ -280,6 +280,20 @@ private class RecoveryManager(endpointId: String, links: Set[RecoveryLink]) exte
   }
 }
 
+private object Acceptor {
+  val Name = "replication-acceptor"
+
+  def props(endpoint: ReplicationEndpoint): Props =
+    Props(classOf[Acceptor], endpoint).withDispatcher(endpoint.settings.acceptorDispatcher)
+
+  case object Process
+  case class Recover(links: Set[RecoveryLink], promise: Promise[Unit])
+  case object RecoverCompleted
+  case class RecoverStepCompleted(link: RecoveryLink)
+  case object RecoverMetadataCompleted
+  case object RecoverEventCompleted
+}
+
 /**
  * [[ReplicationEndpoint]]-scoped singleton that receives all requests from remote endpoints. These are
  *
@@ -346,20 +360,6 @@ private class Acceptor(endpoint: ReplicationEndpoint) extends Actor {
 
   def receive =
     initializing
-}
-
-private object Acceptor {
-  val Name = "replication-acceptor"
-
-  def props(endpoint: ReplicationEndpoint): Props =
-    Props(classOf[Acceptor], endpoint).withDispatcher(endpoint.settings.acceptorDispatcher)
-
-  case object Process
-  case class Recover(links: Set[RecoveryLink], promise: Promise[Unit])
-  case object RecoverCompleted
-  case class RecoverStepCompleted(link: RecoveryLink)
-  case object RecoverMetadataCompleted
-  case object RecoverEventCompleted
 }
 
 private object Controller {
