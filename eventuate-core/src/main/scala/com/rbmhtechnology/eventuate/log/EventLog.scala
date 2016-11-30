@@ -350,7 +350,7 @@ abstract class EventLog[A <: EventLogState](id: String) extends Actor with Event
       logger.error(e, "Cannot recover event log state")
       recoverStateFailure(e)
       context.stop(self)
-    case other =>
+    case _ =>
       stash()
   }
 
@@ -672,7 +672,7 @@ object EventLog {
    * Adjusts `clock.sequenceNumber` if a batch of `batchSize` doesn't fit in the current partition.
    */
   private def adjustSequenceNr(batchSize: Long, maxBatchSize: Long, clock: EventLogClock): (Long, EventLogClock) = {
-    require(batchSize <= maxBatchSize, s"write batch size (${batchSize}) must not be greater than maximum partition size (${maxBatchSize})")
+    require(batchSize <= maxBatchSize, s"write batch size ($batchSize) must not be greater than maximum partition size (${maxBatchSize})")
 
     val currentPartition = partitionOf(clock.sequenceNr, maxBatchSize)
     val remainingSize = remainingPartitionSize(clock.sequenceNr, maxBatchSize)

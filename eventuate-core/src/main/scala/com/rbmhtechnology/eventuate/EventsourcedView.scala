@@ -411,10 +411,10 @@ trait EventsourcedView extends Actor with Stash {
     case LoadSnapshotSuccess(None, iid) => if (iid == instanceId) {
       replay(subscribe = true)
     }
-    case LoadSnapshotFailure(cause, iid) => if (iid == instanceId) {
+    case LoadSnapshotFailure(_, iid) => if (iid == instanceId) {
       replay(subscribe = true)
     }
-    case ReplaySuccess(Seq(), progress, iid) => if (iid == instanceId) {
+    case ReplaySuccess(Seq(), _, iid) => if (iid == instanceId) {
       context.become(initiated)
       versionChanged(currentVersion)
       recovered()
@@ -445,7 +445,7 @@ trait EventsourcedView extends Actor with Stash {
       replay(progress)
     case Terminated(ref) if ref == eventLog =>
       context.stop(self)
-    case other =>
+    case _ =>
       stash()
   }
 
@@ -475,7 +475,7 @@ trait EventsourcedView extends Actor with Stash {
   /**
    * Initialization behavior.
    */
-  final def receive = initiating(settings.replayRetryMax)
+  final def receive: Receive = initiating(settings.replayRetryMax)
 
   /**
    * Adds the current command to the user's command stash. Must not be used in the event handler.
