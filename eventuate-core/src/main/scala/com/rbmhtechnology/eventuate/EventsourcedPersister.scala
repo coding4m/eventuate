@@ -228,7 +228,6 @@ trait EventsourcedPersister extends Actor with Stash {
 
   /**
    * Prepends all stashed commands to the actor's mailbox and then clears the command stash.
-   * Has no effect if the actor is recovering i.e. if `recovering` returns `true`.
    */
   override def unstashAll(): Unit = {
     commandStash ++: messageStash
