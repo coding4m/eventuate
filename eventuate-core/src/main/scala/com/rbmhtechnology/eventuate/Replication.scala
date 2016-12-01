@@ -783,28 +783,36 @@ private class NetworkDetector(connections: Set[ReplicationConnection], connectio
     case MemberUp(member) => if (avaliableMember(member)) {
       avaliableConnection(member).foreach { conn =>
         clusterRegistry = clusterRegistry + conn
-        context.parent ! ReplicationConnectionUp(conn)
+        if (!directRegistry.connections(conn)) {
+          context.parent ! ReplicationConnectionUp(conn)
+        }
       }
     }
 
     case ReachableMember(member) => if (avaliableMember(member)) {
       avaliableConnection(member).foreach { conn =>
         clusterRegistry = clusterRegistry + conn
-        context.parent ! ReplicationConnectionReachable(conn)
+        if (!directRegistry.connections(conn)) {
+          context.parent ! ReplicationConnectionReachable(conn)
+        }
       }
     }
 
     case UnreachableMember(member) => if (avaliableMember(member)) {
       avaliableConnection(member).foreach { conn =>
         clusterRegistry = clusterRegistry - conn
-        context.parent ! ReplicationConnectionUnreachable(conn)
+        if (!directRegistry.connections(conn)) {
+          context.parent ! ReplicationConnectionUnreachable(conn)
+        }
       }
     }
 
     case MemberRemoved(member, _) => if (avaliableMember(member)) {
       avaliableConnection(member).foreach { conn =>
         clusterRegistry = clusterRegistry - conn
-        context.parent ! ReplicationConnectionDown(conn)
+        if (!directRegistry.connections(conn)) {
+          context.parent ! ReplicationConnectionDown(conn)
+        }
       }
     }
     case _ =>
