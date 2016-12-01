@@ -20,11 +20,11 @@ import java.util.concurrent.TimeUnit
 
 import akka.actor._
 import akka.cluster.ClusterEvent._
-import akka.cluster.{Cluster, Member}
+import akka.cluster.{ Cluster, Member }
 import akka.contrib.pattern.ReceivePipeline
-import akka.contrib.pattern.ReceivePipeline.{HandledCompletely, Inner}
+import akka.contrib.pattern.ReceivePipeline.{ HandledCompletely, Inner }
 import akka.event.Logging
-import akka.pattern.{ask, pipe}
+import akka.pattern.{ ask, pipe }
 import akka.util.Timeout
 import com.rbmhtechnology.eventuate.EventsourcingProtocol._
 import com.rbmhtechnology.eventuate.ReplicationFilter.NoFilter
