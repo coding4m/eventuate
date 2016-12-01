@@ -387,8 +387,8 @@ private class Controller(endpoint: ReplicationEndpoint) extends Actor with Actor
 
   private var replicatorRegistry = ReplicatorRegistry()
   private val replicationDetector = context.actorOf(
-    ReplicationDetector.props(endpoint.connections, endpoint.connectionRoles).withDispatcher(endpoint.settings.controllerDispatcher),
-    ReplicationDetector.Name
+    NetworkDetector.props(endpoint.connections, endpoint.connectionRoles).withDispatcher(endpoint.settings.controllerDispatcher),
+    NetworkDetector.Name
   )
 
   pipelineOuter {
@@ -473,125 +473,6 @@ private class Controller(endpoint: ReplicationEndpoint) extends Actor with Actor
       self ! UnreachableReplicationConnection(conn)
 
     case _ =>
-  }
-}
-
-private object ReplicationDetector {
-  val Name = "replication-detector"
-
-  def props(connections: Set[ReplicationConnection], connectionRoles: Set[String]): Props =
-    if (connections.nonEmpty) {
-      Props(classOf[DirectDetector], connections)
-    } else if (connectionRoles.nonEmpty) {
-      Props(classOf[ClusterDetector], connectionRoles)
-    } else throw new IllegalArgumentException("eventuate.endpoint.connections and eventuate.endpoint.connection-roles both empty.")
-
-  private class DirectDetector(conns: Set[ReplicationConnection]) extends Actor {
-
-    import Controller._
-
-    override def receive: Receive = {
-      case GetReplicationConnections =>
-        sender ! GetReplicationConnectionsSuccess(conns)
-    }
-  }
-
-  private case object ClusterInitiated
-  private class ClusterDetector(roles: Set[String]) extends Actor with ActorLogging with Stash {
-
-    import Controller._
-
-    val cluster = Cluster(context.system)
-    var connectionRegistry = ConnectionRegistry()
-
-    @scala.throws[Exception](classOf[Exception])
-    override def preStart(): Unit = {
-      cluster.subscribe(
-        self,
-        initialStateMode = InitialStateAsEvents,
-        classOf[MemberUp], classOf[MemberRemoved], classOf[ReachableMember], classOf[UnreachableMember]
-      )
-      cluster.registerOnMemberUp(self ! ClusterInitiated)
-      context become initiating
-    }
-
-    override def receive: Receive = initiating
-
-    private def initiating: Receive = {
-      case MemberUp(member) =>
-        if (avaliableMember(member)) {
-          avaliableConnection(member).foreach { conn =>
-            connectionRegistry = connectionRegistry + conn
-          }
-        }
-
-      case ClusterInitiated =>
-        context become initiated
-        unstashAll()
-        log.warning("cluster size reached, network initiated.")
-
-      case GetReplicationConnections =>
-        stash()
-      case _ =>
-    }
-
-    private def initiated: Receive = {
-      case GetReplicationConnections =>
-        sender ! GetReplicationConnectionsSuccess(connectionRegistry.connections)
-
-      case MemberUp(member) =>
-        if (avaliableMember(member)) {
-          avaliableConnection(member).foreach { conn =>
-            connectionRegistry = connectionRegistry + conn
-            context.parent ! ReplicationConnectionUp(conn)
-          }
-        }
-
-      case ReachableMember(member) =>
-        if (avaliableMember(member)) {
-          avaliableConnection(member).foreach { conn =>
-            connectionRegistry = connectionRegistry + conn
-            context.parent ! ReplicationConnectionReachable(conn)
-          }
-        }
-
-      case UnreachableMember(member) =>
-        if (avaliableMember(member)) {
-          avaliableConnection(member).foreach { conn =>
-            connectionRegistry = connectionRegistry - conn
-            context.parent ! ReplicationConnectionUnreachable(conn)
-          }
-        }
-
-      case MemberRemoved(member, _) =>
-        if (avaliableMember(member)) {
-          avaliableConnection(member).foreach { conn =>
-            connectionRegistry = connectionRegistry - conn
-            context.parent ! ReplicationConnectionDown(conn)
-          }
-        }
-      case _ =>
-    }
-
-    private def avaliableMember(member: Member): Boolean = {
-      cluster.selfUniqueAddress != member.uniqueAddress && roles.intersect(member.roles).nonEmpty
-    }
-
-    private def avaliableConnection(member: Member): Option[ReplicationConnection] = for {
-      host <- member.address.host
-      port <- member.address.port
-      system = member.address.system
-    } yield ReplicationConnection(host, port, name = system)
-
-    override def postStop(): Unit = cluster.unsubscribe(self)
-  }
-
-  private case class ConnectionRegistry(connections: Set[ReplicationConnection] = Set.empty) {
-    def +(connection: ReplicationConnection): ConnectionRegistry =
-      copy(connections = connections + connection)
-
-    def -(connection: ReplicationConnection): ConnectionRegistry =
-      copy(connections = connections - connection)
   }
 }
 
@@ -826,4 +707,118 @@ private class FailureDetector(sourceEndpointId: String, logName: String, failure
     counter += 1
     context.system.scheduler.scheduleOnce(failureDetectionLimit, self, FailureDetectionLimitReached(counter))
   }
+}
+
+private object NetworkDetector {
+
+  val Name = "network-detector"
+
+  def props(connections: Set[ReplicationConnection], connectionRoles: Set[String]): Props = {
+    require(
+      connections.nonEmpty || connectionRoles.nonEmpty,
+      "eventuate.endpoint.connections and eventuate.endpoint.connection-roles both empty."
+    )
+    Props(classOf[NetworkDetector], connections, connectionRoles)
+  }
+
+  private case object NetworkInitiated
+  private case class NetworkRegistry(connections: Set[ReplicationConnection] = Set.empty) {
+    def +(connection: ReplicationConnection): NetworkRegistry =
+      copy(connections = connections + connection)
+
+    def -(connection: ReplicationConnection): NetworkRegistry =
+      copy(connections = connections - connection)
+  }
+}
+
+private class NetworkDetector(connections: Set[ReplicationConnection], connectionRoles: Set[String]) extends Actor with ActorLogging with Stash {
+
+  import Controller._
+  import NetworkDetector._
+
+  private val directRegistry = NetworkRegistry(connections)
+
+  private val cluster = Cluster(context.system)
+  private var clusterRegistry = NetworkRegistry()
+
+  @scala.throws[Exception](classOf[Exception])
+  override def preStart(): Unit = {
+    if (connectionRoles.nonEmpty) {
+      cluster.subscribe(
+        self,
+        initialStateMode = InitialStateAsEvents,
+        classOf[MemberUp], classOf[MemberRemoved], classOf[ReachableMember], classOf[UnreachableMember]
+      )
+      cluster.registerOnMemberUp(self ! NetworkInitiated)
+      context become initiating
+    } else {
+      self ! NetworkInitiated
+      context become initiating
+    }
+  }
+
+  override def receive: Receive = initiating
+
+  private def initiating: Receive = {
+    case MemberUp(member) => if (avaliableMember(member)) {
+      avaliableConnection(member).foreach { conn =>
+        clusterRegistry = clusterRegistry + conn
+      }
+    }
+
+    case NetworkInitiated =>
+      context become initiated
+      unstashAll()
+      log.warning("connections ready, network initiated.")
+
+    case GetReplicationConnections =>
+      stash()
+    case _ =>
+  }
+
+  private def initiated: Receive = {
+    case GetReplicationConnections =>
+      sender ! GetReplicationConnectionsSuccess(directRegistry.connections ++ clusterRegistry.connections)
+
+    case MemberUp(member) => if (avaliableMember(member)) {
+      avaliableConnection(member).foreach { conn =>
+        clusterRegistry = clusterRegistry + conn
+        context.parent ! ReplicationConnectionUp(conn)
+      }
+    }
+
+    case ReachableMember(member) => if (avaliableMember(member)) {
+      avaliableConnection(member).foreach { conn =>
+        clusterRegistry = clusterRegistry + conn
+        context.parent ! ReplicationConnectionReachable(conn)
+      }
+    }
+
+    case UnreachableMember(member) => if (avaliableMember(member)) {
+      avaliableConnection(member).foreach { conn =>
+        clusterRegistry = clusterRegistry - conn
+        context.parent ! ReplicationConnectionUnreachable(conn)
+      }
+    }
+
+    case MemberRemoved(member, _) => if (avaliableMember(member)) {
+      avaliableConnection(member).foreach { conn =>
+        clusterRegistry = clusterRegistry - conn
+        context.parent ! ReplicationConnectionDown(conn)
+      }
+    }
+    case _ =>
+  }
+
+  private def avaliableMember(member: Member): Boolean = {
+    cluster.selfUniqueAddress != member.uniqueAddress && connectionRoles.intersect(member.roles).nonEmpty
+  }
+
+  private def avaliableConnection(member: Member): Option[ReplicationConnection] = for {
+    host <- member.address.host
+    port <- member.address.port
+    system = member.address.system
+  } yield ReplicationConnection(host, port, name = system)
+
+  override def postStop(): Unit = if (connectionRoles.nonEmpty) cluster.unsubscribe(self)
 }
