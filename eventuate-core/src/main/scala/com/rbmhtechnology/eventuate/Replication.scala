@@ -212,7 +212,7 @@ private class Recovery(endpoint: ReplicationEndpoint) {
         case _ =>
           endpoint.acceptor ! Recover(recoveryLinks, recoveryFinishedPromise)
           recoveryLinks.foreach { link =>
-            endpoint.controller ! ActivateReplication(link.replicationLink)
+            endpoint.controller ! ActivateReplicator(link.replicationLink)
           }
       }
       recoveryFinishedPromise.future
@@ -377,8 +377,8 @@ private object Controller {
   case class ReachableReplicationConnection(connection: ReplicationConnection)
   case class UnreachableReplicationConnection(connection: ReplicationConnection)
 
-  case class ActivateReplication(link: ReplicationLink)
-  case class DeactivateReplication(link: ReplicationLink)
+  case class ActivateReplicator(link: ReplicationLink)
+  case class DeactivateReplicator(link: ReplicationLink)
 }
 
 private class Controller(endpoint: ReplicationEndpoint) extends Actor with ActorLogging with ReceivePipeline {
@@ -392,10 +392,10 @@ private class Controller(endpoint: ReplicationEndpoint) extends Actor with Actor
   )
 
   pipelineOuter {
-    case cmd @ ActivateReplication(link) =>
+    case cmd @ ActivateReplicator(link) =>
       log.warning("activate replication link with {}", link)
       Inner(cmd)
-    case cmd @ DeactivateReplication(link) =>
+    case cmd @ DeactivateReplicator(link) =>
       log.warning("deactivate replication link with {}", link)
       Inner(cmd)
     case event @ ReplicationConnectionUp(conn) =>
@@ -430,7 +430,7 @@ private class Controller(endpoint: ReplicationEndpoint) extends Actor with Actor
     case GetReplicationConnections =>
       replicationDetector forward GetReplicationConnections
 
-    case ActivateReplication(link) =>
+    case ActivateReplicator(link) =>
       replicatorRegistry(link).foreach { replicator =>
         replicatorRegistry = replicatorRegistry - link
         context stop replicator
@@ -442,7 +442,7 @@ private class Controller(endpoint: ReplicationEndpoint) extends Actor with Actor
       context.watch(replicator)
       replicatorRegistry = replicatorRegistry + (link, replicator)
 
-    case DeactivateReplication(link) =>
+    case DeactivateReplicator(link) =>
       replicatorRegistry(link).foreach { replicator =>
         replicatorRegistry = replicatorRegistry - link
         context stop replicator
@@ -457,7 +457,7 @@ private class Controller(endpoint: ReplicationEndpoint) extends Actor with Actor
       replicatorRegistry.relicators.keys filter { link =>
         endpoint.replicationAcceptor(connection) == link.source.acceptor
       } foreach { link =>
-        self ! DeactivateReplication(link)
+        self ! DeactivateReplicator(link)
       }
 
     case ReplicationConnectionUp(conn) =>
@@ -621,7 +621,7 @@ private class ReplicatorInitializer(
     case GetReplicationInfoSuccess(info) =>
       acceptorRequestSchedule.foreach(_.cancel())
       endpoint.replicationLinks(connection, info).foreach { link =>
-        context.parent ! ActivateReplication(link)
+        context.parent ! ActivateReplicator(link)
       }
       context stop self
   }
