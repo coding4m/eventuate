@@ -64,10 +64,6 @@ object ReplicationEndpoint {
    * Matches a string of format "<hostname>:<port>".
    */
   private object Address {
-    //    def unapply(s: String): Option[(String, Int)] = {
-    //      val hp = s.split(":")
-    //      Some((hp(0), hp(1).toInt))
-    //    }
 
     val hostAndPort = new Regex("([^:]+):(.+)")
     val hostAndPortWithName = new Regex("([^@]+)@([^:]+):(.+)")
