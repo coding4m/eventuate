@@ -23,7 +23,6 @@ import akka.actor._
 import akka.event.{ Logging, LoggingAdapter }
 import akka.pattern.{ ask, pipe }
 import akka.util.Timeout
-import com.rbmhtechnology.eventuate.EventsourcingProtocol._
 import com.typesafe.config.Config
 
 import scala.concurrent.duration._
@@ -95,6 +94,7 @@ object EventsourcedView {
  */
 trait EventsourcedView extends Actor with Stash {
   import EventsourcedView._
+  import EventsourcingProtocol._
   import context.dispatcher
 
   type Handler[A] = EventsourcedView.Handler[A]
