@@ -22,18 +22,12 @@ package com.rbmhtechnology.eventuate.serializer;
 public final class ReplicationFilterFormats {
   private ReplicationFilterFormats() {}
   public static void registerAllExtensions(
-      com.google.protobuf.ExtensionRegistryLite registry) {
-  }
-
-  public static void registerAllExtensions(
       com.google.protobuf.ExtensionRegistry registry) {
-    registerAllExtensions(
-        (com.google.protobuf.ExtensionRegistryLite) registry);
   }
-  public interface ReplicationFilterTreeFormatOrBuilder extends
-      // @@protoc_insertion_point(interface_extends:ReplicationFilterTreeFormat)
-      com.google.protobuf.MessageOrBuilder {
+  public interface ReplicationFilterTreeFormatOrBuilder
+      extends com.google.protobuf.MessageOrBuilder {
 
+    // required .ReplicationFilterTreeFormat.NodeType nodeType = 1;
     /**
      * <code>required .ReplicationFilterTreeFormat.NodeType nodeType = 1;</code>
      */
@@ -43,101 +37,110 @@ public final class ReplicationFilterFormats {
      */
     com.rbmhtechnology.eventuate.serializer.ReplicationFilterFormats.ReplicationFilterTreeFormat.NodeType getNodeType();
 
+    // repeated .ReplicationFilterTreeFormat children = 2;
     /**
+     * <code>repeated .ReplicationFilterTreeFormat children = 2;</code>
+     *
      * <pre>
      * set if nodeType == AND | OR
      * </pre>
-     *
-     * <code>repeated .ReplicationFilterTreeFormat children = 2;</code>
      */
     java.util.List<com.rbmhtechnology.eventuate.serializer.ReplicationFilterFormats.ReplicationFilterTreeFormat> 
         getChildrenList();
     /**
+     * <code>repeated .ReplicationFilterTreeFormat children = 2;</code>
+     *
      * <pre>
      * set if nodeType == AND | OR
      * </pre>
-     *
-     * <code>repeated .ReplicationFilterTreeFormat children = 2;</code>
      */
     com.rbmhtechnology.eventuate.serializer.ReplicationFilterFormats.ReplicationFilterTreeFormat getChildren(int index);
     /**
+     * <code>repeated .ReplicationFilterTreeFormat children = 2;</code>
+     *
      * <pre>
      * set if nodeType == AND | OR
      * </pre>
-     *
-     * <code>repeated .ReplicationFilterTreeFormat children = 2;</code>
      */
     int getChildrenCount();
     /**
+     * <code>repeated .ReplicationFilterTreeFormat children = 2;</code>
+     *
      * <pre>
      * set if nodeType == AND | OR
      * </pre>
-     *
-     * <code>repeated .ReplicationFilterTreeFormat children = 2;</code>
      */
     java.util.List<? extends com.rbmhtechnology.eventuate.serializer.ReplicationFilterFormats.ReplicationFilterTreeFormatOrBuilder> 
         getChildrenOrBuilderList();
     /**
+     * <code>repeated .ReplicationFilterTreeFormat children = 2;</code>
+     *
      * <pre>
      * set if nodeType == AND | OR
      * </pre>
-     *
-     * <code>repeated .ReplicationFilterTreeFormat children = 2;</code>
      */
     com.rbmhtechnology.eventuate.serializer.ReplicationFilterFormats.ReplicationFilterTreeFormatOrBuilder getChildrenOrBuilder(
         int index);
 
+    // optional .PayloadFormat filter = 3;
     /**
+     * <code>optional .PayloadFormat filter = 3;</code>
+     *
      * <pre>
      * set if nodeType == LEAF
      * </pre>
-     *
-     * <code>optional .PayloadFormat filter = 3;</code>
      */
     boolean hasFilter();
     /**
+     * <code>optional .PayloadFormat filter = 3;</code>
+     *
      * <pre>
      * set if nodeType == LEAF
      * </pre>
-     *
-     * <code>optional .PayloadFormat filter = 3;</code>
      */
     com.rbmhtechnology.eventuate.serializer.CommonFormats.PayloadFormat getFilter();
     /**
+     * <code>optional .PayloadFormat filter = 3;</code>
+     *
      * <pre>
      * set if nodeType == LEAF
      * </pre>
-     *
-     * <code>optional .PayloadFormat filter = 3;</code>
      */
     com.rbmhtechnology.eventuate.serializer.CommonFormats.PayloadFormatOrBuilder getFilterOrBuilder();
   }
   /**
    * Protobuf type {@code ReplicationFilterTreeFormat}
    */
-  public  static final class ReplicationFilterTreeFormat extends
-      com.google.protobuf.GeneratedMessageV3 implements
-      // @@protoc_insertion_point(message_implements:ReplicationFilterTreeFormat)
-      ReplicationFilterTreeFormatOrBuilder {
+  public static final class ReplicationFilterTreeFormat extends
+      com.google.protobuf.GeneratedMessage
+      implements ReplicationFilterTreeFormatOrBuilder {
     // Use ReplicationFilterTreeFormat.newBuilder() to construct.
-    private ReplicationFilterTreeFormat(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+    private ReplicationFilterTreeFormat(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
       super(builder);
+      this.unknownFields = builder.getUnknownFields();
     }
-    private ReplicationFilterTreeFormat() {
-      nodeType_ = 1;
-      children_ = java.util.Collections.emptyList();
+    private ReplicationFilterTreeFormat(boolean noInit) { this.unknownFields = com.google.protobuf.UnknownFieldSet.getDefaultInstance(); }
+
+    private static final ReplicationFilterTreeFormat defaultInstance;
+    public static ReplicationFilterTreeFormat getDefaultInstance() {
+      return defaultInstance;
     }
 
+    public ReplicationFilterTreeFormat getDefaultInstanceForType() {
+      return defaultInstance;
+    }
+
+    private final com.google.protobuf.UnknownFieldSet unknownFields;
     @java.lang.Override
     public final com.google.protobuf.UnknownFieldSet
-    getUnknownFields() {
+        getUnknownFields() {
       return this.unknownFields;
     }
     private ReplicationFilterTreeFormat(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
-      this();
+      initFields();
       int mutable_bitField0_ = 0;
       com.google.protobuf.UnknownFieldSet.Builder unknownFields =
           com.google.protobuf.UnknownFieldSet.newBuilder();
@@ -163,7 +166,7 @@ public final class ReplicationFilterFormats {
                 unknownFields.mergeVarintField(1, rawValue);
               } else {
                 bitField0_ |= 0x00000001;
-                nodeType_ = rawValue;
+                nodeType_ = value;
               }
               break;
             }
@@ -172,8 +175,7 @@ public final class ReplicationFilterFormats {
                 children_ = new java.util.ArrayList<com.rbmhtechnology.eventuate.serializer.ReplicationFilterFormats.ReplicationFilterTreeFormat>();
                 mutable_bitField0_ |= 0x00000002;
               }
-              children_.add(
-                  input.readMessage(com.rbmhtechnology.eventuate.serializer.ReplicationFilterFormats.ReplicationFilterTreeFormat.PARSER, extensionRegistry));
+              children_.add(input.readMessage(com.rbmhtechnology.eventuate.serializer.ReplicationFilterFormats.ReplicationFilterTreeFormat.PARSER, extensionRegistry));
               break;
             }
             case 26: {
@@ -195,7 +197,7 @@ public final class ReplicationFilterFormats {
         throw e.setUnfinishedMessage(this);
       } catch (java.io.IOException e) {
         throw new com.google.protobuf.InvalidProtocolBufferException(
-            e).setUnfinishedMessage(this);
+            e.getMessage()).setUnfinishedMessage(this);
       } finally {
         if (((mutable_bitField0_ & 0x00000002) == 0x00000002)) {
           children_ = java.util.Collections.unmodifiableList(children_);
@@ -209,11 +211,26 @@ public final class ReplicationFilterFormats {
       return com.rbmhtechnology.eventuate.serializer.ReplicationFilterFormats.internal_static_ReplicationFilterTreeFormat_descriptor;
     }
 
-    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
         internalGetFieldAccessorTable() {
       return com.rbmhtechnology.eventuate.serializer.ReplicationFilterFormats.internal_static_ReplicationFilterTreeFormat_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
               com.rbmhtechnology.eventuate.serializer.ReplicationFilterFormats.ReplicationFilterTreeFormat.class, com.rbmhtechnology.eventuate.serializer.ReplicationFilterFormats.ReplicationFilterTreeFormat.Builder.class);
+    }
+
+    public static com.google.protobuf.Parser<ReplicationFilterTreeFormat> PARSER =
+        new com.google.protobuf.AbstractParser<ReplicationFilterTreeFormat>() {
+      public ReplicationFilterTreeFormat parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new ReplicationFilterTreeFormat(input, extensionRegistry);
+      }
+    };
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<ReplicationFilterTreeFormat> getParserForType() {
+      return PARSER;
     }
 
     /**
@@ -224,15 +241,15 @@ public final class ReplicationFilterFormats {
       /**
        * <code>LEAF = 1;</code>
        */
-      LEAF(1),
+      LEAF(0, 1),
       /**
        * <code>AND = 2;</code>
        */
-      AND(2),
+      AND(1, 2),
       /**
        * <code>OR = 3;</code>
        */
-      OR(3),
+      OR(2, 3),
       ;
 
       /**
@@ -249,19 +266,9 @@ public final class ReplicationFilterFormats {
       public static final int OR_VALUE = 3;
 
 
-      public final int getNumber() {
-        return value;
-      }
+      public final int getNumber() { return value; }
 
-      /**
-       * @deprecated Use {@link #forNumber(int)} instead.
-       */
-      @java.lang.Deprecated
       public static NodeType valueOf(int value) {
-        return forNumber(value);
-      }
-
-      public static NodeType forNumber(int value) {
         switch (value) {
           case 1: return LEAF;
           case 2: return AND;
@@ -274,17 +281,17 @@ public final class ReplicationFilterFormats {
           internalGetValueMap() {
         return internalValueMap;
       }
-      private static final com.google.protobuf.Internal.EnumLiteMap<
-          NodeType> internalValueMap =
+      private static com.google.protobuf.Internal.EnumLiteMap<NodeType>
+          internalValueMap =
             new com.google.protobuf.Internal.EnumLiteMap<NodeType>() {
               public NodeType findValueByNumber(int number) {
-                return NodeType.forNumber(number);
+                return NodeType.valueOf(number);
               }
             };
 
       public final com.google.protobuf.Descriptors.EnumValueDescriptor
           getValueDescriptor() {
-        return getDescriptor().getValues().get(ordinal());
+        return getDescriptor().getValues().get(index);
       }
       public final com.google.protobuf.Descriptors.EnumDescriptor
           getDescriptorForType() {
@@ -306,9 +313,11 @@ public final class ReplicationFilterFormats {
         return VALUES[desc.getIndex()];
       }
 
+      private final int index;
       private final int value;
 
-      private NodeType(int value) {
+      private NodeType(int index, int value) {
+        this.index = index;
         this.value = value;
       }
 
@@ -316,8 +325,9 @@ public final class ReplicationFilterFormats {
     }
 
     private int bitField0_;
+    // required .ReplicationFilterTreeFormat.NodeType nodeType = 1;
     public static final int NODETYPE_FIELD_NUMBER = 1;
-    private int nodeType_;
+    private com.rbmhtechnology.eventuate.serializer.ReplicationFilterFormats.ReplicationFilterTreeFormat.NodeType nodeType_;
     /**
      * <code>required .ReplicationFilterTreeFormat.NodeType nodeType = 1;</code>
      */
@@ -328,103 +338,108 @@ public final class ReplicationFilterFormats {
      * <code>required .ReplicationFilterTreeFormat.NodeType nodeType = 1;</code>
      */
     public com.rbmhtechnology.eventuate.serializer.ReplicationFilterFormats.ReplicationFilterTreeFormat.NodeType getNodeType() {
-      com.rbmhtechnology.eventuate.serializer.ReplicationFilterFormats.ReplicationFilterTreeFormat.NodeType result = com.rbmhtechnology.eventuate.serializer.ReplicationFilterFormats.ReplicationFilterTreeFormat.NodeType.valueOf(nodeType_);
-      return result == null ? com.rbmhtechnology.eventuate.serializer.ReplicationFilterFormats.ReplicationFilterTreeFormat.NodeType.LEAF : result;
+      return nodeType_;
     }
 
+    // repeated .ReplicationFilterTreeFormat children = 2;
     public static final int CHILDREN_FIELD_NUMBER = 2;
     private java.util.List<com.rbmhtechnology.eventuate.serializer.ReplicationFilterFormats.ReplicationFilterTreeFormat> children_;
     /**
+     * <code>repeated .ReplicationFilterTreeFormat children = 2;</code>
+     *
      * <pre>
      * set if nodeType == AND | OR
      * </pre>
-     *
-     * <code>repeated .ReplicationFilterTreeFormat children = 2;</code>
      */
     public java.util.List<com.rbmhtechnology.eventuate.serializer.ReplicationFilterFormats.ReplicationFilterTreeFormat> getChildrenList() {
       return children_;
     }
     /**
+     * <code>repeated .ReplicationFilterTreeFormat children = 2;</code>
+     *
      * <pre>
      * set if nodeType == AND | OR
      * </pre>
-     *
-     * <code>repeated .ReplicationFilterTreeFormat children = 2;</code>
      */
     public java.util.List<? extends com.rbmhtechnology.eventuate.serializer.ReplicationFilterFormats.ReplicationFilterTreeFormatOrBuilder> 
         getChildrenOrBuilderList() {
       return children_;
     }
     /**
+     * <code>repeated .ReplicationFilterTreeFormat children = 2;</code>
+     *
      * <pre>
      * set if nodeType == AND | OR
      * </pre>
-     *
-     * <code>repeated .ReplicationFilterTreeFormat children = 2;</code>
      */
     public int getChildrenCount() {
       return children_.size();
     }
     /**
+     * <code>repeated .ReplicationFilterTreeFormat children = 2;</code>
+     *
      * <pre>
      * set if nodeType == AND | OR
      * </pre>
-     *
-     * <code>repeated .ReplicationFilterTreeFormat children = 2;</code>
      */
     public com.rbmhtechnology.eventuate.serializer.ReplicationFilterFormats.ReplicationFilterTreeFormat getChildren(int index) {
       return children_.get(index);
     }
     /**
+     * <code>repeated .ReplicationFilterTreeFormat children = 2;</code>
+     *
      * <pre>
      * set if nodeType == AND | OR
      * </pre>
-     *
-     * <code>repeated .ReplicationFilterTreeFormat children = 2;</code>
      */
     public com.rbmhtechnology.eventuate.serializer.ReplicationFilterFormats.ReplicationFilterTreeFormatOrBuilder getChildrenOrBuilder(
         int index) {
       return children_.get(index);
     }
 
+    // optional .PayloadFormat filter = 3;
     public static final int FILTER_FIELD_NUMBER = 3;
     private com.rbmhtechnology.eventuate.serializer.CommonFormats.PayloadFormat filter_;
     /**
+     * <code>optional .PayloadFormat filter = 3;</code>
+     *
      * <pre>
      * set if nodeType == LEAF
      * </pre>
-     *
-     * <code>optional .PayloadFormat filter = 3;</code>
      */
     public boolean hasFilter() {
       return ((bitField0_ & 0x00000002) == 0x00000002);
     }
     /**
+     * <code>optional .PayloadFormat filter = 3;</code>
+     *
      * <pre>
      * set if nodeType == LEAF
      * </pre>
-     *
-     * <code>optional .PayloadFormat filter = 3;</code>
      */
     public com.rbmhtechnology.eventuate.serializer.CommonFormats.PayloadFormat getFilter() {
-      return filter_ == null ? com.rbmhtechnology.eventuate.serializer.CommonFormats.PayloadFormat.getDefaultInstance() : filter_;
+      return filter_;
     }
     /**
+     * <code>optional .PayloadFormat filter = 3;</code>
+     *
      * <pre>
      * set if nodeType == LEAF
      * </pre>
-     *
-     * <code>optional .PayloadFormat filter = 3;</code>
      */
     public com.rbmhtechnology.eventuate.serializer.CommonFormats.PayloadFormatOrBuilder getFilterOrBuilder() {
-      return filter_ == null ? com.rbmhtechnology.eventuate.serializer.CommonFormats.PayloadFormat.getDefaultInstance() : filter_;
+      return filter_;
     }
 
+    private void initFields() {
+      nodeType_ = com.rbmhtechnology.eventuate.serializer.ReplicationFilterFormats.ReplicationFilterTreeFormat.NodeType.LEAF;
+      children_ = java.util.Collections.emptyList();
+      filter_ = com.rbmhtechnology.eventuate.serializer.CommonFormats.PayloadFormat.getDefaultInstance();
+    }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
-      if (isInitialized == 1) return true;
-      if (isInitialized == 0) return false;
+      if (isInitialized != -1) return isInitialized == 1;
 
       if (!hasNodeType()) {
         memoizedIsInitialized = 0;
@@ -442,26 +457,28 @@ public final class ReplicationFilterFormats {
 
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
+      getSerializedSize();
       if (((bitField0_ & 0x00000001) == 0x00000001)) {
-        output.writeEnum(1, nodeType_);
+        output.writeEnum(1, nodeType_.getNumber());
       }
       for (int i = 0; i < children_.size(); i++) {
         output.writeMessage(2, children_.get(i));
       }
       if (((bitField0_ & 0x00000002) == 0x00000002)) {
-        output.writeMessage(3, getFilter());
+        output.writeMessage(3, filter_);
       }
-      unknownFields.writeTo(output);
+      getUnknownFields().writeTo(output);
     }
 
+    private int memoizedSerializedSize = -1;
     public int getSerializedSize() {
-      int size = memoizedSize;
+      int size = memoizedSerializedSize;
       if (size != -1) return size;
 
       size = 0;
       if (((bitField0_ & 0x00000001) == 0x00000001)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeEnumSize(1, nodeType_);
+          .computeEnumSize(1, nodeType_.getNumber());
       }
       for (int i = 0; i < children_.size(); i++) {
         size += com.google.protobuf.CodedOutputStream
@@ -469,62 +486,18 @@ public final class ReplicationFilterFormats {
       }
       if (((bitField0_ & 0x00000002) == 0x00000002)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(3, getFilter());
+          .computeMessageSize(3, filter_);
       }
-      size += unknownFields.getSerializedSize();
-      memoizedSize = size;
+      size += getUnknownFields().getSerializedSize();
+      memoizedSerializedSize = size;
       return size;
     }
 
     private static final long serialVersionUID = 0L;
     @java.lang.Override
-    public boolean equals(final java.lang.Object obj) {
-      if (obj == this) {
-       return true;
-      }
-      if (!(obj instanceof com.rbmhtechnology.eventuate.serializer.ReplicationFilterFormats.ReplicationFilterTreeFormat)) {
-        return super.equals(obj);
-      }
-      com.rbmhtechnology.eventuate.serializer.ReplicationFilterFormats.ReplicationFilterTreeFormat other = (com.rbmhtechnology.eventuate.serializer.ReplicationFilterFormats.ReplicationFilterTreeFormat) obj;
-
-      boolean result = true;
-      result = result && (hasNodeType() == other.hasNodeType());
-      if (hasNodeType()) {
-        result = result && nodeType_ == other.nodeType_;
-      }
-      result = result && getChildrenList()
-          .equals(other.getChildrenList());
-      result = result && (hasFilter() == other.hasFilter());
-      if (hasFilter()) {
-        result = result && getFilter()
-            .equals(other.getFilter());
-      }
-      result = result && unknownFields.equals(other.unknownFields);
-      return result;
-    }
-
-    @java.lang.Override
-    public int hashCode() {
-      if (memoizedHashCode != 0) {
-        return memoizedHashCode;
-      }
-      int hash = 41;
-      hash = (19 * hash) + getDescriptorForType().hashCode();
-      if (hasNodeType()) {
-        hash = (37 * hash) + NODETYPE_FIELD_NUMBER;
-        hash = (53 * hash) + nodeType_;
-      }
-      if (getChildrenCount() > 0) {
-        hash = (37 * hash) + CHILDREN_FIELD_NUMBER;
-        hash = (53 * hash) + getChildrenList().hashCode();
-      }
-      if (hasFilter()) {
-        hash = (37 * hash) + FILTER_FIELD_NUMBER;
-        hash = (53 * hash) + getFilter().hashCode();
-      }
-      hash = (29 * hash) + unknownFields.hashCode();
-      memoizedHashCode = hash;
-      return hash;
+    protected java.lang.Object writeReplace()
+        throws java.io.ObjectStreamException {
+      return super.writeReplace();
     }
 
     public static com.rbmhtechnology.eventuate.serializer.ReplicationFilterFormats.ReplicationFilterTreeFormat parseFrom(
@@ -550,57 +523,46 @@ public final class ReplicationFilterFormats {
     }
     public static com.rbmhtechnology.eventuate.serializer.ReplicationFilterFormats.ReplicationFilterTreeFormat parseFrom(java.io.InputStream input)
         throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
+      return PARSER.parseFrom(input);
     }
     public static com.rbmhtechnology.eventuate.serializer.ReplicationFilterFormats.ReplicationFilterTreeFormat parseFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
+      return PARSER.parseFrom(input, extensionRegistry);
     }
     public static com.rbmhtechnology.eventuate.serializer.ReplicationFilterFormats.ReplicationFilterTreeFormat parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input);
+      return PARSER.parseDelimitedFrom(input);
     }
     public static com.rbmhtechnology.eventuate.serializer.ReplicationFilterFormats.ReplicationFilterTreeFormat parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+      return PARSER.parseDelimitedFrom(input, extensionRegistry);
     }
     public static com.rbmhtechnology.eventuate.serializer.ReplicationFilterFormats.ReplicationFilterTreeFormat parseFrom(
         com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
+      return PARSER.parseFrom(input);
     }
     public static com.rbmhtechnology.eventuate.serializer.ReplicationFilterFormats.ReplicationFilterTreeFormat parseFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
+      return PARSER.parseFrom(input, extensionRegistry);
     }
 
+    public static Builder newBuilder() { return Builder.create(); }
     public Builder newBuilderForType() { return newBuilder(); }
-    public static Builder newBuilder() {
-      return DEFAULT_INSTANCE.toBuilder();
-    }
     public static Builder newBuilder(com.rbmhtechnology.eventuate.serializer.ReplicationFilterFormats.ReplicationFilterTreeFormat prototype) {
-      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+      return newBuilder().mergeFrom(prototype);
     }
-    public Builder toBuilder() {
-      return this == DEFAULT_INSTANCE
-          ? new Builder() : new Builder().mergeFrom(this);
-    }
+    public Builder toBuilder() { return newBuilder(this); }
 
     @java.lang.Override
     protected Builder newBuilderForType(
-        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
       Builder builder = new Builder(parent);
       return builder;
     }
@@ -608,15 +570,14 @@ public final class ReplicationFilterFormats {
      * Protobuf type {@code ReplicationFilterTreeFormat}
      */
     public static final class Builder extends
-        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-        // @@protoc_insertion_point(builder_implements:ReplicationFilterTreeFormat)
-        com.rbmhtechnology.eventuate.serializer.ReplicationFilterFormats.ReplicationFilterTreeFormatOrBuilder {
+        com.google.protobuf.GeneratedMessage.Builder<Builder>
+       implements com.rbmhtechnology.eventuate.serializer.ReplicationFilterFormats.ReplicationFilterTreeFormatOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
         return com.rbmhtechnology.eventuate.serializer.ReplicationFilterFormats.internal_static_ReplicationFilterTreeFormat_descriptor;
       }
 
-      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
           internalGetFieldAccessorTable() {
         return com.rbmhtechnology.eventuate.serializer.ReplicationFilterFormats.internal_static_ReplicationFilterTreeFormat_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
@@ -629,20 +590,23 @@ public final class ReplicationFilterFormats {
       }
 
       private Builder(
-          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
         super(parent);
         maybeForceBuilderInitialization();
       }
       private void maybeForceBuilderInitialization() {
-        if (com.google.protobuf.GeneratedMessageV3
-                .alwaysUseFieldBuilders) {
+        if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
           getChildrenFieldBuilder();
           getFilterFieldBuilder();
         }
       }
+      private static Builder create() {
+        return new Builder();
+      }
+
       public Builder clear() {
         super.clear();
-        nodeType_ = 1;
+        nodeType_ = com.rbmhtechnology.eventuate.serializer.ReplicationFilterFormats.ReplicationFilterTreeFormat.NodeType.LEAF;
         bitField0_ = (bitField0_ & ~0x00000001);
         if (childrenBuilder_ == null) {
           children_ = java.util.Collections.emptyList();
@@ -651,12 +615,16 @@ public final class ReplicationFilterFormats {
           childrenBuilder_.clear();
         }
         if (filterBuilder_ == null) {
-          filter_ = null;
+          filter_ = com.rbmhtechnology.eventuate.serializer.CommonFormats.PayloadFormat.getDefaultInstance();
         } else {
           filterBuilder_.clear();
         }
         bitField0_ = (bitField0_ & ~0x00000004);
         return this;
+      }
+
+      public Builder clone() {
+        return create().mergeFrom(buildPartial());
       }
 
       public com.google.protobuf.Descriptors.Descriptor
@@ -706,32 +674,6 @@ public final class ReplicationFilterFormats {
         return result;
       }
 
-      public Builder clone() {
-        return (Builder) super.clone();
-      }
-      public Builder setField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          Object value) {
-        return (Builder) super.setField(field, value);
-      }
-      public Builder clearField(
-          com.google.protobuf.Descriptors.FieldDescriptor field) {
-        return (Builder) super.clearField(field);
-      }
-      public Builder clearOneof(
-          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
-        return (Builder) super.clearOneof(oneof);
-      }
-      public Builder setRepeatedField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          int index, Object value) {
-        return (Builder) super.setRepeatedField(field, index, value);
-      }
-      public Builder addRepeatedField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          Object value) {
-        return (Builder) super.addRepeatedField(field, value);
-      }
       public Builder mergeFrom(com.google.protobuf.Message other) {
         if (other instanceof com.rbmhtechnology.eventuate.serializer.ReplicationFilterFormats.ReplicationFilterTreeFormat) {
           return mergeFrom((com.rbmhtechnology.eventuate.serializer.ReplicationFilterFormats.ReplicationFilterTreeFormat)other);
@@ -765,7 +707,7 @@ public final class ReplicationFilterFormats {
               children_ = other.children_;
               bitField0_ = (bitField0_ & ~0x00000002);
               childrenBuilder_ = 
-                com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
+                com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders ?
                    getChildrenFieldBuilder() : null;
             } else {
               childrenBuilder_.addAllMessages(other.children_);
@@ -775,17 +717,18 @@ public final class ReplicationFilterFormats {
         if (other.hasFilter()) {
           mergeFilter(other.getFilter());
         }
-        this.mergeUnknownFields(other.unknownFields);
-        onChanged();
+        this.mergeUnknownFields(other.getUnknownFields());
         return this;
       }
 
       public final boolean isInitialized() {
         if (!hasNodeType()) {
+          
           return false;
         }
         for (int i = 0; i < getChildrenCount(); i++) {
           if (!getChildren(i).isInitialized()) {
+            
             return false;
           }
         }
@@ -801,7 +744,7 @@ public final class ReplicationFilterFormats {
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
         } catch (com.google.protobuf.InvalidProtocolBufferException e) {
           parsedMessage = (com.rbmhtechnology.eventuate.serializer.ReplicationFilterFormats.ReplicationFilterTreeFormat) e.getUnfinishedMessage();
-          throw e.unwrapIOException();
+          throw e;
         } finally {
           if (parsedMessage != null) {
             mergeFrom(parsedMessage);
@@ -811,7 +754,8 @@ public final class ReplicationFilterFormats {
       }
       private int bitField0_;
 
-      private int nodeType_ = 1;
+      // required .ReplicationFilterTreeFormat.NodeType nodeType = 1;
+      private com.rbmhtechnology.eventuate.serializer.ReplicationFilterFormats.ReplicationFilterTreeFormat.NodeType nodeType_ = com.rbmhtechnology.eventuate.serializer.ReplicationFilterFormats.ReplicationFilterTreeFormat.NodeType.LEAF;
       /**
        * <code>required .ReplicationFilterTreeFormat.NodeType nodeType = 1;</code>
        */
@@ -822,8 +766,7 @@ public final class ReplicationFilterFormats {
        * <code>required .ReplicationFilterTreeFormat.NodeType nodeType = 1;</code>
        */
       public com.rbmhtechnology.eventuate.serializer.ReplicationFilterFormats.ReplicationFilterTreeFormat.NodeType getNodeType() {
-        com.rbmhtechnology.eventuate.serializer.ReplicationFilterFormats.ReplicationFilterTreeFormat.NodeType result = com.rbmhtechnology.eventuate.serializer.ReplicationFilterFormats.ReplicationFilterTreeFormat.NodeType.valueOf(nodeType_);
-        return result == null ? com.rbmhtechnology.eventuate.serializer.ReplicationFilterFormats.ReplicationFilterTreeFormat.NodeType.LEAF : result;
+        return nodeType_;
       }
       /**
        * <code>required .ReplicationFilterTreeFormat.NodeType nodeType = 1;</code>
@@ -833,7 +776,7 @@ public final class ReplicationFilterFormats {
           throw new NullPointerException();
         }
         bitField0_ |= 0x00000001;
-        nodeType_ = value.getNumber();
+        nodeType_ = value;
         onChanged();
         return this;
       }
@@ -842,11 +785,12 @@ public final class ReplicationFilterFormats {
        */
       public Builder clearNodeType() {
         bitField0_ = (bitField0_ & ~0x00000001);
-        nodeType_ = 1;
+        nodeType_ = com.rbmhtechnology.eventuate.serializer.ReplicationFilterFormats.ReplicationFilterTreeFormat.NodeType.LEAF;
         onChanged();
         return this;
       }
 
+      // repeated .ReplicationFilterTreeFormat children = 2;
       private java.util.List<com.rbmhtechnology.eventuate.serializer.ReplicationFilterFormats.ReplicationFilterTreeFormat> children_ =
         java.util.Collections.emptyList();
       private void ensureChildrenIsMutable() {
@@ -856,15 +800,15 @@ public final class ReplicationFilterFormats {
          }
       }
 
-      private com.google.protobuf.RepeatedFieldBuilderV3<
+      private com.google.protobuf.RepeatedFieldBuilder<
           com.rbmhtechnology.eventuate.serializer.ReplicationFilterFormats.ReplicationFilterTreeFormat, com.rbmhtechnology.eventuate.serializer.ReplicationFilterFormats.ReplicationFilterTreeFormat.Builder, com.rbmhtechnology.eventuate.serializer.ReplicationFilterFormats.ReplicationFilterTreeFormatOrBuilder> childrenBuilder_;
 
       /**
+       * <code>repeated .ReplicationFilterTreeFormat children = 2;</code>
+       *
        * <pre>
        * set if nodeType == AND | OR
        * </pre>
-       *
-       * <code>repeated .ReplicationFilterTreeFormat children = 2;</code>
        */
       public java.util.List<com.rbmhtechnology.eventuate.serializer.ReplicationFilterFormats.ReplicationFilterTreeFormat> getChildrenList() {
         if (childrenBuilder_ == null) {
@@ -874,11 +818,11 @@ public final class ReplicationFilterFormats {
         }
       }
       /**
+       * <code>repeated .ReplicationFilterTreeFormat children = 2;</code>
+       *
        * <pre>
        * set if nodeType == AND | OR
        * </pre>
-       *
-       * <code>repeated .ReplicationFilterTreeFormat children = 2;</code>
        */
       public int getChildrenCount() {
         if (childrenBuilder_ == null) {
@@ -888,11 +832,11 @@ public final class ReplicationFilterFormats {
         }
       }
       /**
+       * <code>repeated .ReplicationFilterTreeFormat children = 2;</code>
+       *
        * <pre>
        * set if nodeType == AND | OR
        * </pre>
-       *
-       * <code>repeated .ReplicationFilterTreeFormat children = 2;</code>
        */
       public com.rbmhtechnology.eventuate.serializer.ReplicationFilterFormats.ReplicationFilterTreeFormat getChildren(int index) {
         if (childrenBuilder_ == null) {
@@ -902,11 +846,11 @@ public final class ReplicationFilterFormats {
         }
       }
       /**
+       * <code>repeated .ReplicationFilterTreeFormat children = 2;</code>
+       *
        * <pre>
        * set if nodeType == AND | OR
        * </pre>
-       *
-       * <code>repeated .ReplicationFilterTreeFormat children = 2;</code>
        */
       public Builder setChildren(
           int index, com.rbmhtechnology.eventuate.serializer.ReplicationFilterFormats.ReplicationFilterTreeFormat value) {
@@ -923,11 +867,11 @@ public final class ReplicationFilterFormats {
         return this;
       }
       /**
+       * <code>repeated .ReplicationFilterTreeFormat children = 2;</code>
+       *
        * <pre>
        * set if nodeType == AND | OR
        * </pre>
-       *
-       * <code>repeated .ReplicationFilterTreeFormat children = 2;</code>
        */
       public Builder setChildren(
           int index, com.rbmhtechnology.eventuate.serializer.ReplicationFilterFormats.ReplicationFilterTreeFormat.Builder builderForValue) {
@@ -941,11 +885,11 @@ public final class ReplicationFilterFormats {
         return this;
       }
       /**
+       * <code>repeated .ReplicationFilterTreeFormat children = 2;</code>
+       *
        * <pre>
        * set if nodeType == AND | OR
        * </pre>
-       *
-       * <code>repeated .ReplicationFilterTreeFormat children = 2;</code>
        */
       public Builder addChildren(com.rbmhtechnology.eventuate.serializer.ReplicationFilterFormats.ReplicationFilterTreeFormat value) {
         if (childrenBuilder_ == null) {
@@ -961,11 +905,11 @@ public final class ReplicationFilterFormats {
         return this;
       }
       /**
+       * <code>repeated .ReplicationFilterTreeFormat children = 2;</code>
+       *
        * <pre>
        * set if nodeType == AND | OR
        * </pre>
-       *
-       * <code>repeated .ReplicationFilterTreeFormat children = 2;</code>
        */
       public Builder addChildren(
           int index, com.rbmhtechnology.eventuate.serializer.ReplicationFilterFormats.ReplicationFilterTreeFormat value) {
@@ -982,11 +926,11 @@ public final class ReplicationFilterFormats {
         return this;
       }
       /**
+       * <code>repeated .ReplicationFilterTreeFormat children = 2;</code>
+       *
        * <pre>
        * set if nodeType == AND | OR
        * </pre>
-       *
-       * <code>repeated .ReplicationFilterTreeFormat children = 2;</code>
        */
       public Builder addChildren(
           com.rbmhtechnology.eventuate.serializer.ReplicationFilterFormats.ReplicationFilterTreeFormat.Builder builderForValue) {
@@ -1000,11 +944,11 @@ public final class ReplicationFilterFormats {
         return this;
       }
       /**
+       * <code>repeated .ReplicationFilterTreeFormat children = 2;</code>
+       *
        * <pre>
        * set if nodeType == AND | OR
        * </pre>
-       *
-       * <code>repeated .ReplicationFilterTreeFormat children = 2;</code>
        */
       public Builder addChildren(
           int index, com.rbmhtechnology.eventuate.serializer.ReplicationFilterFormats.ReplicationFilterTreeFormat.Builder builderForValue) {
@@ -1018,18 +962,17 @@ public final class ReplicationFilterFormats {
         return this;
       }
       /**
+       * <code>repeated .ReplicationFilterTreeFormat children = 2;</code>
+       *
        * <pre>
        * set if nodeType == AND | OR
        * </pre>
-       *
-       * <code>repeated .ReplicationFilterTreeFormat children = 2;</code>
        */
       public Builder addAllChildren(
           java.lang.Iterable<? extends com.rbmhtechnology.eventuate.serializer.ReplicationFilterFormats.ReplicationFilterTreeFormat> values) {
         if (childrenBuilder_ == null) {
           ensureChildrenIsMutable();
-          com.google.protobuf.AbstractMessageLite.Builder.addAll(
-              values, children_);
+          super.addAll(values, children_);
           onChanged();
         } else {
           childrenBuilder_.addAllMessages(values);
@@ -1037,11 +980,11 @@ public final class ReplicationFilterFormats {
         return this;
       }
       /**
+       * <code>repeated .ReplicationFilterTreeFormat children = 2;</code>
+       *
        * <pre>
        * set if nodeType == AND | OR
        * </pre>
-       *
-       * <code>repeated .ReplicationFilterTreeFormat children = 2;</code>
        */
       public Builder clearChildren() {
         if (childrenBuilder_ == null) {
@@ -1054,11 +997,11 @@ public final class ReplicationFilterFormats {
         return this;
       }
       /**
+       * <code>repeated .ReplicationFilterTreeFormat children = 2;</code>
+       *
        * <pre>
        * set if nodeType == AND | OR
        * </pre>
-       *
-       * <code>repeated .ReplicationFilterTreeFormat children = 2;</code>
        */
       public Builder removeChildren(int index) {
         if (childrenBuilder_ == null) {
@@ -1071,22 +1014,22 @@ public final class ReplicationFilterFormats {
         return this;
       }
       /**
+       * <code>repeated .ReplicationFilterTreeFormat children = 2;</code>
+       *
        * <pre>
        * set if nodeType == AND | OR
        * </pre>
-       *
-       * <code>repeated .ReplicationFilterTreeFormat children = 2;</code>
        */
       public com.rbmhtechnology.eventuate.serializer.ReplicationFilterFormats.ReplicationFilterTreeFormat.Builder getChildrenBuilder(
           int index) {
         return getChildrenFieldBuilder().getBuilder(index);
       }
       /**
+       * <code>repeated .ReplicationFilterTreeFormat children = 2;</code>
+       *
        * <pre>
        * set if nodeType == AND | OR
        * </pre>
-       *
-       * <code>repeated .ReplicationFilterTreeFormat children = 2;</code>
        */
       public com.rbmhtechnology.eventuate.serializer.ReplicationFilterFormats.ReplicationFilterTreeFormatOrBuilder getChildrenOrBuilder(
           int index) {
@@ -1096,11 +1039,11 @@ public final class ReplicationFilterFormats {
         }
       }
       /**
+       * <code>repeated .ReplicationFilterTreeFormat children = 2;</code>
+       *
        * <pre>
        * set if nodeType == AND | OR
        * </pre>
-       *
-       * <code>repeated .ReplicationFilterTreeFormat children = 2;</code>
        */
       public java.util.List<? extends com.rbmhtechnology.eventuate.serializer.ReplicationFilterFormats.ReplicationFilterTreeFormatOrBuilder> 
            getChildrenOrBuilderList() {
@@ -1111,22 +1054,22 @@ public final class ReplicationFilterFormats {
         }
       }
       /**
+       * <code>repeated .ReplicationFilterTreeFormat children = 2;</code>
+       *
        * <pre>
        * set if nodeType == AND | OR
        * </pre>
-       *
-       * <code>repeated .ReplicationFilterTreeFormat children = 2;</code>
        */
       public com.rbmhtechnology.eventuate.serializer.ReplicationFilterFormats.ReplicationFilterTreeFormat.Builder addChildrenBuilder() {
         return getChildrenFieldBuilder().addBuilder(
             com.rbmhtechnology.eventuate.serializer.ReplicationFilterFormats.ReplicationFilterTreeFormat.getDefaultInstance());
       }
       /**
+       * <code>repeated .ReplicationFilterTreeFormat children = 2;</code>
+       *
        * <pre>
        * set if nodeType == AND | OR
        * </pre>
-       *
-       * <code>repeated .ReplicationFilterTreeFormat children = 2;</code>
        */
       public com.rbmhtechnology.eventuate.serializer.ReplicationFilterFormats.ReplicationFilterTreeFormat.Builder addChildrenBuilder(
           int index) {
@@ -1134,21 +1077,21 @@ public final class ReplicationFilterFormats {
             index, com.rbmhtechnology.eventuate.serializer.ReplicationFilterFormats.ReplicationFilterTreeFormat.getDefaultInstance());
       }
       /**
+       * <code>repeated .ReplicationFilterTreeFormat children = 2;</code>
+       *
        * <pre>
        * set if nodeType == AND | OR
        * </pre>
-       *
-       * <code>repeated .ReplicationFilterTreeFormat children = 2;</code>
        */
       public java.util.List<com.rbmhtechnology.eventuate.serializer.ReplicationFilterFormats.ReplicationFilterTreeFormat.Builder> 
            getChildrenBuilderList() {
         return getChildrenFieldBuilder().getBuilderList();
       }
-      private com.google.protobuf.RepeatedFieldBuilderV3<
+      private com.google.protobuf.RepeatedFieldBuilder<
           com.rbmhtechnology.eventuate.serializer.ReplicationFilterFormats.ReplicationFilterTreeFormat, com.rbmhtechnology.eventuate.serializer.ReplicationFilterFormats.ReplicationFilterTreeFormat.Builder, com.rbmhtechnology.eventuate.serializer.ReplicationFilterFormats.ReplicationFilterTreeFormatOrBuilder> 
           getChildrenFieldBuilder() {
         if (childrenBuilder_ == null) {
-          childrenBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
+          childrenBuilder_ = new com.google.protobuf.RepeatedFieldBuilder<
               com.rbmhtechnology.eventuate.serializer.ReplicationFilterFormats.ReplicationFilterTreeFormat, com.rbmhtechnology.eventuate.serializer.ReplicationFilterFormats.ReplicationFilterTreeFormat.Builder, com.rbmhtechnology.eventuate.serializer.ReplicationFilterFormats.ReplicationFilterTreeFormatOrBuilder>(
                   children_,
                   ((bitField0_ & 0x00000002) == 0x00000002),
@@ -1159,39 +1102,40 @@ public final class ReplicationFilterFormats {
         return childrenBuilder_;
       }
 
-      private com.rbmhtechnology.eventuate.serializer.CommonFormats.PayloadFormat filter_ = null;
-      private com.google.protobuf.SingleFieldBuilderV3<
+      // optional .PayloadFormat filter = 3;
+      private com.rbmhtechnology.eventuate.serializer.CommonFormats.PayloadFormat filter_ = com.rbmhtechnology.eventuate.serializer.CommonFormats.PayloadFormat.getDefaultInstance();
+      private com.google.protobuf.SingleFieldBuilder<
           com.rbmhtechnology.eventuate.serializer.CommonFormats.PayloadFormat, com.rbmhtechnology.eventuate.serializer.CommonFormats.PayloadFormat.Builder, com.rbmhtechnology.eventuate.serializer.CommonFormats.PayloadFormatOrBuilder> filterBuilder_;
       /**
+       * <code>optional .PayloadFormat filter = 3;</code>
+       *
        * <pre>
        * set if nodeType == LEAF
        * </pre>
-       *
-       * <code>optional .PayloadFormat filter = 3;</code>
        */
       public boolean hasFilter() {
         return ((bitField0_ & 0x00000004) == 0x00000004);
       }
       /**
+       * <code>optional .PayloadFormat filter = 3;</code>
+       *
        * <pre>
        * set if nodeType == LEAF
        * </pre>
-       *
-       * <code>optional .PayloadFormat filter = 3;</code>
        */
       public com.rbmhtechnology.eventuate.serializer.CommonFormats.PayloadFormat getFilter() {
         if (filterBuilder_ == null) {
-          return filter_ == null ? com.rbmhtechnology.eventuate.serializer.CommonFormats.PayloadFormat.getDefaultInstance() : filter_;
+          return filter_;
         } else {
           return filterBuilder_.getMessage();
         }
       }
       /**
+       * <code>optional .PayloadFormat filter = 3;</code>
+       *
        * <pre>
        * set if nodeType == LEAF
        * </pre>
-       *
-       * <code>optional .PayloadFormat filter = 3;</code>
        */
       public Builder setFilter(com.rbmhtechnology.eventuate.serializer.CommonFormats.PayloadFormat value) {
         if (filterBuilder_ == null) {
@@ -1207,11 +1151,11 @@ public final class ReplicationFilterFormats {
         return this;
       }
       /**
+       * <code>optional .PayloadFormat filter = 3;</code>
+       *
        * <pre>
        * set if nodeType == LEAF
        * </pre>
-       *
-       * <code>optional .PayloadFormat filter = 3;</code>
        */
       public Builder setFilter(
           com.rbmhtechnology.eventuate.serializer.CommonFormats.PayloadFormat.Builder builderForValue) {
@@ -1225,16 +1169,15 @@ public final class ReplicationFilterFormats {
         return this;
       }
       /**
+       * <code>optional .PayloadFormat filter = 3;</code>
+       *
        * <pre>
        * set if nodeType == LEAF
        * </pre>
-       *
-       * <code>optional .PayloadFormat filter = 3;</code>
        */
       public Builder mergeFilter(com.rbmhtechnology.eventuate.serializer.CommonFormats.PayloadFormat value) {
         if (filterBuilder_ == null) {
           if (((bitField0_ & 0x00000004) == 0x00000004) &&
-              filter_ != null &&
               filter_ != com.rbmhtechnology.eventuate.serializer.CommonFormats.PayloadFormat.getDefaultInstance()) {
             filter_ =
               com.rbmhtechnology.eventuate.serializer.CommonFormats.PayloadFormat.newBuilder(filter_).mergeFrom(value).buildPartial();
@@ -1249,15 +1192,15 @@ public final class ReplicationFilterFormats {
         return this;
       }
       /**
+       * <code>optional .PayloadFormat filter = 3;</code>
+       *
        * <pre>
        * set if nodeType == LEAF
        * </pre>
-       *
-       * <code>optional .PayloadFormat filter = 3;</code>
        */
       public Builder clearFilter() {
         if (filterBuilder_ == null) {
-          filter_ = null;
+          filter_ = com.rbmhtechnology.eventuate.serializer.CommonFormats.PayloadFormat.getDefaultInstance();
           onChanged();
         } else {
           filterBuilder_.clear();
@@ -1266,11 +1209,11 @@ public final class ReplicationFilterFormats {
         return this;
       }
       /**
+       * <code>optional .PayloadFormat filter = 3;</code>
+       *
        * <pre>
        * set if nodeType == LEAF
        * </pre>
-       *
-       * <code>optional .PayloadFormat filter = 3;</code>
        */
       public com.rbmhtechnology.eventuate.serializer.CommonFormats.PayloadFormat.Builder getFilterBuilder() {
         bitField0_ |= 0x00000004;
@@ -1278,121 +1221,91 @@ public final class ReplicationFilterFormats {
         return getFilterFieldBuilder().getBuilder();
       }
       /**
+       * <code>optional .PayloadFormat filter = 3;</code>
+       *
        * <pre>
        * set if nodeType == LEAF
        * </pre>
-       *
-       * <code>optional .PayloadFormat filter = 3;</code>
        */
       public com.rbmhtechnology.eventuate.serializer.CommonFormats.PayloadFormatOrBuilder getFilterOrBuilder() {
         if (filterBuilder_ != null) {
           return filterBuilder_.getMessageOrBuilder();
         } else {
-          return filter_ == null ?
-              com.rbmhtechnology.eventuate.serializer.CommonFormats.PayloadFormat.getDefaultInstance() : filter_;
+          return filter_;
         }
       }
       /**
+       * <code>optional .PayloadFormat filter = 3;</code>
+       *
        * <pre>
        * set if nodeType == LEAF
        * </pre>
-       *
-       * <code>optional .PayloadFormat filter = 3;</code>
        */
-      private com.google.protobuf.SingleFieldBuilderV3<
+      private com.google.protobuf.SingleFieldBuilder<
           com.rbmhtechnology.eventuate.serializer.CommonFormats.PayloadFormat, com.rbmhtechnology.eventuate.serializer.CommonFormats.PayloadFormat.Builder, com.rbmhtechnology.eventuate.serializer.CommonFormats.PayloadFormatOrBuilder> 
           getFilterFieldBuilder() {
         if (filterBuilder_ == null) {
-          filterBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+          filterBuilder_ = new com.google.protobuf.SingleFieldBuilder<
               com.rbmhtechnology.eventuate.serializer.CommonFormats.PayloadFormat, com.rbmhtechnology.eventuate.serializer.CommonFormats.PayloadFormat.Builder, com.rbmhtechnology.eventuate.serializer.CommonFormats.PayloadFormatOrBuilder>(
-                  getFilter(),
+                  filter_,
                   getParentForChildren(),
                   isClean());
           filter_ = null;
         }
         return filterBuilder_;
       }
-      public final Builder setUnknownFields(
-          final com.google.protobuf.UnknownFieldSet unknownFields) {
-        return super.setUnknownFields(unknownFields);
-      }
-
-      public final Builder mergeUnknownFields(
-          final com.google.protobuf.UnknownFieldSet unknownFields) {
-        return super.mergeUnknownFields(unknownFields);
-      }
-
 
       // @@protoc_insertion_point(builder_scope:ReplicationFilterTreeFormat)
     }
 
-    // @@protoc_insertion_point(class_scope:ReplicationFilterTreeFormat)
-    private static final com.rbmhtechnology.eventuate.serializer.ReplicationFilterFormats.ReplicationFilterTreeFormat DEFAULT_INSTANCE;
     static {
-      DEFAULT_INSTANCE = new com.rbmhtechnology.eventuate.serializer.ReplicationFilterFormats.ReplicationFilterTreeFormat();
+      defaultInstance = new ReplicationFilterTreeFormat(true);
+      defaultInstance.initFields();
     }
 
-    public static com.rbmhtechnology.eventuate.serializer.ReplicationFilterFormats.ReplicationFilterTreeFormat getDefaultInstance() {
-      return DEFAULT_INSTANCE;
-    }
-
-    @java.lang.Deprecated public static final com.google.protobuf.Parser<ReplicationFilterTreeFormat>
-        PARSER = new com.google.protobuf.AbstractParser<ReplicationFilterTreeFormat>() {
-      public ReplicationFilterTreeFormat parsePartialFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws com.google.protobuf.InvalidProtocolBufferException {
-          return new ReplicationFilterTreeFormat(input, extensionRegistry);
-      }
-    };
-
-    public static com.google.protobuf.Parser<ReplicationFilterTreeFormat> parser() {
-      return PARSER;
-    }
-
-    @java.lang.Override
-    public com.google.protobuf.Parser<ReplicationFilterTreeFormat> getParserForType() {
-      return PARSER;
-    }
-
-    public com.rbmhtechnology.eventuate.serializer.ReplicationFilterFormats.ReplicationFilterTreeFormat getDefaultInstanceForType() {
-      return DEFAULT_INSTANCE;
-    }
-
+    // @@protoc_insertion_point(class_scope:ReplicationFilterTreeFormat)
   }
 
-  public interface NoFilterFormatOrBuilder extends
-      // @@protoc_insertion_point(interface_extends:NoFilterFormat)
-      com.google.protobuf.MessageOrBuilder {
+  public interface NoFilterFormatOrBuilder
+      extends com.google.protobuf.MessageOrBuilder {
   }
   /**
+   * Protobuf type {@code NoFilterFormat}
+   *
    * <pre>
    * no fields
    * </pre>
-   *
-   * Protobuf type {@code NoFilterFormat}
    */
-  public  static final class NoFilterFormat extends
-      com.google.protobuf.GeneratedMessageV3 implements
-      // @@protoc_insertion_point(message_implements:NoFilterFormat)
-      NoFilterFormatOrBuilder {
+  public static final class NoFilterFormat extends
+      com.google.protobuf.GeneratedMessage
+      implements NoFilterFormatOrBuilder {
     // Use NoFilterFormat.newBuilder() to construct.
-    private NoFilterFormat(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+    private NoFilterFormat(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
       super(builder);
+      this.unknownFields = builder.getUnknownFields();
     }
-    private NoFilterFormat() {
+    private NoFilterFormat(boolean noInit) { this.unknownFields = com.google.protobuf.UnknownFieldSet.getDefaultInstance(); }
+
+    private static final NoFilterFormat defaultInstance;
+    public static NoFilterFormat getDefaultInstance() {
+      return defaultInstance;
     }
 
+    public NoFilterFormat getDefaultInstanceForType() {
+      return defaultInstance;
+    }
+
+    private final com.google.protobuf.UnknownFieldSet unknownFields;
     @java.lang.Override
     public final com.google.protobuf.UnknownFieldSet
-    getUnknownFields() {
+        getUnknownFields() {
       return this.unknownFields;
     }
     private NoFilterFormat(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
-      this();
+      initFields();
       com.google.protobuf.UnknownFieldSet.Builder unknownFields =
           com.google.protobuf.UnknownFieldSet.newBuilder();
       try {
@@ -1416,7 +1329,7 @@ public final class ReplicationFilterFormats {
         throw e.setUnfinishedMessage(this);
       } catch (java.io.IOException e) {
         throw new com.google.protobuf.InvalidProtocolBufferException(
-            e).setUnfinishedMessage(this);
+            e.getMessage()).setUnfinishedMessage(this);
       } finally {
         this.unknownFields = unknownFields.build();
         makeExtensionsImmutable();
@@ -1427,18 +1340,34 @@ public final class ReplicationFilterFormats {
       return com.rbmhtechnology.eventuate.serializer.ReplicationFilterFormats.internal_static_NoFilterFormat_descriptor;
     }
 
-    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
         internalGetFieldAccessorTable() {
       return com.rbmhtechnology.eventuate.serializer.ReplicationFilterFormats.internal_static_NoFilterFormat_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
               com.rbmhtechnology.eventuate.serializer.ReplicationFilterFormats.NoFilterFormat.class, com.rbmhtechnology.eventuate.serializer.ReplicationFilterFormats.NoFilterFormat.Builder.class);
     }
 
+    public static com.google.protobuf.Parser<NoFilterFormat> PARSER =
+        new com.google.protobuf.AbstractParser<NoFilterFormat>() {
+      public NoFilterFormat parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new NoFilterFormat(input, extensionRegistry);
+      }
+    };
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<NoFilterFormat> getParserForType() {
+      return PARSER;
+    }
+
+    private void initFields() {
+    }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
-      if (isInitialized == 1) return true;
-      if (isInitialized == 0) return false;
+      if (isInitialized != -1) return isInitialized == 1;
 
       memoizedIsInitialized = 1;
       return true;
@@ -1446,45 +1375,26 @@ public final class ReplicationFilterFormats {
 
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
-      unknownFields.writeTo(output);
+      getSerializedSize();
+      getUnknownFields().writeTo(output);
     }
 
+    private int memoizedSerializedSize = -1;
     public int getSerializedSize() {
-      int size = memoizedSize;
+      int size = memoizedSerializedSize;
       if (size != -1) return size;
 
       size = 0;
-      size += unknownFields.getSerializedSize();
-      memoizedSize = size;
+      size += getUnknownFields().getSerializedSize();
+      memoizedSerializedSize = size;
       return size;
     }
 
     private static final long serialVersionUID = 0L;
     @java.lang.Override
-    public boolean equals(final java.lang.Object obj) {
-      if (obj == this) {
-       return true;
-      }
-      if (!(obj instanceof com.rbmhtechnology.eventuate.serializer.ReplicationFilterFormats.NoFilterFormat)) {
-        return super.equals(obj);
-      }
-      com.rbmhtechnology.eventuate.serializer.ReplicationFilterFormats.NoFilterFormat other = (com.rbmhtechnology.eventuate.serializer.ReplicationFilterFormats.NoFilterFormat) obj;
-
-      boolean result = true;
-      result = result && unknownFields.equals(other.unknownFields);
-      return result;
-    }
-
-    @java.lang.Override
-    public int hashCode() {
-      if (memoizedHashCode != 0) {
-        return memoizedHashCode;
-      }
-      int hash = 41;
-      hash = (19 * hash) + getDescriptorForType().hashCode();
-      hash = (29 * hash) + unknownFields.hashCode();
-      memoizedHashCode = hash;
-      return hash;
+    protected java.lang.Object writeReplace()
+        throws java.io.ObjectStreamException {
+      return super.writeReplace();
     }
 
     public static com.rbmhtechnology.eventuate.serializer.ReplicationFilterFormats.NoFilterFormat parseFrom(
@@ -1510,77 +1420,65 @@ public final class ReplicationFilterFormats {
     }
     public static com.rbmhtechnology.eventuate.serializer.ReplicationFilterFormats.NoFilterFormat parseFrom(java.io.InputStream input)
         throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
+      return PARSER.parseFrom(input);
     }
     public static com.rbmhtechnology.eventuate.serializer.ReplicationFilterFormats.NoFilterFormat parseFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
+      return PARSER.parseFrom(input, extensionRegistry);
     }
     public static com.rbmhtechnology.eventuate.serializer.ReplicationFilterFormats.NoFilterFormat parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input);
+      return PARSER.parseDelimitedFrom(input);
     }
     public static com.rbmhtechnology.eventuate.serializer.ReplicationFilterFormats.NoFilterFormat parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+      return PARSER.parseDelimitedFrom(input, extensionRegistry);
     }
     public static com.rbmhtechnology.eventuate.serializer.ReplicationFilterFormats.NoFilterFormat parseFrom(
         com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
+      return PARSER.parseFrom(input);
     }
     public static com.rbmhtechnology.eventuate.serializer.ReplicationFilterFormats.NoFilterFormat parseFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
+      return PARSER.parseFrom(input, extensionRegistry);
     }
 
+    public static Builder newBuilder() { return Builder.create(); }
     public Builder newBuilderForType() { return newBuilder(); }
-    public static Builder newBuilder() {
-      return DEFAULT_INSTANCE.toBuilder();
-    }
     public static Builder newBuilder(com.rbmhtechnology.eventuate.serializer.ReplicationFilterFormats.NoFilterFormat prototype) {
-      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+      return newBuilder().mergeFrom(prototype);
     }
-    public Builder toBuilder() {
-      return this == DEFAULT_INSTANCE
-          ? new Builder() : new Builder().mergeFrom(this);
-    }
+    public Builder toBuilder() { return newBuilder(this); }
 
     @java.lang.Override
     protected Builder newBuilderForType(
-        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
       Builder builder = new Builder(parent);
       return builder;
     }
     /**
+     * Protobuf type {@code NoFilterFormat}
+     *
      * <pre>
      * no fields
      * </pre>
-     *
-     * Protobuf type {@code NoFilterFormat}
      */
     public static final class Builder extends
-        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-        // @@protoc_insertion_point(builder_implements:NoFilterFormat)
-        com.rbmhtechnology.eventuate.serializer.ReplicationFilterFormats.NoFilterFormatOrBuilder {
+        com.google.protobuf.GeneratedMessage.Builder<Builder>
+       implements com.rbmhtechnology.eventuate.serializer.ReplicationFilterFormats.NoFilterFormatOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
         return com.rbmhtechnology.eventuate.serializer.ReplicationFilterFormats.internal_static_NoFilterFormat_descriptor;
       }
 
-      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
           internalGetFieldAccessorTable() {
         return com.rbmhtechnology.eventuate.serializer.ReplicationFilterFormats.internal_static_NoFilterFormat_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
@@ -1593,18 +1491,25 @@ public final class ReplicationFilterFormats {
       }
 
       private Builder(
-          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
         super(parent);
         maybeForceBuilderInitialization();
       }
       private void maybeForceBuilderInitialization() {
-        if (com.google.protobuf.GeneratedMessageV3
-                .alwaysUseFieldBuilders) {
+        if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
         }
       }
+      private static Builder create() {
+        return new Builder();
+      }
+
       public Builder clear() {
         super.clear();
         return this;
+      }
+
+      public Builder clone() {
+        return create().mergeFrom(buildPartial());
       }
 
       public com.google.protobuf.Descriptors.Descriptor
@@ -1630,32 +1535,6 @@ public final class ReplicationFilterFormats {
         return result;
       }
 
-      public Builder clone() {
-        return (Builder) super.clone();
-      }
-      public Builder setField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          Object value) {
-        return (Builder) super.setField(field, value);
-      }
-      public Builder clearField(
-          com.google.protobuf.Descriptors.FieldDescriptor field) {
-        return (Builder) super.clearField(field);
-      }
-      public Builder clearOneof(
-          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
-        return (Builder) super.clearOneof(oneof);
-      }
-      public Builder setRepeatedField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          int index, Object value) {
-        return (Builder) super.setRepeatedField(field, index, value);
-      }
-      public Builder addRepeatedField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          Object value) {
-        return (Builder) super.addRepeatedField(field, value);
-      }
       public Builder mergeFrom(com.google.protobuf.Message other) {
         if (other instanceof com.rbmhtechnology.eventuate.serializer.ReplicationFilterFormats.NoFilterFormat) {
           return mergeFrom((com.rbmhtechnology.eventuate.serializer.ReplicationFilterFormats.NoFilterFormat)other);
@@ -1667,8 +1546,7 @@ public final class ReplicationFilterFormats {
 
       public Builder mergeFrom(com.rbmhtechnology.eventuate.serializer.ReplicationFilterFormats.NoFilterFormat other) {
         if (other == com.rbmhtechnology.eventuate.serializer.ReplicationFilterFormats.NoFilterFormat.getDefaultInstance()) return this;
-        this.mergeUnknownFields(other.unknownFields);
-        onChanged();
+        this.mergeUnknownFields(other.getUnknownFields());
         return this;
       }
 
@@ -1685,7 +1563,7 @@ public final class ReplicationFilterFormats {
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
         } catch (com.google.protobuf.InvalidProtocolBufferException e) {
           parsedMessage = (com.rbmhtechnology.eventuate.serializer.ReplicationFilterFormats.NoFilterFormat) e.getUnfinishedMessage();
-          throw e.unwrapIOException();
+          throw e;
         } finally {
           if (parsedMessage != null) {
             mergeFrom(parsedMessage);
@@ -1693,71 +1571,34 @@ public final class ReplicationFilterFormats {
         }
         return this;
       }
-      public final Builder setUnknownFields(
-          final com.google.protobuf.UnknownFieldSet unknownFields) {
-        return super.setUnknownFields(unknownFields);
-      }
-
-      public final Builder mergeUnknownFields(
-          final com.google.protobuf.UnknownFieldSet unknownFields) {
-        return super.mergeUnknownFields(unknownFields);
-      }
-
 
       // @@protoc_insertion_point(builder_scope:NoFilterFormat)
     }
 
-    // @@protoc_insertion_point(class_scope:NoFilterFormat)
-    private static final com.rbmhtechnology.eventuate.serializer.ReplicationFilterFormats.NoFilterFormat DEFAULT_INSTANCE;
     static {
-      DEFAULT_INSTANCE = new com.rbmhtechnology.eventuate.serializer.ReplicationFilterFormats.NoFilterFormat();
+      defaultInstance = new NoFilterFormat(true);
+      defaultInstance.initFields();
     }
 
-    public static com.rbmhtechnology.eventuate.serializer.ReplicationFilterFormats.NoFilterFormat getDefaultInstance() {
-      return DEFAULT_INSTANCE;
-    }
-
-    @java.lang.Deprecated public static final com.google.protobuf.Parser<NoFilterFormat>
-        PARSER = new com.google.protobuf.AbstractParser<NoFilterFormat>() {
-      public NoFilterFormat parsePartialFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws com.google.protobuf.InvalidProtocolBufferException {
-          return new NoFilterFormat(input, extensionRegistry);
-      }
-    };
-
-    public static com.google.protobuf.Parser<NoFilterFormat> parser() {
-      return PARSER;
-    }
-
-    @java.lang.Override
-    public com.google.protobuf.Parser<NoFilterFormat> getParserForType() {
-      return PARSER;
-    }
-
-    public com.rbmhtechnology.eventuate.serializer.ReplicationFilterFormats.NoFilterFormat getDefaultInstanceForType() {
-      return DEFAULT_INSTANCE;
-    }
-
+    // @@protoc_insertion_point(class_scope:NoFilterFormat)
   }
 
-  private static final com.google.protobuf.Descriptors.Descriptor
+  private static com.google.protobuf.Descriptors.Descriptor
     internal_static_ReplicationFilterTreeFormat_descriptor;
-  private static final 
-    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+  private static
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_ReplicationFilterTreeFormat_fieldAccessorTable;
-  private static final com.google.protobuf.Descriptors.Descriptor
+  private static com.google.protobuf.Descriptors.Descriptor
     internal_static_NoFilterFormat_descriptor;
-  private static final 
-    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+  private static
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_NoFilterFormat_fieldAccessorTable;
 
   public static com.google.protobuf.Descriptors.FileDescriptor
       getDescriptor() {
     return descriptor;
   }
-  private static  com.google.protobuf.Descriptors.FileDescriptor
+  private static com.google.protobuf.Descriptors.FileDescriptor
       descriptor;
   static {
     java.lang.String[] descriptorData = {
@@ -1772,31 +1613,30 @@ public final class ReplicationFilterFormats {
       "erH\001"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
-        new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
-          public com.google.protobuf.ExtensionRegistry assignDescriptors(
-              com.google.protobuf.Descriptors.FileDescriptor root) {
-            descriptor = root;
-            return null;
-          }
-        };
+      new com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner() {
+        public com.google.protobuf.ExtensionRegistry assignDescriptors(
+            com.google.protobuf.Descriptors.FileDescriptor root) {
+          descriptor = root;
+          internal_static_ReplicationFilterTreeFormat_descriptor =
+            getDescriptor().getMessageTypes().get(0);
+          internal_static_ReplicationFilterTreeFormat_fieldAccessorTable = new
+            com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+              internal_static_ReplicationFilterTreeFormat_descriptor,
+              new java.lang.String[] { "NodeType", "Children", "Filter", });
+          internal_static_NoFilterFormat_descriptor =
+            getDescriptor().getMessageTypes().get(1);
+          internal_static_NoFilterFormat_fieldAccessorTable = new
+            com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+              internal_static_NoFilterFormat_descriptor,
+              new java.lang.String[] { });
+          return null;
+        }
+      };
     com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
         new com.google.protobuf.Descriptors.FileDescriptor[] {
           com.rbmhtechnology.eventuate.serializer.CommonFormats.getDescriptor(),
         }, assigner);
-    internal_static_ReplicationFilterTreeFormat_descriptor =
-      getDescriptor().getMessageTypes().get(0);
-    internal_static_ReplicationFilterTreeFormat_fieldAccessorTable = new
-      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_ReplicationFilterTreeFormat_descriptor,
-        new java.lang.String[] { "NodeType", "Children", "Filter", });
-    internal_static_NoFilterFormat_descriptor =
-      getDescriptor().getMessageTypes().get(1);
-    internal_static_NoFilterFormat_fieldAccessorTable = new
-      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_NoFilterFormat_descriptor,
-        new java.lang.String[] { });
-    com.rbmhtechnology.eventuate.serializer.CommonFormats.getDescriptor();
   }
 
   // @@protoc_insertion_point(outer_class_scope)

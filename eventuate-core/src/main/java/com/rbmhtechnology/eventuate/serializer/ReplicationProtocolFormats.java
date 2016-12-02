@@ -22,18 +22,12 @@ package com.rbmhtechnology.eventuate.serializer;
 public final class ReplicationProtocolFormats {
   private ReplicationProtocolFormats() {}
   public static void registerAllExtensions(
-      com.google.protobuf.ExtensionRegistryLite registry) {
-  }
-
-  public static void registerAllExtensions(
       com.google.protobuf.ExtensionRegistry registry) {
-    registerAllExtensions(
-        (com.google.protobuf.ExtensionRegistryLite) registry);
   }
-  public interface ApplicationVersionFormatOrBuilder extends
-      // @@protoc_insertion_point(interface_extends:ApplicationVersionFormat)
-      com.google.protobuf.MessageOrBuilder {
+  public interface ApplicationVersionFormatOrBuilder
+      extends com.google.protobuf.MessageOrBuilder {
 
+    // required int32 major = 1;
     /**
      * <code>required int32 major = 1;</code>
      */
@@ -43,6 +37,7 @@ public final class ReplicationProtocolFormats {
      */
     int getMajor();
 
+    // required int32 minor = 2;
     /**
      * <code>required int32 minor = 2;</code>
      */
@@ -55,29 +50,36 @@ public final class ReplicationProtocolFormats {
   /**
    * Protobuf type {@code ApplicationVersionFormat}
    */
-  public  static final class ApplicationVersionFormat extends
-      com.google.protobuf.GeneratedMessageV3 implements
-      // @@protoc_insertion_point(message_implements:ApplicationVersionFormat)
-      ApplicationVersionFormatOrBuilder {
+  public static final class ApplicationVersionFormat extends
+      com.google.protobuf.GeneratedMessage
+      implements ApplicationVersionFormatOrBuilder {
     // Use ApplicationVersionFormat.newBuilder() to construct.
-    private ApplicationVersionFormat(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+    private ApplicationVersionFormat(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
       super(builder);
+      this.unknownFields = builder.getUnknownFields();
     }
-    private ApplicationVersionFormat() {
-      major_ = 0;
-      minor_ = 0;
+    private ApplicationVersionFormat(boolean noInit) { this.unknownFields = com.google.protobuf.UnknownFieldSet.getDefaultInstance(); }
+
+    private static final ApplicationVersionFormat defaultInstance;
+    public static ApplicationVersionFormat getDefaultInstance() {
+      return defaultInstance;
     }
 
+    public ApplicationVersionFormat getDefaultInstanceForType() {
+      return defaultInstance;
+    }
+
+    private final com.google.protobuf.UnknownFieldSet unknownFields;
     @java.lang.Override
     public final com.google.protobuf.UnknownFieldSet
-    getUnknownFields() {
+        getUnknownFields() {
       return this.unknownFields;
     }
     private ApplicationVersionFormat(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
-      this();
+      initFields();
       int mutable_bitField0_ = 0;
       com.google.protobuf.UnknownFieldSet.Builder unknownFields =
           com.google.protobuf.UnknownFieldSet.newBuilder();
@@ -112,7 +114,7 @@ public final class ReplicationProtocolFormats {
         throw e.setUnfinishedMessage(this);
       } catch (java.io.IOException e) {
         throw new com.google.protobuf.InvalidProtocolBufferException(
-            e).setUnfinishedMessage(this);
+            e.getMessage()).setUnfinishedMessage(this);
       } finally {
         this.unknownFields = unknownFields.build();
         makeExtensionsImmutable();
@@ -123,14 +125,30 @@ public final class ReplicationProtocolFormats {
       return com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.internal_static_ApplicationVersionFormat_descriptor;
     }
 
-    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
         internalGetFieldAccessorTable() {
       return com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.internal_static_ApplicationVersionFormat_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
               com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ApplicationVersionFormat.class, com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ApplicationVersionFormat.Builder.class);
     }
 
+    public static com.google.protobuf.Parser<ApplicationVersionFormat> PARSER =
+        new com.google.protobuf.AbstractParser<ApplicationVersionFormat>() {
+      public ApplicationVersionFormat parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new ApplicationVersionFormat(input, extensionRegistry);
+      }
+    };
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<ApplicationVersionFormat> getParserForType() {
+      return PARSER;
+    }
+
     private int bitField0_;
+    // required int32 major = 1;
     public static final int MAJOR_FIELD_NUMBER = 1;
     private int major_;
     /**
@@ -146,6 +164,7 @@ public final class ReplicationProtocolFormats {
       return major_;
     }
 
+    // required int32 minor = 2;
     public static final int MINOR_FIELD_NUMBER = 2;
     private int minor_;
     /**
@@ -161,11 +180,14 @@ public final class ReplicationProtocolFormats {
       return minor_;
     }
 
+    private void initFields() {
+      major_ = 0;
+      minor_ = 0;
+    }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
-      if (isInitialized == 1) return true;
-      if (isInitialized == 0) return false;
+      if (isInitialized != -1) return isInitialized == 1;
 
       if (!hasMajor()) {
         memoizedIsInitialized = 0;
@@ -181,17 +203,19 @@ public final class ReplicationProtocolFormats {
 
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
+      getSerializedSize();
       if (((bitField0_ & 0x00000001) == 0x00000001)) {
         output.writeInt32(1, major_);
       }
       if (((bitField0_ & 0x00000002) == 0x00000002)) {
         output.writeInt32(2, minor_);
       }
-      unknownFields.writeTo(output);
+      getUnknownFields().writeTo(output);
     }
 
+    private int memoizedSerializedSize = -1;
     public int getSerializedSize() {
-      int size = memoizedSize;
+      int size = memoizedSerializedSize;
       if (size != -1) return size;
 
       size = 0;
@@ -203,55 +227,16 @@ public final class ReplicationProtocolFormats {
         size += com.google.protobuf.CodedOutputStream
           .computeInt32Size(2, minor_);
       }
-      size += unknownFields.getSerializedSize();
-      memoizedSize = size;
+      size += getUnknownFields().getSerializedSize();
+      memoizedSerializedSize = size;
       return size;
     }
 
     private static final long serialVersionUID = 0L;
     @java.lang.Override
-    public boolean equals(final java.lang.Object obj) {
-      if (obj == this) {
-       return true;
-      }
-      if (!(obj instanceof com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ApplicationVersionFormat)) {
-        return super.equals(obj);
-      }
-      com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ApplicationVersionFormat other = (com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ApplicationVersionFormat) obj;
-
-      boolean result = true;
-      result = result && (hasMajor() == other.hasMajor());
-      if (hasMajor()) {
-        result = result && (getMajor()
-            == other.getMajor());
-      }
-      result = result && (hasMinor() == other.hasMinor());
-      if (hasMinor()) {
-        result = result && (getMinor()
-            == other.getMinor());
-      }
-      result = result && unknownFields.equals(other.unknownFields);
-      return result;
-    }
-
-    @java.lang.Override
-    public int hashCode() {
-      if (memoizedHashCode != 0) {
-        return memoizedHashCode;
-      }
-      int hash = 41;
-      hash = (19 * hash) + getDescriptorForType().hashCode();
-      if (hasMajor()) {
-        hash = (37 * hash) + MAJOR_FIELD_NUMBER;
-        hash = (53 * hash) + getMajor();
-      }
-      if (hasMinor()) {
-        hash = (37 * hash) + MINOR_FIELD_NUMBER;
-        hash = (53 * hash) + getMinor();
-      }
-      hash = (29 * hash) + unknownFields.hashCode();
-      memoizedHashCode = hash;
-      return hash;
+    protected java.lang.Object writeReplace()
+        throws java.io.ObjectStreamException {
+      return super.writeReplace();
     }
 
     public static com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ApplicationVersionFormat parseFrom(
@@ -277,57 +262,46 @@ public final class ReplicationProtocolFormats {
     }
     public static com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ApplicationVersionFormat parseFrom(java.io.InputStream input)
         throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
+      return PARSER.parseFrom(input);
     }
     public static com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ApplicationVersionFormat parseFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
+      return PARSER.parseFrom(input, extensionRegistry);
     }
     public static com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ApplicationVersionFormat parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input);
+      return PARSER.parseDelimitedFrom(input);
     }
     public static com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ApplicationVersionFormat parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+      return PARSER.parseDelimitedFrom(input, extensionRegistry);
     }
     public static com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ApplicationVersionFormat parseFrom(
         com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
+      return PARSER.parseFrom(input);
     }
     public static com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ApplicationVersionFormat parseFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
+      return PARSER.parseFrom(input, extensionRegistry);
     }
 
+    public static Builder newBuilder() { return Builder.create(); }
     public Builder newBuilderForType() { return newBuilder(); }
-    public static Builder newBuilder() {
-      return DEFAULT_INSTANCE.toBuilder();
-    }
     public static Builder newBuilder(com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ApplicationVersionFormat prototype) {
-      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+      return newBuilder().mergeFrom(prototype);
     }
-    public Builder toBuilder() {
-      return this == DEFAULT_INSTANCE
-          ? new Builder() : new Builder().mergeFrom(this);
-    }
+    public Builder toBuilder() { return newBuilder(this); }
 
     @java.lang.Override
     protected Builder newBuilderForType(
-        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
       Builder builder = new Builder(parent);
       return builder;
     }
@@ -335,15 +309,14 @@ public final class ReplicationProtocolFormats {
      * Protobuf type {@code ApplicationVersionFormat}
      */
     public static final class Builder extends
-        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-        // @@protoc_insertion_point(builder_implements:ApplicationVersionFormat)
-        com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ApplicationVersionFormatOrBuilder {
+        com.google.protobuf.GeneratedMessage.Builder<Builder>
+       implements com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ApplicationVersionFormatOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
         return com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.internal_static_ApplicationVersionFormat_descriptor;
       }
 
-      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
           internalGetFieldAccessorTable() {
         return com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.internal_static_ApplicationVersionFormat_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
@@ -356,15 +329,18 @@ public final class ReplicationProtocolFormats {
       }
 
       private Builder(
-          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
         super(parent);
         maybeForceBuilderInitialization();
       }
       private void maybeForceBuilderInitialization() {
-        if (com.google.protobuf.GeneratedMessageV3
-                .alwaysUseFieldBuilders) {
+        if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
         }
       }
+      private static Builder create() {
+        return new Builder();
+      }
+
       public Builder clear() {
         super.clear();
         major_ = 0;
@@ -372,6 +348,10 @@ public final class ReplicationProtocolFormats {
         minor_ = 0;
         bitField0_ = (bitField0_ & ~0x00000002);
         return this;
+      }
+
+      public Builder clone() {
+        return create().mergeFrom(buildPartial());
       }
 
       public com.google.protobuf.Descriptors.Descriptor
@@ -408,32 +388,6 @@ public final class ReplicationProtocolFormats {
         return result;
       }
 
-      public Builder clone() {
-        return (Builder) super.clone();
-      }
-      public Builder setField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          Object value) {
-        return (Builder) super.setField(field, value);
-      }
-      public Builder clearField(
-          com.google.protobuf.Descriptors.FieldDescriptor field) {
-        return (Builder) super.clearField(field);
-      }
-      public Builder clearOneof(
-          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
-        return (Builder) super.clearOneof(oneof);
-      }
-      public Builder setRepeatedField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          int index, Object value) {
-        return (Builder) super.setRepeatedField(field, index, value);
-      }
-      public Builder addRepeatedField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          Object value) {
-        return (Builder) super.addRepeatedField(field, value);
-      }
       public Builder mergeFrom(com.google.protobuf.Message other) {
         if (other instanceof com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ApplicationVersionFormat) {
           return mergeFrom((com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ApplicationVersionFormat)other);
@@ -451,16 +405,17 @@ public final class ReplicationProtocolFormats {
         if (other.hasMinor()) {
           setMinor(other.getMinor());
         }
-        this.mergeUnknownFields(other.unknownFields);
-        onChanged();
+        this.mergeUnknownFields(other.getUnknownFields());
         return this;
       }
 
       public final boolean isInitialized() {
         if (!hasMajor()) {
+          
           return false;
         }
         if (!hasMinor()) {
+          
           return false;
         }
         return true;
@@ -475,7 +430,7 @@ public final class ReplicationProtocolFormats {
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
         } catch (com.google.protobuf.InvalidProtocolBufferException e) {
           parsedMessage = (com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ApplicationVersionFormat) e.getUnfinishedMessage();
-          throw e.unwrapIOException();
+          throw e;
         } finally {
           if (parsedMessage != null) {
             mergeFrom(parsedMessage);
@@ -485,6 +440,7 @@ public final class ReplicationProtocolFormats {
       }
       private int bitField0_;
 
+      // required int32 major = 1;
       private int major_ ;
       /**
        * <code>required int32 major = 1;</code>
@@ -517,6 +473,7 @@ public final class ReplicationProtocolFormats {
         return this;
       }
 
+      // required int32 minor = 2;
       private int minor_ ;
       /**
        * <code>required int32 minor = 2;</code>
@@ -548,59 +505,22 @@ public final class ReplicationProtocolFormats {
         onChanged();
         return this;
       }
-      public final Builder setUnknownFields(
-          final com.google.protobuf.UnknownFieldSet unknownFields) {
-        return super.setUnknownFields(unknownFields);
-      }
-
-      public final Builder mergeUnknownFields(
-          final com.google.protobuf.UnknownFieldSet unknownFields) {
-        return super.mergeUnknownFields(unknownFields);
-      }
-
 
       // @@protoc_insertion_point(builder_scope:ApplicationVersionFormat)
     }
 
-    // @@protoc_insertion_point(class_scope:ApplicationVersionFormat)
-    private static final com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ApplicationVersionFormat DEFAULT_INSTANCE;
     static {
-      DEFAULT_INSTANCE = new com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ApplicationVersionFormat();
+      defaultInstance = new ApplicationVersionFormat(true);
+      defaultInstance.initFields();
     }
 
-    public static com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ApplicationVersionFormat getDefaultInstance() {
-      return DEFAULT_INSTANCE;
-    }
-
-    @java.lang.Deprecated public static final com.google.protobuf.Parser<ApplicationVersionFormat>
-        PARSER = new com.google.protobuf.AbstractParser<ApplicationVersionFormat>() {
-      public ApplicationVersionFormat parsePartialFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws com.google.protobuf.InvalidProtocolBufferException {
-          return new ApplicationVersionFormat(input, extensionRegistry);
-      }
-    };
-
-    public static com.google.protobuf.Parser<ApplicationVersionFormat> parser() {
-      return PARSER;
-    }
-
-    @java.lang.Override
-    public com.google.protobuf.Parser<ApplicationVersionFormat> getParserForType() {
-      return PARSER;
-    }
-
-    public com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ApplicationVersionFormat getDefaultInstanceForType() {
-      return DEFAULT_INSTANCE;
-    }
-
+    // @@protoc_insertion_point(class_scope:ApplicationVersionFormat)
   }
 
-  public interface LogInfoFormatOrBuilder extends
-      // @@protoc_insertion_point(interface_extends:LogInfoFormat)
-      com.google.protobuf.MessageOrBuilder {
+  public interface LogInfoFormatOrBuilder
+      extends com.google.protobuf.MessageOrBuilder {
 
+    // required string logName = 1;
     /**
      * <code>required string logName = 1;</code>
      */
@@ -615,6 +535,7 @@ public final class ReplicationProtocolFormats {
     com.google.protobuf.ByteString
         getLogNameBytes();
 
+    // required int64 sequenceNr = 2;
     /**
      * <code>required int64 sequenceNr = 2;</code>
      */
@@ -627,29 +548,36 @@ public final class ReplicationProtocolFormats {
   /**
    * Protobuf type {@code LogInfoFormat}
    */
-  public  static final class LogInfoFormat extends
-      com.google.protobuf.GeneratedMessageV3 implements
-      // @@protoc_insertion_point(message_implements:LogInfoFormat)
-      LogInfoFormatOrBuilder {
+  public static final class LogInfoFormat extends
+      com.google.protobuf.GeneratedMessage
+      implements LogInfoFormatOrBuilder {
     // Use LogInfoFormat.newBuilder() to construct.
-    private LogInfoFormat(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+    private LogInfoFormat(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
       super(builder);
+      this.unknownFields = builder.getUnknownFields();
     }
-    private LogInfoFormat() {
-      logName_ = "";
-      sequenceNr_ = 0L;
+    private LogInfoFormat(boolean noInit) { this.unknownFields = com.google.protobuf.UnknownFieldSet.getDefaultInstance(); }
+
+    private static final LogInfoFormat defaultInstance;
+    public static LogInfoFormat getDefaultInstance() {
+      return defaultInstance;
     }
 
+    public LogInfoFormat getDefaultInstanceForType() {
+      return defaultInstance;
+    }
+
+    private final com.google.protobuf.UnknownFieldSet unknownFields;
     @java.lang.Override
     public final com.google.protobuf.UnknownFieldSet
-    getUnknownFields() {
+        getUnknownFields() {
       return this.unknownFields;
     }
     private LogInfoFormat(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
-      this();
+      initFields();
       int mutable_bitField0_ = 0;
       com.google.protobuf.UnknownFieldSet.Builder unknownFields =
           com.google.protobuf.UnknownFieldSet.newBuilder();
@@ -669,9 +597,8 @@ public final class ReplicationProtocolFormats {
               break;
             }
             case 10: {
-              com.google.protobuf.ByteString bs = input.readBytes();
               bitField0_ |= 0x00000001;
-              logName_ = bs;
+              logName_ = input.readBytes();
               break;
             }
             case 16: {
@@ -685,7 +612,7 @@ public final class ReplicationProtocolFormats {
         throw e.setUnfinishedMessage(this);
       } catch (java.io.IOException e) {
         throw new com.google.protobuf.InvalidProtocolBufferException(
-            e).setUnfinishedMessage(this);
+            e.getMessage()).setUnfinishedMessage(this);
       } finally {
         this.unknownFields = unknownFields.build();
         makeExtensionsImmutable();
@@ -696,16 +623,32 @@ public final class ReplicationProtocolFormats {
       return com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.internal_static_LogInfoFormat_descriptor;
     }
 
-    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
         internalGetFieldAccessorTable() {
       return com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.internal_static_LogInfoFormat_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
               com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.LogInfoFormat.class, com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.LogInfoFormat.Builder.class);
     }
 
+    public static com.google.protobuf.Parser<LogInfoFormat> PARSER =
+        new com.google.protobuf.AbstractParser<LogInfoFormat>() {
+      public LogInfoFormat parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new LogInfoFormat(input, extensionRegistry);
+      }
+    };
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<LogInfoFormat> getParserForType() {
+      return PARSER;
+    }
+
     private int bitField0_;
+    // required string logName = 1;
     public static final int LOGNAME_FIELD_NUMBER = 1;
-    private volatile java.lang.Object logName_;
+    private java.lang.Object logName_;
     /**
      * <code>required string logName = 1;</code>
      */
@@ -746,6 +689,7 @@ public final class ReplicationProtocolFormats {
       }
     }
 
+    // required int64 sequenceNr = 2;
     public static final int SEQUENCENR_FIELD_NUMBER = 2;
     private long sequenceNr_;
     /**
@@ -761,11 +705,14 @@ public final class ReplicationProtocolFormats {
       return sequenceNr_;
     }
 
+    private void initFields() {
+      logName_ = "";
+      sequenceNr_ = 0L;
+    }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
-      if (isInitialized == 1) return true;
-      if (isInitialized == 0) return false;
+      if (isInitialized != -1) return isInitialized == 1;
 
       if (!hasLogName()) {
         memoizedIsInitialized = 0;
@@ -781,77 +728,40 @@ public final class ReplicationProtocolFormats {
 
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
+      getSerializedSize();
       if (((bitField0_ & 0x00000001) == 0x00000001)) {
-        com.google.protobuf.GeneratedMessageV3.writeString(output, 1, logName_);
+        output.writeBytes(1, getLogNameBytes());
       }
       if (((bitField0_ & 0x00000002) == 0x00000002)) {
         output.writeInt64(2, sequenceNr_);
       }
-      unknownFields.writeTo(output);
+      getUnknownFields().writeTo(output);
     }
 
+    private int memoizedSerializedSize = -1;
     public int getSerializedSize() {
-      int size = memoizedSize;
+      int size = memoizedSerializedSize;
       if (size != -1) return size;
 
       size = 0;
       if (((bitField0_ & 0x00000001) == 0x00000001)) {
-        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, logName_);
+        size += com.google.protobuf.CodedOutputStream
+          .computeBytesSize(1, getLogNameBytes());
       }
       if (((bitField0_ & 0x00000002) == 0x00000002)) {
         size += com.google.protobuf.CodedOutputStream
           .computeInt64Size(2, sequenceNr_);
       }
-      size += unknownFields.getSerializedSize();
-      memoizedSize = size;
+      size += getUnknownFields().getSerializedSize();
+      memoizedSerializedSize = size;
       return size;
     }
 
     private static final long serialVersionUID = 0L;
     @java.lang.Override
-    public boolean equals(final java.lang.Object obj) {
-      if (obj == this) {
-       return true;
-      }
-      if (!(obj instanceof com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.LogInfoFormat)) {
-        return super.equals(obj);
-      }
-      com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.LogInfoFormat other = (com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.LogInfoFormat) obj;
-
-      boolean result = true;
-      result = result && (hasLogName() == other.hasLogName());
-      if (hasLogName()) {
-        result = result && getLogName()
-            .equals(other.getLogName());
-      }
-      result = result && (hasSequenceNr() == other.hasSequenceNr());
-      if (hasSequenceNr()) {
-        result = result && (getSequenceNr()
-            == other.getSequenceNr());
-      }
-      result = result && unknownFields.equals(other.unknownFields);
-      return result;
-    }
-
-    @java.lang.Override
-    public int hashCode() {
-      if (memoizedHashCode != 0) {
-        return memoizedHashCode;
-      }
-      int hash = 41;
-      hash = (19 * hash) + getDescriptorForType().hashCode();
-      if (hasLogName()) {
-        hash = (37 * hash) + LOGNAME_FIELD_NUMBER;
-        hash = (53 * hash) + getLogName().hashCode();
-      }
-      if (hasSequenceNr()) {
-        hash = (37 * hash) + SEQUENCENR_FIELD_NUMBER;
-        hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
-            getSequenceNr());
-      }
-      hash = (29 * hash) + unknownFields.hashCode();
-      memoizedHashCode = hash;
-      return hash;
+    protected java.lang.Object writeReplace()
+        throws java.io.ObjectStreamException {
+      return super.writeReplace();
     }
 
     public static com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.LogInfoFormat parseFrom(
@@ -877,57 +787,46 @@ public final class ReplicationProtocolFormats {
     }
     public static com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.LogInfoFormat parseFrom(java.io.InputStream input)
         throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
+      return PARSER.parseFrom(input);
     }
     public static com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.LogInfoFormat parseFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
+      return PARSER.parseFrom(input, extensionRegistry);
     }
     public static com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.LogInfoFormat parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input);
+      return PARSER.parseDelimitedFrom(input);
     }
     public static com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.LogInfoFormat parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+      return PARSER.parseDelimitedFrom(input, extensionRegistry);
     }
     public static com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.LogInfoFormat parseFrom(
         com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
+      return PARSER.parseFrom(input);
     }
     public static com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.LogInfoFormat parseFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
+      return PARSER.parseFrom(input, extensionRegistry);
     }
 
+    public static Builder newBuilder() { return Builder.create(); }
     public Builder newBuilderForType() { return newBuilder(); }
-    public static Builder newBuilder() {
-      return DEFAULT_INSTANCE.toBuilder();
-    }
     public static Builder newBuilder(com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.LogInfoFormat prototype) {
-      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+      return newBuilder().mergeFrom(prototype);
     }
-    public Builder toBuilder() {
-      return this == DEFAULT_INSTANCE
-          ? new Builder() : new Builder().mergeFrom(this);
-    }
+    public Builder toBuilder() { return newBuilder(this); }
 
     @java.lang.Override
     protected Builder newBuilderForType(
-        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
       Builder builder = new Builder(parent);
       return builder;
     }
@@ -935,15 +834,14 @@ public final class ReplicationProtocolFormats {
      * Protobuf type {@code LogInfoFormat}
      */
     public static final class Builder extends
-        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-        // @@protoc_insertion_point(builder_implements:LogInfoFormat)
-        com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.LogInfoFormatOrBuilder {
+        com.google.protobuf.GeneratedMessage.Builder<Builder>
+       implements com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.LogInfoFormatOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
         return com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.internal_static_LogInfoFormat_descriptor;
       }
 
-      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
           internalGetFieldAccessorTable() {
         return com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.internal_static_LogInfoFormat_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
@@ -956,15 +854,18 @@ public final class ReplicationProtocolFormats {
       }
 
       private Builder(
-          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
         super(parent);
         maybeForceBuilderInitialization();
       }
       private void maybeForceBuilderInitialization() {
-        if (com.google.protobuf.GeneratedMessageV3
-                .alwaysUseFieldBuilders) {
+        if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
         }
       }
+      private static Builder create() {
+        return new Builder();
+      }
+
       public Builder clear() {
         super.clear();
         logName_ = "";
@@ -972,6 +873,10 @@ public final class ReplicationProtocolFormats {
         sequenceNr_ = 0L;
         bitField0_ = (bitField0_ & ~0x00000002);
         return this;
+      }
+
+      public Builder clone() {
+        return create().mergeFrom(buildPartial());
       }
 
       public com.google.protobuf.Descriptors.Descriptor
@@ -1008,32 +913,6 @@ public final class ReplicationProtocolFormats {
         return result;
       }
 
-      public Builder clone() {
-        return (Builder) super.clone();
-      }
-      public Builder setField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          Object value) {
-        return (Builder) super.setField(field, value);
-      }
-      public Builder clearField(
-          com.google.protobuf.Descriptors.FieldDescriptor field) {
-        return (Builder) super.clearField(field);
-      }
-      public Builder clearOneof(
-          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
-        return (Builder) super.clearOneof(oneof);
-      }
-      public Builder setRepeatedField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          int index, Object value) {
-        return (Builder) super.setRepeatedField(field, index, value);
-      }
-      public Builder addRepeatedField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          Object value) {
-        return (Builder) super.addRepeatedField(field, value);
-      }
       public Builder mergeFrom(com.google.protobuf.Message other) {
         if (other instanceof com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.LogInfoFormat) {
           return mergeFrom((com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.LogInfoFormat)other);
@@ -1053,16 +932,17 @@ public final class ReplicationProtocolFormats {
         if (other.hasSequenceNr()) {
           setSequenceNr(other.getSequenceNr());
         }
-        this.mergeUnknownFields(other.unknownFields);
-        onChanged();
+        this.mergeUnknownFields(other.getUnknownFields());
         return this;
       }
 
       public final boolean isInitialized() {
         if (!hasLogName()) {
+          
           return false;
         }
         if (!hasSequenceNr()) {
+          
           return false;
         }
         return true;
@@ -1077,7 +957,7 @@ public final class ReplicationProtocolFormats {
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
         } catch (com.google.protobuf.InvalidProtocolBufferException e) {
           parsedMessage = (com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.LogInfoFormat) e.getUnfinishedMessage();
-          throw e.unwrapIOException();
+          throw e;
         } finally {
           if (parsedMessage != null) {
             mergeFrom(parsedMessage);
@@ -1087,6 +967,7 @@ public final class ReplicationProtocolFormats {
       }
       private int bitField0_;
 
+      // required string logName = 1;
       private java.lang.Object logName_ = "";
       /**
        * <code>required string logName = 1;</code>
@@ -1100,12 +981,9 @@ public final class ReplicationProtocolFormats {
       public java.lang.String getLogName() {
         java.lang.Object ref = logName_;
         if (!(ref instanceof java.lang.String)) {
-          com.google.protobuf.ByteString bs =
-              (com.google.protobuf.ByteString) ref;
-          java.lang.String s = bs.toStringUtf8();
-          if (bs.isValidUtf8()) {
-            logName_ = s;
-          }
+          java.lang.String s = ((com.google.protobuf.ByteString) ref)
+              .toStringUtf8();
+          logName_ = s;
           return s;
         } else {
           return (java.lang.String) ref;
@@ -1163,6 +1041,7 @@ public final class ReplicationProtocolFormats {
         return this;
       }
 
+      // required int64 sequenceNr = 2;
       private long sequenceNr_ ;
       /**
        * <code>required int64 sequenceNr = 2;</code>
@@ -1194,59 +1073,22 @@ public final class ReplicationProtocolFormats {
         onChanged();
         return this;
       }
-      public final Builder setUnknownFields(
-          final com.google.protobuf.UnknownFieldSet unknownFields) {
-        return super.setUnknownFields(unknownFields);
-      }
-
-      public final Builder mergeUnknownFields(
-          final com.google.protobuf.UnknownFieldSet unknownFields) {
-        return super.mergeUnknownFields(unknownFields);
-      }
-
 
       // @@protoc_insertion_point(builder_scope:LogInfoFormat)
     }
 
-    // @@protoc_insertion_point(class_scope:LogInfoFormat)
-    private static final com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.LogInfoFormat DEFAULT_INSTANCE;
     static {
-      DEFAULT_INSTANCE = new com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.LogInfoFormat();
+      defaultInstance = new LogInfoFormat(true);
+      defaultInstance.initFields();
     }
 
-    public static com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.LogInfoFormat getDefaultInstance() {
-      return DEFAULT_INSTANCE;
-    }
-
-    @java.lang.Deprecated public static final com.google.protobuf.Parser<LogInfoFormat>
-        PARSER = new com.google.protobuf.AbstractParser<LogInfoFormat>() {
-      public LogInfoFormat parsePartialFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws com.google.protobuf.InvalidProtocolBufferException {
-          return new LogInfoFormat(input, extensionRegistry);
-      }
-    };
-
-    public static com.google.protobuf.Parser<LogInfoFormat> parser() {
-      return PARSER;
-    }
-
-    @java.lang.Override
-    public com.google.protobuf.Parser<LogInfoFormat> getParserForType() {
-      return PARSER;
-    }
-
-    public com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.LogInfoFormat getDefaultInstanceForType() {
-      return DEFAULT_INSTANCE;
-    }
-
+    // @@protoc_insertion_point(class_scope:LogInfoFormat)
   }
 
-  public interface ReplicationInfoFormatOrBuilder extends
-      // @@protoc_insertion_point(interface_extends:ReplicationInfoFormat)
-      com.google.protobuf.MessageOrBuilder {
+  public interface ReplicationInfoFormatOrBuilder
+      extends com.google.protobuf.MessageOrBuilder {
 
+    // required string endpointId = 1;
     /**
      * <code>required string endpointId = 1;</code>
      */
@@ -1261,6 +1103,7 @@ public final class ReplicationProtocolFormats {
     com.google.protobuf.ByteString
         getEndpointIdBytes();
 
+    // repeated .LogInfoFormat logInfos = 2;
     /**
      * <code>repeated .LogInfoFormat logInfos = 2;</code>
      */
@@ -1288,29 +1131,36 @@ public final class ReplicationProtocolFormats {
   /**
    * Protobuf type {@code ReplicationInfoFormat}
    */
-  public  static final class ReplicationInfoFormat extends
-      com.google.protobuf.GeneratedMessageV3 implements
-      // @@protoc_insertion_point(message_implements:ReplicationInfoFormat)
-      ReplicationInfoFormatOrBuilder {
+  public static final class ReplicationInfoFormat extends
+      com.google.protobuf.GeneratedMessage
+      implements ReplicationInfoFormatOrBuilder {
     // Use ReplicationInfoFormat.newBuilder() to construct.
-    private ReplicationInfoFormat(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+    private ReplicationInfoFormat(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
       super(builder);
+      this.unknownFields = builder.getUnknownFields();
     }
-    private ReplicationInfoFormat() {
-      endpointId_ = "";
-      logInfos_ = java.util.Collections.emptyList();
+    private ReplicationInfoFormat(boolean noInit) { this.unknownFields = com.google.protobuf.UnknownFieldSet.getDefaultInstance(); }
+
+    private static final ReplicationInfoFormat defaultInstance;
+    public static ReplicationInfoFormat getDefaultInstance() {
+      return defaultInstance;
     }
 
+    public ReplicationInfoFormat getDefaultInstanceForType() {
+      return defaultInstance;
+    }
+
+    private final com.google.protobuf.UnknownFieldSet unknownFields;
     @java.lang.Override
     public final com.google.protobuf.UnknownFieldSet
-    getUnknownFields() {
+        getUnknownFields() {
       return this.unknownFields;
     }
     private ReplicationInfoFormat(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
-      this();
+      initFields();
       int mutable_bitField0_ = 0;
       com.google.protobuf.UnknownFieldSet.Builder unknownFields =
           com.google.protobuf.UnknownFieldSet.newBuilder();
@@ -1330,9 +1180,8 @@ public final class ReplicationProtocolFormats {
               break;
             }
             case 10: {
-              com.google.protobuf.ByteString bs = input.readBytes();
               bitField0_ |= 0x00000001;
-              endpointId_ = bs;
+              endpointId_ = input.readBytes();
               break;
             }
             case 18: {
@@ -1340,8 +1189,7 @@ public final class ReplicationProtocolFormats {
                 logInfos_ = new java.util.ArrayList<com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.LogInfoFormat>();
                 mutable_bitField0_ |= 0x00000002;
               }
-              logInfos_.add(
-                  input.readMessage(com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.LogInfoFormat.PARSER, extensionRegistry));
+              logInfos_.add(input.readMessage(com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.LogInfoFormat.PARSER, extensionRegistry));
               break;
             }
           }
@@ -1350,7 +1198,7 @@ public final class ReplicationProtocolFormats {
         throw e.setUnfinishedMessage(this);
       } catch (java.io.IOException e) {
         throw new com.google.protobuf.InvalidProtocolBufferException(
-            e).setUnfinishedMessage(this);
+            e.getMessage()).setUnfinishedMessage(this);
       } finally {
         if (((mutable_bitField0_ & 0x00000002) == 0x00000002)) {
           logInfos_ = java.util.Collections.unmodifiableList(logInfos_);
@@ -1364,16 +1212,32 @@ public final class ReplicationProtocolFormats {
       return com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.internal_static_ReplicationInfoFormat_descriptor;
     }
 
-    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
         internalGetFieldAccessorTable() {
       return com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.internal_static_ReplicationInfoFormat_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
               com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormat.class, com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormat.Builder.class);
     }
 
+    public static com.google.protobuf.Parser<ReplicationInfoFormat> PARSER =
+        new com.google.protobuf.AbstractParser<ReplicationInfoFormat>() {
+      public ReplicationInfoFormat parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new ReplicationInfoFormat(input, extensionRegistry);
+      }
+    };
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<ReplicationInfoFormat> getParserForType() {
+      return PARSER;
+    }
+
     private int bitField0_;
+    // required string endpointId = 1;
     public static final int ENDPOINTID_FIELD_NUMBER = 1;
-    private volatile java.lang.Object endpointId_;
+    private java.lang.Object endpointId_;
     /**
      * <code>required string endpointId = 1;</code>
      */
@@ -1414,6 +1278,7 @@ public final class ReplicationProtocolFormats {
       }
     }
 
+    // repeated .LogInfoFormat logInfos = 2;
     public static final int LOGINFOS_FIELD_NUMBER = 2;
     private java.util.List<com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.LogInfoFormat> logInfos_;
     /**
@@ -1449,11 +1314,14 @@ public final class ReplicationProtocolFormats {
       return logInfos_.get(index);
     }
 
+    private void initFields() {
+      endpointId_ = "";
+      logInfos_ = java.util.Collections.emptyList();
+    }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
-      if (isInitialized == 1) return true;
-      if (isInitialized == 0) return false;
+      if (isInitialized != -1) return isInitialized == 1;
 
       if (!hasEndpointId()) {
         memoizedIsInitialized = 0;
@@ -1471,73 +1339,40 @@ public final class ReplicationProtocolFormats {
 
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
+      getSerializedSize();
       if (((bitField0_ & 0x00000001) == 0x00000001)) {
-        com.google.protobuf.GeneratedMessageV3.writeString(output, 1, endpointId_);
+        output.writeBytes(1, getEndpointIdBytes());
       }
       for (int i = 0; i < logInfos_.size(); i++) {
         output.writeMessage(2, logInfos_.get(i));
       }
-      unknownFields.writeTo(output);
+      getUnknownFields().writeTo(output);
     }
 
+    private int memoizedSerializedSize = -1;
     public int getSerializedSize() {
-      int size = memoizedSize;
+      int size = memoizedSerializedSize;
       if (size != -1) return size;
 
       size = 0;
       if (((bitField0_ & 0x00000001) == 0x00000001)) {
-        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, endpointId_);
+        size += com.google.protobuf.CodedOutputStream
+          .computeBytesSize(1, getEndpointIdBytes());
       }
       for (int i = 0; i < logInfos_.size(); i++) {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(2, logInfos_.get(i));
       }
-      size += unknownFields.getSerializedSize();
-      memoizedSize = size;
+      size += getUnknownFields().getSerializedSize();
+      memoizedSerializedSize = size;
       return size;
     }
 
     private static final long serialVersionUID = 0L;
     @java.lang.Override
-    public boolean equals(final java.lang.Object obj) {
-      if (obj == this) {
-       return true;
-      }
-      if (!(obj instanceof com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormat)) {
-        return super.equals(obj);
-      }
-      com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormat other = (com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormat) obj;
-
-      boolean result = true;
-      result = result && (hasEndpointId() == other.hasEndpointId());
-      if (hasEndpointId()) {
-        result = result && getEndpointId()
-            .equals(other.getEndpointId());
-      }
-      result = result && getLogInfosList()
-          .equals(other.getLogInfosList());
-      result = result && unknownFields.equals(other.unknownFields);
-      return result;
-    }
-
-    @java.lang.Override
-    public int hashCode() {
-      if (memoizedHashCode != 0) {
-        return memoizedHashCode;
-      }
-      int hash = 41;
-      hash = (19 * hash) + getDescriptorForType().hashCode();
-      if (hasEndpointId()) {
-        hash = (37 * hash) + ENDPOINTID_FIELD_NUMBER;
-        hash = (53 * hash) + getEndpointId().hashCode();
-      }
-      if (getLogInfosCount() > 0) {
-        hash = (37 * hash) + LOGINFOS_FIELD_NUMBER;
-        hash = (53 * hash) + getLogInfosList().hashCode();
-      }
-      hash = (29 * hash) + unknownFields.hashCode();
-      memoizedHashCode = hash;
-      return hash;
+    protected java.lang.Object writeReplace()
+        throws java.io.ObjectStreamException {
+      return super.writeReplace();
     }
 
     public static com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormat parseFrom(
@@ -1563,57 +1398,46 @@ public final class ReplicationProtocolFormats {
     }
     public static com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormat parseFrom(java.io.InputStream input)
         throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
+      return PARSER.parseFrom(input);
     }
     public static com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormat parseFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
+      return PARSER.parseFrom(input, extensionRegistry);
     }
     public static com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormat parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input);
+      return PARSER.parseDelimitedFrom(input);
     }
     public static com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormat parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+      return PARSER.parseDelimitedFrom(input, extensionRegistry);
     }
     public static com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormat parseFrom(
         com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
+      return PARSER.parseFrom(input);
     }
     public static com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormat parseFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
+      return PARSER.parseFrom(input, extensionRegistry);
     }
 
+    public static Builder newBuilder() { return Builder.create(); }
     public Builder newBuilderForType() { return newBuilder(); }
-    public static Builder newBuilder() {
-      return DEFAULT_INSTANCE.toBuilder();
-    }
     public static Builder newBuilder(com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormat prototype) {
-      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+      return newBuilder().mergeFrom(prototype);
     }
-    public Builder toBuilder() {
-      return this == DEFAULT_INSTANCE
-          ? new Builder() : new Builder().mergeFrom(this);
-    }
+    public Builder toBuilder() { return newBuilder(this); }
 
     @java.lang.Override
     protected Builder newBuilderForType(
-        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
       Builder builder = new Builder(parent);
       return builder;
     }
@@ -1621,15 +1445,14 @@ public final class ReplicationProtocolFormats {
      * Protobuf type {@code ReplicationInfoFormat}
      */
     public static final class Builder extends
-        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-        // @@protoc_insertion_point(builder_implements:ReplicationInfoFormat)
-        com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormatOrBuilder {
+        com.google.protobuf.GeneratedMessage.Builder<Builder>
+       implements com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormatOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
         return com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.internal_static_ReplicationInfoFormat_descriptor;
       }
 
-      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
           internalGetFieldAccessorTable() {
         return com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.internal_static_ReplicationInfoFormat_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
@@ -1642,16 +1465,19 @@ public final class ReplicationProtocolFormats {
       }
 
       private Builder(
-          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
         super(parent);
         maybeForceBuilderInitialization();
       }
       private void maybeForceBuilderInitialization() {
-        if (com.google.protobuf.GeneratedMessageV3
-                .alwaysUseFieldBuilders) {
+        if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
           getLogInfosFieldBuilder();
         }
       }
+      private static Builder create() {
+        return new Builder();
+      }
+
       public Builder clear() {
         super.clear();
         endpointId_ = "";
@@ -1663,6 +1489,10 @@ public final class ReplicationProtocolFormats {
           logInfosBuilder_.clear();
         }
         return this;
+      }
+
+      public Builder clone() {
+        return create().mergeFrom(buildPartial());
       }
 
       public com.google.protobuf.Descriptors.Descriptor
@@ -1704,32 +1534,6 @@ public final class ReplicationProtocolFormats {
         return result;
       }
 
-      public Builder clone() {
-        return (Builder) super.clone();
-      }
-      public Builder setField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          Object value) {
-        return (Builder) super.setField(field, value);
-      }
-      public Builder clearField(
-          com.google.protobuf.Descriptors.FieldDescriptor field) {
-        return (Builder) super.clearField(field);
-      }
-      public Builder clearOneof(
-          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
-        return (Builder) super.clearOneof(oneof);
-      }
-      public Builder setRepeatedField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          int index, Object value) {
-        return (Builder) super.setRepeatedField(field, index, value);
-      }
-      public Builder addRepeatedField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          Object value) {
-        return (Builder) super.addRepeatedField(field, value);
-      }
       public Builder mergeFrom(com.google.protobuf.Message other) {
         if (other instanceof com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormat) {
           return mergeFrom((com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormat)other);
@@ -1765,24 +1569,25 @@ public final class ReplicationProtocolFormats {
               logInfos_ = other.logInfos_;
               bitField0_ = (bitField0_ & ~0x00000002);
               logInfosBuilder_ = 
-                com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
+                com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders ?
                    getLogInfosFieldBuilder() : null;
             } else {
               logInfosBuilder_.addAllMessages(other.logInfos_);
             }
           }
         }
-        this.mergeUnknownFields(other.unknownFields);
-        onChanged();
+        this.mergeUnknownFields(other.getUnknownFields());
         return this;
       }
 
       public final boolean isInitialized() {
         if (!hasEndpointId()) {
+          
           return false;
         }
         for (int i = 0; i < getLogInfosCount(); i++) {
           if (!getLogInfos(i).isInitialized()) {
+            
             return false;
           }
         }
@@ -1798,7 +1603,7 @@ public final class ReplicationProtocolFormats {
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
         } catch (com.google.protobuf.InvalidProtocolBufferException e) {
           parsedMessage = (com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormat) e.getUnfinishedMessage();
-          throw e.unwrapIOException();
+          throw e;
         } finally {
           if (parsedMessage != null) {
             mergeFrom(parsedMessage);
@@ -1808,6 +1613,7 @@ public final class ReplicationProtocolFormats {
       }
       private int bitField0_;
 
+      // required string endpointId = 1;
       private java.lang.Object endpointId_ = "";
       /**
        * <code>required string endpointId = 1;</code>
@@ -1821,12 +1627,9 @@ public final class ReplicationProtocolFormats {
       public java.lang.String getEndpointId() {
         java.lang.Object ref = endpointId_;
         if (!(ref instanceof java.lang.String)) {
-          com.google.protobuf.ByteString bs =
-              (com.google.protobuf.ByteString) ref;
-          java.lang.String s = bs.toStringUtf8();
-          if (bs.isValidUtf8()) {
-            endpointId_ = s;
-          }
+          java.lang.String s = ((com.google.protobuf.ByteString) ref)
+              .toStringUtf8();
+          endpointId_ = s;
           return s;
         } else {
           return (java.lang.String) ref;
@@ -1884,6 +1687,7 @@ public final class ReplicationProtocolFormats {
         return this;
       }
 
+      // repeated .LogInfoFormat logInfos = 2;
       private java.util.List<com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.LogInfoFormat> logInfos_ =
         java.util.Collections.emptyList();
       private void ensureLogInfosIsMutable() {
@@ -1893,7 +1697,7 @@ public final class ReplicationProtocolFormats {
          }
       }
 
-      private com.google.protobuf.RepeatedFieldBuilderV3<
+      private com.google.protobuf.RepeatedFieldBuilder<
           com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.LogInfoFormat, com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.LogInfoFormat.Builder, com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.LogInfoFormatOrBuilder> logInfosBuilder_;
 
       /**
@@ -2025,8 +1829,7 @@ public final class ReplicationProtocolFormats {
           java.lang.Iterable<? extends com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.LogInfoFormat> values) {
         if (logInfosBuilder_ == null) {
           ensureLogInfosIsMutable();
-          com.google.protobuf.AbstractMessageLite.Builder.addAll(
-              values, logInfos_);
+          super.addAll(values, logInfos_);
           onChanged();
         } else {
           logInfosBuilder_.addAllMessages(values);
@@ -2109,11 +1912,11 @@ public final class ReplicationProtocolFormats {
            getLogInfosBuilderList() {
         return getLogInfosFieldBuilder().getBuilderList();
       }
-      private com.google.protobuf.RepeatedFieldBuilderV3<
+      private com.google.protobuf.RepeatedFieldBuilder<
           com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.LogInfoFormat, com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.LogInfoFormat.Builder, com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.LogInfoFormatOrBuilder> 
           getLogInfosFieldBuilder() {
         if (logInfosBuilder_ == null) {
-          logInfosBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
+          logInfosBuilder_ = new com.google.protobuf.RepeatedFieldBuilder<
               com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.LogInfoFormat, com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.LogInfoFormat.Builder, com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.LogInfoFormatOrBuilder>(
                   logInfos_,
                   ((bitField0_ & 0x00000002) == 0x00000002),
@@ -2123,87 +1926,58 @@ public final class ReplicationProtocolFormats {
         }
         return logInfosBuilder_;
       }
-      public final Builder setUnknownFields(
-          final com.google.protobuf.UnknownFieldSet unknownFields) {
-        return super.setUnknownFields(unknownFields);
-      }
-
-      public final Builder mergeUnknownFields(
-          final com.google.protobuf.UnknownFieldSet unknownFields) {
-        return super.mergeUnknownFields(unknownFields);
-      }
-
 
       // @@protoc_insertion_point(builder_scope:ReplicationInfoFormat)
     }
 
-    // @@protoc_insertion_point(class_scope:ReplicationInfoFormat)
-    private static final com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormat DEFAULT_INSTANCE;
     static {
-      DEFAULT_INSTANCE = new com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormat();
+      defaultInstance = new ReplicationInfoFormat(true);
+      defaultInstance.initFields();
     }
 
-    public static com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormat getDefaultInstance() {
-      return DEFAULT_INSTANCE;
-    }
-
-    @java.lang.Deprecated public static final com.google.protobuf.Parser<ReplicationInfoFormat>
-        PARSER = new com.google.protobuf.AbstractParser<ReplicationInfoFormat>() {
-      public ReplicationInfoFormat parsePartialFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws com.google.protobuf.InvalidProtocolBufferException {
-          return new ReplicationInfoFormat(input, extensionRegistry);
-      }
-    };
-
-    public static com.google.protobuf.Parser<ReplicationInfoFormat> parser() {
-      return PARSER;
-    }
-
-    @java.lang.Override
-    public com.google.protobuf.Parser<ReplicationInfoFormat> getParserForType() {
-      return PARSER;
-    }
-
-    public com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormat getDefaultInstanceForType() {
-      return DEFAULT_INSTANCE;
-    }
-
+    // @@protoc_insertion_point(class_scope:ReplicationInfoFormat)
   }
 
-  public interface GetReplicationInfoFormatOrBuilder extends
-      // @@protoc_insertion_point(interface_extends:GetReplicationInfoFormat)
-      com.google.protobuf.MessageOrBuilder {
+  public interface GetReplicationInfoFormatOrBuilder
+      extends com.google.protobuf.MessageOrBuilder {
   }
   /**
+   * Protobuf type {@code GetReplicationInfoFormat}
+   *
    * <pre>
    * no fields
    * </pre>
-   *
-   * Protobuf type {@code GetReplicationInfoFormat}
    */
-  public  static final class GetReplicationInfoFormat extends
-      com.google.protobuf.GeneratedMessageV3 implements
-      // @@protoc_insertion_point(message_implements:GetReplicationInfoFormat)
-      GetReplicationInfoFormatOrBuilder {
+  public static final class GetReplicationInfoFormat extends
+      com.google.protobuf.GeneratedMessage
+      implements GetReplicationInfoFormatOrBuilder {
     // Use GetReplicationInfoFormat.newBuilder() to construct.
-    private GetReplicationInfoFormat(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+    private GetReplicationInfoFormat(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
       super(builder);
+      this.unknownFields = builder.getUnknownFields();
     }
-    private GetReplicationInfoFormat() {
+    private GetReplicationInfoFormat(boolean noInit) { this.unknownFields = com.google.protobuf.UnknownFieldSet.getDefaultInstance(); }
+
+    private static final GetReplicationInfoFormat defaultInstance;
+    public static GetReplicationInfoFormat getDefaultInstance() {
+      return defaultInstance;
     }
 
+    public GetReplicationInfoFormat getDefaultInstanceForType() {
+      return defaultInstance;
+    }
+
+    private final com.google.protobuf.UnknownFieldSet unknownFields;
     @java.lang.Override
     public final com.google.protobuf.UnknownFieldSet
-    getUnknownFields() {
+        getUnknownFields() {
       return this.unknownFields;
     }
     private GetReplicationInfoFormat(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
-      this();
+      initFields();
       com.google.protobuf.UnknownFieldSet.Builder unknownFields =
           com.google.protobuf.UnknownFieldSet.newBuilder();
       try {
@@ -2227,7 +2001,7 @@ public final class ReplicationProtocolFormats {
         throw e.setUnfinishedMessage(this);
       } catch (java.io.IOException e) {
         throw new com.google.protobuf.InvalidProtocolBufferException(
-            e).setUnfinishedMessage(this);
+            e.getMessage()).setUnfinishedMessage(this);
       } finally {
         this.unknownFields = unknownFields.build();
         makeExtensionsImmutable();
@@ -2238,18 +2012,34 @@ public final class ReplicationProtocolFormats {
       return com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.internal_static_GetReplicationInfoFormat_descriptor;
     }
 
-    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
         internalGetFieldAccessorTable() {
       return com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.internal_static_GetReplicationInfoFormat_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
               com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.GetReplicationInfoFormat.class, com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.GetReplicationInfoFormat.Builder.class);
     }
 
+    public static com.google.protobuf.Parser<GetReplicationInfoFormat> PARSER =
+        new com.google.protobuf.AbstractParser<GetReplicationInfoFormat>() {
+      public GetReplicationInfoFormat parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new GetReplicationInfoFormat(input, extensionRegistry);
+      }
+    };
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<GetReplicationInfoFormat> getParserForType() {
+      return PARSER;
+    }
+
+    private void initFields() {
+    }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
-      if (isInitialized == 1) return true;
-      if (isInitialized == 0) return false;
+      if (isInitialized != -1) return isInitialized == 1;
 
       memoizedIsInitialized = 1;
       return true;
@@ -2257,45 +2047,26 @@ public final class ReplicationProtocolFormats {
 
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
-      unknownFields.writeTo(output);
+      getSerializedSize();
+      getUnknownFields().writeTo(output);
     }
 
+    private int memoizedSerializedSize = -1;
     public int getSerializedSize() {
-      int size = memoizedSize;
+      int size = memoizedSerializedSize;
       if (size != -1) return size;
 
       size = 0;
-      size += unknownFields.getSerializedSize();
-      memoizedSize = size;
+      size += getUnknownFields().getSerializedSize();
+      memoizedSerializedSize = size;
       return size;
     }
 
     private static final long serialVersionUID = 0L;
     @java.lang.Override
-    public boolean equals(final java.lang.Object obj) {
-      if (obj == this) {
-       return true;
-      }
-      if (!(obj instanceof com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.GetReplicationInfoFormat)) {
-        return super.equals(obj);
-      }
-      com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.GetReplicationInfoFormat other = (com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.GetReplicationInfoFormat) obj;
-
-      boolean result = true;
-      result = result && unknownFields.equals(other.unknownFields);
-      return result;
-    }
-
-    @java.lang.Override
-    public int hashCode() {
-      if (memoizedHashCode != 0) {
-        return memoizedHashCode;
-      }
-      int hash = 41;
-      hash = (19 * hash) + getDescriptorForType().hashCode();
-      hash = (29 * hash) + unknownFields.hashCode();
-      memoizedHashCode = hash;
-      return hash;
+    protected java.lang.Object writeReplace()
+        throws java.io.ObjectStreamException {
+      return super.writeReplace();
     }
 
     public static com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.GetReplicationInfoFormat parseFrom(
@@ -2321,77 +2092,65 @@ public final class ReplicationProtocolFormats {
     }
     public static com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.GetReplicationInfoFormat parseFrom(java.io.InputStream input)
         throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
+      return PARSER.parseFrom(input);
     }
     public static com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.GetReplicationInfoFormat parseFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
+      return PARSER.parseFrom(input, extensionRegistry);
     }
     public static com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.GetReplicationInfoFormat parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input);
+      return PARSER.parseDelimitedFrom(input);
     }
     public static com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.GetReplicationInfoFormat parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+      return PARSER.parseDelimitedFrom(input, extensionRegistry);
     }
     public static com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.GetReplicationInfoFormat parseFrom(
         com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
+      return PARSER.parseFrom(input);
     }
     public static com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.GetReplicationInfoFormat parseFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
+      return PARSER.parseFrom(input, extensionRegistry);
     }
 
+    public static Builder newBuilder() { return Builder.create(); }
     public Builder newBuilderForType() { return newBuilder(); }
-    public static Builder newBuilder() {
-      return DEFAULT_INSTANCE.toBuilder();
-    }
     public static Builder newBuilder(com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.GetReplicationInfoFormat prototype) {
-      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+      return newBuilder().mergeFrom(prototype);
     }
-    public Builder toBuilder() {
-      return this == DEFAULT_INSTANCE
-          ? new Builder() : new Builder().mergeFrom(this);
-    }
+    public Builder toBuilder() { return newBuilder(this); }
 
     @java.lang.Override
     protected Builder newBuilderForType(
-        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
       Builder builder = new Builder(parent);
       return builder;
     }
     /**
+     * Protobuf type {@code GetReplicationInfoFormat}
+     *
      * <pre>
      * no fields
      * </pre>
-     *
-     * Protobuf type {@code GetReplicationInfoFormat}
      */
     public static final class Builder extends
-        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-        // @@protoc_insertion_point(builder_implements:GetReplicationInfoFormat)
-        com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.GetReplicationInfoFormatOrBuilder {
+        com.google.protobuf.GeneratedMessage.Builder<Builder>
+       implements com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.GetReplicationInfoFormatOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
         return com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.internal_static_GetReplicationInfoFormat_descriptor;
       }
 
-      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
           internalGetFieldAccessorTable() {
         return com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.internal_static_GetReplicationInfoFormat_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
@@ -2404,18 +2163,25 @@ public final class ReplicationProtocolFormats {
       }
 
       private Builder(
-          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
         super(parent);
         maybeForceBuilderInitialization();
       }
       private void maybeForceBuilderInitialization() {
-        if (com.google.protobuf.GeneratedMessageV3
-                .alwaysUseFieldBuilders) {
+        if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
         }
       }
+      private static Builder create() {
+        return new Builder();
+      }
+
       public Builder clear() {
         super.clear();
         return this;
+      }
+
+      public Builder clone() {
+        return create().mergeFrom(buildPartial());
       }
 
       public com.google.protobuf.Descriptors.Descriptor
@@ -2441,32 +2207,6 @@ public final class ReplicationProtocolFormats {
         return result;
       }
 
-      public Builder clone() {
-        return (Builder) super.clone();
-      }
-      public Builder setField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          Object value) {
-        return (Builder) super.setField(field, value);
-      }
-      public Builder clearField(
-          com.google.protobuf.Descriptors.FieldDescriptor field) {
-        return (Builder) super.clearField(field);
-      }
-      public Builder clearOneof(
-          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
-        return (Builder) super.clearOneof(oneof);
-      }
-      public Builder setRepeatedField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          int index, Object value) {
-        return (Builder) super.setRepeatedField(field, index, value);
-      }
-      public Builder addRepeatedField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          Object value) {
-        return (Builder) super.addRepeatedField(field, value);
-      }
       public Builder mergeFrom(com.google.protobuf.Message other) {
         if (other instanceof com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.GetReplicationInfoFormat) {
           return mergeFrom((com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.GetReplicationInfoFormat)other);
@@ -2478,8 +2218,7 @@ public final class ReplicationProtocolFormats {
 
       public Builder mergeFrom(com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.GetReplicationInfoFormat other) {
         if (other == com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.GetReplicationInfoFormat.getDefaultInstance()) return this;
-        this.mergeUnknownFields(other.unknownFields);
-        onChanged();
+        this.mergeUnknownFields(other.getUnknownFields());
         return this;
       }
 
@@ -2496,7 +2235,7 @@ public final class ReplicationProtocolFormats {
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
         } catch (com.google.protobuf.InvalidProtocolBufferException e) {
           parsedMessage = (com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.GetReplicationInfoFormat) e.getUnfinishedMessage();
-          throw e.unwrapIOException();
+          throw e;
         } finally {
           if (parsedMessage != null) {
             mergeFrom(parsedMessage);
@@ -2504,59 +2243,22 @@ public final class ReplicationProtocolFormats {
         }
         return this;
       }
-      public final Builder setUnknownFields(
-          final com.google.protobuf.UnknownFieldSet unknownFields) {
-        return super.setUnknownFields(unknownFields);
-      }
-
-      public final Builder mergeUnknownFields(
-          final com.google.protobuf.UnknownFieldSet unknownFields) {
-        return super.mergeUnknownFields(unknownFields);
-      }
-
 
       // @@protoc_insertion_point(builder_scope:GetReplicationInfoFormat)
     }
 
-    // @@protoc_insertion_point(class_scope:GetReplicationInfoFormat)
-    private static final com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.GetReplicationInfoFormat DEFAULT_INSTANCE;
     static {
-      DEFAULT_INSTANCE = new com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.GetReplicationInfoFormat();
+      defaultInstance = new GetReplicationInfoFormat(true);
+      defaultInstance.initFields();
     }
 
-    public static com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.GetReplicationInfoFormat getDefaultInstance() {
-      return DEFAULT_INSTANCE;
-    }
-
-    @java.lang.Deprecated public static final com.google.protobuf.Parser<GetReplicationInfoFormat>
-        PARSER = new com.google.protobuf.AbstractParser<GetReplicationInfoFormat>() {
-      public GetReplicationInfoFormat parsePartialFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws com.google.protobuf.InvalidProtocolBufferException {
-          return new GetReplicationInfoFormat(input, extensionRegistry);
-      }
-    };
-
-    public static com.google.protobuf.Parser<GetReplicationInfoFormat> parser() {
-      return PARSER;
-    }
-
-    @java.lang.Override
-    public com.google.protobuf.Parser<GetReplicationInfoFormat> getParserForType() {
-      return PARSER;
-    }
-
-    public com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.GetReplicationInfoFormat getDefaultInstanceForType() {
-      return DEFAULT_INSTANCE;
-    }
-
+    // @@protoc_insertion_point(class_scope:GetReplicationInfoFormat)
   }
 
-  public interface GetReplicationInfoSuccessFormatOrBuilder extends
-      // @@protoc_insertion_point(interface_extends:GetReplicationInfoSuccessFormat)
-      com.google.protobuf.MessageOrBuilder {
+  public interface GetReplicationInfoSuccessFormatOrBuilder
+      extends com.google.protobuf.MessageOrBuilder {
 
+    // required .ReplicationInfoFormat info = 1;
     /**
      * <code>required .ReplicationInfoFormat info = 1;</code>
      */
@@ -2573,27 +2275,36 @@ public final class ReplicationProtocolFormats {
   /**
    * Protobuf type {@code GetReplicationInfoSuccessFormat}
    */
-  public  static final class GetReplicationInfoSuccessFormat extends
-      com.google.protobuf.GeneratedMessageV3 implements
-      // @@protoc_insertion_point(message_implements:GetReplicationInfoSuccessFormat)
-      GetReplicationInfoSuccessFormatOrBuilder {
+  public static final class GetReplicationInfoSuccessFormat extends
+      com.google.protobuf.GeneratedMessage
+      implements GetReplicationInfoSuccessFormatOrBuilder {
     // Use GetReplicationInfoSuccessFormat.newBuilder() to construct.
-    private GetReplicationInfoSuccessFormat(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+    private GetReplicationInfoSuccessFormat(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
       super(builder);
+      this.unknownFields = builder.getUnknownFields();
     }
-    private GetReplicationInfoSuccessFormat() {
+    private GetReplicationInfoSuccessFormat(boolean noInit) { this.unknownFields = com.google.protobuf.UnknownFieldSet.getDefaultInstance(); }
+
+    private static final GetReplicationInfoSuccessFormat defaultInstance;
+    public static GetReplicationInfoSuccessFormat getDefaultInstance() {
+      return defaultInstance;
     }
 
+    public GetReplicationInfoSuccessFormat getDefaultInstanceForType() {
+      return defaultInstance;
+    }
+
+    private final com.google.protobuf.UnknownFieldSet unknownFields;
     @java.lang.Override
     public final com.google.protobuf.UnknownFieldSet
-    getUnknownFields() {
+        getUnknownFields() {
       return this.unknownFields;
     }
     private GetReplicationInfoSuccessFormat(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
-      this();
+      initFields();
       int mutable_bitField0_ = 0;
       com.google.protobuf.UnknownFieldSet.Builder unknownFields =
           com.google.protobuf.UnknownFieldSet.newBuilder();
@@ -2631,7 +2342,7 @@ public final class ReplicationProtocolFormats {
         throw e.setUnfinishedMessage(this);
       } catch (java.io.IOException e) {
         throw new com.google.protobuf.InvalidProtocolBufferException(
-            e).setUnfinishedMessage(this);
+            e.getMessage()).setUnfinishedMessage(this);
       } finally {
         this.unknownFields = unknownFields.build();
         makeExtensionsImmutable();
@@ -2642,14 +2353,30 @@ public final class ReplicationProtocolFormats {
       return com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.internal_static_GetReplicationInfoSuccessFormat_descriptor;
     }
 
-    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
         internalGetFieldAccessorTable() {
       return com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.internal_static_GetReplicationInfoSuccessFormat_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
               com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.GetReplicationInfoSuccessFormat.class, com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.GetReplicationInfoSuccessFormat.Builder.class);
     }
 
+    public static com.google.protobuf.Parser<GetReplicationInfoSuccessFormat> PARSER =
+        new com.google.protobuf.AbstractParser<GetReplicationInfoSuccessFormat>() {
+      public GetReplicationInfoSuccessFormat parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new GetReplicationInfoSuccessFormat(input, extensionRegistry);
+      }
+    };
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<GetReplicationInfoSuccessFormat> getParserForType() {
+      return PARSER;
+    }
+
     private int bitField0_;
+    // required .ReplicationInfoFormat info = 1;
     public static final int INFO_FIELD_NUMBER = 1;
     private com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormat info_;
     /**
@@ -2662,20 +2389,22 @@ public final class ReplicationProtocolFormats {
      * <code>required .ReplicationInfoFormat info = 1;</code>
      */
     public com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormat getInfo() {
-      return info_ == null ? com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormat.getDefaultInstance() : info_;
+      return info_;
     }
     /**
      * <code>required .ReplicationInfoFormat info = 1;</code>
      */
     public com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormatOrBuilder getInfoOrBuilder() {
-      return info_ == null ? com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormat.getDefaultInstance() : info_;
+      return info_;
     }
 
+    private void initFields() {
+      info_ = com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormat.getDefaultInstance();
+    }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
-      if (isInitialized == 1) return true;
-      if (isInitialized == 0) return false;
+      if (isInitialized != -1) return isInitialized == 1;
 
       if (!hasInfo()) {
         memoizedIsInitialized = 0;
@@ -2691,61 +2420,33 @@ public final class ReplicationProtocolFormats {
 
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
+      getSerializedSize();
       if (((bitField0_ & 0x00000001) == 0x00000001)) {
-        output.writeMessage(1, getInfo());
+        output.writeMessage(1, info_);
       }
-      unknownFields.writeTo(output);
+      getUnknownFields().writeTo(output);
     }
 
+    private int memoizedSerializedSize = -1;
     public int getSerializedSize() {
-      int size = memoizedSize;
+      int size = memoizedSerializedSize;
       if (size != -1) return size;
 
       size = 0;
       if (((bitField0_ & 0x00000001) == 0x00000001)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(1, getInfo());
+          .computeMessageSize(1, info_);
       }
-      size += unknownFields.getSerializedSize();
-      memoizedSize = size;
+      size += getUnknownFields().getSerializedSize();
+      memoizedSerializedSize = size;
       return size;
     }
 
     private static final long serialVersionUID = 0L;
     @java.lang.Override
-    public boolean equals(final java.lang.Object obj) {
-      if (obj == this) {
-       return true;
-      }
-      if (!(obj instanceof com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.GetReplicationInfoSuccessFormat)) {
-        return super.equals(obj);
-      }
-      com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.GetReplicationInfoSuccessFormat other = (com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.GetReplicationInfoSuccessFormat) obj;
-
-      boolean result = true;
-      result = result && (hasInfo() == other.hasInfo());
-      if (hasInfo()) {
-        result = result && getInfo()
-            .equals(other.getInfo());
-      }
-      result = result && unknownFields.equals(other.unknownFields);
-      return result;
-    }
-
-    @java.lang.Override
-    public int hashCode() {
-      if (memoizedHashCode != 0) {
-        return memoizedHashCode;
-      }
-      int hash = 41;
-      hash = (19 * hash) + getDescriptorForType().hashCode();
-      if (hasInfo()) {
-        hash = (37 * hash) + INFO_FIELD_NUMBER;
-        hash = (53 * hash) + getInfo().hashCode();
-      }
-      hash = (29 * hash) + unknownFields.hashCode();
-      memoizedHashCode = hash;
-      return hash;
+    protected java.lang.Object writeReplace()
+        throws java.io.ObjectStreamException {
+      return super.writeReplace();
     }
 
     public static com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.GetReplicationInfoSuccessFormat parseFrom(
@@ -2771,57 +2472,46 @@ public final class ReplicationProtocolFormats {
     }
     public static com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.GetReplicationInfoSuccessFormat parseFrom(java.io.InputStream input)
         throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
+      return PARSER.parseFrom(input);
     }
     public static com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.GetReplicationInfoSuccessFormat parseFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
+      return PARSER.parseFrom(input, extensionRegistry);
     }
     public static com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.GetReplicationInfoSuccessFormat parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input);
+      return PARSER.parseDelimitedFrom(input);
     }
     public static com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.GetReplicationInfoSuccessFormat parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+      return PARSER.parseDelimitedFrom(input, extensionRegistry);
     }
     public static com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.GetReplicationInfoSuccessFormat parseFrom(
         com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
+      return PARSER.parseFrom(input);
     }
     public static com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.GetReplicationInfoSuccessFormat parseFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
+      return PARSER.parseFrom(input, extensionRegistry);
     }
 
+    public static Builder newBuilder() { return Builder.create(); }
     public Builder newBuilderForType() { return newBuilder(); }
-    public static Builder newBuilder() {
-      return DEFAULT_INSTANCE.toBuilder();
-    }
     public static Builder newBuilder(com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.GetReplicationInfoSuccessFormat prototype) {
-      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+      return newBuilder().mergeFrom(prototype);
     }
-    public Builder toBuilder() {
-      return this == DEFAULT_INSTANCE
-          ? new Builder() : new Builder().mergeFrom(this);
-    }
+    public Builder toBuilder() { return newBuilder(this); }
 
     @java.lang.Override
     protected Builder newBuilderForType(
-        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
       Builder builder = new Builder(parent);
       return builder;
     }
@@ -2829,15 +2519,14 @@ public final class ReplicationProtocolFormats {
      * Protobuf type {@code GetReplicationInfoSuccessFormat}
      */
     public static final class Builder extends
-        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-        // @@protoc_insertion_point(builder_implements:GetReplicationInfoSuccessFormat)
-        com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.GetReplicationInfoSuccessFormatOrBuilder {
+        com.google.protobuf.GeneratedMessage.Builder<Builder>
+       implements com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.GetReplicationInfoSuccessFormatOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
         return com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.internal_static_GetReplicationInfoSuccessFormat_descriptor;
       }
 
-      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
           internalGetFieldAccessorTable() {
         return com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.internal_static_GetReplicationInfoSuccessFormat_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
@@ -2850,25 +2539,32 @@ public final class ReplicationProtocolFormats {
       }
 
       private Builder(
-          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
         super(parent);
         maybeForceBuilderInitialization();
       }
       private void maybeForceBuilderInitialization() {
-        if (com.google.protobuf.GeneratedMessageV3
-                .alwaysUseFieldBuilders) {
+        if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
           getInfoFieldBuilder();
         }
       }
+      private static Builder create() {
+        return new Builder();
+      }
+
       public Builder clear() {
         super.clear();
         if (infoBuilder_ == null) {
-          info_ = null;
+          info_ = com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormat.getDefaultInstance();
         } else {
           infoBuilder_.clear();
         }
         bitField0_ = (bitField0_ & ~0x00000001);
         return this;
+      }
+
+      public Builder clone() {
+        return create().mergeFrom(buildPartial());
       }
 
       public com.google.protobuf.Descriptors.Descriptor
@@ -2905,32 +2601,6 @@ public final class ReplicationProtocolFormats {
         return result;
       }
 
-      public Builder clone() {
-        return (Builder) super.clone();
-      }
-      public Builder setField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          Object value) {
-        return (Builder) super.setField(field, value);
-      }
-      public Builder clearField(
-          com.google.protobuf.Descriptors.FieldDescriptor field) {
-        return (Builder) super.clearField(field);
-      }
-      public Builder clearOneof(
-          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
-        return (Builder) super.clearOneof(oneof);
-      }
-      public Builder setRepeatedField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          int index, Object value) {
-        return (Builder) super.setRepeatedField(field, index, value);
-      }
-      public Builder addRepeatedField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          Object value) {
-        return (Builder) super.addRepeatedField(field, value);
-      }
       public Builder mergeFrom(com.google.protobuf.Message other) {
         if (other instanceof com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.GetReplicationInfoSuccessFormat) {
           return mergeFrom((com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.GetReplicationInfoSuccessFormat)other);
@@ -2945,16 +2615,17 @@ public final class ReplicationProtocolFormats {
         if (other.hasInfo()) {
           mergeInfo(other.getInfo());
         }
-        this.mergeUnknownFields(other.unknownFields);
-        onChanged();
+        this.mergeUnknownFields(other.getUnknownFields());
         return this;
       }
 
       public final boolean isInitialized() {
         if (!hasInfo()) {
+          
           return false;
         }
         if (!getInfo().isInitialized()) {
+          
           return false;
         }
         return true;
@@ -2969,7 +2640,7 @@ public final class ReplicationProtocolFormats {
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
         } catch (com.google.protobuf.InvalidProtocolBufferException e) {
           parsedMessage = (com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.GetReplicationInfoSuccessFormat) e.getUnfinishedMessage();
-          throw e.unwrapIOException();
+          throw e;
         } finally {
           if (parsedMessage != null) {
             mergeFrom(parsedMessage);
@@ -2979,8 +2650,9 @@ public final class ReplicationProtocolFormats {
       }
       private int bitField0_;
 
-      private com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormat info_ = null;
-      private com.google.protobuf.SingleFieldBuilderV3<
+      // required .ReplicationInfoFormat info = 1;
+      private com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormat info_ = com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormat.getDefaultInstance();
+      private com.google.protobuf.SingleFieldBuilder<
           com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormat, com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormat.Builder, com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormatOrBuilder> infoBuilder_;
       /**
        * <code>required .ReplicationInfoFormat info = 1;</code>
@@ -2993,7 +2665,7 @@ public final class ReplicationProtocolFormats {
        */
       public com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormat getInfo() {
         if (infoBuilder_ == null) {
-          return info_ == null ? com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormat.getDefaultInstance() : info_;
+          return info_;
         } else {
           return infoBuilder_.getMessage();
         }
@@ -3034,7 +2706,6 @@ public final class ReplicationProtocolFormats {
       public Builder mergeInfo(com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormat value) {
         if (infoBuilder_ == null) {
           if (((bitField0_ & 0x00000001) == 0x00000001) &&
-              info_ != null &&
               info_ != com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormat.getDefaultInstance()) {
             info_ =
               com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormat.newBuilder(info_).mergeFrom(value).buildPartial();
@@ -3053,7 +2724,7 @@ public final class ReplicationProtocolFormats {
        */
       public Builder clearInfo() {
         if (infoBuilder_ == null) {
-          info_ = null;
+          info_ = com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormat.getDefaultInstance();
           onChanged();
         } else {
           infoBuilder_.clear();
@@ -3076,79 +2747,41 @@ public final class ReplicationProtocolFormats {
         if (infoBuilder_ != null) {
           return infoBuilder_.getMessageOrBuilder();
         } else {
-          return info_ == null ?
-              com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormat.getDefaultInstance() : info_;
+          return info_;
         }
       }
       /**
        * <code>required .ReplicationInfoFormat info = 1;</code>
        */
-      private com.google.protobuf.SingleFieldBuilderV3<
+      private com.google.protobuf.SingleFieldBuilder<
           com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormat, com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormat.Builder, com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormatOrBuilder> 
           getInfoFieldBuilder() {
         if (infoBuilder_ == null) {
-          infoBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+          infoBuilder_ = new com.google.protobuf.SingleFieldBuilder<
               com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormat, com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormat.Builder, com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormatOrBuilder>(
-                  getInfo(),
+                  info_,
                   getParentForChildren(),
                   isClean());
           info_ = null;
         }
         return infoBuilder_;
       }
-      public final Builder setUnknownFields(
-          final com.google.protobuf.UnknownFieldSet unknownFields) {
-        return super.setUnknownFields(unknownFields);
-      }
-
-      public final Builder mergeUnknownFields(
-          final com.google.protobuf.UnknownFieldSet unknownFields) {
-        return super.mergeUnknownFields(unknownFields);
-      }
-
 
       // @@protoc_insertion_point(builder_scope:GetReplicationInfoSuccessFormat)
     }
 
-    // @@protoc_insertion_point(class_scope:GetReplicationInfoSuccessFormat)
-    private static final com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.GetReplicationInfoSuccessFormat DEFAULT_INSTANCE;
     static {
-      DEFAULT_INSTANCE = new com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.GetReplicationInfoSuccessFormat();
+      defaultInstance = new GetReplicationInfoSuccessFormat(true);
+      defaultInstance.initFields();
     }
 
-    public static com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.GetReplicationInfoSuccessFormat getDefaultInstance() {
-      return DEFAULT_INSTANCE;
-    }
-
-    @java.lang.Deprecated public static final com.google.protobuf.Parser<GetReplicationInfoSuccessFormat>
-        PARSER = new com.google.protobuf.AbstractParser<GetReplicationInfoSuccessFormat>() {
-      public GetReplicationInfoSuccessFormat parsePartialFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws com.google.protobuf.InvalidProtocolBufferException {
-          return new GetReplicationInfoSuccessFormat(input, extensionRegistry);
-      }
-    };
-
-    public static com.google.protobuf.Parser<GetReplicationInfoSuccessFormat> parser() {
-      return PARSER;
-    }
-
-    @java.lang.Override
-    public com.google.protobuf.Parser<GetReplicationInfoSuccessFormat> getParserForType() {
-      return PARSER;
-    }
-
-    public com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.GetReplicationInfoSuccessFormat getDefaultInstanceForType() {
-      return DEFAULT_INSTANCE;
-    }
-
+    // @@protoc_insertion_point(class_scope:GetReplicationInfoSuccessFormat)
   }
 
-  public interface SynchronizeReplicationProgressFormatOrBuilder extends
-      // @@protoc_insertion_point(interface_extends:SynchronizeReplicationProgressFormat)
-      com.google.protobuf.MessageOrBuilder {
+  public interface SynchronizeReplicationProgressFormatOrBuilder
+      extends com.google.protobuf.MessageOrBuilder {
 
+    // optional .ReplicationInfoFormat info = 1;
     /**
      * <code>optional .ReplicationInfoFormat info = 1;</code>
      */
@@ -3165,27 +2798,36 @@ public final class ReplicationProtocolFormats {
   /**
    * Protobuf type {@code SynchronizeReplicationProgressFormat}
    */
-  public  static final class SynchronizeReplicationProgressFormat extends
-      com.google.protobuf.GeneratedMessageV3 implements
-      // @@protoc_insertion_point(message_implements:SynchronizeReplicationProgressFormat)
-      SynchronizeReplicationProgressFormatOrBuilder {
+  public static final class SynchronizeReplicationProgressFormat extends
+      com.google.protobuf.GeneratedMessage
+      implements SynchronizeReplicationProgressFormatOrBuilder {
     // Use SynchronizeReplicationProgressFormat.newBuilder() to construct.
-    private SynchronizeReplicationProgressFormat(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+    private SynchronizeReplicationProgressFormat(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
       super(builder);
+      this.unknownFields = builder.getUnknownFields();
     }
-    private SynchronizeReplicationProgressFormat() {
+    private SynchronizeReplicationProgressFormat(boolean noInit) { this.unknownFields = com.google.protobuf.UnknownFieldSet.getDefaultInstance(); }
+
+    private static final SynchronizeReplicationProgressFormat defaultInstance;
+    public static SynchronizeReplicationProgressFormat getDefaultInstance() {
+      return defaultInstance;
     }
 
+    public SynchronizeReplicationProgressFormat getDefaultInstanceForType() {
+      return defaultInstance;
+    }
+
+    private final com.google.protobuf.UnknownFieldSet unknownFields;
     @java.lang.Override
     public final com.google.protobuf.UnknownFieldSet
-    getUnknownFields() {
+        getUnknownFields() {
       return this.unknownFields;
     }
     private SynchronizeReplicationProgressFormat(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
-      this();
+      initFields();
       int mutable_bitField0_ = 0;
       com.google.protobuf.UnknownFieldSet.Builder unknownFields =
           com.google.protobuf.UnknownFieldSet.newBuilder();
@@ -3223,7 +2865,7 @@ public final class ReplicationProtocolFormats {
         throw e.setUnfinishedMessage(this);
       } catch (java.io.IOException e) {
         throw new com.google.protobuf.InvalidProtocolBufferException(
-            e).setUnfinishedMessage(this);
+            e.getMessage()).setUnfinishedMessage(this);
       } finally {
         this.unknownFields = unknownFields.build();
         makeExtensionsImmutable();
@@ -3234,14 +2876,30 @@ public final class ReplicationProtocolFormats {
       return com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.internal_static_SynchronizeReplicationProgressFormat_descriptor;
     }
 
-    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
         internalGetFieldAccessorTable() {
       return com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.internal_static_SynchronizeReplicationProgressFormat_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
               com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.SynchronizeReplicationProgressFormat.class, com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.SynchronizeReplicationProgressFormat.Builder.class);
     }
 
+    public static com.google.protobuf.Parser<SynchronizeReplicationProgressFormat> PARSER =
+        new com.google.protobuf.AbstractParser<SynchronizeReplicationProgressFormat>() {
+      public SynchronizeReplicationProgressFormat parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new SynchronizeReplicationProgressFormat(input, extensionRegistry);
+      }
+    };
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<SynchronizeReplicationProgressFormat> getParserForType() {
+      return PARSER;
+    }
+
     private int bitField0_;
+    // optional .ReplicationInfoFormat info = 1;
     public static final int INFO_FIELD_NUMBER = 1;
     private com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormat info_;
     /**
@@ -3254,20 +2912,22 @@ public final class ReplicationProtocolFormats {
      * <code>optional .ReplicationInfoFormat info = 1;</code>
      */
     public com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormat getInfo() {
-      return info_ == null ? com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormat.getDefaultInstance() : info_;
+      return info_;
     }
     /**
      * <code>optional .ReplicationInfoFormat info = 1;</code>
      */
     public com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormatOrBuilder getInfoOrBuilder() {
-      return info_ == null ? com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormat.getDefaultInstance() : info_;
+      return info_;
     }
 
+    private void initFields() {
+      info_ = com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormat.getDefaultInstance();
+    }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
-      if (isInitialized == 1) return true;
-      if (isInitialized == 0) return false;
+      if (isInitialized != -1) return isInitialized == 1;
 
       if (hasInfo()) {
         if (!getInfo().isInitialized()) {
@@ -3281,61 +2941,33 @@ public final class ReplicationProtocolFormats {
 
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
+      getSerializedSize();
       if (((bitField0_ & 0x00000001) == 0x00000001)) {
-        output.writeMessage(1, getInfo());
+        output.writeMessage(1, info_);
       }
-      unknownFields.writeTo(output);
+      getUnknownFields().writeTo(output);
     }
 
+    private int memoizedSerializedSize = -1;
     public int getSerializedSize() {
-      int size = memoizedSize;
+      int size = memoizedSerializedSize;
       if (size != -1) return size;
 
       size = 0;
       if (((bitField0_ & 0x00000001) == 0x00000001)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(1, getInfo());
+          .computeMessageSize(1, info_);
       }
-      size += unknownFields.getSerializedSize();
-      memoizedSize = size;
+      size += getUnknownFields().getSerializedSize();
+      memoizedSerializedSize = size;
       return size;
     }
 
     private static final long serialVersionUID = 0L;
     @java.lang.Override
-    public boolean equals(final java.lang.Object obj) {
-      if (obj == this) {
-       return true;
-      }
-      if (!(obj instanceof com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.SynchronizeReplicationProgressFormat)) {
-        return super.equals(obj);
-      }
-      com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.SynchronizeReplicationProgressFormat other = (com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.SynchronizeReplicationProgressFormat) obj;
-
-      boolean result = true;
-      result = result && (hasInfo() == other.hasInfo());
-      if (hasInfo()) {
-        result = result && getInfo()
-            .equals(other.getInfo());
-      }
-      result = result && unknownFields.equals(other.unknownFields);
-      return result;
-    }
-
-    @java.lang.Override
-    public int hashCode() {
-      if (memoizedHashCode != 0) {
-        return memoizedHashCode;
-      }
-      int hash = 41;
-      hash = (19 * hash) + getDescriptorForType().hashCode();
-      if (hasInfo()) {
-        hash = (37 * hash) + INFO_FIELD_NUMBER;
-        hash = (53 * hash) + getInfo().hashCode();
-      }
-      hash = (29 * hash) + unknownFields.hashCode();
-      memoizedHashCode = hash;
-      return hash;
+    protected java.lang.Object writeReplace()
+        throws java.io.ObjectStreamException {
+      return super.writeReplace();
     }
 
     public static com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.SynchronizeReplicationProgressFormat parseFrom(
@@ -3361,57 +2993,46 @@ public final class ReplicationProtocolFormats {
     }
     public static com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.SynchronizeReplicationProgressFormat parseFrom(java.io.InputStream input)
         throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
+      return PARSER.parseFrom(input);
     }
     public static com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.SynchronizeReplicationProgressFormat parseFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
+      return PARSER.parseFrom(input, extensionRegistry);
     }
     public static com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.SynchronizeReplicationProgressFormat parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input);
+      return PARSER.parseDelimitedFrom(input);
     }
     public static com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.SynchronizeReplicationProgressFormat parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+      return PARSER.parseDelimitedFrom(input, extensionRegistry);
     }
     public static com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.SynchronizeReplicationProgressFormat parseFrom(
         com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
+      return PARSER.parseFrom(input);
     }
     public static com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.SynchronizeReplicationProgressFormat parseFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
+      return PARSER.parseFrom(input, extensionRegistry);
     }
 
+    public static Builder newBuilder() { return Builder.create(); }
     public Builder newBuilderForType() { return newBuilder(); }
-    public static Builder newBuilder() {
-      return DEFAULT_INSTANCE.toBuilder();
-    }
     public static Builder newBuilder(com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.SynchronizeReplicationProgressFormat prototype) {
-      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+      return newBuilder().mergeFrom(prototype);
     }
-    public Builder toBuilder() {
-      return this == DEFAULT_INSTANCE
-          ? new Builder() : new Builder().mergeFrom(this);
-    }
+    public Builder toBuilder() { return newBuilder(this); }
 
     @java.lang.Override
     protected Builder newBuilderForType(
-        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
       Builder builder = new Builder(parent);
       return builder;
     }
@@ -3419,15 +3040,14 @@ public final class ReplicationProtocolFormats {
      * Protobuf type {@code SynchronizeReplicationProgressFormat}
      */
     public static final class Builder extends
-        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-        // @@protoc_insertion_point(builder_implements:SynchronizeReplicationProgressFormat)
-        com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.SynchronizeReplicationProgressFormatOrBuilder {
+        com.google.protobuf.GeneratedMessage.Builder<Builder>
+       implements com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.SynchronizeReplicationProgressFormatOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
         return com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.internal_static_SynchronizeReplicationProgressFormat_descriptor;
       }
 
-      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
           internalGetFieldAccessorTable() {
         return com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.internal_static_SynchronizeReplicationProgressFormat_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
@@ -3440,25 +3060,32 @@ public final class ReplicationProtocolFormats {
       }
 
       private Builder(
-          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
         super(parent);
         maybeForceBuilderInitialization();
       }
       private void maybeForceBuilderInitialization() {
-        if (com.google.protobuf.GeneratedMessageV3
-                .alwaysUseFieldBuilders) {
+        if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
           getInfoFieldBuilder();
         }
       }
+      private static Builder create() {
+        return new Builder();
+      }
+
       public Builder clear() {
         super.clear();
         if (infoBuilder_ == null) {
-          info_ = null;
+          info_ = com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormat.getDefaultInstance();
         } else {
           infoBuilder_.clear();
         }
         bitField0_ = (bitField0_ & ~0x00000001);
         return this;
+      }
+
+      public Builder clone() {
+        return create().mergeFrom(buildPartial());
       }
 
       public com.google.protobuf.Descriptors.Descriptor
@@ -3495,32 +3122,6 @@ public final class ReplicationProtocolFormats {
         return result;
       }
 
-      public Builder clone() {
-        return (Builder) super.clone();
-      }
-      public Builder setField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          Object value) {
-        return (Builder) super.setField(field, value);
-      }
-      public Builder clearField(
-          com.google.protobuf.Descriptors.FieldDescriptor field) {
-        return (Builder) super.clearField(field);
-      }
-      public Builder clearOneof(
-          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
-        return (Builder) super.clearOneof(oneof);
-      }
-      public Builder setRepeatedField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          int index, Object value) {
-        return (Builder) super.setRepeatedField(field, index, value);
-      }
-      public Builder addRepeatedField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          Object value) {
-        return (Builder) super.addRepeatedField(field, value);
-      }
       public Builder mergeFrom(com.google.protobuf.Message other) {
         if (other instanceof com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.SynchronizeReplicationProgressFormat) {
           return mergeFrom((com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.SynchronizeReplicationProgressFormat)other);
@@ -3535,14 +3136,14 @@ public final class ReplicationProtocolFormats {
         if (other.hasInfo()) {
           mergeInfo(other.getInfo());
         }
-        this.mergeUnknownFields(other.unknownFields);
-        onChanged();
+        this.mergeUnknownFields(other.getUnknownFields());
         return this;
       }
 
       public final boolean isInitialized() {
         if (hasInfo()) {
           if (!getInfo().isInitialized()) {
+            
             return false;
           }
         }
@@ -3558,7 +3159,7 @@ public final class ReplicationProtocolFormats {
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
         } catch (com.google.protobuf.InvalidProtocolBufferException e) {
           parsedMessage = (com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.SynchronizeReplicationProgressFormat) e.getUnfinishedMessage();
-          throw e.unwrapIOException();
+          throw e;
         } finally {
           if (parsedMessage != null) {
             mergeFrom(parsedMessage);
@@ -3568,8 +3169,9 @@ public final class ReplicationProtocolFormats {
       }
       private int bitField0_;
 
-      private com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormat info_ = null;
-      private com.google.protobuf.SingleFieldBuilderV3<
+      // optional .ReplicationInfoFormat info = 1;
+      private com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormat info_ = com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormat.getDefaultInstance();
+      private com.google.protobuf.SingleFieldBuilder<
           com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormat, com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormat.Builder, com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormatOrBuilder> infoBuilder_;
       /**
        * <code>optional .ReplicationInfoFormat info = 1;</code>
@@ -3582,7 +3184,7 @@ public final class ReplicationProtocolFormats {
        */
       public com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormat getInfo() {
         if (infoBuilder_ == null) {
-          return info_ == null ? com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormat.getDefaultInstance() : info_;
+          return info_;
         } else {
           return infoBuilder_.getMessage();
         }
@@ -3623,7 +3225,6 @@ public final class ReplicationProtocolFormats {
       public Builder mergeInfo(com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormat value) {
         if (infoBuilder_ == null) {
           if (((bitField0_ & 0x00000001) == 0x00000001) &&
-              info_ != null &&
               info_ != com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormat.getDefaultInstance()) {
             info_ =
               com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormat.newBuilder(info_).mergeFrom(value).buildPartial();
@@ -3642,7 +3243,7 @@ public final class ReplicationProtocolFormats {
        */
       public Builder clearInfo() {
         if (infoBuilder_ == null) {
-          info_ = null;
+          info_ = com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormat.getDefaultInstance();
           onChanged();
         } else {
           infoBuilder_.clear();
@@ -3665,79 +3266,41 @@ public final class ReplicationProtocolFormats {
         if (infoBuilder_ != null) {
           return infoBuilder_.getMessageOrBuilder();
         } else {
-          return info_ == null ?
-              com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormat.getDefaultInstance() : info_;
+          return info_;
         }
       }
       /**
        * <code>optional .ReplicationInfoFormat info = 1;</code>
        */
-      private com.google.protobuf.SingleFieldBuilderV3<
+      private com.google.protobuf.SingleFieldBuilder<
           com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormat, com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormat.Builder, com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormatOrBuilder> 
           getInfoFieldBuilder() {
         if (infoBuilder_ == null) {
-          infoBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+          infoBuilder_ = new com.google.protobuf.SingleFieldBuilder<
               com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormat, com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormat.Builder, com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormatOrBuilder>(
-                  getInfo(),
+                  info_,
                   getParentForChildren(),
                   isClean());
           info_ = null;
         }
         return infoBuilder_;
       }
-      public final Builder setUnknownFields(
-          final com.google.protobuf.UnknownFieldSet unknownFields) {
-        return super.setUnknownFields(unknownFields);
-      }
-
-      public final Builder mergeUnknownFields(
-          final com.google.protobuf.UnknownFieldSet unknownFields) {
-        return super.mergeUnknownFields(unknownFields);
-      }
-
 
       // @@protoc_insertion_point(builder_scope:SynchronizeReplicationProgressFormat)
     }
 
-    // @@protoc_insertion_point(class_scope:SynchronizeReplicationProgressFormat)
-    private static final com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.SynchronizeReplicationProgressFormat DEFAULT_INSTANCE;
     static {
-      DEFAULT_INSTANCE = new com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.SynchronizeReplicationProgressFormat();
+      defaultInstance = new SynchronizeReplicationProgressFormat(true);
+      defaultInstance.initFields();
     }
 
-    public static com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.SynchronizeReplicationProgressFormat getDefaultInstance() {
-      return DEFAULT_INSTANCE;
-    }
-
-    @java.lang.Deprecated public static final com.google.protobuf.Parser<SynchronizeReplicationProgressFormat>
-        PARSER = new com.google.protobuf.AbstractParser<SynchronizeReplicationProgressFormat>() {
-      public SynchronizeReplicationProgressFormat parsePartialFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws com.google.protobuf.InvalidProtocolBufferException {
-          return new SynchronizeReplicationProgressFormat(input, extensionRegistry);
-      }
-    };
-
-    public static com.google.protobuf.Parser<SynchronizeReplicationProgressFormat> parser() {
-      return PARSER;
-    }
-
-    @java.lang.Override
-    public com.google.protobuf.Parser<SynchronizeReplicationProgressFormat> getParserForType() {
-      return PARSER;
-    }
-
-    public com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.SynchronizeReplicationProgressFormat getDefaultInstanceForType() {
-      return DEFAULT_INSTANCE;
-    }
-
+    // @@protoc_insertion_point(class_scope:SynchronizeReplicationProgressFormat)
   }
 
-  public interface SynchronizeReplicationProgressSuccessFormatOrBuilder extends
-      // @@protoc_insertion_point(interface_extends:SynchronizeReplicationProgressSuccessFormat)
-      com.google.protobuf.MessageOrBuilder {
+  public interface SynchronizeReplicationProgressSuccessFormatOrBuilder
+      extends com.google.protobuf.MessageOrBuilder {
 
+    // optional .ReplicationInfoFormat info = 1;
     /**
      * <code>optional .ReplicationInfoFormat info = 1;</code>
      */
@@ -3754,27 +3317,36 @@ public final class ReplicationProtocolFormats {
   /**
    * Protobuf type {@code SynchronizeReplicationProgressSuccessFormat}
    */
-  public  static final class SynchronizeReplicationProgressSuccessFormat extends
-      com.google.protobuf.GeneratedMessageV3 implements
-      // @@protoc_insertion_point(message_implements:SynchronizeReplicationProgressSuccessFormat)
-      SynchronizeReplicationProgressSuccessFormatOrBuilder {
+  public static final class SynchronizeReplicationProgressSuccessFormat extends
+      com.google.protobuf.GeneratedMessage
+      implements SynchronizeReplicationProgressSuccessFormatOrBuilder {
     // Use SynchronizeReplicationProgressSuccessFormat.newBuilder() to construct.
-    private SynchronizeReplicationProgressSuccessFormat(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+    private SynchronizeReplicationProgressSuccessFormat(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
       super(builder);
+      this.unknownFields = builder.getUnknownFields();
     }
-    private SynchronizeReplicationProgressSuccessFormat() {
+    private SynchronizeReplicationProgressSuccessFormat(boolean noInit) { this.unknownFields = com.google.protobuf.UnknownFieldSet.getDefaultInstance(); }
+
+    private static final SynchronizeReplicationProgressSuccessFormat defaultInstance;
+    public static SynchronizeReplicationProgressSuccessFormat getDefaultInstance() {
+      return defaultInstance;
     }
 
+    public SynchronizeReplicationProgressSuccessFormat getDefaultInstanceForType() {
+      return defaultInstance;
+    }
+
+    private final com.google.protobuf.UnknownFieldSet unknownFields;
     @java.lang.Override
     public final com.google.protobuf.UnknownFieldSet
-    getUnknownFields() {
+        getUnknownFields() {
       return this.unknownFields;
     }
     private SynchronizeReplicationProgressSuccessFormat(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
-      this();
+      initFields();
       int mutable_bitField0_ = 0;
       com.google.protobuf.UnknownFieldSet.Builder unknownFields =
           com.google.protobuf.UnknownFieldSet.newBuilder();
@@ -3812,7 +3384,7 @@ public final class ReplicationProtocolFormats {
         throw e.setUnfinishedMessage(this);
       } catch (java.io.IOException e) {
         throw new com.google.protobuf.InvalidProtocolBufferException(
-            e).setUnfinishedMessage(this);
+            e.getMessage()).setUnfinishedMessage(this);
       } finally {
         this.unknownFields = unknownFields.build();
         makeExtensionsImmutable();
@@ -3823,14 +3395,30 @@ public final class ReplicationProtocolFormats {
       return com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.internal_static_SynchronizeReplicationProgressSuccessFormat_descriptor;
     }
 
-    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
         internalGetFieldAccessorTable() {
       return com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.internal_static_SynchronizeReplicationProgressSuccessFormat_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
               com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.SynchronizeReplicationProgressSuccessFormat.class, com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.SynchronizeReplicationProgressSuccessFormat.Builder.class);
     }
 
+    public static com.google.protobuf.Parser<SynchronizeReplicationProgressSuccessFormat> PARSER =
+        new com.google.protobuf.AbstractParser<SynchronizeReplicationProgressSuccessFormat>() {
+      public SynchronizeReplicationProgressSuccessFormat parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new SynchronizeReplicationProgressSuccessFormat(input, extensionRegistry);
+      }
+    };
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<SynchronizeReplicationProgressSuccessFormat> getParserForType() {
+      return PARSER;
+    }
+
     private int bitField0_;
+    // optional .ReplicationInfoFormat info = 1;
     public static final int INFO_FIELD_NUMBER = 1;
     private com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormat info_;
     /**
@@ -3843,20 +3431,22 @@ public final class ReplicationProtocolFormats {
      * <code>optional .ReplicationInfoFormat info = 1;</code>
      */
     public com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormat getInfo() {
-      return info_ == null ? com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormat.getDefaultInstance() : info_;
+      return info_;
     }
     /**
      * <code>optional .ReplicationInfoFormat info = 1;</code>
      */
     public com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormatOrBuilder getInfoOrBuilder() {
-      return info_ == null ? com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormat.getDefaultInstance() : info_;
+      return info_;
     }
 
+    private void initFields() {
+      info_ = com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormat.getDefaultInstance();
+    }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
-      if (isInitialized == 1) return true;
-      if (isInitialized == 0) return false;
+      if (isInitialized != -1) return isInitialized == 1;
 
       if (hasInfo()) {
         if (!getInfo().isInitialized()) {
@@ -3870,61 +3460,33 @@ public final class ReplicationProtocolFormats {
 
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
+      getSerializedSize();
       if (((bitField0_ & 0x00000001) == 0x00000001)) {
-        output.writeMessage(1, getInfo());
+        output.writeMessage(1, info_);
       }
-      unknownFields.writeTo(output);
+      getUnknownFields().writeTo(output);
     }
 
+    private int memoizedSerializedSize = -1;
     public int getSerializedSize() {
-      int size = memoizedSize;
+      int size = memoizedSerializedSize;
       if (size != -1) return size;
 
       size = 0;
       if (((bitField0_ & 0x00000001) == 0x00000001)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(1, getInfo());
+          .computeMessageSize(1, info_);
       }
-      size += unknownFields.getSerializedSize();
-      memoizedSize = size;
+      size += getUnknownFields().getSerializedSize();
+      memoizedSerializedSize = size;
       return size;
     }
 
     private static final long serialVersionUID = 0L;
     @java.lang.Override
-    public boolean equals(final java.lang.Object obj) {
-      if (obj == this) {
-       return true;
-      }
-      if (!(obj instanceof com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.SynchronizeReplicationProgressSuccessFormat)) {
-        return super.equals(obj);
-      }
-      com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.SynchronizeReplicationProgressSuccessFormat other = (com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.SynchronizeReplicationProgressSuccessFormat) obj;
-
-      boolean result = true;
-      result = result && (hasInfo() == other.hasInfo());
-      if (hasInfo()) {
-        result = result && getInfo()
-            .equals(other.getInfo());
-      }
-      result = result && unknownFields.equals(other.unknownFields);
-      return result;
-    }
-
-    @java.lang.Override
-    public int hashCode() {
-      if (memoizedHashCode != 0) {
-        return memoizedHashCode;
-      }
-      int hash = 41;
-      hash = (19 * hash) + getDescriptorForType().hashCode();
-      if (hasInfo()) {
-        hash = (37 * hash) + INFO_FIELD_NUMBER;
-        hash = (53 * hash) + getInfo().hashCode();
-      }
-      hash = (29 * hash) + unknownFields.hashCode();
-      memoizedHashCode = hash;
-      return hash;
+    protected java.lang.Object writeReplace()
+        throws java.io.ObjectStreamException {
+      return super.writeReplace();
     }
 
     public static com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.SynchronizeReplicationProgressSuccessFormat parseFrom(
@@ -3950,57 +3512,46 @@ public final class ReplicationProtocolFormats {
     }
     public static com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.SynchronizeReplicationProgressSuccessFormat parseFrom(java.io.InputStream input)
         throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
+      return PARSER.parseFrom(input);
     }
     public static com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.SynchronizeReplicationProgressSuccessFormat parseFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
+      return PARSER.parseFrom(input, extensionRegistry);
     }
     public static com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.SynchronizeReplicationProgressSuccessFormat parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input);
+      return PARSER.parseDelimitedFrom(input);
     }
     public static com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.SynchronizeReplicationProgressSuccessFormat parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+      return PARSER.parseDelimitedFrom(input, extensionRegistry);
     }
     public static com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.SynchronizeReplicationProgressSuccessFormat parseFrom(
         com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
+      return PARSER.parseFrom(input);
     }
     public static com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.SynchronizeReplicationProgressSuccessFormat parseFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
+      return PARSER.parseFrom(input, extensionRegistry);
     }
 
+    public static Builder newBuilder() { return Builder.create(); }
     public Builder newBuilderForType() { return newBuilder(); }
-    public static Builder newBuilder() {
-      return DEFAULT_INSTANCE.toBuilder();
-    }
     public static Builder newBuilder(com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.SynchronizeReplicationProgressSuccessFormat prototype) {
-      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+      return newBuilder().mergeFrom(prototype);
     }
-    public Builder toBuilder() {
-      return this == DEFAULT_INSTANCE
-          ? new Builder() : new Builder().mergeFrom(this);
-    }
+    public Builder toBuilder() { return newBuilder(this); }
 
     @java.lang.Override
     protected Builder newBuilderForType(
-        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
       Builder builder = new Builder(parent);
       return builder;
     }
@@ -4008,15 +3559,14 @@ public final class ReplicationProtocolFormats {
      * Protobuf type {@code SynchronizeReplicationProgressSuccessFormat}
      */
     public static final class Builder extends
-        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-        // @@protoc_insertion_point(builder_implements:SynchronizeReplicationProgressSuccessFormat)
-        com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.SynchronizeReplicationProgressSuccessFormatOrBuilder {
+        com.google.protobuf.GeneratedMessage.Builder<Builder>
+       implements com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.SynchronizeReplicationProgressSuccessFormatOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
         return com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.internal_static_SynchronizeReplicationProgressSuccessFormat_descriptor;
       }
 
-      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
           internalGetFieldAccessorTable() {
         return com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.internal_static_SynchronizeReplicationProgressSuccessFormat_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
@@ -4029,25 +3579,32 @@ public final class ReplicationProtocolFormats {
       }
 
       private Builder(
-          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
         super(parent);
         maybeForceBuilderInitialization();
       }
       private void maybeForceBuilderInitialization() {
-        if (com.google.protobuf.GeneratedMessageV3
-                .alwaysUseFieldBuilders) {
+        if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
           getInfoFieldBuilder();
         }
       }
+      private static Builder create() {
+        return new Builder();
+      }
+
       public Builder clear() {
         super.clear();
         if (infoBuilder_ == null) {
-          info_ = null;
+          info_ = com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormat.getDefaultInstance();
         } else {
           infoBuilder_.clear();
         }
         bitField0_ = (bitField0_ & ~0x00000001);
         return this;
+      }
+
+      public Builder clone() {
+        return create().mergeFrom(buildPartial());
       }
 
       public com.google.protobuf.Descriptors.Descriptor
@@ -4084,32 +3641,6 @@ public final class ReplicationProtocolFormats {
         return result;
       }
 
-      public Builder clone() {
-        return (Builder) super.clone();
-      }
-      public Builder setField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          Object value) {
-        return (Builder) super.setField(field, value);
-      }
-      public Builder clearField(
-          com.google.protobuf.Descriptors.FieldDescriptor field) {
-        return (Builder) super.clearField(field);
-      }
-      public Builder clearOneof(
-          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
-        return (Builder) super.clearOneof(oneof);
-      }
-      public Builder setRepeatedField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          int index, Object value) {
-        return (Builder) super.setRepeatedField(field, index, value);
-      }
-      public Builder addRepeatedField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          Object value) {
-        return (Builder) super.addRepeatedField(field, value);
-      }
       public Builder mergeFrom(com.google.protobuf.Message other) {
         if (other instanceof com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.SynchronizeReplicationProgressSuccessFormat) {
           return mergeFrom((com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.SynchronizeReplicationProgressSuccessFormat)other);
@@ -4124,14 +3655,14 @@ public final class ReplicationProtocolFormats {
         if (other.hasInfo()) {
           mergeInfo(other.getInfo());
         }
-        this.mergeUnknownFields(other.unknownFields);
-        onChanged();
+        this.mergeUnknownFields(other.getUnknownFields());
         return this;
       }
 
       public final boolean isInitialized() {
         if (hasInfo()) {
           if (!getInfo().isInitialized()) {
+            
             return false;
           }
         }
@@ -4147,7 +3678,7 @@ public final class ReplicationProtocolFormats {
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
         } catch (com.google.protobuf.InvalidProtocolBufferException e) {
           parsedMessage = (com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.SynchronizeReplicationProgressSuccessFormat) e.getUnfinishedMessage();
-          throw e.unwrapIOException();
+          throw e;
         } finally {
           if (parsedMessage != null) {
             mergeFrom(parsedMessage);
@@ -4157,8 +3688,9 @@ public final class ReplicationProtocolFormats {
       }
       private int bitField0_;
 
-      private com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormat info_ = null;
-      private com.google.protobuf.SingleFieldBuilderV3<
+      // optional .ReplicationInfoFormat info = 1;
+      private com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormat info_ = com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormat.getDefaultInstance();
+      private com.google.protobuf.SingleFieldBuilder<
           com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormat, com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormat.Builder, com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormatOrBuilder> infoBuilder_;
       /**
        * <code>optional .ReplicationInfoFormat info = 1;</code>
@@ -4171,7 +3703,7 @@ public final class ReplicationProtocolFormats {
        */
       public com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormat getInfo() {
         if (infoBuilder_ == null) {
-          return info_ == null ? com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormat.getDefaultInstance() : info_;
+          return info_;
         } else {
           return infoBuilder_.getMessage();
         }
@@ -4212,7 +3744,6 @@ public final class ReplicationProtocolFormats {
       public Builder mergeInfo(com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormat value) {
         if (infoBuilder_ == null) {
           if (((bitField0_ & 0x00000001) == 0x00000001) &&
-              info_ != null &&
               info_ != com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormat.getDefaultInstance()) {
             info_ =
               com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormat.newBuilder(info_).mergeFrom(value).buildPartial();
@@ -4231,7 +3762,7 @@ public final class ReplicationProtocolFormats {
        */
       public Builder clearInfo() {
         if (infoBuilder_ == null) {
-          info_ = null;
+          info_ = com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormat.getDefaultInstance();
           onChanged();
         } else {
           infoBuilder_.clear();
@@ -4254,79 +3785,41 @@ public final class ReplicationProtocolFormats {
         if (infoBuilder_ != null) {
           return infoBuilder_.getMessageOrBuilder();
         } else {
-          return info_ == null ?
-              com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormat.getDefaultInstance() : info_;
+          return info_;
         }
       }
       /**
        * <code>optional .ReplicationInfoFormat info = 1;</code>
        */
-      private com.google.protobuf.SingleFieldBuilderV3<
+      private com.google.protobuf.SingleFieldBuilder<
           com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormat, com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormat.Builder, com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormatOrBuilder> 
           getInfoFieldBuilder() {
         if (infoBuilder_ == null) {
-          infoBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+          infoBuilder_ = new com.google.protobuf.SingleFieldBuilder<
               com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormat, com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormat.Builder, com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationInfoFormatOrBuilder>(
-                  getInfo(),
+                  info_,
                   getParentForChildren(),
                   isClean());
           info_ = null;
         }
         return infoBuilder_;
       }
-      public final Builder setUnknownFields(
-          final com.google.protobuf.UnknownFieldSet unknownFields) {
-        return super.setUnknownFields(unknownFields);
-      }
-
-      public final Builder mergeUnknownFields(
-          final com.google.protobuf.UnknownFieldSet unknownFields) {
-        return super.mergeUnknownFields(unknownFields);
-      }
-
 
       // @@protoc_insertion_point(builder_scope:SynchronizeReplicationProgressSuccessFormat)
     }
 
-    // @@protoc_insertion_point(class_scope:SynchronizeReplicationProgressSuccessFormat)
-    private static final com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.SynchronizeReplicationProgressSuccessFormat DEFAULT_INSTANCE;
     static {
-      DEFAULT_INSTANCE = new com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.SynchronizeReplicationProgressSuccessFormat();
+      defaultInstance = new SynchronizeReplicationProgressSuccessFormat(true);
+      defaultInstance.initFields();
     }
 
-    public static com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.SynchronizeReplicationProgressSuccessFormat getDefaultInstance() {
-      return DEFAULT_INSTANCE;
-    }
-
-    @java.lang.Deprecated public static final com.google.protobuf.Parser<SynchronizeReplicationProgressSuccessFormat>
-        PARSER = new com.google.protobuf.AbstractParser<SynchronizeReplicationProgressSuccessFormat>() {
-      public SynchronizeReplicationProgressSuccessFormat parsePartialFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws com.google.protobuf.InvalidProtocolBufferException {
-          return new SynchronizeReplicationProgressSuccessFormat(input, extensionRegistry);
-      }
-    };
-
-    public static com.google.protobuf.Parser<SynchronizeReplicationProgressSuccessFormat> parser() {
-      return PARSER;
-    }
-
-    @java.lang.Override
-    public com.google.protobuf.Parser<SynchronizeReplicationProgressSuccessFormat> getParserForType() {
-      return PARSER;
-    }
-
-    public com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.SynchronizeReplicationProgressSuccessFormat getDefaultInstanceForType() {
-      return DEFAULT_INSTANCE;
-    }
-
+    // @@protoc_insertion_point(class_scope:SynchronizeReplicationProgressSuccessFormat)
   }
 
-  public interface SynchronizeReplicationProgressFailureFormatOrBuilder extends
-      // @@protoc_insertion_point(interface_extends:SynchronizeReplicationProgressFailureFormat)
-      com.google.protobuf.MessageOrBuilder {
+  public interface SynchronizeReplicationProgressFailureFormatOrBuilder
+      extends com.google.protobuf.MessageOrBuilder {
 
+    // optional .PayloadFormat cause = 1;
     /**
      * <code>optional .PayloadFormat cause = 1;</code>
      */
@@ -4343,27 +3836,36 @@ public final class ReplicationProtocolFormats {
   /**
    * Protobuf type {@code SynchronizeReplicationProgressFailureFormat}
    */
-  public  static final class SynchronizeReplicationProgressFailureFormat extends
-      com.google.protobuf.GeneratedMessageV3 implements
-      // @@protoc_insertion_point(message_implements:SynchronizeReplicationProgressFailureFormat)
-      SynchronizeReplicationProgressFailureFormatOrBuilder {
+  public static final class SynchronizeReplicationProgressFailureFormat extends
+      com.google.protobuf.GeneratedMessage
+      implements SynchronizeReplicationProgressFailureFormatOrBuilder {
     // Use SynchronizeReplicationProgressFailureFormat.newBuilder() to construct.
-    private SynchronizeReplicationProgressFailureFormat(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+    private SynchronizeReplicationProgressFailureFormat(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
       super(builder);
+      this.unknownFields = builder.getUnknownFields();
     }
-    private SynchronizeReplicationProgressFailureFormat() {
+    private SynchronizeReplicationProgressFailureFormat(boolean noInit) { this.unknownFields = com.google.protobuf.UnknownFieldSet.getDefaultInstance(); }
+
+    private static final SynchronizeReplicationProgressFailureFormat defaultInstance;
+    public static SynchronizeReplicationProgressFailureFormat getDefaultInstance() {
+      return defaultInstance;
     }
 
+    public SynchronizeReplicationProgressFailureFormat getDefaultInstanceForType() {
+      return defaultInstance;
+    }
+
+    private final com.google.protobuf.UnknownFieldSet unknownFields;
     @java.lang.Override
     public final com.google.protobuf.UnknownFieldSet
-    getUnknownFields() {
+        getUnknownFields() {
       return this.unknownFields;
     }
     private SynchronizeReplicationProgressFailureFormat(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
-      this();
+      initFields();
       int mutable_bitField0_ = 0;
       com.google.protobuf.UnknownFieldSet.Builder unknownFields =
           com.google.protobuf.UnknownFieldSet.newBuilder();
@@ -4401,7 +3903,7 @@ public final class ReplicationProtocolFormats {
         throw e.setUnfinishedMessage(this);
       } catch (java.io.IOException e) {
         throw new com.google.protobuf.InvalidProtocolBufferException(
-            e).setUnfinishedMessage(this);
+            e.getMessage()).setUnfinishedMessage(this);
       } finally {
         this.unknownFields = unknownFields.build();
         makeExtensionsImmutable();
@@ -4412,14 +3914,30 @@ public final class ReplicationProtocolFormats {
       return com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.internal_static_SynchronizeReplicationProgressFailureFormat_descriptor;
     }
 
-    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
         internalGetFieldAccessorTable() {
       return com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.internal_static_SynchronizeReplicationProgressFailureFormat_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
               com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.SynchronizeReplicationProgressFailureFormat.class, com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.SynchronizeReplicationProgressFailureFormat.Builder.class);
     }
 
+    public static com.google.protobuf.Parser<SynchronizeReplicationProgressFailureFormat> PARSER =
+        new com.google.protobuf.AbstractParser<SynchronizeReplicationProgressFailureFormat>() {
+      public SynchronizeReplicationProgressFailureFormat parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new SynchronizeReplicationProgressFailureFormat(input, extensionRegistry);
+      }
+    };
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<SynchronizeReplicationProgressFailureFormat> getParserForType() {
+      return PARSER;
+    }
+
     private int bitField0_;
+    // optional .PayloadFormat cause = 1;
     public static final int CAUSE_FIELD_NUMBER = 1;
     private com.rbmhtechnology.eventuate.serializer.CommonFormats.PayloadFormat cause_;
     /**
@@ -4432,20 +3950,22 @@ public final class ReplicationProtocolFormats {
      * <code>optional .PayloadFormat cause = 1;</code>
      */
     public com.rbmhtechnology.eventuate.serializer.CommonFormats.PayloadFormat getCause() {
-      return cause_ == null ? com.rbmhtechnology.eventuate.serializer.CommonFormats.PayloadFormat.getDefaultInstance() : cause_;
+      return cause_;
     }
     /**
      * <code>optional .PayloadFormat cause = 1;</code>
      */
     public com.rbmhtechnology.eventuate.serializer.CommonFormats.PayloadFormatOrBuilder getCauseOrBuilder() {
-      return cause_ == null ? com.rbmhtechnology.eventuate.serializer.CommonFormats.PayloadFormat.getDefaultInstance() : cause_;
+      return cause_;
     }
 
+    private void initFields() {
+      cause_ = com.rbmhtechnology.eventuate.serializer.CommonFormats.PayloadFormat.getDefaultInstance();
+    }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
-      if (isInitialized == 1) return true;
-      if (isInitialized == 0) return false;
+      if (isInitialized != -1) return isInitialized == 1;
 
       memoizedIsInitialized = 1;
       return true;
@@ -4453,61 +3973,33 @@ public final class ReplicationProtocolFormats {
 
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
+      getSerializedSize();
       if (((bitField0_ & 0x00000001) == 0x00000001)) {
-        output.writeMessage(1, getCause());
+        output.writeMessage(1, cause_);
       }
-      unknownFields.writeTo(output);
+      getUnknownFields().writeTo(output);
     }
 
+    private int memoizedSerializedSize = -1;
     public int getSerializedSize() {
-      int size = memoizedSize;
+      int size = memoizedSerializedSize;
       if (size != -1) return size;
 
       size = 0;
       if (((bitField0_ & 0x00000001) == 0x00000001)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(1, getCause());
+          .computeMessageSize(1, cause_);
       }
-      size += unknownFields.getSerializedSize();
-      memoizedSize = size;
+      size += getUnknownFields().getSerializedSize();
+      memoizedSerializedSize = size;
       return size;
     }
 
     private static final long serialVersionUID = 0L;
     @java.lang.Override
-    public boolean equals(final java.lang.Object obj) {
-      if (obj == this) {
-       return true;
-      }
-      if (!(obj instanceof com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.SynchronizeReplicationProgressFailureFormat)) {
-        return super.equals(obj);
-      }
-      com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.SynchronizeReplicationProgressFailureFormat other = (com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.SynchronizeReplicationProgressFailureFormat) obj;
-
-      boolean result = true;
-      result = result && (hasCause() == other.hasCause());
-      if (hasCause()) {
-        result = result && getCause()
-            .equals(other.getCause());
-      }
-      result = result && unknownFields.equals(other.unknownFields);
-      return result;
-    }
-
-    @java.lang.Override
-    public int hashCode() {
-      if (memoizedHashCode != 0) {
-        return memoizedHashCode;
-      }
-      int hash = 41;
-      hash = (19 * hash) + getDescriptorForType().hashCode();
-      if (hasCause()) {
-        hash = (37 * hash) + CAUSE_FIELD_NUMBER;
-        hash = (53 * hash) + getCause().hashCode();
-      }
-      hash = (29 * hash) + unknownFields.hashCode();
-      memoizedHashCode = hash;
-      return hash;
+    protected java.lang.Object writeReplace()
+        throws java.io.ObjectStreamException {
+      return super.writeReplace();
     }
 
     public static com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.SynchronizeReplicationProgressFailureFormat parseFrom(
@@ -4533,57 +4025,46 @@ public final class ReplicationProtocolFormats {
     }
     public static com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.SynchronizeReplicationProgressFailureFormat parseFrom(java.io.InputStream input)
         throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
+      return PARSER.parseFrom(input);
     }
     public static com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.SynchronizeReplicationProgressFailureFormat parseFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
+      return PARSER.parseFrom(input, extensionRegistry);
     }
     public static com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.SynchronizeReplicationProgressFailureFormat parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input);
+      return PARSER.parseDelimitedFrom(input);
     }
     public static com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.SynchronizeReplicationProgressFailureFormat parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+      return PARSER.parseDelimitedFrom(input, extensionRegistry);
     }
     public static com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.SynchronizeReplicationProgressFailureFormat parseFrom(
         com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
+      return PARSER.parseFrom(input);
     }
     public static com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.SynchronizeReplicationProgressFailureFormat parseFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
+      return PARSER.parseFrom(input, extensionRegistry);
     }
 
+    public static Builder newBuilder() { return Builder.create(); }
     public Builder newBuilderForType() { return newBuilder(); }
-    public static Builder newBuilder() {
-      return DEFAULT_INSTANCE.toBuilder();
-    }
     public static Builder newBuilder(com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.SynchronizeReplicationProgressFailureFormat prototype) {
-      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+      return newBuilder().mergeFrom(prototype);
     }
-    public Builder toBuilder() {
-      return this == DEFAULT_INSTANCE
-          ? new Builder() : new Builder().mergeFrom(this);
-    }
+    public Builder toBuilder() { return newBuilder(this); }
 
     @java.lang.Override
     protected Builder newBuilderForType(
-        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
       Builder builder = new Builder(parent);
       return builder;
     }
@@ -4591,15 +4072,14 @@ public final class ReplicationProtocolFormats {
      * Protobuf type {@code SynchronizeReplicationProgressFailureFormat}
      */
     public static final class Builder extends
-        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-        // @@protoc_insertion_point(builder_implements:SynchronizeReplicationProgressFailureFormat)
-        com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.SynchronizeReplicationProgressFailureFormatOrBuilder {
+        com.google.protobuf.GeneratedMessage.Builder<Builder>
+       implements com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.SynchronizeReplicationProgressFailureFormatOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
         return com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.internal_static_SynchronizeReplicationProgressFailureFormat_descriptor;
       }
 
-      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
           internalGetFieldAccessorTable() {
         return com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.internal_static_SynchronizeReplicationProgressFailureFormat_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
@@ -4612,25 +4092,32 @@ public final class ReplicationProtocolFormats {
       }
 
       private Builder(
-          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
         super(parent);
         maybeForceBuilderInitialization();
       }
       private void maybeForceBuilderInitialization() {
-        if (com.google.protobuf.GeneratedMessageV3
-                .alwaysUseFieldBuilders) {
+        if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
           getCauseFieldBuilder();
         }
       }
+      private static Builder create() {
+        return new Builder();
+      }
+
       public Builder clear() {
         super.clear();
         if (causeBuilder_ == null) {
-          cause_ = null;
+          cause_ = com.rbmhtechnology.eventuate.serializer.CommonFormats.PayloadFormat.getDefaultInstance();
         } else {
           causeBuilder_.clear();
         }
         bitField0_ = (bitField0_ & ~0x00000001);
         return this;
+      }
+
+      public Builder clone() {
+        return create().mergeFrom(buildPartial());
       }
 
       public com.google.protobuf.Descriptors.Descriptor
@@ -4667,32 +4154,6 @@ public final class ReplicationProtocolFormats {
         return result;
       }
 
-      public Builder clone() {
-        return (Builder) super.clone();
-      }
-      public Builder setField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          Object value) {
-        return (Builder) super.setField(field, value);
-      }
-      public Builder clearField(
-          com.google.protobuf.Descriptors.FieldDescriptor field) {
-        return (Builder) super.clearField(field);
-      }
-      public Builder clearOneof(
-          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
-        return (Builder) super.clearOneof(oneof);
-      }
-      public Builder setRepeatedField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          int index, Object value) {
-        return (Builder) super.setRepeatedField(field, index, value);
-      }
-      public Builder addRepeatedField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          Object value) {
-        return (Builder) super.addRepeatedField(field, value);
-      }
       public Builder mergeFrom(com.google.protobuf.Message other) {
         if (other instanceof com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.SynchronizeReplicationProgressFailureFormat) {
           return mergeFrom((com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.SynchronizeReplicationProgressFailureFormat)other);
@@ -4707,8 +4168,7 @@ public final class ReplicationProtocolFormats {
         if (other.hasCause()) {
           mergeCause(other.getCause());
         }
-        this.mergeUnknownFields(other.unknownFields);
-        onChanged();
+        this.mergeUnknownFields(other.getUnknownFields());
         return this;
       }
 
@@ -4725,7 +4185,7 @@ public final class ReplicationProtocolFormats {
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
         } catch (com.google.protobuf.InvalidProtocolBufferException e) {
           parsedMessage = (com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.SynchronizeReplicationProgressFailureFormat) e.getUnfinishedMessage();
-          throw e.unwrapIOException();
+          throw e;
         } finally {
           if (parsedMessage != null) {
             mergeFrom(parsedMessage);
@@ -4735,8 +4195,9 @@ public final class ReplicationProtocolFormats {
       }
       private int bitField0_;
 
-      private com.rbmhtechnology.eventuate.serializer.CommonFormats.PayloadFormat cause_ = null;
-      private com.google.protobuf.SingleFieldBuilderV3<
+      // optional .PayloadFormat cause = 1;
+      private com.rbmhtechnology.eventuate.serializer.CommonFormats.PayloadFormat cause_ = com.rbmhtechnology.eventuate.serializer.CommonFormats.PayloadFormat.getDefaultInstance();
+      private com.google.protobuf.SingleFieldBuilder<
           com.rbmhtechnology.eventuate.serializer.CommonFormats.PayloadFormat, com.rbmhtechnology.eventuate.serializer.CommonFormats.PayloadFormat.Builder, com.rbmhtechnology.eventuate.serializer.CommonFormats.PayloadFormatOrBuilder> causeBuilder_;
       /**
        * <code>optional .PayloadFormat cause = 1;</code>
@@ -4749,7 +4210,7 @@ public final class ReplicationProtocolFormats {
        */
       public com.rbmhtechnology.eventuate.serializer.CommonFormats.PayloadFormat getCause() {
         if (causeBuilder_ == null) {
-          return cause_ == null ? com.rbmhtechnology.eventuate.serializer.CommonFormats.PayloadFormat.getDefaultInstance() : cause_;
+          return cause_;
         } else {
           return causeBuilder_.getMessage();
         }
@@ -4790,7 +4251,6 @@ public final class ReplicationProtocolFormats {
       public Builder mergeCause(com.rbmhtechnology.eventuate.serializer.CommonFormats.PayloadFormat value) {
         if (causeBuilder_ == null) {
           if (((bitField0_ & 0x00000001) == 0x00000001) &&
-              cause_ != null &&
               cause_ != com.rbmhtechnology.eventuate.serializer.CommonFormats.PayloadFormat.getDefaultInstance()) {
             cause_ =
               com.rbmhtechnology.eventuate.serializer.CommonFormats.PayloadFormat.newBuilder(cause_).mergeFrom(value).buildPartial();
@@ -4809,7 +4269,7 @@ public final class ReplicationProtocolFormats {
        */
       public Builder clearCause() {
         if (causeBuilder_ == null) {
-          cause_ = null;
+          cause_ = com.rbmhtechnology.eventuate.serializer.CommonFormats.PayloadFormat.getDefaultInstance();
           onChanged();
         } else {
           causeBuilder_.clear();
@@ -4832,79 +4292,41 @@ public final class ReplicationProtocolFormats {
         if (causeBuilder_ != null) {
           return causeBuilder_.getMessageOrBuilder();
         } else {
-          return cause_ == null ?
-              com.rbmhtechnology.eventuate.serializer.CommonFormats.PayloadFormat.getDefaultInstance() : cause_;
+          return cause_;
         }
       }
       /**
        * <code>optional .PayloadFormat cause = 1;</code>
        */
-      private com.google.protobuf.SingleFieldBuilderV3<
+      private com.google.protobuf.SingleFieldBuilder<
           com.rbmhtechnology.eventuate.serializer.CommonFormats.PayloadFormat, com.rbmhtechnology.eventuate.serializer.CommonFormats.PayloadFormat.Builder, com.rbmhtechnology.eventuate.serializer.CommonFormats.PayloadFormatOrBuilder> 
           getCauseFieldBuilder() {
         if (causeBuilder_ == null) {
-          causeBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+          causeBuilder_ = new com.google.protobuf.SingleFieldBuilder<
               com.rbmhtechnology.eventuate.serializer.CommonFormats.PayloadFormat, com.rbmhtechnology.eventuate.serializer.CommonFormats.PayloadFormat.Builder, com.rbmhtechnology.eventuate.serializer.CommonFormats.PayloadFormatOrBuilder>(
-                  getCause(),
+                  cause_,
                   getParentForChildren(),
                   isClean());
           cause_ = null;
         }
         return causeBuilder_;
       }
-      public final Builder setUnknownFields(
-          final com.google.protobuf.UnknownFieldSet unknownFields) {
-        return super.setUnknownFields(unknownFields);
-      }
-
-      public final Builder mergeUnknownFields(
-          final com.google.protobuf.UnknownFieldSet unknownFields) {
-        return super.mergeUnknownFields(unknownFields);
-      }
-
 
       // @@protoc_insertion_point(builder_scope:SynchronizeReplicationProgressFailureFormat)
     }
 
-    // @@protoc_insertion_point(class_scope:SynchronizeReplicationProgressFailureFormat)
-    private static final com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.SynchronizeReplicationProgressFailureFormat DEFAULT_INSTANCE;
     static {
-      DEFAULT_INSTANCE = new com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.SynchronizeReplicationProgressFailureFormat();
+      defaultInstance = new SynchronizeReplicationProgressFailureFormat(true);
+      defaultInstance.initFields();
     }
 
-    public static com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.SynchronizeReplicationProgressFailureFormat getDefaultInstance() {
-      return DEFAULT_INSTANCE;
-    }
-
-    @java.lang.Deprecated public static final com.google.protobuf.Parser<SynchronizeReplicationProgressFailureFormat>
-        PARSER = new com.google.protobuf.AbstractParser<SynchronizeReplicationProgressFailureFormat>() {
-      public SynchronizeReplicationProgressFailureFormat parsePartialFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws com.google.protobuf.InvalidProtocolBufferException {
-          return new SynchronizeReplicationProgressFailureFormat(input, extensionRegistry);
-      }
-    };
-
-    public static com.google.protobuf.Parser<SynchronizeReplicationProgressFailureFormat> parser() {
-      return PARSER;
-    }
-
-    @java.lang.Override
-    public com.google.protobuf.Parser<SynchronizeReplicationProgressFailureFormat> getParserForType() {
-      return PARSER;
-    }
-
-    public com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.SynchronizeReplicationProgressFailureFormat getDefaultInstanceForType() {
-      return DEFAULT_INSTANCE;
-    }
-
+    // @@protoc_insertion_point(class_scope:SynchronizeReplicationProgressFailureFormat)
   }
 
-  public interface SynchronizeReplicationProgressSourceExceptionFormatOrBuilder extends
-      // @@protoc_insertion_point(interface_extends:SynchronizeReplicationProgressSourceExceptionFormat)
-      com.google.protobuf.MessageOrBuilder {
+  public interface SynchronizeReplicationProgressSourceExceptionFormatOrBuilder
+      extends com.google.protobuf.MessageOrBuilder {
 
+    // optional string message = 1;
     /**
      * <code>optional string message = 1;</code>
      */
@@ -4922,28 +4344,36 @@ public final class ReplicationProtocolFormats {
   /**
    * Protobuf type {@code SynchronizeReplicationProgressSourceExceptionFormat}
    */
-  public  static final class SynchronizeReplicationProgressSourceExceptionFormat extends
-      com.google.protobuf.GeneratedMessageV3 implements
-      // @@protoc_insertion_point(message_implements:SynchronizeReplicationProgressSourceExceptionFormat)
-      SynchronizeReplicationProgressSourceExceptionFormatOrBuilder {
+  public static final class SynchronizeReplicationProgressSourceExceptionFormat extends
+      com.google.protobuf.GeneratedMessage
+      implements SynchronizeReplicationProgressSourceExceptionFormatOrBuilder {
     // Use SynchronizeReplicationProgressSourceExceptionFormat.newBuilder() to construct.
-    private SynchronizeReplicationProgressSourceExceptionFormat(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+    private SynchronizeReplicationProgressSourceExceptionFormat(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
       super(builder);
+      this.unknownFields = builder.getUnknownFields();
     }
-    private SynchronizeReplicationProgressSourceExceptionFormat() {
-      message_ = "";
+    private SynchronizeReplicationProgressSourceExceptionFormat(boolean noInit) { this.unknownFields = com.google.protobuf.UnknownFieldSet.getDefaultInstance(); }
+
+    private static final SynchronizeReplicationProgressSourceExceptionFormat defaultInstance;
+    public static SynchronizeReplicationProgressSourceExceptionFormat getDefaultInstance() {
+      return defaultInstance;
     }
 
+    public SynchronizeReplicationProgressSourceExceptionFormat getDefaultInstanceForType() {
+      return defaultInstance;
+    }
+
+    private final com.google.protobuf.UnknownFieldSet unknownFields;
     @java.lang.Override
     public final com.google.protobuf.UnknownFieldSet
-    getUnknownFields() {
+        getUnknownFields() {
       return this.unknownFields;
     }
     private SynchronizeReplicationProgressSourceExceptionFormat(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
-      this();
+      initFields();
       int mutable_bitField0_ = 0;
       com.google.protobuf.UnknownFieldSet.Builder unknownFields =
           com.google.protobuf.UnknownFieldSet.newBuilder();
@@ -4963,9 +4393,8 @@ public final class ReplicationProtocolFormats {
               break;
             }
             case 10: {
-              com.google.protobuf.ByteString bs = input.readBytes();
               bitField0_ |= 0x00000001;
-              message_ = bs;
+              message_ = input.readBytes();
               break;
             }
           }
@@ -4974,7 +4403,7 @@ public final class ReplicationProtocolFormats {
         throw e.setUnfinishedMessage(this);
       } catch (java.io.IOException e) {
         throw new com.google.protobuf.InvalidProtocolBufferException(
-            e).setUnfinishedMessage(this);
+            e.getMessage()).setUnfinishedMessage(this);
       } finally {
         this.unknownFields = unknownFields.build();
         makeExtensionsImmutable();
@@ -4985,16 +4414,32 @@ public final class ReplicationProtocolFormats {
       return com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.internal_static_SynchronizeReplicationProgressSourceExceptionFormat_descriptor;
     }
 
-    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
         internalGetFieldAccessorTable() {
       return com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.internal_static_SynchronizeReplicationProgressSourceExceptionFormat_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
               com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.SynchronizeReplicationProgressSourceExceptionFormat.class, com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.SynchronizeReplicationProgressSourceExceptionFormat.Builder.class);
     }
 
+    public static com.google.protobuf.Parser<SynchronizeReplicationProgressSourceExceptionFormat> PARSER =
+        new com.google.protobuf.AbstractParser<SynchronizeReplicationProgressSourceExceptionFormat>() {
+      public SynchronizeReplicationProgressSourceExceptionFormat parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new SynchronizeReplicationProgressSourceExceptionFormat(input, extensionRegistry);
+      }
+    };
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<SynchronizeReplicationProgressSourceExceptionFormat> getParserForType() {
+      return PARSER;
+    }
+
     private int bitField0_;
+    // optional string message = 1;
     public static final int MESSAGE_FIELD_NUMBER = 1;
-    private volatile java.lang.Object message_;
+    private java.lang.Object message_;
     /**
      * <code>optional string message = 1;</code>
      */
@@ -5035,11 +4480,13 @@ public final class ReplicationProtocolFormats {
       }
     }
 
+    private void initFields() {
+      message_ = "";
+    }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
-      if (isInitialized == 1) return true;
-      if (isInitialized == 0) return false;
+      if (isInitialized != -1) return isInitialized == 1;
 
       memoizedIsInitialized = 1;
       return true;
@@ -5047,60 +4494,33 @@ public final class ReplicationProtocolFormats {
 
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
+      getSerializedSize();
       if (((bitField0_ & 0x00000001) == 0x00000001)) {
-        com.google.protobuf.GeneratedMessageV3.writeString(output, 1, message_);
+        output.writeBytes(1, getMessageBytes());
       }
-      unknownFields.writeTo(output);
+      getUnknownFields().writeTo(output);
     }
 
+    private int memoizedSerializedSize = -1;
     public int getSerializedSize() {
-      int size = memoizedSize;
+      int size = memoizedSerializedSize;
       if (size != -1) return size;
 
       size = 0;
       if (((bitField0_ & 0x00000001) == 0x00000001)) {
-        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, message_);
+        size += com.google.protobuf.CodedOutputStream
+          .computeBytesSize(1, getMessageBytes());
       }
-      size += unknownFields.getSerializedSize();
-      memoizedSize = size;
+      size += getUnknownFields().getSerializedSize();
+      memoizedSerializedSize = size;
       return size;
     }
 
     private static final long serialVersionUID = 0L;
     @java.lang.Override
-    public boolean equals(final java.lang.Object obj) {
-      if (obj == this) {
-       return true;
-      }
-      if (!(obj instanceof com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.SynchronizeReplicationProgressSourceExceptionFormat)) {
-        return super.equals(obj);
-      }
-      com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.SynchronizeReplicationProgressSourceExceptionFormat other = (com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.SynchronizeReplicationProgressSourceExceptionFormat) obj;
-
-      boolean result = true;
-      result = result && (hasMessage() == other.hasMessage());
-      if (hasMessage()) {
-        result = result && getMessage()
-            .equals(other.getMessage());
-      }
-      result = result && unknownFields.equals(other.unknownFields);
-      return result;
-    }
-
-    @java.lang.Override
-    public int hashCode() {
-      if (memoizedHashCode != 0) {
-        return memoizedHashCode;
-      }
-      int hash = 41;
-      hash = (19 * hash) + getDescriptorForType().hashCode();
-      if (hasMessage()) {
-        hash = (37 * hash) + MESSAGE_FIELD_NUMBER;
-        hash = (53 * hash) + getMessage().hashCode();
-      }
-      hash = (29 * hash) + unknownFields.hashCode();
-      memoizedHashCode = hash;
-      return hash;
+    protected java.lang.Object writeReplace()
+        throws java.io.ObjectStreamException {
+      return super.writeReplace();
     }
 
     public static com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.SynchronizeReplicationProgressSourceExceptionFormat parseFrom(
@@ -5126,57 +4546,46 @@ public final class ReplicationProtocolFormats {
     }
     public static com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.SynchronizeReplicationProgressSourceExceptionFormat parseFrom(java.io.InputStream input)
         throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
+      return PARSER.parseFrom(input);
     }
     public static com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.SynchronizeReplicationProgressSourceExceptionFormat parseFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
+      return PARSER.parseFrom(input, extensionRegistry);
     }
     public static com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.SynchronizeReplicationProgressSourceExceptionFormat parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input);
+      return PARSER.parseDelimitedFrom(input);
     }
     public static com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.SynchronizeReplicationProgressSourceExceptionFormat parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+      return PARSER.parseDelimitedFrom(input, extensionRegistry);
     }
     public static com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.SynchronizeReplicationProgressSourceExceptionFormat parseFrom(
         com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
+      return PARSER.parseFrom(input);
     }
     public static com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.SynchronizeReplicationProgressSourceExceptionFormat parseFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
+      return PARSER.parseFrom(input, extensionRegistry);
     }
 
+    public static Builder newBuilder() { return Builder.create(); }
     public Builder newBuilderForType() { return newBuilder(); }
-    public static Builder newBuilder() {
-      return DEFAULT_INSTANCE.toBuilder();
-    }
     public static Builder newBuilder(com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.SynchronizeReplicationProgressSourceExceptionFormat prototype) {
-      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+      return newBuilder().mergeFrom(prototype);
     }
-    public Builder toBuilder() {
-      return this == DEFAULT_INSTANCE
-          ? new Builder() : new Builder().mergeFrom(this);
-    }
+    public Builder toBuilder() { return newBuilder(this); }
 
     @java.lang.Override
     protected Builder newBuilderForType(
-        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
       Builder builder = new Builder(parent);
       return builder;
     }
@@ -5184,15 +4593,14 @@ public final class ReplicationProtocolFormats {
      * Protobuf type {@code SynchronizeReplicationProgressSourceExceptionFormat}
      */
     public static final class Builder extends
-        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-        // @@protoc_insertion_point(builder_implements:SynchronizeReplicationProgressSourceExceptionFormat)
-        com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.SynchronizeReplicationProgressSourceExceptionFormatOrBuilder {
+        com.google.protobuf.GeneratedMessage.Builder<Builder>
+       implements com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.SynchronizeReplicationProgressSourceExceptionFormatOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
         return com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.internal_static_SynchronizeReplicationProgressSourceExceptionFormat_descriptor;
       }
 
-      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
           internalGetFieldAccessorTable() {
         return com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.internal_static_SynchronizeReplicationProgressSourceExceptionFormat_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
@@ -5205,20 +4613,27 @@ public final class ReplicationProtocolFormats {
       }
 
       private Builder(
-          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
         super(parent);
         maybeForceBuilderInitialization();
       }
       private void maybeForceBuilderInitialization() {
-        if (com.google.protobuf.GeneratedMessageV3
-                .alwaysUseFieldBuilders) {
+        if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
         }
       }
+      private static Builder create() {
+        return new Builder();
+      }
+
       public Builder clear() {
         super.clear();
         message_ = "";
         bitField0_ = (bitField0_ & ~0x00000001);
         return this;
+      }
+
+      public Builder clone() {
+        return create().mergeFrom(buildPartial());
       }
 
       public com.google.protobuf.Descriptors.Descriptor
@@ -5251,32 +4666,6 @@ public final class ReplicationProtocolFormats {
         return result;
       }
 
-      public Builder clone() {
-        return (Builder) super.clone();
-      }
-      public Builder setField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          Object value) {
-        return (Builder) super.setField(field, value);
-      }
-      public Builder clearField(
-          com.google.protobuf.Descriptors.FieldDescriptor field) {
-        return (Builder) super.clearField(field);
-      }
-      public Builder clearOneof(
-          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
-        return (Builder) super.clearOneof(oneof);
-      }
-      public Builder setRepeatedField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          int index, Object value) {
-        return (Builder) super.setRepeatedField(field, index, value);
-      }
-      public Builder addRepeatedField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          Object value) {
-        return (Builder) super.addRepeatedField(field, value);
-      }
       public Builder mergeFrom(com.google.protobuf.Message other) {
         if (other instanceof com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.SynchronizeReplicationProgressSourceExceptionFormat) {
           return mergeFrom((com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.SynchronizeReplicationProgressSourceExceptionFormat)other);
@@ -5293,8 +4682,7 @@ public final class ReplicationProtocolFormats {
           message_ = other.message_;
           onChanged();
         }
-        this.mergeUnknownFields(other.unknownFields);
-        onChanged();
+        this.mergeUnknownFields(other.getUnknownFields());
         return this;
       }
 
@@ -5311,7 +4699,7 @@ public final class ReplicationProtocolFormats {
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
         } catch (com.google.protobuf.InvalidProtocolBufferException e) {
           parsedMessage = (com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.SynchronizeReplicationProgressSourceExceptionFormat) e.getUnfinishedMessage();
-          throw e.unwrapIOException();
+          throw e;
         } finally {
           if (parsedMessage != null) {
             mergeFrom(parsedMessage);
@@ -5321,6 +4709,7 @@ public final class ReplicationProtocolFormats {
       }
       private int bitField0_;
 
+      // optional string message = 1;
       private java.lang.Object message_ = "";
       /**
        * <code>optional string message = 1;</code>
@@ -5334,12 +4723,9 @@ public final class ReplicationProtocolFormats {
       public java.lang.String getMessage() {
         java.lang.Object ref = message_;
         if (!(ref instanceof java.lang.String)) {
-          com.google.protobuf.ByteString bs =
-              (com.google.protobuf.ByteString) ref;
-          java.lang.String s = bs.toStringUtf8();
-          if (bs.isValidUtf8()) {
-            message_ = s;
-          }
+          java.lang.String s = ((com.google.protobuf.ByteString) ref)
+              .toStringUtf8();
+          message_ = s;
           return s;
         } else {
           return (java.lang.String) ref;
@@ -5396,59 +4782,22 @@ public final class ReplicationProtocolFormats {
         onChanged();
         return this;
       }
-      public final Builder setUnknownFields(
-          final com.google.protobuf.UnknownFieldSet unknownFields) {
-        return super.setUnknownFields(unknownFields);
-      }
-
-      public final Builder mergeUnknownFields(
-          final com.google.protobuf.UnknownFieldSet unknownFields) {
-        return super.mergeUnknownFields(unknownFields);
-      }
-
 
       // @@protoc_insertion_point(builder_scope:SynchronizeReplicationProgressSourceExceptionFormat)
     }
 
-    // @@protoc_insertion_point(class_scope:SynchronizeReplicationProgressSourceExceptionFormat)
-    private static final com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.SynchronizeReplicationProgressSourceExceptionFormat DEFAULT_INSTANCE;
     static {
-      DEFAULT_INSTANCE = new com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.SynchronizeReplicationProgressSourceExceptionFormat();
+      defaultInstance = new SynchronizeReplicationProgressSourceExceptionFormat(true);
+      defaultInstance.initFields();
     }
 
-    public static com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.SynchronizeReplicationProgressSourceExceptionFormat getDefaultInstance() {
-      return DEFAULT_INSTANCE;
-    }
-
-    @java.lang.Deprecated public static final com.google.protobuf.Parser<SynchronizeReplicationProgressSourceExceptionFormat>
-        PARSER = new com.google.protobuf.AbstractParser<SynchronizeReplicationProgressSourceExceptionFormat>() {
-      public SynchronizeReplicationProgressSourceExceptionFormat parsePartialFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws com.google.protobuf.InvalidProtocolBufferException {
-          return new SynchronizeReplicationProgressSourceExceptionFormat(input, extensionRegistry);
-      }
-    };
-
-    public static com.google.protobuf.Parser<SynchronizeReplicationProgressSourceExceptionFormat> parser() {
-      return PARSER;
-    }
-
-    @java.lang.Override
-    public com.google.protobuf.Parser<SynchronizeReplicationProgressSourceExceptionFormat> getParserForType() {
-      return PARSER;
-    }
-
-    public com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.SynchronizeReplicationProgressSourceExceptionFormat getDefaultInstanceForType() {
-      return DEFAULT_INSTANCE;
-    }
-
+    // @@protoc_insertion_point(class_scope:SynchronizeReplicationProgressSourceExceptionFormat)
   }
 
-  public interface ReplicationReadEnvelopeFormatOrBuilder extends
-      // @@protoc_insertion_point(interface_extends:ReplicationReadEnvelopeFormat)
-      com.google.protobuf.MessageOrBuilder {
+  public interface ReplicationReadEnvelopeFormatOrBuilder
+      extends com.google.protobuf.MessageOrBuilder {
 
+    // optional .ReplicationReadFormat payload = 1;
     /**
      * <code>optional .ReplicationReadFormat payload = 1;</code>
      */
@@ -5462,6 +4811,7 @@ public final class ReplicationProtocolFormats {
      */
     com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationReadFormatOrBuilder getPayloadOrBuilder();
 
+    // optional string logName = 2;
     /**
      * <code>optional string logName = 2;</code>
      */
@@ -5476,6 +4826,7 @@ public final class ReplicationProtocolFormats {
     com.google.protobuf.ByteString
         getLogNameBytes();
 
+    // optional string targetApplicationName = 3;
     /**
      * <code>optional string targetApplicationName = 3;</code>
      */
@@ -5490,6 +4841,7 @@ public final class ReplicationProtocolFormats {
     com.google.protobuf.ByteString
         getTargetApplicationNameBytes();
 
+    // optional .ApplicationVersionFormat targetApplicationVersion = 4;
     /**
      * <code>optional .ApplicationVersionFormat targetApplicationVersion = 4;</code>
      */
@@ -5506,29 +4858,36 @@ public final class ReplicationProtocolFormats {
   /**
    * Protobuf type {@code ReplicationReadEnvelopeFormat}
    */
-  public  static final class ReplicationReadEnvelopeFormat extends
-      com.google.protobuf.GeneratedMessageV3 implements
-      // @@protoc_insertion_point(message_implements:ReplicationReadEnvelopeFormat)
-      ReplicationReadEnvelopeFormatOrBuilder {
+  public static final class ReplicationReadEnvelopeFormat extends
+      com.google.protobuf.GeneratedMessage
+      implements ReplicationReadEnvelopeFormatOrBuilder {
     // Use ReplicationReadEnvelopeFormat.newBuilder() to construct.
-    private ReplicationReadEnvelopeFormat(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+    private ReplicationReadEnvelopeFormat(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
       super(builder);
+      this.unknownFields = builder.getUnknownFields();
     }
-    private ReplicationReadEnvelopeFormat() {
-      logName_ = "";
-      targetApplicationName_ = "";
+    private ReplicationReadEnvelopeFormat(boolean noInit) { this.unknownFields = com.google.protobuf.UnknownFieldSet.getDefaultInstance(); }
+
+    private static final ReplicationReadEnvelopeFormat defaultInstance;
+    public static ReplicationReadEnvelopeFormat getDefaultInstance() {
+      return defaultInstance;
     }
 
+    public ReplicationReadEnvelopeFormat getDefaultInstanceForType() {
+      return defaultInstance;
+    }
+
+    private final com.google.protobuf.UnknownFieldSet unknownFields;
     @java.lang.Override
     public final com.google.protobuf.UnknownFieldSet
-    getUnknownFields() {
+        getUnknownFields() {
       return this.unknownFields;
     }
     private ReplicationReadEnvelopeFormat(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
-      this();
+      initFields();
       int mutable_bitField0_ = 0;
       com.google.protobuf.UnknownFieldSet.Builder unknownFields =
           com.google.protobuf.UnknownFieldSet.newBuilder();
@@ -5561,15 +4920,13 @@ public final class ReplicationProtocolFormats {
               break;
             }
             case 18: {
-              com.google.protobuf.ByteString bs = input.readBytes();
               bitField0_ |= 0x00000002;
-              logName_ = bs;
+              logName_ = input.readBytes();
               break;
             }
             case 26: {
-              com.google.protobuf.ByteString bs = input.readBytes();
               bitField0_ |= 0x00000004;
-              targetApplicationName_ = bs;
+              targetApplicationName_ = input.readBytes();
               break;
             }
             case 34: {
@@ -5591,7 +4948,7 @@ public final class ReplicationProtocolFormats {
         throw e.setUnfinishedMessage(this);
       } catch (java.io.IOException e) {
         throw new com.google.protobuf.InvalidProtocolBufferException(
-            e).setUnfinishedMessage(this);
+            e.getMessage()).setUnfinishedMessage(this);
       } finally {
         this.unknownFields = unknownFields.build();
         makeExtensionsImmutable();
@@ -5602,14 +4959,30 @@ public final class ReplicationProtocolFormats {
       return com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.internal_static_ReplicationReadEnvelopeFormat_descriptor;
     }
 
-    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
         internalGetFieldAccessorTable() {
       return com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.internal_static_ReplicationReadEnvelopeFormat_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
               com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationReadEnvelopeFormat.class, com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationReadEnvelopeFormat.Builder.class);
     }
 
+    public static com.google.protobuf.Parser<ReplicationReadEnvelopeFormat> PARSER =
+        new com.google.protobuf.AbstractParser<ReplicationReadEnvelopeFormat>() {
+      public ReplicationReadEnvelopeFormat parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new ReplicationReadEnvelopeFormat(input, extensionRegistry);
+      }
+    };
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<ReplicationReadEnvelopeFormat> getParserForType() {
+      return PARSER;
+    }
+
     private int bitField0_;
+    // optional .ReplicationReadFormat payload = 1;
     public static final int PAYLOAD_FIELD_NUMBER = 1;
     private com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationReadFormat payload_;
     /**
@@ -5622,17 +4995,18 @@ public final class ReplicationProtocolFormats {
      * <code>optional .ReplicationReadFormat payload = 1;</code>
      */
     public com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationReadFormat getPayload() {
-      return payload_ == null ? com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationReadFormat.getDefaultInstance() : payload_;
+      return payload_;
     }
     /**
      * <code>optional .ReplicationReadFormat payload = 1;</code>
      */
     public com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationReadFormatOrBuilder getPayloadOrBuilder() {
-      return payload_ == null ? com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationReadFormat.getDefaultInstance() : payload_;
+      return payload_;
     }
 
+    // optional string logName = 2;
     public static final int LOGNAME_FIELD_NUMBER = 2;
-    private volatile java.lang.Object logName_;
+    private java.lang.Object logName_;
     /**
      * <code>optional string logName = 2;</code>
      */
@@ -5673,8 +5047,9 @@ public final class ReplicationProtocolFormats {
       }
     }
 
+    // optional string targetApplicationName = 3;
     public static final int TARGETAPPLICATIONNAME_FIELD_NUMBER = 3;
-    private volatile java.lang.Object targetApplicationName_;
+    private java.lang.Object targetApplicationName_;
     /**
      * <code>optional string targetApplicationName = 3;</code>
      */
@@ -5715,6 +5090,7 @@ public final class ReplicationProtocolFormats {
       }
     }
 
+    // optional .ApplicationVersionFormat targetApplicationVersion = 4;
     public static final int TARGETAPPLICATIONVERSION_FIELD_NUMBER = 4;
     private com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ApplicationVersionFormat targetApplicationVersion_;
     /**
@@ -5727,20 +5103,25 @@ public final class ReplicationProtocolFormats {
      * <code>optional .ApplicationVersionFormat targetApplicationVersion = 4;</code>
      */
     public com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ApplicationVersionFormat getTargetApplicationVersion() {
-      return targetApplicationVersion_ == null ? com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ApplicationVersionFormat.getDefaultInstance() : targetApplicationVersion_;
+      return targetApplicationVersion_;
     }
     /**
      * <code>optional .ApplicationVersionFormat targetApplicationVersion = 4;</code>
      */
     public com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ApplicationVersionFormatOrBuilder getTargetApplicationVersionOrBuilder() {
-      return targetApplicationVersion_ == null ? com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ApplicationVersionFormat.getDefaultInstance() : targetApplicationVersion_;
+      return targetApplicationVersion_;
     }
 
+    private void initFields() {
+      payload_ = com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationReadFormat.getDefaultInstance();
+      logName_ = "";
+      targetApplicationName_ = "";
+      targetApplicationVersion_ = com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ApplicationVersionFormat.getDefaultInstance();
+    }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
-      if (isInitialized == 1) return true;
-      if (isInitialized == 0) return false;
+      if (isInitialized != -1) return isInitialized == 1;
 
       if (hasPayload()) {
         if (!getPayload().isInitialized()) {
@@ -5760,107 +5141,54 @@ public final class ReplicationProtocolFormats {
 
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
+      getSerializedSize();
       if (((bitField0_ & 0x00000001) == 0x00000001)) {
-        output.writeMessage(1, getPayload());
+        output.writeMessage(1, payload_);
       }
       if (((bitField0_ & 0x00000002) == 0x00000002)) {
-        com.google.protobuf.GeneratedMessageV3.writeString(output, 2, logName_);
+        output.writeBytes(2, getLogNameBytes());
       }
       if (((bitField0_ & 0x00000004) == 0x00000004)) {
-        com.google.protobuf.GeneratedMessageV3.writeString(output, 3, targetApplicationName_);
+        output.writeBytes(3, getTargetApplicationNameBytes());
       }
       if (((bitField0_ & 0x00000008) == 0x00000008)) {
-        output.writeMessage(4, getTargetApplicationVersion());
+        output.writeMessage(4, targetApplicationVersion_);
       }
-      unknownFields.writeTo(output);
+      getUnknownFields().writeTo(output);
     }
 
+    private int memoizedSerializedSize = -1;
     public int getSerializedSize() {
-      int size = memoizedSize;
+      int size = memoizedSerializedSize;
       if (size != -1) return size;
 
       size = 0;
       if (((bitField0_ & 0x00000001) == 0x00000001)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(1, getPayload());
+          .computeMessageSize(1, payload_);
       }
       if (((bitField0_ & 0x00000002) == 0x00000002)) {
-        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, logName_);
+        size += com.google.protobuf.CodedOutputStream
+          .computeBytesSize(2, getLogNameBytes());
       }
       if (((bitField0_ & 0x00000004) == 0x00000004)) {
-        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(3, targetApplicationName_);
+        size += com.google.protobuf.CodedOutputStream
+          .computeBytesSize(3, getTargetApplicationNameBytes());
       }
       if (((bitField0_ & 0x00000008) == 0x00000008)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(4, getTargetApplicationVersion());
+          .computeMessageSize(4, targetApplicationVersion_);
       }
-      size += unknownFields.getSerializedSize();
-      memoizedSize = size;
+      size += getUnknownFields().getSerializedSize();
+      memoizedSerializedSize = size;
       return size;
     }
 
     private static final long serialVersionUID = 0L;
     @java.lang.Override
-    public boolean equals(final java.lang.Object obj) {
-      if (obj == this) {
-       return true;
-      }
-      if (!(obj instanceof com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationReadEnvelopeFormat)) {
-        return super.equals(obj);
-      }
-      com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationReadEnvelopeFormat other = (com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationReadEnvelopeFormat) obj;
-
-      boolean result = true;
-      result = result && (hasPayload() == other.hasPayload());
-      if (hasPayload()) {
-        result = result && getPayload()
-            .equals(other.getPayload());
-      }
-      result = result && (hasLogName() == other.hasLogName());
-      if (hasLogName()) {
-        result = result && getLogName()
-            .equals(other.getLogName());
-      }
-      result = result && (hasTargetApplicationName() == other.hasTargetApplicationName());
-      if (hasTargetApplicationName()) {
-        result = result && getTargetApplicationName()
-            .equals(other.getTargetApplicationName());
-      }
-      result = result && (hasTargetApplicationVersion() == other.hasTargetApplicationVersion());
-      if (hasTargetApplicationVersion()) {
-        result = result && getTargetApplicationVersion()
-            .equals(other.getTargetApplicationVersion());
-      }
-      result = result && unknownFields.equals(other.unknownFields);
-      return result;
-    }
-
-    @java.lang.Override
-    public int hashCode() {
-      if (memoizedHashCode != 0) {
-        return memoizedHashCode;
-      }
-      int hash = 41;
-      hash = (19 * hash) + getDescriptorForType().hashCode();
-      if (hasPayload()) {
-        hash = (37 * hash) + PAYLOAD_FIELD_NUMBER;
-        hash = (53 * hash) + getPayload().hashCode();
-      }
-      if (hasLogName()) {
-        hash = (37 * hash) + LOGNAME_FIELD_NUMBER;
-        hash = (53 * hash) + getLogName().hashCode();
-      }
-      if (hasTargetApplicationName()) {
-        hash = (37 * hash) + TARGETAPPLICATIONNAME_FIELD_NUMBER;
-        hash = (53 * hash) + getTargetApplicationName().hashCode();
-      }
-      if (hasTargetApplicationVersion()) {
-        hash = (37 * hash) + TARGETAPPLICATIONVERSION_FIELD_NUMBER;
-        hash = (53 * hash) + getTargetApplicationVersion().hashCode();
-      }
-      hash = (29 * hash) + unknownFields.hashCode();
-      memoizedHashCode = hash;
-      return hash;
+    protected java.lang.Object writeReplace()
+        throws java.io.ObjectStreamException {
+      return super.writeReplace();
     }
 
     public static com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationReadEnvelopeFormat parseFrom(
@@ -5886,57 +5214,46 @@ public final class ReplicationProtocolFormats {
     }
     public static com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationReadEnvelopeFormat parseFrom(java.io.InputStream input)
         throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
+      return PARSER.parseFrom(input);
     }
     public static com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationReadEnvelopeFormat parseFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
+      return PARSER.parseFrom(input, extensionRegistry);
     }
     public static com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationReadEnvelopeFormat parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input);
+      return PARSER.parseDelimitedFrom(input);
     }
     public static com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationReadEnvelopeFormat parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+      return PARSER.parseDelimitedFrom(input, extensionRegistry);
     }
     public static com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationReadEnvelopeFormat parseFrom(
         com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
+      return PARSER.parseFrom(input);
     }
     public static com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationReadEnvelopeFormat parseFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
+      return PARSER.parseFrom(input, extensionRegistry);
     }
 
+    public static Builder newBuilder() { return Builder.create(); }
     public Builder newBuilderForType() { return newBuilder(); }
-    public static Builder newBuilder() {
-      return DEFAULT_INSTANCE.toBuilder();
-    }
     public static Builder newBuilder(com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationReadEnvelopeFormat prototype) {
-      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+      return newBuilder().mergeFrom(prototype);
     }
-    public Builder toBuilder() {
-      return this == DEFAULT_INSTANCE
-          ? new Builder() : new Builder().mergeFrom(this);
-    }
+    public Builder toBuilder() { return newBuilder(this); }
 
     @java.lang.Override
     protected Builder newBuilderForType(
-        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
       Builder builder = new Builder(parent);
       return builder;
     }
@@ -5944,15 +5261,14 @@ public final class ReplicationProtocolFormats {
      * Protobuf type {@code ReplicationReadEnvelopeFormat}
      */
     public static final class Builder extends
-        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-        // @@protoc_insertion_point(builder_implements:ReplicationReadEnvelopeFormat)
-        com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationReadEnvelopeFormatOrBuilder {
+        com.google.protobuf.GeneratedMessage.Builder<Builder>
+       implements com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationReadEnvelopeFormatOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
         return com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.internal_static_ReplicationReadEnvelopeFormat_descriptor;
       }
 
-      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
           internalGetFieldAccessorTable() {
         return com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.internal_static_ReplicationReadEnvelopeFormat_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
@@ -5965,21 +5281,24 @@ public final class ReplicationProtocolFormats {
       }
 
       private Builder(
-          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
         super(parent);
         maybeForceBuilderInitialization();
       }
       private void maybeForceBuilderInitialization() {
-        if (com.google.protobuf.GeneratedMessageV3
-                .alwaysUseFieldBuilders) {
+        if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
           getPayloadFieldBuilder();
           getTargetApplicationVersionFieldBuilder();
         }
       }
+      private static Builder create() {
+        return new Builder();
+      }
+
       public Builder clear() {
         super.clear();
         if (payloadBuilder_ == null) {
-          payload_ = null;
+          payload_ = com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationReadFormat.getDefaultInstance();
         } else {
           payloadBuilder_.clear();
         }
@@ -5989,12 +5308,16 @@ public final class ReplicationProtocolFormats {
         targetApplicationName_ = "";
         bitField0_ = (bitField0_ & ~0x00000004);
         if (targetApplicationVersionBuilder_ == null) {
-          targetApplicationVersion_ = null;
+          targetApplicationVersion_ = com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ApplicationVersionFormat.getDefaultInstance();
         } else {
           targetApplicationVersionBuilder_.clear();
         }
         bitField0_ = (bitField0_ & ~0x00000008);
         return this;
+      }
+
+      public Builder clone() {
+        return create().mergeFrom(buildPartial());
       }
 
       public com.google.protobuf.Descriptors.Descriptor
@@ -6047,32 +5370,6 @@ public final class ReplicationProtocolFormats {
         return result;
       }
 
-      public Builder clone() {
-        return (Builder) super.clone();
-      }
-      public Builder setField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          Object value) {
-        return (Builder) super.setField(field, value);
-      }
-      public Builder clearField(
-          com.google.protobuf.Descriptors.FieldDescriptor field) {
-        return (Builder) super.clearField(field);
-      }
-      public Builder clearOneof(
-          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
-        return (Builder) super.clearOneof(oneof);
-      }
-      public Builder setRepeatedField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          int index, Object value) {
-        return (Builder) super.setRepeatedField(field, index, value);
-      }
-      public Builder addRepeatedField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          Object value) {
-        return (Builder) super.addRepeatedField(field, value);
-      }
       public Builder mergeFrom(com.google.protobuf.Message other) {
         if (other instanceof com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationReadEnvelopeFormat) {
           return mergeFrom((com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationReadEnvelopeFormat)other);
@@ -6100,19 +5397,20 @@ public final class ReplicationProtocolFormats {
         if (other.hasTargetApplicationVersion()) {
           mergeTargetApplicationVersion(other.getTargetApplicationVersion());
         }
-        this.mergeUnknownFields(other.unknownFields);
-        onChanged();
+        this.mergeUnknownFields(other.getUnknownFields());
         return this;
       }
 
       public final boolean isInitialized() {
         if (hasPayload()) {
           if (!getPayload().isInitialized()) {
+            
             return false;
           }
         }
         if (hasTargetApplicationVersion()) {
           if (!getTargetApplicationVersion().isInitialized()) {
+            
             return false;
           }
         }
@@ -6128,7 +5426,7 @@ public final class ReplicationProtocolFormats {
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
         } catch (com.google.protobuf.InvalidProtocolBufferException e) {
           parsedMessage = (com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationReadEnvelopeFormat) e.getUnfinishedMessage();
-          throw e.unwrapIOException();
+          throw e;
         } finally {
           if (parsedMessage != null) {
             mergeFrom(parsedMessage);
@@ -6138,8 +5436,9 @@ public final class ReplicationProtocolFormats {
       }
       private int bitField0_;
 
-      private com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationReadFormat payload_ = null;
-      private com.google.protobuf.SingleFieldBuilderV3<
+      // optional .ReplicationReadFormat payload = 1;
+      private com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationReadFormat payload_ = com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationReadFormat.getDefaultInstance();
+      private com.google.protobuf.SingleFieldBuilder<
           com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationReadFormat, com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationReadFormat.Builder, com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationReadFormatOrBuilder> payloadBuilder_;
       /**
        * <code>optional .ReplicationReadFormat payload = 1;</code>
@@ -6152,7 +5451,7 @@ public final class ReplicationProtocolFormats {
        */
       public com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationReadFormat getPayload() {
         if (payloadBuilder_ == null) {
-          return payload_ == null ? com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationReadFormat.getDefaultInstance() : payload_;
+          return payload_;
         } else {
           return payloadBuilder_.getMessage();
         }
@@ -6193,7 +5492,6 @@ public final class ReplicationProtocolFormats {
       public Builder mergePayload(com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationReadFormat value) {
         if (payloadBuilder_ == null) {
           if (((bitField0_ & 0x00000001) == 0x00000001) &&
-              payload_ != null &&
               payload_ != com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationReadFormat.getDefaultInstance()) {
             payload_ =
               com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationReadFormat.newBuilder(payload_).mergeFrom(value).buildPartial();
@@ -6212,7 +5510,7 @@ public final class ReplicationProtocolFormats {
        */
       public Builder clearPayload() {
         if (payloadBuilder_ == null) {
-          payload_ = null;
+          payload_ = com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationReadFormat.getDefaultInstance();
           onChanged();
         } else {
           payloadBuilder_.clear();
@@ -6235,20 +5533,19 @@ public final class ReplicationProtocolFormats {
         if (payloadBuilder_ != null) {
           return payloadBuilder_.getMessageOrBuilder();
         } else {
-          return payload_ == null ?
-              com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationReadFormat.getDefaultInstance() : payload_;
+          return payload_;
         }
       }
       /**
        * <code>optional .ReplicationReadFormat payload = 1;</code>
        */
-      private com.google.protobuf.SingleFieldBuilderV3<
+      private com.google.protobuf.SingleFieldBuilder<
           com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationReadFormat, com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationReadFormat.Builder, com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationReadFormatOrBuilder> 
           getPayloadFieldBuilder() {
         if (payloadBuilder_ == null) {
-          payloadBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+          payloadBuilder_ = new com.google.protobuf.SingleFieldBuilder<
               com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationReadFormat, com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationReadFormat.Builder, com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationReadFormatOrBuilder>(
-                  getPayload(),
+                  payload_,
                   getParentForChildren(),
                   isClean());
           payload_ = null;
@@ -6256,6 +5553,7 @@ public final class ReplicationProtocolFormats {
         return payloadBuilder_;
       }
 
+      // optional string logName = 2;
       private java.lang.Object logName_ = "";
       /**
        * <code>optional string logName = 2;</code>
@@ -6269,12 +5567,9 @@ public final class ReplicationProtocolFormats {
       public java.lang.String getLogName() {
         java.lang.Object ref = logName_;
         if (!(ref instanceof java.lang.String)) {
-          com.google.protobuf.ByteString bs =
-              (com.google.protobuf.ByteString) ref;
-          java.lang.String s = bs.toStringUtf8();
-          if (bs.isValidUtf8()) {
-            logName_ = s;
-          }
+          java.lang.String s = ((com.google.protobuf.ByteString) ref)
+              .toStringUtf8();
+          logName_ = s;
           return s;
         } else {
           return (java.lang.String) ref;
@@ -6332,6 +5627,7 @@ public final class ReplicationProtocolFormats {
         return this;
       }
 
+      // optional string targetApplicationName = 3;
       private java.lang.Object targetApplicationName_ = "";
       /**
        * <code>optional string targetApplicationName = 3;</code>
@@ -6345,12 +5641,9 @@ public final class ReplicationProtocolFormats {
       public java.lang.String getTargetApplicationName() {
         java.lang.Object ref = targetApplicationName_;
         if (!(ref instanceof java.lang.String)) {
-          com.google.protobuf.ByteString bs =
-              (com.google.protobuf.ByteString) ref;
-          java.lang.String s = bs.toStringUtf8();
-          if (bs.isValidUtf8()) {
-            targetApplicationName_ = s;
-          }
+          java.lang.String s = ((com.google.protobuf.ByteString) ref)
+              .toStringUtf8();
+          targetApplicationName_ = s;
           return s;
         } else {
           return (java.lang.String) ref;
@@ -6408,8 +5701,9 @@ public final class ReplicationProtocolFormats {
         return this;
       }
 
-      private com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ApplicationVersionFormat targetApplicationVersion_ = null;
-      private com.google.protobuf.SingleFieldBuilderV3<
+      // optional .ApplicationVersionFormat targetApplicationVersion = 4;
+      private com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ApplicationVersionFormat targetApplicationVersion_ = com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ApplicationVersionFormat.getDefaultInstance();
+      private com.google.protobuf.SingleFieldBuilder<
           com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ApplicationVersionFormat, com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ApplicationVersionFormat.Builder, com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ApplicationVersionFormatOrBuilder> targetApplicationVersionBuilder_;
       /**
        * <code>optional .ApplicationVersionFormat targetApplicationVersion = 4;</code>
@@ -6422,7 +5716,7 @@ public final class ReplicationProtocolFormats {
        */
       public com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ApplicationVersionFormat getTargetApplicationVersion() {
         if (targetApplicationVersionBuilder_ == null) {
-          return targetApplicationVersion_ == null ? com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ApplicationVersionFormat.getDefaultInstance() : targetApplicationVersion_;
+          return targetApplicationVersion_;
         } else {
           return targetApplicationVersionBuilder_.getMessage();
         }
@@ -6463,7 +5757,6 @@ public final class ReplicationProtocolFormats {
       public Builder mergeTargetApplicationVersion(com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ApplicationVersionFormat value) {
         if (targetApplicationVersionBuilder_ == null) {
           if (((bitField0_ & 0x00000008) == 0x00000008) &&
-              targetApplicationVersion_ != null &&
               targetApplicationVersion_ != com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ApplicationVersionFormat.getDefaultInstance()) {
             targetApplicationVersion_ =
               com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ApplicationVersionFormat.newBuilder(targetApplicationVersion_).mergeFrom(value).buildPartial();
@@ -6482,7 +5775,7 @@ public final class ReplicationProtocolFormats {
        */
       public Builder clearTargetApplicationVersion() {
         if (targetApplicationVersionBuilder_ == null) {
-          targetApplicationVersion_ = null;
+          targetApplicationVersion_ = com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ApplicationVersionFormat.getDefaultInstance();
           onChanged();
         } else {
           targetApplicationVersionBuilder_.clear();
@@ -6505,79 +5798,41 @@ public final class ReplicationProtocolFormats {
         if (targetApplicationVersionBuilder_ != null) {
           return targetApplicationVersionBuilder_.getMessageOrBuilder();
         } else {
-          return targetApplicationVersion_ == null ?
-              com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ApplicationVersionFormat.getDefaultInstance() : targetApplicationVersion_;
+          return targetApplicationVersion_;
         }
       }
       /**
        * <code>optional .ApplicationVersionFormat targetApplicationVersion = 4;</code>
        */
-      private com.google.protobuf.SingleFieldBuilderV3<
+      private com.google.protobuf.SingleFieldBuilder<
           com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ApplicationVersionFormat, com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ApplicationVersionFormat.Builder, com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ApplicationVersionFormatOrBuilder> 
           getTargetApplicationVersionFieldBuilder() {
         if (targetApplicationVersionBuilder_ == null) {
-          targetApplicationVersionBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+          targetApplicationVersionBuilder_ = new com.google.protobuf.SingleFieldBuilder<
               com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ApplicationVersionFormat, com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ApplicationVersionFormat.Builder, com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ApplicationVersionFormatOrBuilder>(
-                  getTargetApplicationVersion(),
+                  targetApplicationVersion_,
                   getParentForChildren(),
                   isClean());
           targetApplicationVersion_ = null;
         }
         return targetApplicationVersionBuilder_;
       }
-      public final Builder setUnknownFields(
-          final com.google.protobuf.UnknownFieldSet unknownFields) {
-        return super.setUnknownFields(unknownFields);
-      }
-
-      public final Builder mergeUnknownFields(
-          final com.google.protobuf.UnknownFieldSet unknownFields) {
-        return super.mergeUnknownFields(unknownFields);
-      }
-
 
       // @@protoc_insertion_point(builder_scope:ReplicationReadEnvelopeFormat)
     }
 
-    // @@protoc_insertion_point(class_scope:ReplicationReadEnvelopeFormat)
-    private static final com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationReadEnvelopeFormat DEFAULT_INSTANCE;
     static {
-      DEFAULT_INSTANCE = new com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationReadEnvelopeFormat();
+      defaultInstance = new ReplicationReadEnvelopeFormat(true);
+      defaultInstance.initFields();
     }
 
-    public static com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationReadEnvelopeFormat getDefaultInstance() {
-      return DEFAULT_INSTANCE;
-    }
-
-    @java.lang.Deprecated public static final com.google.protobuf.Parser<ReplicationReadEnvelopeFormat>
-        PARSER = new com.google.protobuf.AbstractParser<ReplicationReadEnvelopeFormat>() {
-      public ReplicationReadEnvelopeFormat parsePartialFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws com.google.protobuf.InvalidProtocolBufferException {
-          return new ReplicationReadEnvelopeFormat(input, extensionRegistry);
-      }
-    };
-
-    public static com.google.protobuf.Parser<ReplicationReadEnvelopeFormat> parser() {
-      return PARSER;
-    }
-
-    @java.lang.Override
-    public com.google.protobuf.Parser<ReplicationReadEnvelopeFormat> getParserForType() {
-      return PARSER;
-    }
-
-    public com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationReadEnvelopeFormat getDefaultInstanceForType() {
-      return DEFAULT_INSTANCE;
-    }
-
+    // @@protoc_insertion_point(class_scope:ReplicationReadEnvelopeFormat)
   }
 
-  public interface ReplicationReadFormatOrBuilder extends
-      // @@protoc_insertion_point(interface_extends:ReplicationReadFormat)
-      com.google.protobuf.MessageOrBuilder {
+  public interface ReplicationReadFormatOrBuilder
+      extends com.google.protobuf.MessageOrBuilder {
 
+    // optional int64 fromSequenceNr = 1;
     /**
      * <code>optional int64 fromSequenceNr = 1;</code>
      */
@@ -6587,6 +5842,7 @@ public final class ReplicationProtocolFormats {
      */
     long getFromSequenceNr();
 
+    // optional int32 max = 2;
     /**
      * <code>optional int32 max = 2;</code>
      */
@@ -6596,6 +5852,7 @@ public final class ReplicationProtocolFormats {
      */
     int getMax();
 
+    // optional int32 scanLimit = 3;
     /**
      * <code>optional int32 scanLimit = 3;</code>
      */
@@ -6605,6 +5862,7 @@ public final class ReplicationProtocolFormats {
      */
     int getScanLimit();
 
+    // optional .ReplicationFilterTreeFormat filter = 4;
     /**
      * <code>optional .ReplicationFilterTreeFormat filter = 4;</code>
      */
@@ -6618,6 +5876,7 @@ public final class ReplicationProtocolFormats {
      */
     com.rbmhtechnology.eventuate.serializer.ReplicationFilterFormats.ReplicationFilterTreeFormatOrBuilder getFilterOrBuilder();
 
+    // optional string targetLogId = 5;
     /**
      * <code>optional string targetLogId = 5;</code>
      */
@@ -6632,6 +5891,7 @@ public final class ReplicationProtocolFormats {
     com.google.protobuf.ByteString
         getTargetLogIdBytes();
 
+    // optional string replicator = 6;
     /**
      * <code>optional string replicator = 6;</code>
      */
@@ -6646,6 +5906,7 @@ public final class ReplicationProtocolFormats {
     com.google.protobuf.ByteString
         getReplicatorBytes();
 
+    // optional .VectorTimeFormat currentTargetVersionVector = 7;
     /**
      * <code>optional .VectorTimeFormat currentTargetVersionVector = 7;</code>
      */
@@ -6662,32 +5923,36 @@ public final class ReplicationProtocolFormats {
   /**
    * Protobuf type {@code ReplicationReadFormat}
    */
-  public  static final class ReplicationReadFormat extends
-      com.google.protobuf.GeneratedMessageV3 implements
-      // @@protoc_insertion_point(message_implements:ReplicationReadFormat)
-      ReplicationReadFormatOrBuilder {
+  public static final class ReplicationReadFormat extends
+      com.google.protobuf.GeneratedMessage
+      implements ReplicationReadFormatOrBuilder {
     // Use ReplicationReadFormat.newBuilder() to construct.
-    private ReplicationReadFormat(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+    private ReplicationReadFormat(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
       super(builder);
+      this.unknownFields = builder.getUnknownFields();
     }
-    private ReplicationReadFormat() {
-      fromSequenceNr_ = 0L;
-      max_ = 0;
-      scanLimit_ = 0;
-      targetLogId_ = "";
-      replicator_ = "";
+    private ReplicationReadFormat(boolean noInit) { this.unknownFields = com.google.protobuf.UnknownFieldSet.getDefaultInstance(); }
+
+    private static final ReplicationReadFormat defaultInstance;
+    public static ReplicationReadFormat getDefaultInstance() {
+      return defaultInstance;
     }
 
+    public ReplicationReadFormat getDefaultInstanceForType() {
+      return defaultInstance;
+    }
+
+    private final com.google.protobuf.UnknownFieldSet unknownFields;
     @java.lang.Override
     public final com.google.protobuf.UnknownFieldSet
-    getUnknownFields() {
+        getUnknownFields() {
       return this.unknownFields;
     }
     private ReplicationReadFormat(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
-      this();
+      initFields();
       int mutable_bitField0_ = 0;
       com.google.protobuf.UnknownFieldSet.Builder unknownFields =
           com.google.protobuf.UnknownFieldSet.newBuilder();
@@ -6735,15 +6000,13 @@ public final class ReplicationProtocolFormats {
               break;
             }
             case 42: {
-              com.google.protobuf.ByteString bs = input.readBytes();
               bitField0_ |= 0x00000010;
-              targetLogId_ = bs;
+              targetLogId_ = input.readBytes();
               break;
             }
             case 50: {
-              com.google.protobuf.ByteString bs = input.readBytes();
               bitField0_ |= 0x00000020;
-              replicator_ = bs;
+              replicator_ = input.readBytes();
               break;
             }
             case 58: {
@@ -6765,7 +6028,7 @@ public final class ReplicationProtocolFormats {
         throw e.setUnfinishedMessage(this);
       } catch (java.io.IOException e) {
         throw new com.google.protobuf.InvalidProtocolBufferException(
-            e).setUnfinishedMessage(this);
+            e.getMessage()).setUnfinishedMessage(this);
       } finally {
         this.unknownFields = unknownFields.build();
         makeExtensionsImmutable();
@@ -6776,14 +6039,30 @@ public final class ReplicationProtocolFormats {
       return com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.internal_static_ReplicationReadFormat_descriptor;
     }
 
-    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
         internalGetFieldAccessorTable() {
       return com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.internal_static_ReplicationReadFormat_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
               com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationReadFormat.class, com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationReadFormat.Builder.class);
     }
 
+    public static com.google.protobuf.Parser<ReplicationReadFormat> PARSER =
+        new com.google.protobuf.AbstractParser<ReplicationReadFormat>() {
+      public ReplicationReadFormat parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new ReplicationReadFormat(input, extensionRegistry);
+      }
+    };
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<ReplicationReadFormat> getParserForType() {
+      return PARSER;
+    }
+
     private int bitField0_;
+    // optional int64 fromSequenceNr = 1;
     public static final int FROMSEQUENCENR_FIELD_NUMBER = 1;
     private long fromSequenceNr_;
     /**
@@ -6799,6 +6078,7 @@ public final class ReplicationProtocolFormats {
       return fromSequenceNr_;
     }
 
+    // optional int32 max = 2;
     public static final int MAX_FIELD_NUMBER = 2;
     private int max_;
     /**
@@ -6814,6 +6094,7 @@ public final class ReplicationProtocolFormats {
       return max_;
     }
 
+    // optional int32 scanLimit = 3;
     public static final int SCANLIMIT_FIELD_NUMBER = 3;
     private int scanLimit_;
     /**
@@ -6829,6 +6110,7 @@ public final class ReplicationProtocolFormats {
       return scanLimit_;
     }
 
+    // optional .ReplicationFilterTreeFormat filter = 4;
     public static final int FILTER_FIELD_NUMBER = 4;
     private com.rbmhtechnology.eventuate.serializer.ReplicationFilterFormats.ReplicationFilterTreeFormat filter_;
     /**
@@ -6841,17 +6123,18 @@ public final class ReplicationProtocolFormats {
      * <code>optional .ReplicationFilterTreeFormat filter = 4;</code>
      */
     public com.rbmhtechnology.eventuate.serializer.ReplicationFilterFormats.ReplicationFilterTreeFormat getFilter() {
-      return filter_ == null ? com.rbmhtechnology.eventuate.serializer.ReplicationFilterFormats.ReplicationFilterTreeFormat.getDefaultInstance() : filter_;
+      return filter_;
     }
     /**
      * <code>optional .ReplicationFilterTreeFormat filter = 4;</code>
      */
     public com.rbmhtechnology.eventuate.serializer.ReplicationFilterFormats.ReplicationFilterTreeFormatOrBuilder getFilterOrBuilder() {
-      return filter_ == null ? com.rbmhtechnology.eventuate.serializer.ReplicationFilterFormats.ReplicationFilterTreeFormat.getDefaultInstance() : filter_;
+      return filter_;
     }
 
+    // optional string targetLogId = 5;
     public static final int TARGETLOGID_FIELD_NUMBER = 5;
-    private volatile java.lang.Object targetLogId_;
+    private java.lang.Object targetLogId_;
     /**
      * <code>optional string targetLogId = 5;</code>
      */
@@ -6892,8 +6175,9 @@ public final class ReplicationProtocolFormats {
       }
     }
 
+    // optional string replicator = 6;
     public static final int REPLICATOR_FIELD_NUMBER = 6;
-    private volatile java.lang.Object replicator_;
+    private java.lang.Object replicator_;
     /**
      * <code>optional string replicator = 6;</code>
      */
@@ -6934,6 +6218,7 @@ public final class ReplicationProtocolFormats {
       }
     }
 
+    // optional .VectorTimeFormat currentTargetVersionVector = 7;
     public static final int CURRENTTARGETVERSIONVECTOR_FIELD_NUMBER = 7;
     private com.rbmhtechnology.eventuate.serializer.CommonFormats.VectorTimeFormat currentTargetVersionVector_;
     /**
@@ -6946,20 +6231,28 @@ public final class ReplicationProtocolFormats {
      * <code>optional .VectorTimeFormat currentTargetVersionVector = 7;</code>
      */
     public com.rbmhtechnology.eventuate.serializer.CommonFormats.VectorTimeFormat getCurrentTargetVersionVector() {
-      return currentTargetVersionVector_ == null ? com.rbmhtechnology.eventuate.serializer.CommonFormats.VectorTimeFormat.getDefaultInstance() : currentTargetVersionVector_;
+      return currentTargetVersionVector_;
     }
     /**
      * <code>optional .VectorTimeFormat currentTargetVersionVector = 7;</code>
      */
     public com.rbmhtechnology.eventuate.serializer.CommonFormats.VectorTimeFormatOrBuilder getCurrentTargetVersionVectorOrBuilder() {
-      return currentTargetVersionVector_ == null ? com.rbmhtechnology.eventuate.serializer.CommonFormats.VectorTimeFormat.getDefaultInstance() : currentTargetVersionVector_;
+      return currentTargetVersionVector_;
     }
 
+    private void initFields() {
+      fromSequenceNr_ = 0L;
+      max_ = 0;
+      scanLimit_ = 0;
+      filter_ = com.rbmhtechnology.eventuate.serializer.ReplicationFilterFormats.ReplicationFilterTreeFormat.getDefaultInstance();
+      targetLogId_ = "";
+      replicator_ = "";
+      currentTargetVersionVector_ = com.rbmhtechnology.eventuate.serializer.CommonFormats.VectorTimeFormat.getDefaultInstance();
+    }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
-      if (isInitialized == 1) return true;
-      if (isInitialized == 0) return false;
+      if (isInitialized != -1) return isInitialized == 1;
 
       if (hasFilter()) {
         if (!getFilter().isInitialized()) {
@@ -6979,6 +6272,7 @@ public final class ReplicationProtocolFormats {
 
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
+      getSerializedSize();
       if (((bitField0_ & 0x00000001) == 0x00000001)) {
         output.writeInt64(1, fromSequenceNr_);
       }
@@ -6989,22 +6283,23 @@ public final class ReplicationProtocolFormats {
         output.writeInt32(3, scanLimit_);
       }
       if (((bitField0_ & 0x00000008) == 0x00000008)) {
-        output.writeMessage(4, getFilter());
+        output.writeMessage(4, filter_);
       }
       if (((bitField0_ & 0x00000010) == 0x00000010)) {
-        com.google.protobuf.GeneratedMessageV3.writeString(output, 5, targetLogId_);
+        output.writeBytes(5, getTargetLogIdBytes());
       }
       if (((bitField0_ & 0x00000020) == 0x00000020)) {
-        com.google.protobuf.GeneratedMessageV3.writeString(output, 6, replicator_);
+        output.writeBytes(6, getReplicatorBytes());
       }
       if (((bitField0_ & 0x00000040) == 0x00000040)) {
-        output.writeMessage(7, getCurrentTargetVersionVector());
+        output.writeMessage(7, currentTargetVersionVector_);
       }
-      unknownFields.writeTo(output);
+      getUnknownFields().writeTo(output);
     }
 
+    private int memoizedSerializedSize = -1;
     public int getSerializedSize() {
-      int size = memoizedSize;
+      int size = memoizedSerializedSize;
       if (size != -1) return size;
 
       size = 0;
@@ -7022,113 +6317,30 @@ public final class ReplicationProtocolFormats {
       }
       if (((bitField0_ & 0x00000008) == 0x00000008)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(4, getFilter());
+          .computeMessageSize(4, filter_);
       }
       if (((bitField0_ & 0x00000010) == 0x00000010)) {
-        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(5, targetLogId_);
+        size += com.google.protobuf.CodedOutputStream
+          .computeBytesSize(5, getTargetLogIdBytes());
       }
       if (((bitField0_ & 0x00000020) == 0x00000020)) {
-        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(6, replicator_);
+        size += com.google.protobuf.CodedOutputStream
+          .computeBytesSize(6, getReplicatorBytes());
       }
       if (((bitField0_ & 0x00000040) == 0x00000040)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(7, getCurrentTargetVersionVector());
+          .computeMessageSize(7, currentTargetVersionVector_);
       }
-      size += unknownFields.getSerializedSize();
-      memoizedSize = size;
+      size += getUnknownFields().getSerializedSize();
+      memoizedSerializedSize = size;
       return size;
     }
 
     private static final long serialVersionUID = 0L;
     @java.lang.Override
-    public boolean equals(final java.lang.Object obj) {
-      if (obj == this) {
-       return true;
-      }
-      if (!(obj instanceof com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationReadFormat)) {
-        return super.equals(obj);
-      }
-      com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationReadFormat other = (com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationReadFormat) obj;
-
-      boolean result = true;
-      result = result && (hasFromSequenceNr() == other.hasFromSequenceNr());
-      if (hasFromSequenceNr()) {
-        result = result && (getFromSequenceNr()
-            == other.getFromSequenceNr());
-      }
-      result = result && (hasMax() == other.hasMax());
-      if (hasMax()) {
-        result = result && (getMax()
-            == other.getMax());
-      }
-      result = result && (hasScanLimit() == other.hasScanLimit());
-      if (hasScanLimit()) {
-        result = result && (getScanLimit()
-            == other.getScanLimit());
-      }
-      result = result && (hasFilter() == other.hasFilter());
-      if (hasFilter()) {
-        result = result && getFilter()
-            .equals(other.getFilter());
-      }
-      result = result && (hasTargetLogId() == other.hasTargetLogId());
-      if (hasTargetLogId()) {
-        result = result && getTargetLogId()
-            .equals(other.getTargetLogId());
-      }
-      result = result && (hasReplicator() == other.hasReplicator());
-      if (hasReplicator()) {
-        result = result && getReplicator()
-            .equals(other.getReplicator());
-      }
-      result = result && (hasCurrentTargetVersionVector() == other.hasCurrentTargetVersionVector());
-      if (hasCurrentTargetVersionVector()) {
-        result = result && getCurrentTargetVersionVector()
-            .equals(other.getCurrentTargetVersionVector());
-      }
-      result = result && unknownFields.equals(other.unknownFields);
-      return result;
-    }
-
-    @java.lang.Override
-    public int hashCode() {
-      if (memoizedHashCode != 0) {
-        return memoizedHashCode;
-      }
-      int hash = 41;
-      hash = (19 * hash) + getDescriptorForType().hashCode();
-      if (hasFromSequenceNr()) {
-        hash = (37 * hash) + FROMSEQUENCENR_FIELD_NUMBER;
-        hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
-            getFromSequenceNr());
-      }
-      if (hasMax()) {
-        hash = (37 * hash) + MAX_FIELD_NUMBER;
-        hash = (53 * hash) + getMax();
-      }
-      if (hasScanLimit()) {
-        hash = (37 * hash) + SCANLIMIT_FIELD_NUMBER;
-        hash = (53 * hash) + getScanLimit();
-      }
-      if (hasFilter()) {
-        hash = (37 * hash) + FILTER_FIELD_NUMBER;
-        hash = (53 * hash) + getFilter().hashCode();
-      }
-      if (hasTargetLogId()) {
-        hash = (37 * hash) + TARGETLOGID_FIELD_NUMBER;
-        hash = (53 * hash) + getTargetLogId().hashCode();
-      }
-      if (hasReplicator()) {
-        hash = (37 * hash) + REPLICATOR_FIELD_NUMBER;
-        hash = (53 * hash) + getReplicator().hashCode();
-      }
-      if (hasCurrentTargetVersionVector()) {
-        hash = (37 * hash) + CURRENTTARGETVERSIONVECTOR_FIELD_NUMBER;
-        hash = (53 * hash) + getCurrentTargetVersionVector().hashCode();
-      }
-      hash = (29 * hash) + unknownFields.hashCode();
-      memoizedHashCode = hash;
-      return hash;
+    protected java.lang.Object writeReplace()
+        throws java.io.ObjectStreamException {
+      return super.writeReplace();
     }
 
     public static com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationReadFormat parseFrom(
@@ -7154,57 +6366,46 @@ public final class ReplicationProtocolFormats {
     }
     public static com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationReadFormat parseFrom(java.io.InputStream input)
         throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
+      return PARSER.parseFrom(input);
     }
     public static com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationReadFormat parseFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
+      return PARSER.parseFrom(input, extensionRegistry);
     }
     public static com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationReadFormat parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input);
+      return PARSER.parseDelimitedFrom(input);
     }
     public static com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationReadFormat parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+      return PARSER.parseDelimitedFrom(input, extensionRegistry);
     }
     public static com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationReadFormat parseFrom(
         com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
+      return PARSER.parseFrom(input);
     }
     public static com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationReadFormat parseFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
+      return PARSER.parseFrom(input, extensionRegistry);
     }
 
+    public static Builder newBuilder() { return Builder.create(); }
     public Builder newBuilderForType() { return newBuilder(); }
-    public static Builder newBuilder() {
-      return DEFAULT_INSTANCE.toBuilder();
-    }
     public static Builder newBuilder(com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationReadFormat prototype) {
-      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+      return newBuilder().mergeFrom(prototype);
     }
-    public Builder toBuilder() {
-      return this == DEFAULT_INSTANCE
-          ? new Builder() : new Builder().mergeFrom(this);
-    }
+    public Builder toBuilder() { return newBuilder(this); }
 
     @java.lang.Override
     protected Builder newBuilderForType(
-        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
       Builder builder = new Builder(parent);
       return builder;
     }
@@ -7212,15 +6413,14 @@ public final class ReplicationProtocolFormats {
      * Protobuf type {@code ReplicationReadFormat}
      */
     public static final class Builder extends
-        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-        // @@protoc_insertion_point(builder_implements:ReplicationReadFormat)
-        com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationReadFormatOrBuilder {
+        com.google.protobuf.GeneratedMessage.Builder<Builder>
+       implements com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationReadFormatOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
         return com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.internal_static_ReplicationReadFormat_descriptor;
       }
 
-      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
           internalGetFieldAccessorTable() {
         return com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.internal_static_ReplicationReadFormat_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
@@ -7233,17 +6433,20 @@ public final class ReplicationProtocolFormats {
       }
 
       private Builder(
-          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
         super(parent);
         maybeForceBuilderInitialization();
       }
       private void maybeForceBuilderInitialization() {
-        if (com.google.protobuf.GeneratedMessageV3
-                .alwaysUseFieldBuilders) {
+        if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
           getFilterFieldBuilder();
           getCurrentTargetVersionVectorFieldBuilder();
         }
       }
+      private static Builder create() {
+        return new Builder();
+      }
+
       public Builder clear() {
         super.clear();
         fromSequenceNr_ = 0L;
@@ -7253,7 +6456,7 @@ public final class ReplicationProtocolFormats {
         scanLimit_ = 0;
         bitField0_ = (bitField0_ & ~0x00000004);
         if (filterBuilder_ == null) {
-          filter_ = null;
+          filter_ = com.rbmhtechnology.eventuate.serializer.ReplicationFilterFormats.ReplicationFilterTreeFormat.getDefaultInstance();
         } else {
           filterBuilder_.clear();
         }
@@ -7263,12 +6466,16 @@ public final class ReplicationProtocolFormats {
         replicator_ = "";
         bitField0_ = (bitField0_ & ~0x00000020);
         if (currentTargetVersionVectorBuilder_ == null) {
-          currentTargetVersionVector_ = null;
+          currentTargetVersionVector_ = com.rbmhtechnology.eventuate.serializer.CommonFormats.VectorTimeFormat.getDefaultInstance();
         } else {
           currentTargetVersionVectorBuilder_.clear();
         }
         bitField0_ = (bitField0_ & ~0x00000040);
         return this;
+      }
+
+      public Builder clone() {
+        return create().mergeFrom(buildPartial());
       }
 
       public com.google.protobuf.Descriptors.Descriptor
@@ -7333,32 +6540,6 @@ public final class ReplicationProtocolFormats {
         return result;
       }
 
-      public Builder clone() {
-        return (Builder) super.clone();
-      }
-      public Builder setField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          Object value) {
-        return (Builder) super.setField(field, value);
-      }
-      public Builder clearField(
-          com.google.protobuf.Descriptors.FieldDescriptor field) {
-        return (Builder) super.clearField(field);
-      }
-      public Builder clearOneof(
-          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
-        return (Builder) super.clearOneof(oneof);
-      }
-      public Builder setRepeatedField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          int index, Object value) {
-        return (Builder) super.setRepeatedField(field, index, value);
-      }
-      public Builder addRepeatedField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          Object value) {
-        return (Builder) super.addRepeatedField(field, value);
-      }
       public Builder mergeFrom(com.google.protobuf.Message other) {
         if (other instanceof com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationReadFormat) {
           return mergeFrom((com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationReadFormat)other);
@@ -7395,19 +6576,20 @@ public final class ReplicationProtocolFormats {
         if (other.hasCurrentTargetVersionVector()) {
           mergeCurrentTargetVersionVector(other.getCurrentTargetVersionVector());
         }
-        this.mergeUnknownFields(other.unknownFields);
-        onChanged();
+        this.mergeUnknownFields(other.getUnknownFields());
         return this;
       }
 
       public final boolean isInitialized() {
         if (hasFilter()) {
           if (!getFilter().isInitialized()) {
+            
             return false;
           }
         }
         if (hasCurrentTargetVersionVector()) {
           if (!getCurrentTargetVersionVector().isInitialized()) {
+            
             return false;
           }
         }
@@ -7423,7 +6605,7 @@ public final class ReplicationProtocolFormats {
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
         } catch (com.google.protobuf.InvalidProtocolBufferException e) {
           parsedMessage = (com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationReadFormat) e.getUnfinishedMessage();
-          throw e.unwrapIOException();
+          throw e;
         } finally {
           if (parsedMessage != null) {
             mergeFrom(parsedMessage);
@@ -7433,6 +6615,7 @@ public final class ReplicationProtocolFormats {
       }
       private int bitField0_;
 
+      // optional int64 fromSequenceNr = 1;
       private long fromSequenceNr_ ;
       /**
        * <code>optional int64 fromSequenceNr = 1;</code>
@@ -7465,6 +6648,7 @@ public final class ReplicationProtocolFormats {
         return this;
       }
 
+      // optional int32 max = 2;
       private int max_ ;
       /**
        * <code>optional int32 max = 2;</code>
@@ -7497,6 +6681,7 @@ public final class ReplicationProtocolFormats {
         return this;
       }
 
+      // optional int32 scanLimit = 3;
       private int scanLimit_ ;
       /**
        * <code>optional int32 scanLimit = 3;</code>
@@ -7529,8 +6714,9 @@ public final class ReplicationProtocolFormats {
         return this;
       }
 
-      private com.rbmhtechnology.eventuate.serializer.ReplicationFilterFormats.ReplicationFilterTreeFormat filter_ = null;
-      private com.google.protobuf.SingleFieldBuilderV3<
+      // optional .ReplicationFilterTreeFormat filter = 4;
+      private com.rbmhtechnology.eventuate.serializer.ReplicationFilterFormats.ReplicationFilterTreeFormat filter_ = com.rbmhtechnology.eventuate.serializer.ReplicationFilterFormats.ReplicationFilterTreeFormat.getDefaultInstance();
+      private com.google.protobuf.SingleFieldBuilder<
           com.rbmhtechnology.eventuate.serializer.ReplicationFilterFormats.ReplicationFilterTreeFormat, com.rbmhtechnology.eventuate.serializer.ReplicationFilterFormats.ReplicationFilterTreeFormat.Builder, com.rbmhtechnology.eventuate.serializer.ReplicationFilterFormats.ReplicationFilterTreeFormatOrBuilder> filterBuilder_;
       /**
        * <code>optional .ReplicationFilterTreeFormat filter = 4;</code>
@@ -7543,7 +6729,7 @@ public final class ReplicationProtocolFormats {
        */
       public com.rbmhtechnology.eventuate.serializer.ReplicationFilterFormats.ReplicationFilterTreeFormat getFilter() {
         if (filterBuilder_ == null) {
-          return filter_ == null ? com.rbmhtechnology.eventuate.serializer.ReplicationFilterFormats.ReplicationFilterTreeFormat.getDefaultInstance() : filter_;
+          return filter_;
         } else {
           return filterBuilder_.getMessage();
         }
@@ -7584,7 +6770,6 @@ public final class ReplicationProtocolFormats {
       public Builder mergeFilter(com.rbmhtechnology.eventuate.serializer.ReplicationFilterFormats.ReplicationFilterTreeFormat value) {
         if (filterBuilder_ == null) {
           if (((bitField0_ & 0x00000008) == 0x00000008) &&
-              filter_ != null &&
               filter_ != com.rbmhtechnology.eventuate.serializer.ReplicationFilterFormats.ReplicationFilterTreeFormat.getDefaultInstance()) {
             filter_ =
               com.rbmhtechnology.eventuate.serializer.ReplicationFilterFormats.ReplicationFilterTreeFormat.newBuilder(filter_).mergeFrom(value).buildPartial();
@@ -7603,7 +6788,7 @@ public final class ReplicationProtocolFormats {
        */
       public Builder clearFilter() {
         if (filterBuilder_ == null) {
-          filter_ = null;
+          filter_ = com.rbmhtechnology.eventuate.serializer.ReplicationFilterFormats.ReplicationFilterTreeFormat.getDefaultInstance();
           onChanged();
         } else {
           filterBuilder_.clear();
@@ -7626,20 +6811,19 @@ public final class ReplicationProtocolFormats {
         if (filterBuilder_ != null) {
           return filterBuilder_.getMessageOrBuilder();
         } else {
-          return filter_ == null ?
-              com.rbmhtechnology.eventuate.serializer.ReplicationFilterFormats.ReplicationFilterTreeFormat.getDefaultInstance() : filter_;
+          return filter_;
         }
       }
       /**
        * <code>optional .ReplicationFilterTreeFormat filter = 4;</code>
        */
-      private com.google.protobuf.SingleFieldBuilderV3<
+      private com.google.protobuf.SingleFieldBuilder<
           com.rbmhtechnology.eventuate.serializer.ReplicationFilterFormats.ReplicationFilterTreeFormat, com.rbmhtechnology.eventuate.serializer.ReplicationFilterFormats.ReplicationFilterTreeFormat.Builder, com.rbmhtechnology.eventuate.serializer.ReplicationFilterFormats.ReplicationFilterTreeFormatOrBuilder> 
           getFilterFieldBuilder() {
         if (filterBuilder_ == null) {
-          filterBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+          filterBuilder_ = new com.google.protobuf.SingleFieldBuilder<
               com.rbmhtechnology.eventuate.serializer.ReplicationFilterFormats.ReplicationFilterTreeFormat, com.rbmhtechnology.eventuate.serializer.ReplicationFilterFormats.ReplicationFilterTreeFormat.Builder, com.rbmhtechnology.eventuate.serializer.ReplicationFilterFormats.ReplicationFilterTreeFormatOrBuilder>(
-                  getFilter(),
+                  filter_,
                   getParentForChildren(),
                   isClean());
           filter_ = null;
@@ -7647,6 +6831,7 @@ public final class ReplicationProtocolFormats {
         return filterBuilder_;
       }
 
+      // optional string targetLogId = 5;
       private java.lang.Object targetLogId_ = "";
       /**
        * <code>optional string targetLogId = 5;</code>
@@ -7660,12 +6845,9 @@ public final class ReplicationProtocolFormats {
       public java.lang.String getTargetLogId() {
         java.lang.Object ref = targetLogId_;
         if (!(ref instanceof java.lang.String)) {
-          com.google.protobuf.ByteString bs =
-              (com.google.protobuf.ByteString) ref;
-          java.lang.String s = bs.toStringUtf8();
-          if (bs.isValidUtf8()) {
-            targetLogId_ = s;
-          }
+          java.lang.String s = ((com.google.protobuf.ByteString) ref)
+              .toStringUtf8();
+          targetLogId_ = s;
           return s;
         } else {
           return (java.lang.String) ref;
@@ -7723,6 +6905,7 @@ public final class ReplicationProtocolFormats {
         return this;
       }
 
+      // optional string replicator = 6;
       private java.lang.Object replicator_ = "";
       /**
        * <code>optional string replicator = 6;</code>
@@ -7736,12 +6919,9 @@ public final class ReplicationProtocolFormats {
       public java.lang.String getReplicator() {
         java.lang.Object ref = replicator_;
         if (!(ref instanceof java.lang.String)) {
-          com.google.protobuf.ByteString bs =
-              (com.google.protobuf.ByteString) ref;
-          java.lang.String s = bs.toStringUtf8();
-          if (bs.isValidUtf8()) {
-            replicator_ = s;
-          }
+          java.lang.String s = ((com.google.protobuf.ByteString) ref)
+              .toStringUtf8();
+          replicator_ = s;
           return s;
         } else {
           return (java.lang.String) ref;
@@ -7799,8 +6979,9 @@ public final class ReplicationProtocolFormats {
         return this;
       }
 
-      private com.rbmhtechnology.eventuate.serializer.CommonFormats.VectorTimeFormat currentTargetVersionVector_ = null;
-      private com.google.protobuf.SingleFieldBuilderV3<
+      // optional .VectorTimeFormat currentTargetVersionVector = 7;
+      private com.rbmhtechnology.eventuate.serializer.CommonFormats.VectorTimeFormat currentTargetVersionVector_ = com.rbmhtechnology.eventuate.serializer.CommonFormats.VectorTimeFormat.getDefaultInstance();
+      private com.google.protobuf.SingleFieldBuilder<
           com.rbmhtechnology.eventuate.serializer.CommonFormats.VectorTimeFormat, com.rbmhtechnology.eventuate.serializer.CommonFormats.VectorTimeFormat.Builder, com.rbmhtechnology.eventuate.serializer.CommonFormats.VectorTimeFormatOrBuilder> currentTargetVersionVectorBuilder_;
       /**
        * <code>optional .VectorTimeFormat currentTargetVersionVector = 7;</code>
@@ -7813,7 +6994,7 @@ public final class ReplicationProtocolFormats {
        */
       public com.rbmhtechnology.eventuate.serializer.CommonFormats.VectorTimeFormat getCurrentTargetVersionVector() {
         if (currentTargetVersionVectorBuilder_ == null) {
-          return currentTargetVersionVector_ == null ? com.rbmhtechnology.eventuate.serializer.CommonFormats.VectorTimeFormat.getDefaultInstance() : currentTargetVersionVector_;
+          return currentTargetVersionVector_;
         } else {
           return currentTargetVersionVectorBuilder_.getMessage();
         }
@@ -7854,7 +7035,6 @@ public final class ReplicationProtocolFormats {
       public Builder mergeCurrentTargetVersionVector(com.rbmhtechnology.eventuate.serializer.CommonFormats.VectorTimeFormat value) {
         if (currentTargetVersionVectorBuilder_ == null) {
           if (((bitField0_ & 0x00000040) == 0x00000040) &&
-              currentTargetVersionVector_ != null &&
               currentTargetVersionVector_ != com.rbmhtechnology.eventuate.serializer.CommonFormats.VectorTimeFormat.getDefaultInstance()) {
             currentTargetVersionVector_ =
               com.rbmhtechnology.eventuate.serializer.CommonFormats.VectorTimeFormat.newBuilder(currentTargetVersionVector_).mergeFrom(value).buildPartial();
@@ -7873,7 +7053,7 @@ public final class ReplicationProtocolFormats {
        */
       public Builder clearCurrentTargetVersionVector() {
         if (currentTargetVersionVectorBuilder_ == null) {
-          currentTargetVersionVector_ = null;
+          currentTargetVersionVector_ = com.rbmhtechnology.eventuate.serializer.CommonFormats.VectorTimeFormat.getDefaultInstance();
           onChanged();
         } else {
           currentTargetVersionVectorBuilder_.clear();
@@ -7896,79 +7076,41 @@ public final class ReplicationProtocolFormats {
         if (currentTargetVersionVectorBuilder_ != null) {
           return currentTargetVersionVectorBuilder_.getMessageOrBuilder();
         } else {
-          return currentTargetVersionVector_ == null ?
-              com.rbmhtechnology.eventuate.serializer.CommonFormats.VectorTimeFormat.getDefaultInstance() : currentTargetVersionVector_;
+          return currentTargetVersionVector_;
         }
       }
       /**
        * <code>optional .VectorTimeFormat currentTargetVersionVector = 7;</code>
        */
-      private com.google.protobuf.SingleFieldBuilderV3<
+      private com.google.protobuf.SingleFieldBuilder<
           com.rbmhtechnology.eventuate.serializer.CommonFormats.VectorTimeFormat, com.rbmhtechnology.eventuate.serializer.CommonFormats.VectorTimeFormat.Builder, com.rbmhtechnology.eventuate.serializer.CommonFormats.VectorTimeFormatOrBuilder> 
           getCurrentTargetVersionVectorFieldBuilder() {
         if (currentTargetVersionVectorBuilder_ == null) {
-          currentTargetVersionVectorBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+          currentTargetVersionVectorBuilder_ = new com.google.protobuf.SingleFieldBuilder<
               com.rbmhtechnology.eventuate.serializer.CommonFormats.VectorTimeFormat, com.rbmhtechnology.eventuate.serializer.CommonFormats.VectorTimeFormat.Builder, com.rbmhtechnology.eventuate.serializer.CommonFormats.VectorTimeFormatOrBuilder>(
-                  getCurrentTargetVersionVector(),
+                  currentTargetVersionVector_,
                   getParentForChildren(),
                   isClean());
           currentTargetVersionVector_ = null;
         }
         return currentTargetVersionVectorBuilder_;
       }
-      public final Builder setUnknownFields(
-          final com.google.protobuf.UnknownFieldSet unknownFields) {
-        return super.setUnknownFields(unknownFields);
-      }
-
-      public final Builder mergeUnknownFields(
-          final com.google.protobuf.UnknownFieldSet unknownFields) {
-        return super.mergeUnknownFields(unknownFields);
-      }
-
 
       // @@protoc_insertion_point(builder_scope:ReplicationReadFormat)
     }
 
-    // @@protoc_insertion_point(class_scope:ReplicationReadFormat)
-    private static final com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationReadFormat DEFAULT_INSTANCE;
     static {
-      DEFAULT_INSTANCE = new com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationReadFormat();
+      defaultInstance = new ReplicationReadFormat(true);
+      defaultInstance.initFields();
     }
 
-    public static com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationReadFormat getDefaultInstance() {
-      return DEFAULT_INSTANCE;
-    }
-
-    @java.lang.Deprecated public static final com.google.protobuf.Parser<ReplicationReadFormat>
-        PARSER = new com.google.protobuf.AbstractParser<ReplicationReadFormat>() {
-      public ReplicationReadFormat parsePartialFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws com.google.protobuf.InvalidProtocolBufferException {
-          return new ReplicationReadFormat(input, extensionRegistry);
-      }
-    };
-
-    public static com.google.protobuf.Parser<ReplicationReadFormat> parser() {
-      return PARSER;
-    }
-
-    @java.lang.Override
-    public com.google.protobuf.Parser<ReplicationReadFormat> getParserForType() {
-      return PARSER;
-    }
-
-    public com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationReadFormat getDefaultInstanceForType() {
-      return DEFAULT_INSTANCE;
-    }
-
+    // @@protoc_insertion_point(class_scope:ReplicationReadFormat)
   }
 
-  public interface ReplicationReadSuccessFormatOrBuilder extends
-      // @@protoc_insertion_point(interface_extends:ReplicationReadSuccessFormat)
-      com.google.protobuf.MessageOrBuilder {
+  public interface ReplicationReadSuccessFormatOrBuilder
+      extends com.google.protobuf.MessageOrBuilder {
 
+    // repeated .DurableEventFormat events = 1;
     /**
      * <code>repeated .DurableEventFormat events = 1;</code>
      */
@@ -7993,6 +7135,7 @@ public final class ReplicationProtocolFormats {
     com.rbmhtechnology.eventuate.serializer.DurableEventFormats.DurableEventFormatOrBuilder getEventsOrBuilder(
         int index);
 
+    // optional int64 fromSequenceNr = 2;
     /**
      * <code>optional int64 fromSequenceNr = 2;</code>
      */
@@ -8002,6 +7145,7 @@ public final class ReplicationProtocolFormats {
      */
     long getFromSequenceNr();
 
+    // optional int64 replicationProgress = 3;
     /**
      * <code>optional int64 replicationProgress = 3;</code>
      */
@@ -8011,6 +7155,7 @@ public final class ReplicationProtocolFormats {
      */
     long getReplicationProgress();
 
+    // optional string targetLogId = 4;
     /**
      * <code>optional string targetLogId = 4;</code>
      */
@@ -8025,6 +7170,7 @@ public final class ReplicationProtocolFormats {
     com.google.protobuf.ByteString
         getTargetLogIdBytes();
 
+    // optional .VectorTimeFormat currentSourceVersionVector = 5;
     /**
      * <code>optional .VectorTimeFormat currentSourceVersionVector = 5;</code>
      */
@@ -8041,31 +7187,36 @@ public final class ReplicationProtocolFormats {
   /**
    * Protobuf type {@code ReplicationReadSuccessFormat}
    */
-  public  static final class ReplicationReadSuccessFormat extends
-      com.google.protobuf.GeneratedMessageV3 implements
-      // @@protoc_insertion_point(message_implements:ReplicationReadSuccessFormat)
-      ReplicationReadSuccessFormatOrBuilder {
+  public static final class ReplicationReadSuccessFormat extends
+      com.google.protobuf.GeneratedMessage
+      implements ReplicationReadSuccessFormatOrBuilder {
     // Use ReplicationReadSuccessFormat.newBuilder() to construct.
-    private ReplicationReadSuccessFormat(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+    private ReplicationReadSuccessFormat(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
       super(builder);
+      this.unknownFields = builder.getUnknownFields();
     }
-    private ReplicationReadSuccessFormat() {
-      events_ = java.util.Collections.emptyList();
-      fromSequenceNr_ = 0L;
-      replicationProgress_ = 0L;
-      targetLogId_ = "";
+    private ReplicationReadSuccessFormat(boolean noInit) { this.unknownFields = com.google.protobuf.UnknownFieldSet.getDefaultInstance(); }
+
+    private static final ReplicationReadSuccessFormat defaultInstance;
+    public static ReplicationReadSuccessFormat getDefaultInstance() {
+      return defaultInstance;
     }
 
+    public ReplicationReadSuccessFormat getDefaultInstanceForType() {
+      return defaultInstance;
+    }
+
+    private final com.google.protobuf.UnknownFieldSet unknownFields;
     @java.lang.Override
     public final com.google.protobuf.UnknownFieldSet
-    getUnknownFields() {
+        getUnknownFields() {
       return this.unknownFields;
     }
     private ReplicationReadSuccessFormat(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
-      this();
+      initFields();
       int mutable_bitField0_ = 0;
       com.google.protobuf.UnknownFieldSet.Builder unknownFields =
           com.google.protobuf.UnknownFieldSet.newBuilder();
@@ -8089,8 +7240,7 @@ public final class ReplicationProtocolFormats {
                 events_ = new java.util.ArrayList<com.rbmhtechnology.eventuate.serializer.DurableEventFormats.DurableEventFormat>();
                 mutable_bitField0_ |= 0x00000001;
               }
-              events_.add(
-                  input.readMessage(com.rbmhtechnology.eventuate.serializer.DurableEventFormats.DurableEventFormat.PARSER, extensionRegistry));
+              events_.add(input.readMessage(com.rbmhtechnology.eventuate.serializer.DurableEventFormats.DurableEventFormat.PARSER, extensionRegistry));
               break;
             }
             case 16: {
@@ -8104,9 +7254,8 @@ public final class ReplicationProtocolFormats {
               break;
             }
             case 34: {
-              com.google.protobuf.ByteString bs = input.readBytes();
               bitField0_ |= 0x00000004;
-              targetLogId_ = bs;
+              targetLogId_ = input.readBytes();
               break;
             }
             case 42: {
@@ -8128,7 +7277,7 @@ public final class ReplicationProtocolFormats {
         throw e.setUnfinishedMessage(this);
       } catch (java.io.IOException e) {
         throw new com.google.protobuf.InvalidProtocolBufferException(
-            e).setUnfinishedMessage(this);
+            e.getMessage()).setUnfinishedMessage(this);
       } finally {
         if (((mutable_bitField0_ & 0x00000001) == 0x00000001)) {
           events_ = java.util.Collections.unmodifiableList(events_);
@@ -8142,14 +7291,30 @@ public final class ReplicationProtocolFormats {
       return com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.internal_static_ReplicationReadSuccessFormat_descriptor;
     }
 
-    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
         internalGetFieldAccessorTable() {
       return com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.internal_static_ReplicationReadSuccessFormat_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
               com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationReadSuccessFormat.class, com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationReadSuccessFormat.Builder.class);
     }
 
+    public static com.google.protobuf.Parser<ReplicationReadSuccessFormat> PARSER =
+        new com.google.protobuf.AbstractParser<ReplicationReadSuccessFormat>() {
+      public ReplicationReadSuccessFormat parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new ReplicationReadSuccessFormat(input, extensionRegistry);
+      }
+    };
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<ReplicationReadSuccessFormat> getParserForType() {
+      return PARSER;
+    }
+
     private int bitField0_;
+    // repeated .DurableEventFormat events = 1;
     public static final int EVENTS_FIELD_NUMBER = 1;
     private java.util.List<com.rbmhtechnology.eventuate.serializer.DurableEventFormats.DurableEventFormat> events_;
     /**
@@ -8185,6 +7350,7 @@ public final class ReplicationProtocolFormats {
       return events_.get(index);
     }
 
+    // optional int64 fromSequenceNr = 2;
     public static final int FROMSEQUENCENR_FIELD_NUMBER = 2;
     private long fromSequenceNr_;
     /**
@@ -8200,6 +7366,7 @@ public final class ReplicationProtocolFormats {
       return fromSequenceNr_;
     }
 
+    // optional int64 replicationProgress = 3;
     public static final int REPLICATIONPROGRESS_FIELD_NUMBER = 3;
     private long replicationProgress_;
     /**
@@ -8215,8 +7382,9 @@ public final class ReplicationProtocolFormats {
       return replicationProgress_;
     }
 
+    // optional string targetLogId = 4;
     public static final int TARGETLOGID_FIELD_NUMBER = 4;
-    private volatile java.lang.Object targetLogId_;
+    private java.lang.Object targetLogId_;
     /**
      * <code>optional string targetLogId = 4;</code>
      */
@@ -8257,6 +7425,7 @@ public final class ReplicationProtocolFormats {
       }
     }
 
+    // optional .VectorTimeFormat currentSourceVersionVector = 5;
     public static final int CURRENTSOURCEVERSIONVECTOR_FIELD_NUMBER = 5;
     private com.rbmhtechnology.eventuate.serializer.CommonFormats.VectorTimeFormat currentSourceVersionVector_;
     /**
@@ -8269,20 +7438,26 @@ public final class ReplicationProtocolFormats {
      * <code>optional .VectorTimeFormat currentSourceVersionVector = 5;</code>
      */
     public com.rbmhtechnology.eventuate.serializer.CommonFormats.VectorTimeFormat getCurrentSourceVersionVector() {
-      return currentSourceVersionVector_ == null ? com.rbmhtechnology.eventuate.serializer.CommonFormats.VectorTimeFormat.getDefaultInstance() : currentSourceVersionVector_;
+      return currentSourceVersionVector_;
     }
     /**
      * <code>optional .VectorTimeFormat currentSourceVersionVector = 5;</code>
      */
     public com.rbmhtechnology.eventuate.serializer.CommonFormats.VectorTimeFormatOrBuilder getCurrentSourceVersionVectorOrBuilder() {
-      return currentSourceVersionVector_ == null ? com.rbmhtechnology.eventuate.serializer.CommonFormats.VectorTimeFormat.getDefaultInstance() : currentSourceVersionVector_;
+      return currentSourceVersionVector_;
     }
 
+    private void initFields() {
+      events_ = java.util.Collections.emptyList();
+      fromSequenceNr_ = 0L;
+      replicationProgress_ = 0L;
+      targetLogId_ = "";
+      currentSourceVersionVector_ = com.rbmhtechnology.eventuate.serializer.CommonFormats.VectorTimeFormat.getDefaultInstance();
+    }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
-      if (isInitialized == 1) return true;
-      if (isInitialized == 0) return false;
+      if (isInitialized != -1) return isInitialized == 1;
 
       for (int i = 0; i < getEventsCount(); i++) {
         if (!getEvents(i).isInitialized()) {
@@ -8302,6 +7477,7 @@ public final class ReplicationProtocolFormats {
 
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
+      getSerializedSize();
       for (int i = 0; i < events_.size(); i++) {
         output.writeMessage(1, events_.get(i));
       }
@@ -8312,16 +7488,17 @@ public final class ReplicationProtocolFormats {
         output.writeInt64(3, replicationProgress_);
       }
       if (((bitField0_ & 0x00000004) == 0x00000004)) {
-        com.google.protobuf.GeneratedMessageV3.writeString(output, 4, targetLogId_);
+        output.writeBytes(4, getTargetLogIdBytes());
       }
       if (((bitField0_ & 0x00000008) == 0x00000008)) {
-        output.writeMessage(5, getCurrentSourceVersionVector());
+        output.writeMessage(5, currentSourceVersionVector_);
       }
-      unknownFields.writeTo(output);
+      getUnknownFields().writeTo(output);
     }
 
+    private int memoizedSerializedSize = -1;
     public int getSerializedSize() {
-      int size = memoizedSize;
+      int size = memoizedSerializedSize;
       if (size != -1) return size;
 
       size = 0;
@@ -8338,87 +7515,23 @@ public final class ReplicationProtocolFormats {
           .computeInt64Size(3, replicationProgress_);
       }
       if (((bitField0_ & 0x00000004) == 0x00000004)) {
-        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(4, targetLogId_);
+        size += com.google.protobuf.CodedOutputStream
+          .computeBytesSize(4, getTargetLogIdBytes());
       }
       if (((bitField0_ & 0x00000008) == 0x00000008)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(5, getCurrentSourceVersionVector());
+          .computeMessageSize(5, currentSourceVersionVector_);
       }
-      size += unknownFields.getSerializedSize();
-      memoizedSize = size;
+      size += getUnknownFields().getSerializedSize();
+      memoizedSerializedSize = size;
       return size;
     }
 
     private static final long serialVersionUID = 0L;
     @java.lang.Override
-    public boolean equals(final java.lang.Object obj) {
-      if (obj == this) {
-       return true;
-      }
-      if (!(obj instanceof com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationReadSuccessFormat)) {
-        return super.equals(obj);
-      }
-      com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationReadSuccessFormat other = (com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationReadSuccessFormat) obj;
-
-      boolean result = true;
-      result = result && getEventsList()
-          .equals(other.getEventsList());
-      result = result && (hasFromSequenceNr() == other.hasFromSequenceNr());
-      if (hasFromSequenceNr()) {
-        result = result && (getFromSequenceNr()
-            == other.getFromSequenceNr());
-      }
-      result = result && (hasReplicationProgress() == other.hasReplicationProgress());
-      if (hasReplicationProgress()) {
-        result = result && (getReplicationProgress()
-            == other.getReplicationProgress());
-      }
-      result = result && (hasTargetLogId() == other.hasTargetLogId());
-      if (hasTargetLogId()) {
-        result = result && getTargetLogId()
-            .equals(other.getTargetLogId());
-      }
-      result = result && (hasCurrentSourceVersionVector() == other.hasCurrentSourceVersionVector());
-      if (hasCurrentSourceVersionVector()) {
-        result = result && getCurrentSourceVersionVector()
-            .equals(other.getCurrentSourceVersionVector());
-      }
-      result = result && unknownFields.equals(other.unknownFields);
-      return result;
-    }
-
-    @java.lang.Override
-    public int hashCode() {
-      if (memoizedHashCode != 0) {
-        return memoizedHashCode;
-      }
-      int hash = 41;
-      hash = (19 * hash) + getDescriptorForType().hashCode();
-      if (getEventsCount() > 0) {
-        hash = (37 * hash) + EVENTS_FIELD_NUMBER;
-        hash = (53 * hash) + getEventsList().hashCode();
-      }
-      if (hasFromSequenceNr()) {
-        hash = (37 * hash) + FROMSEQUENCENR_FIELD_NUMBER;
-        hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
-            getFromSequenceNr());
-      }
-      if (hasReplicationProgress()) {
-        hash = (37 * hash) + REPLICATIONPROGRESS_FIELD_NUMBER;
-        hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
-            getReplicationProgress());
-      }
-      if (hasTargetLogId()) {
-        hash = (37 * hash) + TARGETLOGID_FIELD_NUMBER;
-        hash = (53 * hash) + getTargetLogId().hashCode();
-      }
-      if (hasCurrentSourceVersionVector()) {
-        hash = (37 * hash) + CURRENTSOURCEVERSIONVECTOR_FIELD_NUMBER;
-        hash = (53 * hash) + getCurrentSourceVersionVector().hashCode();
-      }
-      hash = (29 * hash) + unknownFields.hashCode();
-      memoizedHashCode = hash;
-      return hash;
+    protected java.lang.Object writeReplace()
+        throws java.io.ObjectStreamException {
+      return super.writeReplace();
     }
 
     public static com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationReadSuccessFormat parseFrom(
@@ -8444,57 +7557,46 @@ public final class ReplicationProtocolFormats {
     }
     public static com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationReadSuccessFormat parseFrom(java.io.InputStream input)
         throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
+      return PARSER.parseFrom(input);
     }
     public static com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationReadSuccessFormat parseFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
+      return PARSER.parseFrom(input, extensionRegistry);
     }
     public static com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationReadSuccessFormat parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input);
+      return PARSER.parseDelimitedFrom(input);
     }
     public static com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationReadSuccessFormat parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+      return PARSER.parseDelimitedFrom(input, extensionRegistry);
     }
     public static com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationReadSuccessFormat parseFrom(
         com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
+      return PARSER.parseFrom(input);
     }
     public static com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationReadSuccessFormat parseFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
+      return PARSER.parseFrom(input, extensionRegistry);
     }
 
+    public static Builder newBuilder() { return Builder.create(); }
     public Builder newBuilderForType() { return newBuilder(); }
-    public static Builder newBuilder() {
-      return DEFAULT_INSTANCE.toBuilder();
-    }
     public static Builder newBuilder(com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationReadSuccessFormat prototype) {
-      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+      return newBuilder().mergeFrom(prototype);
     }
-    public Builder toBuilder() {
-      return this == DEFAULT_INSTANCE
-          ? new Builder() : new Builder().mergeFrom(this);
-    }
+    public Builder toBuilder() { return newBuilder(this); }
 
     @java.lang.Override
     protected Builder newBuilderForType(
-        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
       Builder builder = new Builder(parent);
       return builder;
     }
@@ -8502,15 +7604,14 @@ public final class ReplicationProtocolFormats {
      * Protobuf type {@code ReplicationReadSuccessFormat}
      */
     public static final class Builder extends
-        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-        // @@protoc_insertion_point(builder_implements:ReplicationReadSuccessFormat)
-        com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationReadSuccessFormatOrBuilder {
+        com.google.protobuf.GeneratedMessage.Builder<Builder>
+       implements com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationReadSuccessFormatOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
         return com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.internal_static_ReplicationReadSuccessFormat_descriptor;
       }
 
-      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
           internalGetFieldAccessorTable() {
         return com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.internal_static_ReplicationReadSuccessFormat_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
@@ -8523,17 +7624,20 @@ public final class ReplicationProtocolFormats {
       }
 
       private Builder(
-          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
         super(parent);
         maybeForceBuilderInitialization();
       }
       private void maybeForceBuilderInitialization() {
-        if (com.google.protobuf.GeneratedMessageV3
-                .alwaysUseFieldBuilders) {
+        if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
           getEventsFieldBuilder();
           getCurrentSourceVersionVectorFieldBuilder();
         }
       }
+      private static Builder create() {
+        return new Builder();
+      }
+
       public Builder clear() {
         super.clear();
         if (eventsBuilder_ == null) {
@@ -8549,12 +7653,16 @@ public final class ReplicationProtocolFormats {
         targetLogId_ = "";
         bitField0_ = (bitField0_ & ~0x00000008);
         if (currentSourceVersionVectorBuilder_ == null) {
-          currentSourceVersionVector_ = null;
+          currentSourceVersionVector_ = com.rbmhtechnology.eventuate.serializer.CommonFormats.VectorTimeFormat.getDefaultInstance();
         } else {
           currentSourceVersionVectorBuilder_.clear();
         }
         bitField0_ = (bitField0_ & ~0x00000010);
         return this;
+      }
+
+      public Builder clone() {
+        return create().mergeFrom(buildPartial());
       }
 
       public com.google.protobuf.Descriptors.Descriptor
@@ -8612,32 +7720,6 @@ public final class ReplicationProtocolFormats {
         return result;
       }
 
-      public Builder clone() {
-        return (Builder) super.clone();
-      }
-      public Builder setField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          Object value) {
-        return (Builder) super.setField(field, value);
-      }
-      public Builder clearField(
-          com.google.protobuf.Descriptors.FieldDescriptor field) {
-        return (Builder) super.clearField(field);
-      }
-      public Builder clearOneof(
-          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
-        return (Builder) super.clearOneof(oneof);
-      }
-      public Builder setRepeatedField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          int index, Object value) {
-        return (Builder) super.setRepeatedField(field, index, value);
-      }
-      public Builder addRepeatedField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          Object value) {
-        return (Builder) super.addRepeatedField(field, value);
-      }
       public Builder mergeFrom(com.google.protobuf.Message other) {
         if (other instanceof com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationReadSuccessFormat) {
           return mergeFrom((com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationReadSuccessFormat)other);
@@ -8668,7 +7750,7 @@ public final class ReplicationProtocolFormats {
               events_ = other.events_;
               bitField0_ = (bitField0_ & ~0x00000001);
               eventsBuilder_ = 
-                com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
+                com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders ?
                    getEventsFieldBuilder() : null;
             } else {
               eventsBuilder_.addAllMessages(other.events_);
@@ -8689,19 +7771,20 @@ public final class ReplicationProtocolFormats {
         if (other.hasCurrentSourceVersionVector()) {
           mergeCurrentSourceVersionVector(other.getCurrentSourceVersionVector());
         }
-        this.mergeUnknownFields(other.unknownFields);
-        onChanged();
+        this.mergeUnknownFields(other.getUnknownFields());
         return this;
       }
 
       public final boolean isInitialized() {
         for (int i = 0; i < getEventsCount(); i++) {
           if (!getEvents(i).isInitialized()) {
+            
             return false;
           }
         }
         if (hasCurrentSourceVersionVector()) {
           if (!getCurrentSourceVersionVector().isInitialized()) {
+            
             return false;
           }
         }
@@ -8717,7 +7800,7 @@ public final class ReplicationProtocolFormats {
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
         } catch (com.google.protobuf.InvalidProtocolBufferException e) {
           parsedMessage = (com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationReadSuccessFormat) e.getUnfinishedMessage();
-          throw e.unwrapIOException();
+          throw e;
         } finally {
           if (parsedMessage != null) {
             mergeFrom(parsedMessage);
@@ -8727,6 +7810,7 @@ public final class ReplicationProtocolFormats {
       }
       private int bitField0_;
 
+      // repeated .DurableEventFormat events = 1;
       private java.util.List<com.rbmhtechnology.eventuate.serializer.DurableEventFormats.DurableEventFormat> events_ =
         java.util.Collections.emptyList();
       private void ensureEventsIsMutable() {
@@ -8736,7 +7820,7 @@ public final class ReplicationProtocolFormats {
          }
       }
 
-      private com.google.protobuf.RepeatedFieldBuilderV3<
+      private com.google.protobuf.RepeatedFieldBuilder<
           com.rbmhtechnology.eventuate.serializer.DurableEventFormats.DurableEventFormat, com.rbmhtechnology.eventuate.serializer.DurableEventFormats.DurableEventFormat.Builder, com.rbmhtechnology.eventuate.serializer.DurableEventFormats.DurableEventFormatOrBuilder> eventsBuilder_;
 
       /**
@@ -8868,8 +7952,7 @@ public final class ReplicationProtocolFormats {
           java.lang.Iterable<? extends com.rbmhtechnology.eventuate.serializer.DurableEventFormats.DurableEventFormat> values) {
         if (eventsBuilder_ == null) {
           ensureEventsIsMutable();
-          com.google.protobuf.AbstractMessageLite.Builder.addAll(
-              values, events_);
+          super.addAll(values, events_);
           onChanged();
         } else {
           eventsBuilder_.addAllMessages(values);
@@ -8952,11 +8035,11 @@ public final class ReplicationProtocolFormats {
            getEventsBuilderList() {
         return getEventsFieldBuilder().getBuilderList();
       }
-      private com.google.protobuf.RepeatedFieldBuilderV3<
+      private com.google.protobuf.RepeatedFieldBuilder<
           com.rbmhtechnology.eventuate.serializer.DurableEventFormats.DurableEventFormat, com.rbmhtechnology.eventuate.serializer.DurableEventFormats.DurableEventFormat.Builder, com.rbmhtechnology.eventuate.serializer.DurableEventFormats.DurableEventFormatOrBuilder> 
           getEventsFieldBuilder() {
         if (eventsBuilder_ == null) {
-          eventsBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
+          eventsBuilder_ = new com.google.protobuf.RepeatedFieldBuilder<
               com.rbmhtechnology.eventuate.serializer.DurableEventFormats.DurableEventFormat, com.rbmhtechnology.eventuate.serializer.DurableEventFormats.DurableEventFormat.Builder, com.rbmhtechnology.eventuate.serializer.DurableEventFormats.DurableEventFormatOrBuilder>(
                   events_,
                   ((bitField0_ & 0x00000001) == 0x00000001),
@@ -8967,6 +8050,7 @@ public final class ReplicationProtocolFormats {
         return eventsBuilder_;
       }
 
+      // optional int64 fromSequenceNr = 2;
       private long fromSequenceNr_ ;
       /**
        * <code>optional int64 fromSequenceNr = 2;</code>
@@ -8999,6 +8083,7 @@ public final class ReplicationProtocolFormats {
         return this;
       }
 
+      // optional int64 replicationProgress = 3;
       private long replicationProgress_ ;
       /**
        * <code>optional int64 replicationProgress = 3;</code>
@@ -9031,6 +8116,7 @@ public final class ReplicationProtocolFormats {
         return this;
       }
 
+      // optional string targetLogId = 4;
       private java.lang.Object targetLogId_ = "";
       /**
        * <code>optional string targetLogId = 4;</code>
@@ -9044,12 +8130,9 @@ public final class ReplicationProtocolFormats {
       public java.lang.String getTargetLogId() {
         java.lang.Object ref = targetLogId_;
         if (!(ref instanceof java.lang.String)) {
-          com.google.protobuf.ByteString bs =
-              (com.google.protobuf.ByteString) ref;
-          java.lang.String s = bs.toStringUtf8();
-          if (bs.isValidUtf8()) {
-            targetLogId_ = s;
-          }
+          java.lang.String s = ((com.google.protobuf.ByteString) ref)
+              .toStringUtf8();
+          targetLogId_ = s;
           return s;
         } else {
           return (java.lang.String) ref;
@@ -9107,8 +8190,9 @@ public final class ReplicationProtocolFormats {
         return this;
       }
 
-      private com.rbmhtechnology.eventuate.serializer.CommonFormats.VectorTimeFormat currentSourceVersionVector_ = null;
-      private com.google.protobuf.SingleFieldBuilderV3<
+      // optional .VectorTimeFormat currentSourceVersionVector = 5;
+      private com.rbmhtechnology.eventuate.serializer.CommonFormats.VectorTimeFormat currentSourceVersionVector_ = com.rbmhtechnology.eventuate.serializer.CommonFormats.VectorTimeFormat.getDefaultInstance();
+      private com.google.protobuf.SingleFieldBuilder<
           com.rbmhtechnology.eventuate.serializer.CommonFormats.VectorTimeFormat, com.rbmhtechnology.eventuate.serializer.CommonFormats.VectorTimeFormat.Builder, com.rbmhtechnology.eventuate.serializer.CommonFormats.VectorTimeFormatOrBuilder> currentSourceVersionVectorBuilder_;
       /**
        * <code>optional .VectorTimeFormat currentSourceVersionVector = 5;</code>
@@ -9121,7 +8205,7 @@ public final class ReplicationProtocolFormats {
        */
       public com.rbmhtechnology.eventuate.serializer.CommonFormats.VectorTimeFormat getCurrentSourceVersionVector() {
         if (currentSourceVersionVectorBuilder_ == null) {
-          return currentSourceVersionVector_ == null ? com.rbmhtechnology.eventuate.serializer.CommonFormats.VectorTimeFormat.getDefaultInstance() : currentSourceVersionVector_;
+          return currentSourceVersionVector_;
         } else {
           return currentSourceVersionVectorBuilder_.getMessage();
         }
@@ -9162,7 +8246,6 @@ public final class ReplicationProtocolFormats {
       public Builder mergeCurrentSourceVersionVector(com.rbmhtechnology.eventuate.serializer.CommonFormats.VectorTimeFormat value) {
         if (currentSourceVersionVectorBuilder_ == null) {
           if (((bitField0_ & 0x00000010) == 0x00000010) &&
-              currentSourceVersionVector_ != null &&
               currentSourceVersionVector_ != com.rbmhtechnology.eventuate.serializer.CommonFormats.VectorTimeFormat.getDefaultInstance()) {
             currentSourceVersionVector_ =
               com.rbmhtechnology.eventuate.serializer.CommonFormats.VectorTimeFormat.newBuilder(currentSourceVersionVector_).mergeFrom(value).buildPartial();
@@ -9181,7 +8264,7 @@ public final class ReplicationProtocolFormats {
        */
       public Builder clearCurrentSourceVersionVector() {
         if (currentSourceVersionVectorBuilder_ == null) {
-          currentSourceVersionVector_ = null;
+          currentSourceVersionVector_ = com.rbmhtechnology.eventuate.serializer.CommonFormats.VectorTimeFormat.getDefaultInstance();
           onChanged();
         } else {
           currentSourceVersionVectorBuilder_.clear();
@@ -9204,79 +8287,41 @@ public final class ReplicationProtocolFormats {
         if (currentSourceVersionVectorBuilder_ != null) {
           return currentSourceVersionVectorBuilder_.getMessageOrBuilder();
         } else {
-          return currentSourceVersionVector_ == null ?
-              com.rbmhtechnology.eventuate.serializer.CommonFormats.VectorTimeFormat.getDefaultInstance() : currentSourceVersionVector_;
+          return currentSourceVersionVector_;
         }
       }
       /**
        * <code>optional .VectorTimeFormat currentSourceVersionVector = 5;</code>
        */
-      private com.google.protobuf.SingleFieldBuilderV3<
+      private com.google.protobuf.SingleFieldBuilder<
           com.rbmhtechnology.eventuate.serializer.CommonFormats.VectorTimeFormat, com.rbmhtechnology.eventuate.serializer.CommonFormats.VectorTimeFormat.Builder, com.rbmhtechnology.eventuate.serializer.CommonFormats.VectorTimeFormatOrBuilder> 
           getCurrentSourceVersionVectorFieldBuilder() {
         if (currentSourceVersionVectorBuilder_ == null) {
-          currentSourceVersionVectorBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+          currentSourceVersionVectorBuilder_ = new com.google.protobuf.SingleFieldBuilder<
               com.rbmhtechnology.eventuate.serializer.CommonFormats.VectorTimeFormat, com.rbmhtechnology.eventuate.serializer.CommonFormats.VectorTimeFormat.Builder, com.rbmhtechnology.eventuate.serializer.CommonFormats.VectorTimeFormatOrBuilder>(
-                  getCurrentSourceVersionVector(),
+                  currentSourceVersionVector_,
                   getParentForChildren(),
                   isClean());
           currentSourceVersionVector_ = null;
         }
         return currentSourceVersionVectorBuilder_;
       }
-      public final Builder setUnknownFields(
-          final com.google.protobuf.UnknownFieldSet unknownFields) {
-        return super.setUnknownFields(unknownFields);
-      }
-
-      public final Builder mergeUnknownFields(
-          final com.google.protobuf.UnknownFieldSet unknownFields) {
-        return super.mergeUnknownFields(unknownFields);
-      }
-
 
       // @@protoc_insertion_point(builder_scope:ReplicationReadSuccessFormat)
     }
 
-    // @@protoc_insertion_point(class_scope:ReplicationReadSuccessFormat)
-    private static final com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationReadSuccessFormat DEFAULT_INSTANCE;
     static {
-      DEFAULT_INSTANCE = new com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationReadSuccessFormat();
+      defaultInstance = new ReplicationReadSuccessFormat(true);
+      defaultInstance.initFields();
     }
 
-    public static com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationReadSuccessFormat getDefaultInstance() {
-      return DEFAULT_INSTANCE;
-    }
-
-    @java.lang.Deprecated public static final com.google.protobuf.Parser<ReplicationReadSuccessFormat>
-        PARSER = new com.google.protobuf.AbstractParser<ReplicationReadSuccessFormat>() {
-      public ReplicationReadSuccessFormat parsePartialFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws com.google.protobuf.InvalidProtocolBufferException {
-          return new ReplicationReadSuccessFormat(input, extensionRegistry);
-      }
-    };
-
-    public static com.google.protobuf.Parser<ReplicationReadSuccessFormat> parser() {
-      return PARSER;
-    }
-
-    @java.lang.Override
-    public com.google.protobuf.Parser<ReplicationReadSuccessFormat> getParserForType() {
-      return PARSER;
-    }
-
-    public com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationReadSuccessFormat getDefaultInstanceForType() {
-      return DEFAULT_INSTANCE;
-    }
-
+    // @@protoc_insertion_point(class_scope:ReplicationReadSuccessFormat)
   }
 
-  public interface ReplicationReadFailureFormatOrBuilder extends
-      // @@protoc_insertion_point(interface_extends:ReplicationReadFailureFormat)
-      com.google.protobuf.MessageOrBuilder {
+  public interface ReplicationReadFailureFormatOrBuilder
+      extends com.google.protobuf.MessageOrBuilder {
 
+    // optional .PayloadFormat cause = 1;
     /**
      * <code>optional .PayloadFormat cause = 1;</code>
      */
@@ -9290,6 +8335,7 @@ public final class ReplicationProtocolFormats {
      */
     com.rbmhtechnology.eventuate.serializer.CommonFormats.PayloadFormatOrBuilder getCauseOrBuilder();
 
+    // optional string targetLogId = 2;
     /**
      * <code>optional string targetLogId = 2;</code>
      */
@@ -9307,28 +8353,36 @@ public final class ReplicationProtocolFormats {
   /**
    * Protobuf type {@code ReplicationReadFailureFormat}
    */
-  public  static final class ReplicationReadFailureFormat extends
-      com.google.protobuf.GeneratedMessageV3 implements
-      // @@protoc_insertion_point(message_implements:ReplicationReadFailureFormat)
-      ReplicationReadFailureFormatOrBuilder {
+  public static final class ReplicationReadFailureFormat extends
+      com.google.protobuf.GeneratedMessage
+      implements ReplicationReadFailureFormatOrBuilder {
     // Use ReplicationReadFailureFormat.newBuilder() to construct.
-    private ReplicationReadFailureFormat(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+    private ReplicationReadFailureFormat(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
       super(builder);
+      this.unknownFields = builder.getUnknownFields();
     }
-    private ReplicationReadFailureFormat() {
-      targetLogId_ = "";
+    private ReplicationReadFailureFormat(boolean noInit) { this.unknownFields = com.google.protobuf.UnknownFieldSet.getDefaultInstance(); }
+
+    private static final ReplicationReadFailureFormat defaultInstance;
+    public static ReplicationReadFailureFormat getDefaultInstance() {
+      return defaultInstance;
     }
 
+    public ReplicationReadFailureFormat getDefaultInstanceForType() {
+      return defaultInstance;
+    }
+
+    private final com.google.protobuf.UnknownFieldSet unknownFields;
     @java.lang.Override
     public final com.google.protobuf.UnknownFieldSet
-    getUnknownFields() {
+        getUnknownFields() {
       return this.unknownFields;
     }
     private ReplicationReadFailureFormat(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
-      this();
+      initFields();
       int mutable_bitField0_ = 0;
       com.google.protobuf.UnknownFieldSet.Builder unknownFields =
           com.google.protobuf.UnknownFieldSet.newBuilder();
@@ -9361,9 +8415,8 @@ public final class ReplicationProtocolFormats {
               break;
             }
             case 18: {
-              com.google.protobuf.ByteString bs = input.readBytes();
               bitField0_ |= 0x00000002;
-              targetLogId_ = bs;
+              targetLogId_ = input.readBytes();
               break;
             }
           }
@@ -9372,7 +8425,7 @@ public final class ReplicationProtocolFormats {
         throw e.setUnfinishedMessage(this);
       } catch (java.io.IOException e) {
         throw new com.google.protobuf.InvalidProtocolBufferException(
-            e).setUnfinishedMessage(this);
+            e.getMessage()).setUnfinishedMessage(this);
       } finally {
         this.unknownFields = unknownFields.build();
         makeExtensionsImmutable();
@@ -9383,14 +8436,30 @@ public final class ReplicationProtocolFormats {
       return com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.internal_static_ReplicationReadFailureFormat_descriptor;
     }
 
-    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
         internalGetFieldAccessorTable() {
       return com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.internal_static_ReplicationReadFailureFormat_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
               com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationReadFailureFormat.class, com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationReadFailureFormat.Builder.class);
     }
 
+    public static com.google.protobuf.Parser<ReplicationReadFailureFormat> PARSER =
+        new com.google.protobuf.AbstractParser<ReplicationReadFailureFormat>() {
+      public ReplicationReadFailureFormat parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new ReplicationReadFailureFormat(input, extensionRegistry);
+      }
+    };
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<ReplicationReadFailureFormat> getParserForType() {
+      return PARSER;
+    }
+
     private int bitField0_;
+    // optional .PayloadFormat cause = 1;
     public static final int CAUSE_FIELD_NUMBER = 1;
     private com.rbmhtechnology.eventuate.serializer.CommonFormats.PayloadFormat cause_;
     /**
@@ -9403,17 +8472,18 @@ public final class ReplicationProtocolFormats {
      * <code>optional .PayloadFormat cause = 1;</code>
      */
     public com.rbmhtechnology.eventuate.serializer.CommonFormats.PayloadFormat getCause() {
-      return cause_ == null ? com.rbmhtechnology.eventuate.serializer.CommonFormats.PayloadFormat.getDefaultInstance() : cause_;
+      return cause_;
     }
     /**
      * <code>optional .PayloadFormat cause = 1;</code>
      */
     public com.rbmhtechnology.eventuate.serializer.CommonFormats.PayloadFormatOrBuilder getCauseOrBuilder() {
-      return cause_ == null ? com.rbmhtechnology.eventuate.serializer.CommonFormats.PayloadFormat.getDefaultInstance() : cause_;
+      return cause_;
     }
 
+    // optional string targetLogId = 2;
     public static final int TARGETLOGID_FIELD_NUMBER = 2;
-    private volatile java.lang.Object targetLogId_;
+    private java.lang.Object targetLogId_;
     /**
      * <code>optional string targetLogId = 2;</code>
      */
@@ -9454,11 +8524,14 @@ public final class ReplicationProtocolFormats {
       }
     }
 
+    private void initFields() {
+      cause_ = com.rbmhtechnology.eventuate.serializer.CommonFormats.PayloadFormat.getDefaultInstance();
+      targetLogId_ = "";
+    }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
-      if (isInitialized == 1) return true;
-      if (isInitialized == 0) return false;
+      if (isInitialized != -1) return isInitialized == 1;
 
       memoizedIsInitialized = 1;
       return true;
@@ -9466,76 +8539,40 @@ public final class ReplicationProtocolFormats {
 
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
+      getSerializedSize();
       if (((bitField0_ & 0x00000001) == 0x00000001)) {
-        output.writeMessage(1, getCause());
+        output.writeMessage(1, cause_);
       }
       if (((bitField0_ & 0x00000002) == 0x00000002)) {
-        com.google.protobuf.GeneratedMessageV3.writeString(output, 2, targetLogId_);
+        output.writeBytes(2, getTargetLogIdBytes());
       }
-      unknownFields.writeTo(output);
+      getUnknownFields().writeTo(output);
     }
 
+    private int memoizedSerializedSize = -1;
     public int getSerializedSize() {
-      int size = memoizedSize;
+      int size = memoizedSerializedSize;
       if (size != -1) return size;
 
       size = 0;
       if (((bitField0_ & 0x00000001) == 0x00000001)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(1, getCause());
+          .computeMessageSize(1, cause_);
       }
       if (((bitField0_ & 0x00000002) == 0x00000002)) {
-        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, targetLogId_);
+        size += com.google.protobuf.CodedOutputStream
+          .computeBytesSize(2, getTargetLogIdBytes());
       }
-      size += unknownFields.getSerializedSize();
-      memoizedSize = size;
+      size += getUnknownFields().getSerializedSize();
+      memoizedSerializedSize = size;
       return size;
     }
 
     private static final long serialVersionUID = 0L;
     @java.lang.Override
-    public boolean equals(final java.lang.Object obj) {
-      if (obj == this) {
-       return true;
-      }
-      if (!(obj instanceof com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationReadFailureFormat)) {
-        return super.equals(obj);
-      }
-      com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationReadFailureFormat other = (com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationReadFailureFormat) obj;
-
-      boolean result = true;
-      result = result && (hasCause() == other.hasCause());
-      if (hasCause()) {
-        result = result && getCause()
-            .equals(other.getCause());
-      }
-      result = result && (hasTargetLogId() == other.hasTargetLogId());
-      if (hasTargetLogId()) {
-        result = result && getTargetLogId()
-            .equals(other.getTargetLogId());
-      }
-      result = result && unknownFields.equals(other.unknownFields);
-      return result;
-    }
-
-    @java.lang.Override
-    public int hashCode() {
-      if (memoizedHashCode != 0) {
-        return memoizedHashCode;
-      }
-      int hash = 41;
-      hash = (19 * hash) + getDescriptorForType().hashCode();
-      if (hasCause()) {
-        hash = (37 * hash) + CAUSE_FIELD_NUMBER;
-        hash = (53 * hash) + getCause().hashCode();
-      }
-      if (hasTargetLogId()) {
-        hash = (37 * hash) + TARGETLOGID_FIELD_NUMBER;
-        hash = (53 * hash) + getTargetLogId().hashCode();
-      }
-      hash = (29 * hash) + unknownFields.hashCode();
-      memoizedHashCode = hash;
-      return hash;
+    protected java.lang.Object writeReplace()
+        throws java.io.ObjectStreamException {
+      return super.writeReplace();
     }
 
     public static com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationReadFailureFormat parseFrom(
@@ -9561,57 +8598,46 @@ public final class ReplicationProtocolFormats {
     }
     public static com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationReadFailureFormat parseFrom(java.io.InputStream input)
         throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
+      return PARSER.parseFrom(input);
     }
     public static com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationReadFailureFormat parseFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
+      return PARSER.parseFrom(input, extensionRegistry);
     }
     public static com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationReadFailureFormat parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input);
+      return PARSER.parseDelimitedFrom(input);
     }
     public static com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationReadFailureFormat parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+      return PARSER.parseDelimitedFrom(input, extensionRegistry);
     }
     public static com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationReadFailureFormat parseFrom(
         com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
+      return PARSER.parseFrom(input);
     }
     public static com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationReadFailureFormat parseFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
+      return PARSER.parseFrom(input, extensionRegistry);
     }
 
+    public static Builder newBuilder() { return Builder.create(); }
     public Builder newBuilderForType() { return newBuilder(); }
-    public static Builder newBuilder() {
-      return DEFAULT_INSTANCE.toBuilder();
-    }
     public static Builder newBuilder(com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationReadFailureFormat prototype) {
-      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+      return newBuilder().mergeFrom(prototype);
     }
-    public Builder toBuilder() {
-      return this == DEFAULT_INSTANCE
-          ? new Builder() : new Builder().mergeFrom(this);
-    }
+    public Builder toBuilder() { return newBuilder(this); }
 
     @java.lang.Override
     protected Builder newBuilderForType(
-        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
       Builder builder = new Builder(parent);
       return builder;
     }
@@ -9619,15 +8645,14 @@ public final class ReplicationProtocolFormats {
      * Protobuf type {@code ReplicationReadFailureFormat}
      */
     public static final class Builder extends
-        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-        // @@protoc_insertion_point(builder_implements:ReplicationReadFailureFormat)
-        com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationReadFailureFormatOrBuilder {
+        com.google.protobuf.GeneratedMessage.Builder<Builder>
+       implements com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationReadFailureFormatOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
         return com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.internal_static_ReplicationReadFailureFormat_descriptor;
       }
 
-      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
           internalGetFieldAccessorTable() {
         return com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.internal_static_ReplicationReadFailureFormat_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
@@ -9640,20 +8665,23 @@ public final class ReplicationProtocolFormats {
       }
 
       private Builder(
-          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
         super(parent);
         maybeForceBuilderInitialization();
       }
       private void maybeForceBuilderInitialization() {
-        if (com.google.protobuf.GeneratedMessageV3
-                .alwaysUseFieldBuilders) {
+        if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
           getCauseFieldBuilder();
         }
       }
+      private static Builder create() {
+        return new Builder();
+      }
+
       public Builder clear() {
         super.clear();
         if (causeBuilder_ == null) {
-          cause_ = null;
+          cause_ = com.rbmhtechnology.eventuate.serializer.CommonFormats.PayloadFormat.getDefaultInstance();
         } else {
           causeBuilder_.clear();
         }
@@ -9661,6 +8689,10 @@ public final class ReplicationProtocolFormats {
         targetLogId_ = "";
         bitField0_ = (bitField0_ & ~0x00000002);
         return this;
+      }
+
+      public Builder clone() {
+        return create().mergeFrom(buildPartial());
       }
 
       public com.google.protobuf.Descriptors.Descriptor
@@ -9701,32 +8733,6 @@ public final class ReplicationProtocolFormats {
         return result;
       }
 
-      public Builder clone() {
-        return (Builder) super.clone();
-      }
-      public Builder setField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          Object value) {
-        return (Builder) super.setField(field, value);
-      }
-      public Builder clearField(
-          com.google.protobuf.Descriptors.FieldDescriptor field) {
-        return (Builder) super.clearField(field);
-      }
-      public Builder clearOneof(
-          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
-        return (Builder) super.clearOneof(oneof);
-      }
-      public Builder setRepeatedField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          int index, Object value) {
-        return (Builder) super.setRepeatedField(field, index, value);
-      }
-      public Builder addRepeatedField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          Object value) {
-        return (Builder) super.addRepeatedField(field, value);
-      }
       public Builder mergeFrom(com.google.protobuf.Message other) {
         if (other instanceof com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationReadFailureFormat) {
           return mergeFrom((com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationReadFailureFormat)other);
@@ -9746,8 +8752,7 @@ public final class ReplicationProtocolFormats {
           targetLogId_ = other.targetLogId_;
           onChanged();
         }
-        this.mergeUnknownFields(other.unknownFields);
-        onChanged();
+        this.mergeUnknownFields(other.getUnknownFields());
         return this;
       }
 
@@ -9764,7 +8769,7 @@ public final class ReplicationProtocolFormats {
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
         } catch (com.google.protobuf.InvalidProtocolBufferException e) {
           parsedMessage = (com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationReadFailureFormat) e.getUnfinishedMessage();
-          throw e.unwrapIOException();
+          throw e;
         } finally {
           if (parsedMessage != null) {
             mergeFrom(parsedMessage);
@@ -9774,8 +8779,9 @@ public final class ReplicationProtocolFormats {
       }
       private int bitField0_;
 
-      private com.rbmhtechnology.eventuate.serializer.CommonFormats.PayloadFormat cause_ = null;
-      private com.google.protobuf.SingleFieldBuilderV3<
+      // optional .PayloadFormat cause = 1;
+      private com.rbmhtechnology.eventuate.serializer.CommonFormats.PayloadFormat cause_ = com.rbmhtechnology.eventuate.serializer.CommonFormats.PayloadFormat.getDefaultInstance();
+      private com.google.protobuf.SingleFieldBuilder<
           com.rbmhtechnology.eventuate.serializer.CommonFormats.PayloadFormat, com.rbmhtechnology.eventuate.serializer.CommonFormats.PayloadFormat.Builder, com.rbmhtechnology.eventuate.serializer.CommonFormats.PayloadFormatOrBuilder> causeBuilder_;
       /**
        * <code>optional .PayloadFormat cause = 1;</code>
@@ -9788,7 +8794,7 @@ public final class ReplicationProtocolFormats {
        */
       public com.rbmhtechnology.eventuate.serializer.CommonFormats.PayloadFormat getCause() {
         if (causeBuilder_ == null) {
-          return cause_ == null ? com.rbmhtechnology.eventuate.serializer.CommonFormats.PayloadFormat.getDefaultInstance() : cause_;
+          return cause_;
         } else {
           return causeBuilder_.getMessage();
         }
@@ -9829,7 +8835,6 @@ public final class ReplicationProtocolFormats {
       public Builder mergeCause(com.rbmhtechnology.eventuate.serializer.CommonFormats.PayloadFormat value) {
         if (causeBuilder_ == null) {
           if (((bitField0_ & 0x00000001) == 0x00000001) &&
-              cause_ != null &&
               cause_ != com.rbmhtechnology.eventuate.serializer.CommonFormats.PayloadFormat.getDefaultInstance()) {
             cause_ =
               com.rbmhtechnology.eventuate.serializer.CommonFormats.PayloadFormat.newBuilder(cause_).mergeFrom(value).buildPartial();
@@ -9848,7 +8853,7 @@ public final class ReplicationProtocolFormats {
        */
       public Builder clearCause() {
         if (causeBuilder_ == null) {
-          cause_ = null;
+          cause_ = com.rbmhtechnology.eventuate.serializer.CommonFormats.PayloadFormat.getDefaultInstance();
           onChanged();
         } else {
           causeBuilder_.clear();
@@ -9871,20 +8876,19 @@ public final class ReplicationProtocolFormats {
         if (causeBuilder_ != null) {
           return causeBuilder_.getMessageOrBuilder();
         } else {
-          return cause_ == null ?
-              com.rbmhtechnology.eventuate.serializer.CommonFormats.PayloadFormat.getDefaultInstance() : cause_;
+          return cause_;
         }
       }
       /**
        * <code>optional .PayloadFormat cause = 1;</code>
        */
-      private com.google.protobuf.SingleFieldBuilderV3<
+      private com.google.protobuf.SingleFieldBuilder<
           com.rbmhtechnology.eventuate.serializer.CommonFormats.PayloadFormat, com.rbmhtechnology.eventuate.serializer.CommonFormats.PayloadFormat.Builder, com.rbmhtechnology.eventuate.serializer.CommonFormats.PayloadFormatOrBuilder> 
           getCauseFieldBuilder() {
         if (causeBuilder_ == null) {
-          causeBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+          causeBuilder_ = new com.google.protobuf.SingleFieldBuilder<
               com.rbmhtechnology.eventuate.serializer.CommonFormats.PayloadFormat, com.rbmhtechnology.eventuate.serializer.CommonFormats.PayloadFormat.Builder, com.rbmhtechnology.eventuate.serializer.CommonFormats.PayloadFormatOrBuilder>(
-                  getCause(),
+                  cause_,
                   getParentForChildren(),
                   isClean());
           cause_ = null;
@@ -9892,6 +8896,7 @@ public final class ReplicationProtocolFormats {
         return causeBuilder_;
       }
 
+      // optional string targetLogId = 2;
       private java.lang.Object targetLogId_ = "";
       /**
        * <code>optional string targetLogId = 2;</code>
@@ -9905,12 +8910,9 @@ public final class ReplicationProtocolFormats {
       public java.lang.String getTargetLogId() {
         java.lang.Object ref = targetLogId_;
         if (!(ref instanceof java.lang.String)) {
-          com.google.protobuf.ByteString bs =
-              (com.google.protobuf.ByteString) ref;
-          java.lang.String s = bs.toStringUtf8();
-          if (bs.isValidUtf8()) {
-            targetLogId_ = s;
-          }
+          java.lang.String s = ((com.google.protobuf.ByteString) ref)
+              .toStringUtf8();
+          targetLogId_ = s;
           return s;
         } else {
           return (java.lang.String) ref;
@@ -9967,59 +8969,22 @@ public final class ReplicationProtocolFormats {
         onChanged();
         return this;
       }
-      public final Builder setUnknownFields(
-          final com.google.protobuf.UnknownFieldSet unknownFields) {
-        return super.setUnknownFields(unknownFields);
-      }
-
-      public final Builder mergeUnknownFields(
-          final com.google.protobuf.UnknownFieldSet unknownFields) {
-        return super.mergeUnknownFields(unknownFields);
-      }
-
 
       // @@protoc_insertion_point(builder_scope:ReplicationReadFailureFormat)
     }
 
-    // @@protoc_insertion_point(class_scope:ReplicationReadFailureFormat)
-    private static final com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationReadFailureFormat DEFAULT_INSTANCE;
     static {
-      DEFAULT_INSTANCE = new com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationReadFailureFormat();
+      defaultInstance = new ReplicationReadFailureFormat(true);
+      defaultInstance.initFields();
     }
 
-    public static com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationReadFailureFormat getDefaultInstance() {
-      return DEFAULT_INSTANCE;
-    }
-
-    @java.lang.Deprecated public static final com.google.protobuf.Parser<ReplicationReadFailureFormat>
-        PARSER = new com.google.protobuf.AbstractParser<ReplicationReadFailureFormat>() {
-      public ReplicationReadFailureFormat parsePartialFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws com.google.protobuf.InvalidProtocolBufferException {
-          return new ReplicationReadFailureFormat(input, extensionRegistry);
-      }
-    };
-
-    public static com.google.protobuf.Parser<ReplicationReadFailureFormat> parser() {
-      return PARSER;
-    }
-
-    @java.lang.Override
-    public com.google.protobuf.Parser<ReplicationReadFailureFormat> getParserForType() {
-      return PARSER;
-    }
-
-    public com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationReadFailureFormat getDefaultInstanceForType() {
-      return DEFAULT_INSTANCE;
-    }
-
+    // @@protoc_insertion_point(class_scope:ReplicationReadFailureFormat)
   }
 
-  public interface ReplicationReadSourceExceptionFormatOrBuilder extends
-      // @@protoc_insertion_point(interface_extends:ReplicationReadSourceExceptionFormat)
-      com.google.protobuf.MessageOrBuilder {
+  public interface ReplicationReadSourceExceptionFormatOrBuilder
+      extends com.google.protobuf.MessageOrBuilder {
 
+    // optional string message = 1;
     /**
      * <code>optional string message = 1;</code>
      */
@@ -10037,28 +9002,36 @@ public final class ReplicationProtocolFormats {
   /**
    * Protobuf type {@code ReplicationReadSourceExceptionFormat}
    */
-  public  static final class ReplicationReadSourceExceptionFormat extends
-      com.google.protobuf.GeneratedMessageV3 implements
-      // @@protoc_insertion_point(message_implements:ReplicationReadSourceExceptionFormat)
-      ReplicationReadSourceExceptionFormatOrBuilder {
+  public static final class ReplicationReadSourceExceptionFormat extends
+      com.google.protobuf.GeneratedMessage
+      implements ReplicationReadSourceExceptionFormatOrBuilder {
     // Use ReplicationReadSourceExceptionFormat.newBuilder() to construct.
-    private ReplicationReadSourceExceptionFormat(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+    private ReplicationReadSourceExceptionFormat(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
       super(builder);
+      this.unknownFields = builder.getUnknownFields();
     }
-    private ReplicationReadSourceExceptionFormat() {
-      message_ = "";
+    private ReplicationReadSourceExceptionFormat(boolean noInit) { this.unknownFields = com.google.protobuf.UnknownFieldSet.getDefaultInstance(); }
+
+    private static final ReplicationReadSourceExceptionFormat defaultInstance;
+    public static ReplicationReadSourceExceptionFormat getDefaultInstance() {
+      return defaultInstance;
     }
 
+    public ReplicationReadSourceExceptionFormat getDefaultInstanceForType() {
+      return defaultInstance;
+    }
+
+    private final com.google.protobuf.UnknownFieldSet unknownFields;
     @java.lang.Override
     public final com.google.protobuf.UnknownFieldSet
-    getUnknownFields() {
+        getUnknownFields() {
       return this.unknownFields;
     }
     private ReplicationReadSourceExceptionFormat(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
-      this();
+      initFields();
       int mutable_bitField0_ = 0;
       com.google.protobuf.UnknownFieldSet.Builder unknownFields =
           com.google.protobuf.UnknownFieldSet.newBuilder();
@@ -10078,9 +9051,8 @@ public final class ReplicationProtocolFormats {
               break;
             }
             case 10: {
-              com.google.protobuf.ByteString bs = input.readBytes();
               bitField0_ |= 0x00000001;
-              message_ = bs;
+              message_ = input.readBytes();
               break;
             }
           }
@@ -10089,7 +9061,7 @@ public final class ReplicationProtocolFormats {
         throw e.setUnfinishedMessage(this);
       } catch (java.io.IOException e) {
         throw new com.google.protobuf.InvalidProtocolBufferException(
-            e).setUnfinishedMessage(this);
+            e.getMessage()).setUnfinishedMessage(this);
       } finally {
         this.unknownFields = unknownFields.build();
         makeExtensionsImmutable();
@@ -10100,16 +9072,32 @@ public final class ReplicationProtocolFormats {
       return com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.internal_static_ReplicationReadSourceExceptionFormat_descriptor;
     }
 
-    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
         internalGetFieldAccessorTable() {
       return com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.internal_static_ReplicationReadSourceExceptionFormat_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
               com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationReadSourceExceptionFormat.class, com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationReadSourceExceptionFormat.Builder.class);
     }
 
+    public static com.google.protobuf.Parser<ReplicationReadSourceExceptionFormat> PARSER =
+        new com.google.protobuf.AbstractParser<ReplicationReadSourceExceptionFormat>() {
+      public ReplicationReadSourceExceptionFormat parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new ReplicationReadSourceExceptionFormat(input, extensionRegistry);
+      }
+    };
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<ReplicationReadSourceExceptionFormat> getParserForType() {
+      return PARSER;
+    }
+
     private int bitField0_;
+    // optional string message = 1;
     public static final int MESSAGE_FIELD_NUMBER = 1;
-    private volatile java.lang.Object message_;
+    private java.lang.Object message_;
     /**
      * <code>optional string message = 1;</code>
      */
@@ -10150,11 +9138,13 @@ public final class ReplicationProtocolFormats {
       }
     }
 
+    private void initFields() {
+      message_ = "";
+    }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
-      if (isInitialized == 1) return true;
-      if (isInitialized == 0) return false;
+      if (isInitialized != -1) return isInitialized == 1;
 
       memoizedIsInitialized = 1;
       return true;
@@ -10162,60 +9152,33 @@ public final class ReplicationProtocolFormats {
 
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
+      getSerializedSize();
       if (((bitField0_ & 0x00000001) == 0x00000001)) {
-        com.google.protobuf.GeneratedMessageV3.writeString(output, 1, message_);
+        output.writeBytes(1, getMessageBytes());
       }
-      unknownFields.writeTo(output);
+      getUnknownFields().writeTo(output);
     }
 
+    private int memoizedSerializedSize = -1;
     public int getSerializedSize() {
-      int size = memoizedSize;
+      int size = memoizedSerializedSize;
       if (size != -1) return size;
 
       size = 0;
       if (((bitField0_ & 0x00000001) == 0x00000001)) {
-        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, message_);
+        size += com.google.protobuf.CodedOutputStream
+          .computeBytesSize(1, getMessageBytes());
       }
-      size += unknownFields.getSerializedSize();
-      memoizedSize = size;
+      size += getUnknownFields().getSerializedSize();
+      memoizedSerializedSize = size;
       return size;
     }
 
     private static final long serialVersionUID = 0L;
     @java.lang.Override
-    public boolean equals(final java.lang.Object obj) {
-      if (obj == this) {
-       return true;
-      }
-      if (!(obj instanceof com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationReadSourceExceptionFormat)) {
-        return super.equals(obj);
-      }
-      com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationReadSourceExceptionFormat other = (com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationReadSourceExceptionFormat) obj;
-
-      boolean result = true;
-      result = result && (hasMessage() == other.hasMessage());
-      if (hasMessage()) {
-        result = result && getMessage()
-            .equals(other.getMessage());
-      }
-      result = result && unknownFields.equals(other.unknownFields);
-      return result;
-    }
-
-    @java.lang.Override
-    public int hashCode() {
-      if (memoizedHashCode != 0) {
-        return memoizedHashCode;
-      }
-      int hash = 41;
-      hash = (19 * hash) + getDescriptorForType().hashCode();
-      if (hasMessage()) {
-        hash = (37 * hash) + MESSAGE_FIELD_NUMBER;
-        hash = (53 * hash) + getMessage().hashCode();
-      }
-      hash = (29 * hash) + unknownFields.hashCode();
-      memoizedHashCode = hash;
-      return hash;
+    protected java.lang.Object writeReplace()
+        throws java.io.ObjectStreamException {
+      return super.writeReplace();
     }
 
     public static com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationReadSourceExceptionFormat parseFrom(
@@ -10241,57 +9204,46 @@ public final class ReplicationProtocolFormats {
     }
     public static com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationReadSourceExceptionFormat parseFrom(java.io.InputStream input)
         throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
+      return PARSER.parseFrom(input);
     }
     public static com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationReadSourceExceptionFormat parseFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
+      return PARSER.parseFrom(input, extensionRegistry);
     }
     public static com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationReadSourceExceptionFormat parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input);
+      return PARSER.parseDelimitedFrom(input);
     }
     public static com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationReadSourceExceptionFormat parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+      return PARSER.parseDelimitedFrom(input, extensionRegistry);
     }
     public static com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationReadSourceExceptionFormat parseFrom(
         com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
+      return PARSER.parseFrom(input);
     }
     public static com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationReadSourceExceptionFormat parseFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
+      return PARSER.parseFrom(input, extensionRegistry);
     }
 
+    public static Builder newBuilder() { return Builder.create(); }
     public Builder newBuilderForType() { return newBuilder(); }
-    public static Builder newBuilder() {
-      return DEFAULT_INSTANCE.toBuilder();
-    }
     public static Builder newBuilder(com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationReadSourceExceptionFormat prototype) {
-      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+      return newBuilder().mergeFrom(prototype);
     }
-    public Builder toBuilder() {
-      return this == DEFAULT_INSTANCE
-          ? new Builder() : new Builder().mergeFrom(this);
-    }
+    public Builder toBuilder() { return newBuilder(this); }
 
     @java.lang.Override
     protected Builder newBuilderForType(
-        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
       Builder builder = new Builder(parent);
       return builder;
     }
@@ -10299,15 +9251,14 @@ public final class ReplicationProtocolFormats {
      * Protobuf type {@code ReplicationReadSourceExceptionFormat}
      */
     public static final class Builder extends
-        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-        // @@protoc_insertion_point(builder_implements:ReplicationReadSourceExceptionFormat)
-        com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationReadSourceExceptionFormatOrBuilder {
+        com.google.protobuf.GeneratedMessage.Builder<Builder>
+       implements com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationReadSourceExceptionFormatOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
         return com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.internal_static_ReplicationReadSourceExceptionFormat_descriptor;
       }
 
-      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
           internalGetFieldAccessorTable() {
         return com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.internal_static_ReplicationReadSourceExceptionFormat_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
@@ -10320,20 +9271,27 @@ public final class ReplicationProtocolFormats {
       }
 
       private Builder(
-          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
         super(parent);
         maybeForceBuilderInitialization();
       }
       private void maybeForceBuilderInitialization() {
-        if (com.google.protobuf.GeneratedMessageV3
-                .alwaysUseFieldBuilders) {
+        if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
         }
       }
+      private static Builder create() {
+        return new Builder();
+      }
+
       public Builder clear() {
         super.clear();
         message_ = "";
         bitField0_ = (bitField0_ & ~0x00000001);
         return this;
+      }
+
+      public Builder clone() {
+        return create().mergeFrom(buildPartial());
       }
 
       public com.google.protobuf.Descriptors.Descriptor
@@ -10366,32 +9324,6 @@ public final class ReplicationProtocolFormats {
         return result;
       }
 
-      public Builder clone() {
-        return (Builder) super.clone();
-      }
-      public Builder setField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          Object value) {
-        return (Builder) super.setField(field, value);
-      }
-      public Builder clearField(
-          com.google.protobuf.Descriptors.FieldDescriptor field) {
-        return (Builder) super.clearField(field);
-      }
-      public Builder clearOneof(
-          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
-        return (Builder) super.clearOneof(oneof);
-      }
-      public Builder setRepeatedField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          int index, Object value) {
-        return (Builder) super.setRepeatedField(field, index, value);
-      }
-      public Builder addRepeatedField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          Object value) {
-        return (Builder) super.addRepeatedField(field, value);
-      }
       public Builder mergeFrom(com.google.protobuf.Message other) {
         if (other instanceof com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationReadSourceExceptionFormat) {
           return mergeFrom((com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationReadSourceExceptionFormat)other);
@@ -10408,8 +9340,7 @@ public final class ReplicationProtocolFormats {
           message_ = other.message_;
           onChanged();
         }
-        this.mergeUnknownFields(other.unknownFields);
-        onChanged();
+        this.mergeUnknownFields(other.getUnknownFields());
         return this;
       }
 
@@ -10426,7 +9357,7 @@ public final class ReplicationProtocolFormats {
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
         } catch (com.google.protobuf.InvalidProtocolBufferException e) {
           parsedMessage = (com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationReadSourceExceptionFormat) e.getUnfinishedMessage();
-          throw e.unwrapIOException();
+          throw e;
         } finally {
           if (parsedMessage != null) {
             mergeFrom(parsedMessage);
@@ -10436,6 +9367,7 @@ public final class ReplicationProtocolFormats {
       }
       private int bitField0_;
 
+      // optional string message = 1;
       private java.lang.Object message_ = "";
       /**
        * <code>optional string message = 1;</code>
@@ -10449,12 +9381,9 @@ public final class ReplicationProtocolFormats {
       public java.lang.String getMessage() {
         java.lang.Object ref = message_;
         if (!(ref instanceof java.lang.String)) {
-          com.google.protobuf.ByteString bs =
-              (com.google.protobuf.ByteString) ref;
-          java.lang.String s = bs.toStringUtf8();
-          if (bs.isValidUtf8()) {
-            message_ = s;
-          }
+          java.lang.String s = ((com.google.protobuf.ByteString) ref)
+              .toStringUtf8();
+          message_ = s;
           return s;
         } else {
           return (java.lang.String) ref;
@@ -10511,59 +9440,22 @@ public final class ReplicationProtocolFormats {
         onChanged();
         return this;
       }
-      public final Builder setUnknownFields(
-          final com.google.protobuf.UnknownFieldSet unknownFields) {
-        return super.setUnknownFields(unknownFields);
-      }
-
-      public final Builder mergeUnknownFields(
-          final com.google.protobuf.UnknownFieldSet unknownFields) {
-        return super.mergeUnknownFields(unknownFields);
-      }
-
 
       // @@protoc_insertion_point(builder_scope:ReplicationReadSourceExceptionFormat)
     }
 
-    // @@protoc_insertion_point(class_scope:ReplicationReadSourceExceptionFormat)
-    private static final com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationReadSourceExceptionFormat DEFAULT_INSTANCE;
     static {
-      DEFAULT_INSTANCE = new com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationReadSourceExceptionFormat();
+      defaultInstance = new ReplicationReadSourceExceptionFormat(true);
+      defaultInstance.initFields();
     }
 
-    public static com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationReadSourceExceptionFormat getDefaultInstance() {
-      return DEFAULT_INSTANCE;
-    }
-
-    @java.lang.Deprecated public static final com.google.protobuf.Parser<ReplicationReadSourceExceptionFormat>
-        PARSER = new com.google.protobuf.AbstractParser<ReplicationReadSourceExceptionFormat>() {
-      public ReplicationReadSourceExceptionFormat parsePartialFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws com.google.protobuf.InvalidProtocolBufferException {
-          return new ReplicationReadSourceExceptionFormat(input, extensionRegistry);
-      }
-    };
-
-    public static com.google.protobuf.Parser<ReplicationReadSourceExceptionFormat> parser() {
-      return PARSER;
-    }
-
-    @java.lang.Override
-    public com.google.protobuf.Parser<ReplicationReadSourceExceptionFormat> getParserForType() {
-      return PARSER;
-    }
-
-    public com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationReadSourceExceptionFormat getDefaultInstanceForType() {
-      return DEFAULT_INSTANCE;
-    }
-
+    // @@protoc_insertion_point(class_scope:ReplicationReadSourceExceptionFormat)
   }
 
-  public interface IncompatibleApplicationVersionExceptionFormatOrBuilder extends
-      // @@protoc_insertion_point(interface_extends:IncompatibleApplicationVersionExceptionFormat)
-      com.google.protobuf.MessageOrBuilder {
+  public interface IncompatibleApplicationVersionExceptionFormatOrBuilder
+      extends com.google.protobuf.MessageOrBuilder {
 
+    // optional string sourceEndpointId = 1;
     /**
      * <code>optional string sourceEndpointId = 1;</code>
      */
@@ -10578,6 +9470,7 @@ public final class ReplicationProtocolFormats {
     com.google.protobuf.ByteString
         getSourceEndpointIdBytes();
 
+    // optional .ApplicationVersionFormat sourceApplicationVersion = 2;
     /**
      * <code>optional .ApplicationVersionFormat sourceApplicationVersion = 2;</code>
      */
@@ -10591,6 +9484,7 @@ public final class ReplicationProtocolFormats {
      */
     com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ApplicationVersionFormatOrBuilder getSourceApplicationVersionOrBuilder();
 
+    // optional .ApplicationVersionFormat targetApplicationVersion = 3;
     /**
      * <code>optional .ApplicationVersionFormat targetApplicationVersion = 3;</code>
      */
@@ -10607,28 +9501,36 @@ public final class ReplicationProtocolFormats {
   /**
    * Protobuf type {@code IncompatibleApplicationVersionExceptionFormat}
    */
-  public  static final class IncompatibleApplicationVersionExceptionFormat extends
-      com.google.protobuf.GeneratedMessageV3 implements
-      // @@protoc_insertion_point(message_implements:IncompatibleApplicationVersionExceptionFormat)
-      IncompatibleApplicationVersionExceptionFormatOrBuilder {
+  public static final class IncompatibleApplicationVersionExceptionFormat extends
+      com.google.protobuf.GeneratedMessage
+      implements IncompatibleApplicationVersionExceptionFormatOrBuilder {
     // Use IncompatibleApplicationVersionExceptionFormat.newBuilder() to construct.
-    private IncompatibleApplicationVersionExceptionFormat(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+    private IncompatibleApplicationVersionExceptionFormat(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
       super(builder);
+      this.unknownFields = builder.getUnknownFields();
     }
-    private IncompatibleApplicationVersionExceptionFormat() {
-      sourceEndpointId_ = "";
+    private IncompatibleApplicationVersionExceptionFormat(boolean noInit) { this.unknownFields = com.google.protobuf.UnknownFieldSet.getDefaultInstance(); }
+
+    private static final IncompatibleApplicationVersionExceptionFormat defaultInstance;
+    public static IncompatibleApplicationVersionExceptionFormat getDefaultInstance() {
+      return defaultInstance;
     }
 
+    public IncompatibleApplicationVersionExceptionFormat getDefaultInstanceForType() {
+      return defaultInstance;
+    }
+
+    private final com.google.protobuf.UnknownFieldSet unknownFields;
     @java.lang.Override
     public final com.google.protobuf.UnknownFieldSet
-    getUnknownFields() {
+        getUnknownFields() {
       return this.unknownFields;
     }
     private IncompatibleApplicationVersionExceptionFormat(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
-      this();
+      initFields();
       int mutable_bitField0_ = 0;
       com.google.protobuf.UnknownFieldSet.Builder unknownFields =
           com.google.protobuf.UnknownFieldSet.newBuilder();
@@ -10648,9 +9550,8 @@ public final class ReplicationProtocolFormats {
               break;
             }
             case 10: {
-              com.google.protobuf.ByteString bs = input.readBytes();
               bitField0_ |= 0x00000001;
-              sourceEndpointId_ = bs;
+              sourceEndpointId_ = input.readBytes();
               break;
             }
             case 18: {
@@ -10685,7 +9586,7 @@ public final class ReplicationProtocolFormats {
         throw e.setUnfinishedMessage(this);
       } catch (java.io.IOException e) {
         throw new com.google.protobuf.InvalidProtocolBufferException(
-            e).setUnfinishedMessage(this);
+            e.getMessage()).setUnfinishedMessage(this);
       } finally {
         this.unknownFields = unknownFields.build();
         makeExtensionsImmutable();
@@ -10696,16 +9597,32 @@ public final class ReplicationProtocolFormats {
       return com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.internal_static_IncompatibleApplicationVersionExceptionFormat_descriptor;
     }
 
-    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
         internalGetFieldAccessorTable() {
       return com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.internal_static_IncompatibleApplicationVersionExceptionFormat_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
               com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.IncompatibleApplicationVersionExceptionFormat.class, com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.IncompatibleApplicationVersionExceptionFormat.Builder.class);
     }
 
+    public static com.google.protobuf.Parser<IncompatibleApplicationVersionExceptionFormat> PARSER =
+        new com.google.protobuf.AbstractParser<IncompatibleApplicationVersionExceptionFormat>() {
+      public IncompatibleApplicationVersionExceptionFormat parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new IncompatibleApplicationVersionExceptionFormat(input, extensionRegistry);
+      }
+    };
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<IncompatibleApplicationVersionExceptionFormat> getParserForType() {
+      return PARSER;
+    }
+
     private int bitField0_;
+    // optional string sourceEndpointId = 1;
     public static final int SOURCEENDPOINTID_FIELD_NUMBER = 1;
-    private volatile java.lang.Object sourceEndpointId_;
+    private java.lang.Object sourceEndpointId_;
     /**
      * <code>optional string sourceEndpointId = 1;</code>
      */
@@ -10746,6 +9663,7 @@ public final class ReplicationProtocolFormats {
       }
     }
 
+    // optional .ApplicationVersionFormat sourceApplicationVersion = 2;
     public static final int SOURCEAPPLICATIONVERSION_FIELD_NUMBER = 2;
     private com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ApplicationVersionFormat sourceApplicationVersion_;
     /**
@@ -10758,15 +9676,16 @@ public final class ReplicationProtocolFormats {
      * <code>optional .ApplicationVersionFormat sourceApplicationVersion = 2;</code>
      */
     public com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ApplicationVersionFormat getSourceApplicationVersion() {
-      return sourceApplicationVersion_ == null ? com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ApplicationVersionFormat.getDefaultInstance() : sourceApplicationVersion_;
+      return sourceApplicationVersion_;
     }
     /**
      * <code>optional .ApplicationVersionFormat sourceApplicationVersion = 2;</code>
      */
     public com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ApplicationVersionFormatOrBuilder getSourceApplicationVersionOrBuilder() {
-      return sourceApplicationVersion_ == null ? com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ApplicationVersionFormat.getDefaultInstance() : sourceApplicationVersion_;
+      return sourceApplicationVersion_;
     }
 
+    // optional .ApplicationVersionFormat targetApplicationVersion = 3;
     public static final int TARGETAPPLICATIONVERSION_FIELD_NUMBER = 3;
     private com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ApplicationVersionFormat targetApplicationVersion_;
     /**
@@ -10779,20 +9698,24 @@ public final class ReplicationProtocolFormats {
      * <code>optional .ApplicationVersionFormat targetApplicationVersion = 3;</code>
      */
     public com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ApplicationVersionFormat getTargetApplicationVersion() {
-      return targetApplicationVersion_ == null ? com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ApplicationVersionFormat.getDefaultInstance() : targetApplicationVersion_;
+      return targetApplicationVersion_;
     }
     /**
      * <code>optional .ApplicationVersionFormat targetApplicationVersion = 3;</code>
      */
     public com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ApplicationVersionFormatOrBuilder getTargetApplicationVersionOrBuilder() {
-      return targetApplicationVersion_ == null ? com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ApplicationVersionFormat.getDefaultInstance() : targetApplicationVersion_;
+      return targetApplicationVersion_;
     }
 
+    private void initFields() {
+      sourceEndpointId_ = "";
+      sourceApplicationVersion_ = com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ApplicationVersionFormat.getDefaultInstance();
+      targetApplicationVersion_ = com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ApplicationVersionFormat.getDefaultInstance();
+    }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
-      if (isInitialized == 1) return true;
-      if (isInitialized == 0) return false;
+      if (isInitialized != -1) return isInitialized == 1;
 
       if (hasSourceApplicationVersion()) {
         if (!getSourceApplicationVersion().isInitialized()) {
@@ -10812,92 +9735,47 @@ public final class ReplicationProtocolFormats {
 
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
+      getSerializedSize();
       if (((bitField0_ & 0x00000001) == 0x00000001)) {
-        com.google.protobuf.GeneratedMessageV3.writeString(output, 1, sourceEndpointId_);
+        output.writeBytes(1, getSourceEndpointIdBytes());
       }
       if (((bitField0_ & 0x00000002) == 0x00000002)) {
-        output.writeMessage(2, getSourceApplicationVersion());
+        output.writeMessage(2, sourceApplicationVersion_);
       }
       if (((bitField0_ & 0x00000004) == 0x00000004)) {
-        output.writeMessage(3, getTargetApplicationVersion());
+        output.writeMessage(3, targetApplicationVersion_);
       }
-      unknownFields.writeTo(output);
+      getUnknownFields().writeTo(output);
     }
 
+    private int memoizedSerializedSize = -1;
     public int getSerializedSize() {
-      int size = memoizedSize;
+      int size = memoizedSerializedSize;
       if (size != -1) return size;
 
       size = 0;
       if (((bitField0_ & 0x00000001) == 0x00000001)) {
-        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, sourceEndpointId_);
+        size += com.google.protobuf.CodedOutputStream
+          .computeBytesSize(1, getSourceEndpointIdBytes());
       }
       if (((bitField0_ & 0x00000002) == 0x00000002)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(2, getSourceApplicationVersion());
+          .computeMessageSize(2, sourceApplicationVersion_);
       }
       if (((bitField0_ & 0x00000004) == 0x00000004)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(3, getTargetApplicationVersion());
+          .computeMessageSize(3, targetApplicationVersion_);
       }
-      size += unknownFields.getSerializedSize();
-      memoizedSize = size;
+      size += getUnknownFields().getSerializedSize();
+      memoizedSerializedSize = size;
       return size;
     }
 
     private static final long serialVersionUID = 0L;
     @java.lang.Override
-    public boolean equals(final java.lang.Object obj) {
-      if (obj == this) {
-       return true;
-      }
-      if (!(obj instanceof com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.IncompatibleApplicationVersionExceptionFormat)) {
-        return super.equals(obj);
-      }
-      com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.IncompatibleApplicationVersionExceptionFormat other = (com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.IncompatibleApplicationVersionExceptionFormat) obj;
-
-      boolean result = true;
-      result = result && (hasSourceEndpointId() == other.hasSourceEndpointId());
-      if (hasSourceEndpointId()) {
-        result = result && getSourceEndpointId()
-            .equals(other.getSourceEndpointId());
-      }
-      result = result && (hasSourceApplicationVersion() == other.hasSourceApplicationVersion());
-      if (hasSourceApplicationVersion()) {
-        result = result && getSourceApplicationVersion()
-            .equals(other.getSourceApplicationVersion());
-      }
-      result = result && (hasTargetApplicationVersion() == other.hasTargetApplicationVersion());
-      if (hasTargetApplicationVersion()) {
-        result = result && getTargetApplicationVersion()
-            .equals(other.getTargetApplicationVersion());
-      }
-      result = result && unknownFields.equals(other.unknownFields);
-      return result;
-    }
-
-    @java.lang.Override
-    public int hashCode() {
-      if (memoizedHashCode != 0) {
-        return memoizedHashCode;
-      }
-      int hash = 41;
-      hash = (19 * hash) + getDescriptorForType().hashCode();
-      if (hasSourceEndpointId()) {
-        hash = (37 * hash) + SOURCEENDPOINTID_FIELD_NUMBER;
-        hash = (53 * hash) + getSourceEndpointId().hashCode();
-      }
-      if (hasSourceApplicationVersion()) {
-        hash = (37 * hash) + SOURCEAPPLICATIONVERSION_FIELD_NUMBER;
-        hash = (53 * hash) + getSourceApplicationVersion().hashCode();
-      }
-      if (hasTargetApplicationVersion()) {
-        hash = (37 * hash) + TARGETAPPLICATIONVERSION_FIELD_NUMBER;
-        hash = (53 * hash) + getTargetApplicationVersion().hashCode();
-      }
-      hash = (29 * hash) + unknownFields.hashCode();
-      memoizedHashCode = hash;
-      return hash;
+    protected java.lang.Object writeReplace()
+        throws java.io.ObjectStreamException {
+      return super.writeReplace();
     }
 
     public static com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.IncompatibleApplicationVersionExceptionFormat parseFrom(
@@ -10923,57 +9801,46 @@ public final class ReplicationProtocolFormats {
     }
     public static com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.IncompatibleApplicationVersionExceptionFormat parseFrom(java.io.InputStream input)
         throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
+      return PARSER.parseFrom(input);
     }
     public static com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.IncompatibleApplicationVersionExceptionFormat parseFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
+      return PARSER.parseFrom(input, extensionRegistry);
     }
     public static com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.IncompatibleApplicationVersionExceptionFormat parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input);
+      return PARSER.parseDelimitedFrom(input);
     }
     public static com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.IncompatibleApplicationVersionExceptionFormat parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+      return PARSER.parseDelimitedFrom(input, extensionRegistry);
     }
     public static com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.IncompatibleApplicationVersionExceptionFormat parseFrom(
         com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
+      return PARSER.parseFrom(input);
     }
     public static com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.IncompatibleApplicationVersionExceptionFormat parseFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
+      return PARSER.parseFrom(input, extensionRegistry);
     }
 
+    public static Builder newBuilder() { return Builder.create(); }
     public Builder newBuilderForType() { return newBuilder(); }
-    public static Builder newBuilder() {
-      return DEFAULT_INSTANCE.toBuilder();
-    }
     public static Builder newBuilder(com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.IncompatibleApplicationVersionExceptionFormat prototype) {
-      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+      return newBuilder().mergeFrom(prototype);
     }
-    public Builder toBuilder() {
-      return this == DEFAULT_INSTANCE
-          ? new Builder() : new Builder().mergeFrom(this);
-    }
+    public Builder toBuilder() { return newBuilder(this); }
 
     @java.lang.Override
     protected Builder newBuilderForType(
-        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
       Builder builder = new Builder(parent);
       return builder;
     }
@@ -10981,15 +9848,14 @@ public final class ReplicationProtocolFormats {
      * Protobuf type {@code IncompatibleApplicationVersionExceptionFormat}
      */
     public static final class Builder extends
-        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-        // @@protoc_insertion_point(builder_implements:IncompatibleApplicationVersionExceptionFormat)
-        com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.IncompatibleApplicationVersionExceptionFormatOrBuilder {
+        com.google.protobuf.GeneratedMessage.Builder<Builder>
+       implements com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.IncompatibleApplicationVersionExceptionFormatOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
         return com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.internal_static_IncompatibleApplicationVersionExceptionFormat_descriptor;
       }
 
-      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
           internalGetFieldAccessorTable() {
         return com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.internal_static_IncompatibleApplicationVersionExceptionFormat_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
@@ -11002,34 +9868,41 @@ public final class ReplicationProtocolFormats {
       }
 
       private Builder(
-          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
         super(parent);
         maybeForceBuilderInitialization();
       }
       private void maybeForceBuilderInitialization() {
-        if (com.google.protobuf.GeneratedMessageV3
-                .alwaysUseFieldBuilders) {
+        if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
           getSourceApplicationVersionFieldBuilder();
           getTargetApplicationVersionFieldBuilder();
         }
       }
+      private static Builder create() {
+        return new Builder();
+      }
+
       public Builder clear() {
         super.clear();
         sourceEndpointId_ = "";
         bitField0_ = (bitField0_ & ~0x00000001);
         if (sourceApplicationVersionBuilder_ == null) {
-          sourceApplicationVersion_ = null;
+          sourceApplicationVersion_ = com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ApplicationVersionFormat.getDefaultInstance();
         } else {
           sourceApplicationVersionBuilder_.clear();
         }
         bitField0_ = (bitField0_ & ~0x00000002);
         if (targetApplicationVersionBuilder_ == null) {
-          targetApplicationVersion_ = null;
+          targetApplicationVersion_ = com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ApplicationVersionFormat.getDefaultInstance();
         } else {
           targetApplicationVersionBuilder_.clear();
         }
         bitField0_ = (bitField0_ & ~0x00000004);
         return this;
+      }
+
+      public Builder clone() {
+        return create().mergeFrom(buildPartial());
       }
 
       public com.google.protobuf.Descriptors.Descriptor
@@ -11078,32 +9951,6 @@ public final class ReplicationProtocolFormats {
         return result;
       }
 
-      public Builder clone() {
-        return (Builder) super.clone();
-      }
-      public Builder setField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          Object value) {
-        return (Builder) super.setField(field, value);
-      }
-      public Builder clearField(
-          com.google.protobuf.Descriptors.FieldDescriptor field) {
-        return (Builder) super.clearField(field);
-      }
-      public Builder clearOneof(
-          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
-        return (Builder) super.clearOneof(oneof);
-      }
-      public Builder setRepeatedField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          int index, Object value) {
-        return (Builder) super.setRepeatedField(field, index, value);
-      }
-      public Builder addRepeatedField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          Object value) {
-        return (Builder) super.addRepeatedField(field, value);
-      }
       public Builder mergeFrom(com.google.protobuf.Message other) {
         if (other instanceof com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.IncompatibleApplicationVersionExceptionFormat) {
           return mergeFrom((com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.IncompatibleApplicationVersionExceptionFormat)other);
@@ -11126,19 +9973,20 @@ public final class ReplicationProtocolFormats {
         if (other.hasTargetApplicationVersion()) {
           mergeTargetApplicationVersion(other.getTargetApplicationVersion());
         }
-        this.mergeUnknownFields(other.unknownFields);
-        onChanged();
+        this.mergeUnknownFields(other.getUnknownFields());
         return this;
       }
 
       public final boolean isInitialized() {
         if (hasSourceApplicationVersion()) {
           if (!getSourceApplicationVersion().isInitialized()) {
+            
             return false;
           }
         }
         if (hasTargetApplicationVersion()) {
           if (!getTargetApplicationVersion().isInitialized()) {
+            
             return false;
           }
         }
@@ -11154,7 +10002,7 @@ public final class ReplicationProtocolFormats {
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
         } catch (com.google.protobuf.InvalidProtocolBufferException e) {
           parsedMessage = (com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.IncompatibleApplicationVersionExceptionFormat) e.getUnfinishedMessage();
-          throw e.unwrapIOException();
+          throw e;
         } finally {
           if (parsedMessage != null) {
             mergeFrom(parsedMessage);
@@ -11164,6 +10012,7 @@ public final class ReplicationProtocolFormats {
       }
       private int bitField0_;
 
+      // optional string sourceEndpointId = 1;
       private java.lang.Object sourceEndpointId_ = "";
       /**
        * <code>optional string sourceEndpointId = 1;</code>
@@ -11177,12 +10026,9 @@ public final class ReplicationProtocolFormats {
       public java.lang.String getSourceEndpointId() {
         java.lang.Object ref = sourceEndpointId_;
         if (!(ref instanceof java.lang.String)) {
-          com.google.protobuf.ByteString bs =
-              (com.google.protobuf.ByteString) ref;
-          java.lang.String s = bs.toStringUtf8();
-          if (bs.isValidUtf8()) {
-            sourceEndpointId_ = s;
-          }
+          java.lang.String s = ((com.google.protobuf.ByteString) ref)
+              .toStringUtf8();
+          sourceEndpointId_ = s;
           return s;
         } else {
           return (java.lang.String) ref;
@@ -11240,8 +10086,9 @@ public final class ReplicationProtocolFormats {
         return this;
       }
 
-      private com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ApplicationVersionFormat sourceApplicationVersion_ = null;
-      private com.google.protobuf.SingleFieldBuilderV3<
+      // optional .ApplicationVersionFormat sourceApplicationVersion = 2;
+      private com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ApplicationVersionFormat sourceApplicationVersion_ = com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ApplicationVersionFormat.getDefaultInstance();
+      private com.google.protobuf.SingleFieldBuilder<
           com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ApplicationVersionFormat, com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ApplicationVersionFormat.Builder, com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ApplicationVersionFormatOrBuilder> sourceApplicationVersionBuilder_;
       /**
        * <code>optional .ApplicationVersionFormat sourceApplicationVersion = 2;</code>
@@ -11254,7 +10101,7 @@ public final class ReplicationProtocolFormats {
        */
       public com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ApplicationVersionFormat getSourceApplicationVersion() {
         if (sourceApplicationVersionBuilder_ == null) {
-          return sourceApplicationVersion_ == null ? com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ApplicationVersionFormat.getDefaultInstance() : sourceApplicationVersion_;
+          return sourceApplicationVersion_;
         } else {
           return sourceApplicationVersionBuilder_.getMessage();
         }
@@ -11295,7 +10142,6 @@ public final class ReplicationProtocolFormats {
       public Builder mergeSourceApplicationVersion(com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ApplicationVersionFormat value) {
         if (sourceApplicationVersionBuilder_ == null) {
           if (((bitField0_ & 0x00000002) == 0x00000002) &&
-              sourceApplicationVersion_ != null &&
               sourceApplicationVersion_ != com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ApplicationVersionFormat.getDefaultInstance()) {
             sourceApplicationVersion_ =
               com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ApplicationVersionFormat.newBuilder(sourceApplicationVersion_).mergeFrom(value).buildPartial();
@@ -11314,7 +10160,7 @@ public final class ReplicationProtocolFormats {
        */
       public Builder clearSourceApplicationVersion() {
         if (sourceApplicationVersionBuilder_ == null) {
-          sourceApplicationVersion_ = null;
+          sourceApplicationVersion_ = com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ApplicationVersionFormat.getDefaultInstance();
           onChanged();
         } else {
           sourceApplicationVersionBuilder_.clear();
@@ -11337,20 +10183,19 @@ public final class ReplicationProtocolFormats {
         if (sourceApplicationVersionBuilder_ != null) {
           return sourceApplicationVersionBuilder_.getMessageOrBuilder();
         } else {
-          return sourceApplicationVersion_ == null ?
-              com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ApplicationVersionFormat.getDefaultInstance() : sourceApplicationVersion_;
+          return sourceApplicationVersion_;
         }
       }
       /**
        * <code>optional .ApplicationVersionFormat sourceApplicationVersion = 2;</code>
        */
-      private com.google.protobuf.SingleFieldBuilderV3<
+      private com.google.protobuf.SingleFieldBuilder<
           com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ApplicationVersionFormat, com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ApplicationVersionFormat.Builder, com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ApplicationVersionFormatOrBuilder> 
           getSourceApplicationVersionFieldBuilder() {
         if (sourceApplicationVersionBuilder_ == null) {
-          sourceApplicationVersionBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+          sourceApplicationVersionBuilder_ = new com.google.protobuf.SingleFieldBuilder<
               com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ApplicationVersionFormat, com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ApplicationVersionFormat.Builder, com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ApplicationVersionFormatOrBuilder>(
-                  getSourceApplicationVersion(),
+                  sourceApplicationVersion_,
                   getParentForChildren(),
                   isClean());
           sourceApplicationVersion_ = null;
@@ -11358,8 +10203,9 @@ public final class ReplicationProtocolFormats {
         return sourceApplicationVersionBuilder_;
       }
 
-      private com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ApplicationVersionFormat targetApplicationVersion_ = null;
-      private com.google.protobuf.SingleFieldBuilderV3<
+      // optional .ApplicationVersionFormat targetApplicationVersion = 3;
+      private com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ApplicationVersionFormat targetApplicationVersion_ = com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ApplicationVersionFormat.getDefaultInstance();
+      private com.google.protobuf.SingleFieldBuilder<
           com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ApplicationVersionFormat, com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ApplicationVersionFormat.Builder, com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ApplicationVersionFormatOrBuilder> targetApplicationVersionBuilder_;
       /**
        * <code>optional .ApplicationVersionFormat targetApplicationVersion = 3;</code>
@@ -11372,7 +10218,7 @@ public final class ReplicationProtocolFormats {
        */
       public com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ApplicationVersionFormat getTargetApplicationVersion() {
         if (targetApplicationVersionBuilder_ == null) {
-          return targetApplicationVersion_ == null ? com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ApplicationVersionFormat.getDefaultInstance() : targetApplicationVersion_;
+          return targetApplicationVersion_;
         } else {
           return targetApplicationVersionBuilder_.getMessage();
         }
@@ -11413,7 +10259,6 @@ public final class ReplicationProtocolFormats {
       public Builder mergeTargetApplicationVersion(com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ApplicationVersionFormat value) {
         if (targetApplicationVersionBuilder_ == null) {
           if (((bitField0_ & 0x00000004) == 0x00000004) &&
-              targetApplicationVersion_ != null &&
               targetApplicationVersion_ != com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ApplicationVersionFormat.getDefaultInstance()) {
             targetApplicationVersion_ =
               com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ApplicationVersionFormat.newBuilder(targetApplicationVersion_).mergeFrom(value).buildPartial();
@@ -11432,7 +10277,7 @@ public final class ReplicationProtocolFormats {
        */
       public Builder clearTargetApplicationVersion() {
         if (targetApplicationVersionBuilder_ == null) {
-          targetApplicationVersion_ = null;
+          targetApplicationVersion_ = com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ApplicationVersionFormat.getDefaultInstance();
           onChanged();
         } else {
           targetApplicationVersionBuilder_.clear();
@@ -11455,107 +10300,77 @@ public final class ReplicationProtocolFormats {
         if (targetApplicationVersionBuilder_ != null) {
           return targetApplicationVersionBuilder_.getMessageOrBuilder();
         } else {
-          return targetApplicationVersion_ == null ?
-              com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ApplicationVersionFormat.getDefaultInstance() : targetApplicationVersion_;
+          return targetApplicationVersion_;
         }
       }
       /**
        * <code>optional .ApplicationVersionFormat targetApplicationVersion = 3;</code>
        */
-      private com.google.protobuf.SingleFieldBuilderV3<
+      private com.google.protobuf.SingleFieldBuilder<
           com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ApplicationVersionFormat, com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ApplicationVersionFormat.Builder, com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ApplicationVersionFormatOrBuilder> 
           getTargetApplicationVersionFieldBuilder() {
         if (targetApplicationVersionBuilder_ == null) {
-          targetApplicationVersionBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+          targetApplicationVersionBuilder_ = new com.google.protobuf.SingleFieldBuilder<
               com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ApplicationVersionFormat, com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ApplicationVersionFormat.Builder, com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ApplicationVersionFormatOrBuilder>(
-                  getTargetApplicationVersion(),
+                  targetApplicationVersion_,
                   getParentForChildren(),
                   isClean());
           targetApplicationVersion_ = null;
         }
         return targetApplicationVersionBuilder_;
       }
-      public final Builder setUnknownFields(
-          final com.google.protobuf.UnknownFieldSet unknownFields) {
-        return super.setUnknownFields(unknownFields);
-      }
-
-      public final Builder mergeUnknownFields(
-          final com.google.protobuf.UnknownFieldSet unknownFields) {
-        return super.mergeUnknownFields(unknownFields);
-      }
-
 
       // @@protoc_insertion_point(builder_scope:IncompatibleApplicationVersionExceptionFormat)
     }
 
-    // @@protoc_insertion_point(class_scope:IncompatibleApplicationVersionExceptionFormat)
-    private static final com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.IncompatibleApplicationVersionExceptionFormat DEFAULT_INSTANCE;
     static {
-      DEFAULT_INSTANCE = new com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.IncompatibleApplicationVersionExceptionFormat();
+      defaultInstance = new IncompatibleApplicationVersionExceptionFormat(true);
+      defaultInstance.initFields();
     }
 
-    public static com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.IncompatibleApplicationVersionExceptionFormat getDefaultInstance() {
-      return DEFAULT_INSTANCE;
-    }
-
-    @java.lang.Deprecated public static final com.google.protobuf.Parser<IncompatibleApplicationVersionExceptionFormat>
-        PARSER = new com.google.protobuf.AbstractParser<IncompatibleApplicationVersionExceptionFormat>() {
-      public IncompatibleApplicationVersionExceptionFormat parsePartialFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws com.google.protobuf.InvalidProtocolBufferException {
-          return new IncompatibleApplicationVersionExceptionFormat(input, extensionRegistry);
-      }
-    };
-
-    public static com.google.protobuf.Parser<IncompatibleApplicationVersionExceptionFormat> parser() {
-      return PARSER;
-    }
-
-    @java.lang.Override
-    public com.google.protobuf.Parser<IncompatibleApplicationVersionExceptionFormat> getParserForType() {
-      return PARSER;
-    }
-
-    public com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.IncompatibleApplicationVersionExceptionFormat getDefaultInstanceForType() {
-      return DEFAULT_INSTANCE;
-    }
-
+    // @@protoc_insertion_point(class_scope:IncompatibleApplicationVersionExceptionFormat)
   }
 
-  public interface ReplicationDueFormatOrBuilder extends
-      // @@protoc_insertion_point(interface_extends:ReplicationDueFormat)
-      com.google.protobuf.MessageOrBuilder {
+  public interface ReplicationDueFormatOrBuilder
+      extends com.google.protobuf.MessageOrBuilder {
   }
   /**
+   * Protobuf type {@code ReplicationDueFormat}
+   *
    * <pre>
    * no fields
    * </pre>
-   *
-   * Protobuf type {@code ReplicationDueFormat}
    */
-  public  static final class ReplicationDueFormat extends
-      com.google.protobuf.GeneratedMessageV3 implements
-      // @@protoc_insertion_point(message_implements:ReplicationDueFormat)
-      ReplicationDueFormatOrBuilder {
+  public static final class ReplicationDueFormat extends
+      com.google.protobuf.GeneratedMessage
+      implements ReplicationDueFormatOrBuilder {
     // Use ReplicationDueFormat.newBuilder() to construct.
-    private ReplicationDueFormat(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+    private ReplicationDueFormat(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
       super(builder);
+      this.unknownFields = builder.getUnknownFields();
     }
-    private ReplicationDueFormat() {
+    private ReplicationDueFormat(boolean noInit) { this.unknownFields = com.google.protobuf.UnknownFieldSet.getDefaultInstance(); }
+
+    private static final ReplicationDueFormat defaultInstance;
+    public static ReplicationDueFormat getDefaultInstance() {
+      return defaultInstance;
     }
 
+    public ReplicationDueFormat getDefaultInstanceForType() {
+      return defaultInstance;
+    }
+
+    private final com.google.protobuf.UnknownFieldSet unknownFields;
     @java.lang.Override
     public final com.google.protobuf.UnknownFieldSet
-    getUnknownFields() {
+        getUnknownFields() {
       return this.unknownFields;
     }
     private ReplicationDueFormat(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
-      this();
+      initFields();
       com.google.protobuf.UnknownFieldSet.Builder unknownFields =
           com.google.protobuf.UnknownFieldSet.newBuilder();
       try {
@@ -11579,7 +10394,7 @@ public final class ReplicationProtocolFormats {
         throw e.setUnfinishedMessage(this);
       } catch (java.io.IOException e) {
         throw new com.google.protobuf.InvalidProtocolBufferException(
-            e).setUnfinishedMessage(this);
+            e.getMessage()).setUnfinishedMessage(this);
       } finally {
         this.unknownFields = unknownFields.build();
         makeExtensionsImmutable();
@@ -11590,18 +10405,34 @@ public final class ReplicationProtocolFormats {
       return com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.internal_static_ReplicationDueFormat_descriptor;
     }
 
-    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
         internalGetFieldAccessorTable() {
       return com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.internal_static_ReplicationDueFormat_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
               com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationDueFormat.class, com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationDueFormat.Builder.class);
     }
 
+    public static com.google.protobuf.Parser<ReplicationDueFormat> PARSER =
+        new com.google.protobuf.AbstractParser<ReplicationDueFormat>() {
+      public ReplicationDueFormat parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new ReplicationDueFormat(input, extensionRegistry);
+      }
+    };
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<ReplicationDueFormat> getParserForType() {
+      return PARSER;
+    }
+
+    private void initFields() {
+    }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
-      if (isInitialized == 1) return true;
-      if (isInitialized == 0) return false;
+      if (isInitialized != -1) return isInitialized == 1;
 
       memoizedIsInitialized = 1;
       return true;
@@ -11609,45 +10440,26 @@ public final class ReplicationProtocolFormats {
 
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
-      unknownFields.writeTo(output);
+      getSerializedSize();
+      getUnknownFields().writeTo(output);
     }
 
+    private int memoizedSerializedSize = -1;
     public int getSerializedSize() {
-      int size = memoizedSize;
+      int size = memoizedSerializedSize;
       if (size != -1) return size;
 
       size = 0;
-      size += unknownFields.getSerializedSize();
-      memoizedSize = size;
+      size += getUnknownFields().getSerializedSize();
+      memoizedSerializedSize = size;
       return size;
     }
 
     private static final long serialVersionUID = 0L;
     @java.lang.Override
-    public boolean equals(final java.lang.Object obj) {
-      if (obj == this) {
-       return true;
-      }
-      if (!(obj instanceof com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationDueFormat)) {
-        return super.equals(obj);
-      }
-      com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationDueFormat other = (com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationDueFormat) obj;
-
-      boolean result = true;
-      result = result && unknownFields.equals(other.unknownFields);
-      return result;
-    }
-
-    @java.lang.Override
-    public int hashCode() {
-      if (memoizedHashCode != 0) {
-        return memoizedHashCode;
-      }
-      int hash = 41;
-      hash = (19 * hash) + getDescriptorForType().hashCode();
-      hash = (29 * hash) + unknownFields.hashCode();
-      memoizedHashCode = hash;
-      return hash;
+    protected java.lang.Object writeReplace()
+        throws java.io.ObjectStreamException {
+      return super.writeReplace();
     }
 
     public static com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationDueFormat parseFrom(
@@ -11673,77 +10485,65 @@ public final class ReplicationProtocolFormats {
     }
     public static com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationDueFormat parseFrom(java.io.InputStream input)
         throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
+      return PARSER.parseFrom(input);
     }
     public static com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationDueFormat parseFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
+      return PARSER.parseFrom(input, extensionRegistry);
     }
     public static com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationDueFormat parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input);
+      return PARSER.parseDelimitedFrom(input);
     }
     public static com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationDueFormat parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+      return PARSER.parseDelimitedFrom(input, extensionRegistry);
     }
     public static com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationDueFormat parseFrom(
         com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
+      return PARSER.parseFrom(input);
     }
     public static com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationDueFormat parseFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
+      return PARSER.parseFrom(input, extensionRegistry);
     }
 
+    public static Builder newBuilder() { return Builder.create(); }
     public Builder newBuilderForType() { return newBuilder(); }
-    public static Builder newBuilder() {
-      return DEFAULT_INSTANCE.toBuilder();
-    }
     public static Builder newBuilder(com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationDueFormat prototype) {
-      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+      return newBuilder().mergeFrom(prototype);
     }
-    public Builder toBuilder() {
-      return this == DEFAULT_INSTANCE
-          ? new Builder() : new Builder().mergeFrom(this);
-    }
+    public Builder toBuilder() { return newBuilder(this); }
 
     @java.lang.Override
     protected Builder newBuilderForType(
-        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
       Builder builder = new Builder(parent);
       return builder;
     }
     /**
+     * Protobuf type {@code ReplicationDueFormat}
+     *
      * <pre>
      * no fields
      * </pre>
-     *
-     * Protobuf type {@code ReplicationDueFormat}
      */
     public static final class Builder extends
-        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-        // @@protoc_insertion_point(builder_implements:ReplicationDueFormat)
-        com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationDueFormatOrBuilder {
+        com.google.protobuf.GeneratedMessage.Builder<Builder>
+       implements com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationDueFormatOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
         return com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.internal_static_ReplicationDueFormat_descriptor;
       }
 
-      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
           internalGetFieldAccessorTable() {
         return com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.internal_static_ReplicationDueFormat_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
@@ -11756,18 +10556,25 @@ public final class ReplicationProtocolFormats {
       }
 
       private Builder(
-          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
         super(parent);
         maybeForceBuilderInitialization();
       }
       private void maybeForceBuilderInitialization() {
-        if (com.google.protobuf.GeneratedMessageV3
-                .alwaysUseFieldBuilders) {
+        if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
         }
       }
+      private static Builder create() {
+        return new Builder();
+      }
+
       public Builder clear() {
         super.clear();
         return this;
+      }
+
+      public Builder clone() {
+        return create().mergeFrom(buildPartial());
       }
 
       public com.google.protobuf.Descriptors.Descriptor
@@ -11793,32 +10600,6 @@ public final class ReplicationProtocolFormats {
         return result;
       }
 
-      public Builder clone() {
-        return (Builder) super.clone();
-      }
-      public Builder setField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          Object value) {
-        return (Builder) super.setField(field, value);
-      }
-      public Builder clearField(
-          com.google.protobuf.Descriptors.FieldDescriptor field) {
-        return (Builder) super.clearField(field);
-      }
-      public Builder clearOneof(
-          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
-        return (Builder) super.clearOneof(oneof);
-      }
-      public Builder setRepeatedField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          int index, Object value) {
-        return (Builder) super.setRepeatedField(field, index, value);
-      }
-      public Builder addRepeatedField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          Object value) {
-        return (Builder) super.addRepeatedField(field, value);
-      }
       public Builder mergeFrom(com.google.protobuf.Message other) {
         if (other instanceof com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationDueFormat) {
           return mergeFrom((com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationDueFormat)other);
@@ -11830,8 +10611,7 @@ public final class ReplicationProtocolFormats {
 
       public Builder mergeFrom(com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationDueFormat other) {
         if (other == com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationDueFormat.getDefaultInstance()) return this;
-        this.mergeUnknownFields(other.unknownFields);
-        onChanged();
+        this.mergeUnknownFields(other.getUnknownFields());
         return this;
       }
 
@@ -11848,7 +10628,7 @@ public final class ReplicationProtocolFormats {
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
         } catch (com.google.protobuf.InvalidProtocolBufferException e) {
           parsedMessage = (com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationDueFormat) e.getUnfinishedMessage();
-          throw e.unwrapIOException();
+          throw e;
         } finally {
           if (parsedMessage != null) {
             mergeFrom(parsedMessage);
@@ -11856,141 +10636,104 @@ public final class ReplicationProtocolFormats {
         }
         return this;
       }
-      public final Builder setUnknownFields(
-          final com.google.protobuf.UnknownFieldSet unknownFields) {
-        return super.setUnknownFields(unknownFields);
-      }
-
-      public final Builder mergeUnknownFields(
-          final com.google.protobuf.UnknownFieldSet unknownFields) {
-        return super.mergeUnknownFields(unknownFields);
-      }
-
 
       // @@protoc_insertion_point(builder_scope:ReplicationDueFormat)
     }
 
-    // @@protoc_insertion_point(class_scope:ReplicationDueFormat)
-    private static final com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationDueFormat DEFAULT_INSTANCE;
     static {
-      DEFAULT_INSTANCE = new com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationDueFormat();
+      defaultInstance = new ReplicationDueFormat(true);
+      defaultInstance.initFields();
     }
 
-    public static com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationDueFormat getDefaultInstance() {
-      return DEFAULT_INSTANCE;
-    }
-
-    @java.lang.Deprecated public static final com.google.protobuf.Parser<ReplicationDueFormat>
-        PARSER = new com.google.protobuf.AbstractParser<ReplicationDueFormat>() {
-      public ReplicationDueFormat parsePartialFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws com.google.protobuf.InvalidProtocolBufferException {
-          return new ReplicationDueFormat(input, extensionRegistry);
-      }
-    };
-
-    public static com.google.protobuf.Parser<ReplicationDueFormat> parser() {
-      return PARSER;
-    }
-
-    @java.lang.Override
-    public com.google.protobuf.Parser<ReplicationDueFormat> getParserForType() {
-      return PARSER;
-    }
-
-    public com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats.ReplicationDueFormat getDefaultInstanceForType() {
-      return DEFAULT_INSTANCE;
-    }
-
+    // @@protoc_insertion_point(class_scope:ReplicationDueFormat)
   }
 
-  private static final com.google.protobuf.Descriptors.Descriptor
+  private static com.google.protobuf.Descriptors.Descriptor
     internal_static_ApplicationVersionFormat_descriptor;
-  private static final 
-    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+  private static
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_ApplicationVersionFormat_fieldAccessorTable;
-  private static final com.google.protobuf.Descriptors.Descriptor
+  private static com.google.protobuf.Descriptors.Descriptor
     internal_static_LogInfoFormat_descriptor;
-  private static final 
-    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+  private static
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_LogInfoFormat_fieldAccessorTable;
-  private static final com.google.protobuf.Descriptors.Descriptor
+  private static com.google.protobuf.Descriptors.Descriptor
     internal_static_ReplicationInfoFormat_descriptor;
-  private static final 
-    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+  private static
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_ReplicationInfoFormat_fieldAccessorTable;
-  private static final com.google.protobuf.Descriptors.Descriptor
+  private static com.google.protobuf.Descriptors.Descriptor
     internal_static_GetReplicationInfoFormat_descriptor;
-  private static final 
-    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+  private static
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_GetReplicationInfoFormat_fieldAccessorTable;
-  private static final com.google.protobuf.Descriptors.Descriptor
+  private static com.google.protobuf.Descriptors.Descriptor
     internal_static_GetReplicationInfoSuccessFormat_descriptor;
-  private static final 
-    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+  private static
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_GetReplicationInfoSuccessFormat_fieldAccessorTable;
-  private static final com.google.protobuf.Descriptors.Descriptor
+  private static com.google.protobuf.Descriptors.Descriptor
     internal_static_SynchronizeReplicationProgressFormat_descriptor;
-  private static final 
-    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+  private static
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_SynchronizeReplicationProgressFormat_fieldAccessorTable;
-  private static final com.google.protobuf.Descriptors.Descriptor
+  private static com.google.protobuf.Descriptors.Descriptor
     internal_static_SynchronizeReplicationProgressSuccessFormat_descriptor;
-  private static final 
-    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+  private static
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_SynchronizeReplicationProgressSuccessFormat_fieldAccessorTable;
-  private static final com.google.protobuf.Descriptors.Descriptor
+  private static com.google.protobuf.Descriptors.Descriptor
     internal_static_SynchronizeReplicationProgressFailureFormat_descriptor;
-  private static final 
-    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+  private static
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_SynchronizeReplicationProgressFailureFormat_fieldAccessorTable;
-  private static final com.google.protobuf.Descriptors.Descriptor
+  private static com.google.protobuf.Descriptors.Descriptor
     internal_static_SynchronizeReplicationProgressSourceExceptionFormat_descriptor;
-  private static final 
-    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+  private static
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_SynchronizeReplicationProgressSourceExceptionFormat_fieldAccessorTable;
-  private static final com.google.protobuf.Descriptors.Descriptor
+  private static com.google.protobuf.Descriptors.Descriptor
     internal_static_ReplicationReadEnvelopeFormat_descriptor;
-  private static final 
-    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+  private static
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_ReplicationReadEnvelopeFormat_fieldAccessorTable;
-  private static final com.google.protobuf.Descriptors.Descriptor
+  private static com.google.protobuf.Descriptors.Descriptor
     internal_static_ReplicationReadFormat_descriptor;
-  private static final 
-    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+  private static
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_ReplicationReadFormat_fieldAccessorTable;
-  private static final com.google.protobuf.Descriptors.Descriptor
+  private static com.google.protobuf.Descriptors.Descriptor
     internal_static_ReplicationReadSuccessFormat_descriptor;
-  private static final 
-    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+  private static
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_ReplicationReadSuccessFormat_fieldAccessorTable;
-  private static final com.google.protobuf.Descriptors.Descriptor
+  private static com.google.protobuf.Descriptors.Descriptor
     internal_static_ReplicationReadFailureFormat_descriptor;
-  private static final 
-    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+  private static
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_ReplicationReadFailureFormat_fieldAccessorTable;
-  private static final com.google.protobuf.Descriptors.Descriptor
+  private static com.google.protobuf.Descriptors.Descriptor
     internal_static_ReplicationReadSourceExceptionFormat_descriptor;
-  private static final 
-    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+  private static
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_ReplicationReadSourceExceptionFormat_fieldAccessorTable;
-  private static final com.google.protobuf.Descriptors.Descriptor
+  private static com.google.protobuf.Descriptors.Descriptor
     internal_static_IncompatibleApplicationVersionExceptionFormat_descriptor;
-  private static final 
-    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+  private static
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_IncompatibleApplicationVersionExceptionFormat_fieldAccessorTable;
-  private static final com.google.protobuf.Descriptors.Descriptor
+  private static com.google.protobuf.Descriptors.Descriptor
     internal_static_ReplicationDueFormat_descriptor;
-  private static final 
-    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+  private static
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_ReplicationDueFormat_fieldAccessorTable;
 
   public static com.google.protobuf.Descriptors.FileDescriptor
       getDescriptor() {
     return descriptor;
   }
-  private static  com.google.protobuf.Descriptors.FileDescriptor
+  private static com.google.protobuf.Descriptors.FileDescriptor
       descriptor;
   static {
     java.lang.String[] descriptorData = {
@@ -12040,13 +10783,109 @@ public final class ReplicationProtocolFormats {
       "e.serializerH\001"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
-        new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
-          public com.google.protobuf.ExtensionRegistry assignDescriptors(
-              com.google.protobuf.Descriptors.FileDescriptor root) {
-            descriptor = root;
-            return null;
-          }
-        };
+      new com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner() {
+        public com.google.protobuf.ExtensionRegistry assignDescriptors(
+            com.google.protobuf.Descriptors.FileDescriptor root) {
+          descriptor = root;
+          internal_static_ApplicationVersionFormat_descriptor =
+            getDescriptor().getMessageTypes().get(0);
+          internal_static_ApplicationVersionFormat_fieldAccessorTable = new
+            com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+              internal_static_ApplicationVersionFormat_descriptor,
+              new java.lang.String[] { "Major", "Minor", });
+          internal_static_LogInfoFormat_descriptor =
+            getDescriptor().getMessageTypes().get(1);
+          internal_static_LogInfoFormat_fieldAccessorTable = new
+            com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+              internal_static_LogInfoFormat_descriptor,
+              new java.lang.String[] { "LogName", "SequenceNr", });
+          internal_static_ReplicationInfoFormat_descriptor =
+            getDescriptor().getMessageTypes().get(2);
+          internal_static_ReplicationInfoFormat_fieldAccessorTable = new
+            com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+              internal_static_ReplicationInfoFormat_descriptor,
+              new java.lang.String[] { "EndpointId", "LogInfos", });
+          internal_static_GetReplicationInfoFormat_descriptor =
+            getDescriptor().getMessageTypes().get(3);
+          internal_static_GetReplicationInfoFormat_fieldAccessorTable = new
+            com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+              internal_static_GetReplicationInfoFormat_descriptor,
+              new java.lang.String[] { });
+          internal_static_GetReplicationInfoSuccessFormat_descriptor =
+            getDescriptor().getMessageTypes().get(4);
+          internal_static_GetReplicationInfoSuccessFormat_fieldAccessorTable = new
+            com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+              internal_static_GetReplicationInfoSuccessFormat_descriptor,
+              new java.lang.String[] { "Info", });
+          internal_static_SynchronizeReplicationProgressFormat_descriptor =
+            getDescriptor().getMessageTypes().get(5);
+          internal_static_SynchronizeReplicationProgressFormat_fieldAccessorTable = new
+            com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+              internal_static_SynchronizeReplicationProgressFormat_descriptor,
+              new java.lang.String[] { "Info", });
+          internal_static_SynchronizeReplicationProgressSuccessFormat_descriptor =
+            getDescriptor().getMessageTypes().get(6);
+          internal_static_SynchronizeReplicationProgressSuccessFormat_fieldAccessorTable = new
+            com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+              internal_static_SynchronizeReplicationProgressSuccessFormat_descriptor,
+              new java.lang.String[] { "Info", });
+          internal_static_SynchronizeReplicationProgressFailureFormat_descriptor =
+            getDescriptor().getMessageTypes().get(7);
+          internal_static_SynchronizeReplicationProgressFailureFormat_fieldAccessorTable = new
+            com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+              internal_static_SynchronizeReplicationProgressFailureFormat_descriptor,
+              new java.lang.String[] { "Cause", });
+          internal_static_SynchronizeReplicationProgressSourceExceptionFormat_descriptor =
+            getDescriptor().getMessageTypes().get(8);
+          internal_static_SynchronizeReplicationProgressSourceExceptionFormat_fieldAccessorTable = new
+            com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+              internal_static_SynchronizeReplicationProgressSourceExceptionFormat_descriptor,
+              new java.lang.String[] { "Message", });
+          internal_static_ReplicationReadEnvelopeFormat_descriptor =
+            getDescriptor().getMessageTypes().get(9);
+          internal_static_ReplicationReadEnvelopeFormat_fieldAccessorTable = new
+            com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+              internal_static_ReplicationReadEnvelopeFormat_descriptor,
+              new java.lang.String[] { "Payload", "LogName", "TargetApplicationName", "TargetApplicationVersion", });
+          internal_static_ReplicationReadFormat_descriptor =
+            getDescriptor().getMessageTypes().get(10);
+          internal_static_ReplicationReadFormat_fieldAccessorTable = new
+            com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+              internal_static_ReplicationReadFormat_descriptor,
+              new java.lang.String[] { "FromSequenceNr", "Max", "ScanLimit", "Filter", "TargetLogId", "Replicator", "CurrentTargetVersionVector", });
+          internal_static_ReplicationReadSuccessFormat_descriptor =
+            getDescriptor().getMessageTypes().get(11);
+          internal_static_ReplicationReadSuccessFormat_fieldAccessorTable = new
+            com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+              internal_static_ReplicationReadSuccessFormat_descriptor,
+              new java.lang.String[] { "Events", "FromSequenceNr", "ReplicationProgress", "TargetLogId", "CurrentSourceVersionVector", });
+          internal_static_ReplicationReadFailureFormat_descriptor =
+            getDescriptor().getMessageTypes().get(12);
+          internal_static_ReplicationReadFailureFormat_fieldAccessorTable = new
+            com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+              internal_static_ReplicationReadFailureFormat_descriptor,
+              new java.lang.String[] { "Cause", "TargetLogId", });
+          internal_static_ReplicationReadSourceExceptionFormat_descriptor =
+            getDescriptor().getMessageTypes().get(13);
+          internal_static_ReplicationReadSourceExceptionFormat_fieldAccessorTable = new
+            com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+              internal_static_ReplicationReadSourceExceptionFormat_descriptor,
+              new java.lang.String[] { "Message", });
+          internal_static_IncompatibleApplicationVersionExceptionFormat_descriptor =
+            getDescriptor().getMessageTypes().get(14);
+          internal_static_IncompatibleApplicationVersionExceptionFormat_fieldAccessorTable = new
+            com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+              internal_static_IncompatibleApplicationVersionExceptionFormat_descriptor,
+              new java.lang.String[] { "SourceEndpointId", "SourceApplicationVersion", "TargetApplicationVersion", });
+          internal_static_ReplicationDueFormat_descriptor =
+            getDescriptor().getMessageTypes().get(15);
+          internal_static_ReplicationDueFormat_fieldAccessorTable = new
+            com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+              internal_static_ReplicationDueFormat_descriptor,
+              new java.lang.String[] { });
+          return null;
+        }
+      };
     com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
         new com.google.protobuf.Descriptors.FileDescriptor[] {
@@ -12054,105 +10893,6 @@ public final class ReplicationProtocolFormats {
           com.rbmhtechnology.eventuate.serializer.DurableEventFormats.getDescriptor(),
           com.rbmhtechnology.eventuate.serializer.ReplicationFilterFormats.getDescriptor(),
         }, assigner);
-    internal_static_ApplicationVersionFormat_descriptor =
-      getDescriptor().getMessageTypes().get(0);
-    internal_static_ApplicationVersionFormat_fieldAccessorTable = new
-      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_ApplicationVersionFormat_descriptor,
-        new java.lang.String[] { "Major", "Minor", });
-    internal_static_LogInfoFormat_descriptor =
-      getDescriptor().getMessageTypes().get(1);
-    internal_static_LogInfoFormat_fieldAccessorTable = new
-      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_LogInfoFormat_descriptor,
-        new java.lang.String[] { "LogName", "SequenceNr", });
-    internal_static_ReplicationInfoFormat_descriptor =
-      getDescriptor().getMessageTypes().get(2);
-    internal_static_ReplicationInfoFormat_fieldAccessorTable = new
-      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_ReplicationInfoFormat_descriptor,
-        new java.lang.String[] { "EndpointId", "LogInfos", });
-    internal_static_GetReplicationInfoFormat_descriptor =
-      getDescriptor().getMessageTypes().get(3);
-    internal_static_GetReplicationInfoFormat_fieldAccessorTable = new
-      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_GetReplicationInfoFormat_descriptor,
-        new java.lang.String[] { });
-    internal_static_GetReplicationInfoSuccessFormat_descriptor =
-      getDescriptor().getMessageTypes().get(4);
-    internal_static_GetReplicationInfoSuccessFormat_fieldAccessorTable = new
-      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_GetReplicationInfoSuccessFormat_descriptor,
-        new java.lang.String[] { "Info", });
-    internal_static_SynchronizeReplicationProgressFormat_descriptor =
-      getDescriptor().getMessageTypes().get(5);
-    internal_static_SynchronizeReplicationProgressFormat_fieldAccessorTable = new
-      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_SynchronizeReplicationProgressFormat_descriptor,
-        new java.lang.String[] { "Info", });
-    internal_static_SynchronizeReplicationProgressSuccessFormat_descriptor =
-      getDescriptor().getMessageTypes().get(6);
-    internal_static_SynchronizeReplicationProgressSuccessFormat_fieldAccessorTable = new
-      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_SynchronizeReplicationProgressSuccessFormat_descriptor,
-        new java.lang.String[] { "Info", });
-    internal_static_SynchronizeReplicationProgressFailureFormat_descriptor =
-      getDescriptor().getMessageTypes().get(7);
-    internal_static_SynchronizeReplicationProgressFailureFormat_fieldAccessorTable = new
-      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_SynchronizeReplicationProgressFailureFormat_descriptor,
-        new java.lang.String[] { "Cause", });
-    internal_static_SynchronizeReplicationProgressSourceExceptionFormat_descriptor =
-      getDescriptor().getMessageTypes().get(8);
-    internal_static_SynchronizeReplicationProgressSourceExceptionFormat_fieldAccessorTable = new
-      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_SynchronizeReplicationProgressSourceExceptionFormat_descriptor,
-        new java.lang.String[] { "Message", });
-    internal_static_ReplicationReadEnvelopeFormat_descriptor =
-      getDescriptor().getMessageTypes().get(9);
-    internal_static_ReplicationReadEnvelopeFormat_fieldAccessorTable = new
-      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_ReplicationReadEnvelopeFormat_descriptor,
-        new java.lang.String[] { "Payload", "LogName", "TargetApplicationName", "TargetApplicationVersion", });
-    internal_static_ReplicationReadFormat_descriptor =
-      getDescriptor().getMessageTypes().get(10);
-    internal_static_ReplicationReadFormat_fieldAccessorTable = new
-      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_ReplicationReadFormat_descriptor,
-        new java.lang.String[] { "FromSequenceNr", "Max", "ScanLimit", "Filter", "TargetLogId", "Replicator", "CurrentTargetVersionVector", });
-    internal_static_ReplicationReadSuccessFormat_descriptor =
-      getDescriptor().getMessageTypes().get(11);
-    internal_static_ReplicationReadSuccessFormat_fieldAccessorTable = new
-      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_ReplicationReadSuccessFormat_descriptor,
-        new java.lang.String[] { "Events", "FromSequenceNr", "ReplicationProgress", "TargetLogId", "CurrentSourceVersionVector", });
-    internal_static_ReplicationReadFailureFormat_descriptor =
-      getDescriptor().getMessageTypes().get(12);
-    internal_static_ReplicationReadFailureFormat_fieldAccessorTable = new
-      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_ReplicationReadFailureFormat_descriptor,
-        new java.lang.String[] { "Cause", "TargetLogId", });
-    internal_static_ReplicationReadSourceExceptionFormat_descriptor =
-      getDescriptor().getMessageTypes().get(13);
-    internal_static_ReplicationReadSourceExceptionFormat_fieldAccessorTable = new
-      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_ReplicationReadSourceExceptionFormat_descriptor,
-        new java.lang.String[] { "Message", });
-    internal_static_IncompatibleApplicationVersionExceptionFormat_descriptor =
-      getDescriptor().getMessageTypes().get(14);
-    internal_static_IncompatibleApplicationVersionExceptionFormat_fieldAccessorTable = new
-      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_IncompatibleApplicationVersionExceptionFormat_descriptor,
-        new java.lang.String[] { "SourceEndpointId", "SourceApplicationVersion", "TargetApplicationVersion", });
-    internal_static_ReplicationDueFormat_descriptor =
-      getDescriptor().getMessageTypes().get(15);
-    internal_static_ReplicationDueFormat_fieldAccessorTable = new
-      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_ReplicationDueFormat_descriptor,
-        new java.lang.String[] { });
-    com.rbmhtechnology.eventuate.serializer.CommonFormats.getDescriptor();
-    com.rbmhtechnology.eventuate.serializer.DurableEventFormats.getDescriptor();
-    com.rbmhtechnology.eventuate.serializer.ReplicationFilterFormats.getDescriptor();
   }
 
   // @@protoc_insertion_point(outer_class_scope)

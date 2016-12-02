@@ -22,18 +22,12 @@ package com.rbmhtechnology.eventuate.serializer;
 public final class CommonFormats {
   private CommonFormats() {}
   public static void registerAllExtensions(
-      com.google.protobuf.ExtensionRegistryLite registry) {
-  }
-
-  public static void registerAllExtensions(
       com.google.protobuf.ExtensionRegistry registry) {
-    registerAllExtensions(
-        (com.google.protobuf.ExtensionRegistryLite) registry);
   }
-  public interface PayloadFormatOrBuilder extends
-      // @@protoc_insertion_point(interface_extends:PayloadFormat)
-      com.google.protobuf.MessageOrBuilder {
+  public interface PayloadFormatOrBuilder
+      extends com.google.protobuf.MessageOrBuilder {
 
+    // optional int32 serializerId = 1;
     /**
      * <code>optional int32 serializerId = 1;</code>
      */
@@ -43,6 +37,7 @@ public final class CommonFormats {
      */
     int getSerializerId();
 
+    // optional bytes payload = 2;
     /**
      * <code>optional bytes payload = 2;</code>
      */
@@ -52,6 +47,7 @@ public final class CommonFormats {
      */
     com.google.protobuf.ByteString getPayload();
 
+    // optional string payloadManifest = 3;
     /**
      * <code>optional string payloadManifest = 3;</code>
      */
@@ -66,6 +62,7 @@ public final class CommonFormats {
     com.google.protobuf.ByteString
         getPayloadManifestBytes();
 
+    // optional bool isStringManifest = 4;
     /**
      * <code>optional bool isStringManifest = 4;</code>
      */
@@ -76,38 +73,44 @@ public final class CommonFormats {
     boolean getIsStringManifest();
   }
   /**
+   * Protobuf type {@code PayloadFormat}
+   *
    * <pre>
+   *
    * This message is used for (de-)serializing custom payloads, like
    * custom events, snapshots or replication filters
    * </pre>
-   *
-   * Protobuf type {@code PayloadFormat}
    */
-  public  static final class PayloadFormat extends
-      com.google.protobuf.GeneratedMessageV3 implements
-      // @@protoc_insertion_point(message_implements:PayloadFormat)
-      PayloadFormatOrBuilder {
+  public static final class PayloadFormat extends
+      com.google.protobuf.GeneratedMessage
+      implements PayloadFormatOrBuilder {
     // Use PayloadFormat.newBuilder() to construct.
-    private PayloadFormat(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+    private PayloadFormat(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
       super(builder);
+      this.unknownFields = builder.getUnknownFields();
     }
-    private PayloadFormat() {
-      serializerId_ = 0;
-      payload_ = com.google.protobuf.ByteString.EMPTY;
-      payloadManifest_ = "";
-      isStringManifest_ = false;
+    private PayloadFormat(boolean noInit) { this.unknownFields = com.google.protobuf.UnknownFieldSet.getDefaultInstance(); }
+
+    private static final PayloadFormat defaultInstance;
+    public static PayloadFormat getDefaultInstance() {
+      return defaultInstance;
     }
 
+    public PayloadFormat getDefaultInstanceForType() {
+      return defaultInstance;
+    }
+
+    private final com.google.protobuf.UnknownFieldSet unknownFields;
     @java.lang.Override
     public final com.google.protobuf.UnknownFieldSet
-    getUnknownFields() {
+        getUnknownFields() {
       return this.unknownFields;
     }
     private PayloadFormat(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
-      this();
+      initFields();
       int mutable_bitField0_ = 0;
       com.google.protobuf.UnknownFieldSet.Builder unknownFields =
           com.google.protobuf.UnknownFieldSet.newBuilder();
@@ -137,9 +140,8 @@ public final class CommonFormats {
               break;
             }
             case 26: {
-              com.google.protobuf.ByteString bs = input.readBytes();
               bitField0_ |= 0x00000004;
-              payloadManifest_ = bs;
+              payloadManifest_ = input.readBytes();
               break;
             }
             case 32: {
@@ -153,7 +155,7 @@ public final class CommonFormats {
         throw e.setUnfinishedMessage(this);
       } catch (java.io.IOException e) {
         throw new com.google.protobuf.InvalidProtocolBufferException(
-            e).setUnfinishedMessage(this);
+            e.getMessage()).setUnfinishedMessage(this);
       } finally {
         this.unknownFields = unknownFields.build();
         makeExtensionsImmutable();
@@ -164,14 +166,30 @@ public final class CommonFormats {
       return com.rbmhtechnology.eventuate.serializer.CommonFormats.internal_static_PayloadFormat_descriptor;
     }
 
-    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
         internalGetFieldAccessorTable() {
       return com.rbmhtechnology.eventuate.serializer.CommonFormats.internal_static_PayloadFormat_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
               com.rbmhtechnology.eventuate.serializer.CommonFormats.PayloadFormat.class, com.rbmhtechnology.eventuate.serializer.CommonFormats.PayloadFormat.Builder.class);
     }
 
+    public static com.google.protobuf.Parser<PayloadFormat> PARSER =
+        new com.google.protobuf.AbstractParser<PayloadFormat>() {
+      public PayloadFormat parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new PayloadFormat(input, extensionRegistry);
+      }
+    };
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<PayloadFormat> getParserForType() {
+      return PARSER;
+    }
+
     private int bitField0_;
+    // optional int32 serializerId = 1;
     public static final int SERIALIZERID_FIELD_NUMBER = 1;
     private int serializerId_;
     /**
@@ -187,6 +205,7 @@ public final class CommonFormats {
       return serializerId_;
     }
 
+    // optional bytes payload = 2;
     public static final int PAYLOAD_FIELD_NUMBER = 2;
     private com.google.protobuf.ByteString payload_;
     /**
@@ -202,8 +221,9 @@ public final class CommonFormats {
       return payload_;
     }
 
+    // optional string payloadManifest = 3;
     public static final int PAYLOADMANIFEST_FIELD_NUMBER = 3;
-    private volatile java.lang.Object payloadManifest_;
+    private java.lang.Object payloadManifest_;
     /**
      * <code>optional string payloadManifest = 3;</code>
      */
@@ -244,6 +264,7 @@ public final class CommonFormats {
       }
     }
 
+    // optional bool isStringManifest = 4;
     public static final int ISSTRINGMANIFEST_FIELD_NUMBER = 4;
     private boolean isStringManifest_;
     /**
@@ -259,11 +280,16 @@ public final class CommonFormats {
       return isStringManifest_;
     }
 
+    private void initFields() {
+      serializerId_ = 0;
+      payload_ = com.google.protobuf.ByteString.EMPTY;
+      payloadManifest_ = "";
+      isStringManifest_ = false;
+    }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
-      if (isInitialized == 1) return true;
-      if (isInitialized == 0) return false;
+      if (isInitialized != -1) return isInitialized == 1;
 
       memoizedIsInitialized = 1;
       return true;
@@ -271,6 +297,7 @@ public final class CommonFormats {
 
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
+      getSerializedSize();
       if (((bitField0_ & 0x00000001) == 0x00000001)) {
         output.writeInt32(1, serializerId_);
       }
@@ -278,16 +305,17 @@ public final class CommonFormats {
         output.writeBytes(2, payload_);
       }
       if (((bitField0_ & 0x00000004) == 0x00000004)) {
-        com.google.protobuf.GeneratedMessageV3.writeString(output, 3, payloadManifest_);
+        output.writeBytes(3, getPayloadManifestBytes());
       }
       if (((bitField0_ & 0x00000008) == 0x00000008)) {
         output.writeBool(4, isStringManifest_);
       }
-      unknownFields.writeTo(output);
+      getUnknownFields().writeTo(output);
     }
 
+    private int memoizedSerializedSize = -1;
     public int getSerializedSize() {
-      int size = memoizedSize;
+      int size = memoizedSerializedSize;
       if (size != -1) return size;
 
       size = 0;
@@ -300,80 +328,23 @@ public final class CommonFormats {
           .computeBytesSize(2, payload_);
       }
       if (((bitField0_ & 0x00000004) == 0x00000004)) {
-        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(3, payloadManifest_);
+        size += com.google.protobuf.CodedOutputStream
+          .computeBytesSize(3, getPayloadManifestBytes());
       }
       if (((bitField0_ & 0x00000008) == 0x00000008)) {
         size += com.google.protobuf.CodedOutputStream
           .computeBoolSize(4, isStringManifest_);
       }
-      size += unknownFields.getSerializedSize();
-      memoizedSize = size;
+      size += getUnknownFields().getSerializedSize();
+      memoizedSerializedSize = size;
       return size;
     }
 
     private static final long serialVersionUID = 0L;
     @java.lang.Override
-    public boolean equals(final java.lang.Object obj) {
-      if (obj == this) {
-       return true;
-      }
-      if (!(obj instanceof com.rbmhtechnology.eventuate.serializer.CommonFormats.PayloadFormat)) {
-        return super.equals(obj);
-      }
-      com.rbmhtechnology.eventuate.serializer.CommonFormats.PayloadFormat other = (com.rbmhtechnology.eventuate.serializer.CommonFormats.PayloadFormat) obj;
-
-      boolean result = true;
-      result = result && (hasSerializerId() == other.hasSerializerId());
-      if (hasSerializerId()) {
-        result = result && (getSerializerId()
-            == other.getSerializerId());
-      }
-      result = result && (hasPayload() == other.hasPayload());
-      if (hasPayload()) {
-        result = result && getPayload()
-            .equals(other.getPayload());
-      }
-      result = result && (hasPayloadManifest() == other.hasPayloadManifest());
-      if (hasPayloadManifest()) {
-        result = result && getPayloadManifest()
-            .equals(other.getPayloadManifest());
-      }
-      result = result && (hasIsStringManifest() == other.hasIsStringManifest());
-      if (hasIsStringManifest()) {
-        result = result && (getIsStringManifest()
-            == other.getIsStringManifest());
-      }
-      result = result && unknownFields.equals(other.unknownFields);
-      return result;
-    }
-
-    @java.lang.Override
-    public int hashCode() {
-      if (memoizedHashCode != 0) {
-        return memoizedHashCode;
-      }
-      int hash = 41;
-      hash = (19 * hash) + getDescriptorForType().hashCode();
-      if (hasSerializerId()) {
-        hash = (37 * hash) + SERIALIZERID_FIELD_NUMBER;
-        hash = (53 * hash) + getSerializerId();
-      }
-      if (hasPayload()) {
-        hash = (37 * hash) + PAYLOAD_FIELD_NUMBER;
-        hash = (53 * hash) + getPayload().hashCode();
-      }
-      if (hasPayloadManifest()) {
-        hash = (37 * hash) + PAYLOADMANIFEST_FIELD_NUMBER;
-        hash = (53 * hash) + getPayloadManifest().hashCode();
-      }
-      if (hasIsStringManifest()) {
-        hash = (37 * hash) + ISSTRINGMANIFEST_FIELD_NUMBER;
-        hash = (53 * hash) + com.google.protobuf.Internal.hashBoolean(
-            getIsStringManifest());
-      }
-      hash = (29 * hash) + unknownFields.hashCode();
-      memoizedHashCode = hash;
-      return hash;
+    protected java.lang.Object writeReplace()
+        throws java.io.ObjectStreamException {
+      return super.writeReplace();
     }
 
     public static com.rbmhtechnology.eventuate.serializer.CommonFormats.PayloadFormat parseFrom(
@@ -399,78 +370,67 @@ public final class CommonFormats {
     }
     public static com.rbmhtechnology.eventuate.serializer.CommonFormats.PayloadFormat parseFrom(java.io.InputStream input)
         throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
+      return PARSER.parseFrom(input);
     }
     public static com.rbmhtechnology.eventuate.serializer.CommonFormats.PayloadFormat parseFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
+      return PARSER.parseFrom(input, extensionRegistry);
     }
     public static com.rbmhtechnology.eventuate.serializer.CommonFormats.PayloadFormat parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input);
+      return PARSER.parseDelimitedFrom(input);
     }
     public static com.rbmhtechnology.eventuate.serializer.CommonFormats.PayloadFormat parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+      return PARSER.parseDelimitedFrom(input, extensionRegistry);
     }
     public static com.rbmhtechnology.eventuate.serializer.CommonFormats.PayloadFormat parseFrom(
         com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
+      return PARSER.parseFrom(input);
     }
     public static com.rbmhtechnology.eventuate.serializer.CommonFormats.PayloadFormat parseFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
+      return PARSER.parseFrom(input, extensionRegistry);
     }
 
+    public static Builder newBuilder() { return Builder.create(); }
     public Builder newBuilderForType() { return newBuilder(); }
-    public static Builder newBuilder() {
-      return DEFAULT_INSTANCE.toBuilder();
-    }
     public static Builder newBuilder(com.rbmhtechnology.eventuate.serializer.CommonFormats.PayloadFormat prototype) {
-      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+      return newBuilder().mergeFrom(prototype);
     }
-    public Builder toBuilder() {
-      return this == DEFAULT_INSTANCE
-          ? new Builder() : new Builder().mergeFrom(this);
-    }
+    public Builder toBuilder() { return newBuilder(this); }
 
     @java.lang.Override
     protected Builder newBuilderForType(
-        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
       Builder builder = new Builder(parent);
       return builder;
     }
     /**
+     * Protobuf type {@code PayloadFormat}
+     *
      * <pre>
+     *
      * This message is used for (de-)serializing custom payloads, like
      * custom events, snapshots or replication filters
      * </pre>
-     *
-     * Protobuf type {@code PayloadFormat}
      */
     public static final class Builder extends
-        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-        // @@protoc_insertion_point(builder_implements:PayloadFormat)
-        com.rbmhtechnology.eventuate.serializer.CommonFormats.PayloadFormatOrBuilder {
+        com.google.protobuf.GeneratedMessage.Builder<Builder>
+       implements com.rbmhtechnology.eventuate.serializer.CommonFormats.PayloadFormatOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
         return com.rbmhtechnology.eventuate.serializer.CommonFormats.internal_static_PayloadFormat_descriptor;
       }
 
-      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
           internalGetFieldAccessorTable() {
         return com.rbmhtechnology.eventuate.serializer.CommonFormats.internal_static_PayloadFormat_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
@@ -483,15 +443,18 @@ public final class CommonFormats {
       }
 
       private Builder(
-          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
         super(parent);
         maybeForceBuilderInitialization();
       }
       private void maybeForceBuilderInitialization() {
-        if (com.google.protobuf.GeneratedMessageV3
-                .alwaysUseFieldBuilders) {
+        if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
         }
       }
+      private static Builder create() {
+        return new Builder();
+      }
+
       public Builder clear() {
         super.clear();
         serializerId_ = 0;
@@ -503,6 +466,10 @@ public final class CommonFormats {
         isStringManifest_ = false;
         bitField0_ = (bitField0_ & ~0x00000008);
         return this;
+      }
+
+      public Builder clone() {
+        return create().mergeFrom(buildPartial());
       }
 
       public com.google.protobuf.Descriptors.Descriptor
@@ -547,32 +514,6 @@ public final class CommonFormats {
         return result;
       }
 
-      public Builder clone() {
-        return (Builder) super.clone();
-      }
-      public Builder setField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          Object value) {
-        return (Builder) super.setField(field, value);
-      }
-      public Builder clearField(
-          com.google.protobuf.Descriptors.FieldDescriptor field) {
-        return (Builder) super.clearField(field);
-      }
-      public Builder clearOneof(
-          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
-        return (Builder) super.clearOneof(oneof);
-      }
-      public Builder setRepeatedField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          int index, Object value) {
-        return (Builder) super.setRepeatedField(field, index, value);
-      }
-      public Builder addRepeatedField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          Object value) {
-        return (Builder) super.addRepeatedField(field, value);
-      }
       public Builder mergeFrom(com.google.protobuf.Message other) {
         if (other instanceof com.rbmhtechnology.eventuate.serializer.CommonFormats.PayloadFormat) {
           return mergeFrom((com.rbmhtechnology.eventuate.serializer.CommonFormats.PayloadFormat)other);
@@ -598,8 +539,7 @@ public final class CommonFormats {
         if (other.hasIsStringManifest()) {
           setIsStringManifest(other.getIsStringManifest());
         }
-        this.mergeUnknownFields(other.unknownFields);
-        onChanged();
+        this.mergeUnknownFields(other.getUnknownFields());
         return this;
       }
 
@@ -616,7 +556,7 @@ public final class CommonFormats {
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
         } catch (com.google.protobuf.InvalidProtocolBufferException e) {
           parsedMessage = (com.rbmhtechnology.eventuate.serializer.CommonFormats.PayloadFormat) e.getUnfinishedMessage();
-          throw e.unwrapIOException();
+          throw e;
         } finally {
           if (parsedMessage != null) {
             mergeFrom(parsedMessage);
@@ -626,6 +566,7 @@ public final class CommonFormats {
       }
       private int bitField0_;
 
+      // optional int32 serializerId = 1;
       private int serializerId_ ;
       /**
        * <code>optional int32 serializerId = 1;</code>
@@ -658,6 +599,7 @@ public final class CommonFormats {
         return this;
       }
 
+      // optional bytes payload = 2;
       private com.google.protobuf.ByteString payload_ = com.google.protobuf.ByteString.EMPTY;
       /**
        * <code>optional bytes payload = 2;</code>
@@ -693,6 +635,7 @@ public final class CommonFormats {
         return this;
       }
 
+      // optional string payloadManifest = 3;
       private java.lang.Object payloadManifest_ = "";
       /**
        * <code>optional string payloadManifest = 3;</code>
@@ -706,12 +649,9 @@ public final class CommonFormats {
       public java.lang.String getPayloadManifest() {
         java.lang.Object ref = payloadManifest_;
         if (!(ref instanceof java.lang.String)) {
-          com.google.protobuf.ByteString bs =
-              (com.google.protobuf.ByteString) ref;
-          java.lang.String s = bs.toStringUtf8();
-          if (bs.isValidUtf8()) {
-            payloadManifest_ = s;
-          }
+          java.lang.String s = ((com.google.protobuf.ByteString) ref)
+              .toStringUtf8();
+          payloadManifest_ = s;
           return s;
         } else {
           return (java.lang.String) ref;
@@ -769,6 +709,7 @@ public final class CommonFormats {
         return this;
       }
 
+      // optional bool isStringManifest = 4;
       private boolean isStringManifest_ ;
       /**
        * <code>optional bool isStringManifest = 4;</code>
@@ -800,59 +741,22 @@ public final class CommonFormats {
         onChanged();
         return this;
       }
-      public final Builder setUnknownFields(
-          final com.google.protobuf.UnknownFieldSet unknownFields) {
-        return super.setUnknownFields(unknownFields);
-      }
-
-      public final Builder mergeUnknownFields(
-          final com.google.protobuf.UnknownFieldSet unknownFields) {
-        return super.mergeUnknownFields(unknownFields);
-      }
-
 
       // @@protoc_insertion_point(builder_scope:PayloadFormat)
     }
 
-    // @@protoc_insertion_point(class_scope:PayloadFormat)
-    private static final com.rbmhtechnology.eventuate.serializer.CommonFormats.PayloadFormat DEFAULT_INSTANCE;
     static {
-      DEFAULT_INSTANCE = new com.rbmhtechnology.eventuate.serializer.CommonFormats.PayloadFormat();
+      defaultInstance = new PayloadFormat(true);
+      defaultInstance.initFields();
     }
 
-    public static com.rbmhtechnology.eventuate.serializer.CommonFormats.PayloadFormat getDefaultInstance() {
-      return DEFAULT_INSTANCE;
-    }
-
-    @java.lang.Deprecated public static final com.google.protobuf.Parser<PayloadFormat>
-        PARSER = new com.google.protobuf.AbstractParser<PayloadFormat>() {
-      public PayloadFormat parsePartialFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws com.google.protobuf.InvalidProtocolBufferException {
-          return new PayloadFormat(input, extensionRegistry);
-      }
-    };
-
-    public static com.google.protobuf.Parser<PayloadFormat> parser() {
-      return PARSER;
-    }
-
-    @java.lang.Override
-    public com.google.protobuf.Parser<PayloadFormat> getParserForType() {
-      return PARSER;
-    }
-
-    public com.rbmhtechnology.eventuate.serializer.CommonFormats.PayloadFormat getDefaultInstanceForType() {
-      return DEFAULT_INSTANCE;
-    }
-
+    // @@protoc_insertion_point(class_scope:PayloadFormat)
   }
 
-  public interface VersionedFormatOrBuilder extends
-      // @@protoc_insertion_point(interface_extends:VersionedFormat)
-      com.google.protobuf.MessageOrBuilder {
+  public interface VersionedFormatOrBuilder
+      extends com.google.protobuf.MessageOrBuilder {
 
+    // optional .PayloadFormat payload = 1;
     /**
      * <code>optional .PayloadFormat payload = 1;</code>
      */
@@ -866,6 +770,7 @@ public final class CommonFormats {
      */
     com.rbmhtechnology.eventuate.serializer.CommonFormats.PayloadFormatOrBuilder getPayloadOrBuilder();
 
+    // optional .VectorTimeFormat vectorTimestamp = 2;
     /**
      * <code>optional .VectorTimeFormat vectorTimestamp = 2;</code>
      */
@@ -879,6 +784,7 @@ public final class CommonFormats {
      */
     com.rbmhtechnology.eventuate.serializer.CommonFormats.VectorTimeFormatOrBuilder getVectorTimestampOrBuilder();
 
+    // optional int64 systemTimestamp = 3;
     /**
      * <code>optional int64 systemTimestamp = 3;</code>
      */
@@ -888,6 +794,7 @@ public final class CommonFormats {
      */
     long getSystemTimestamp();
 
+    // optional string creator = 4;
     /**
      * <code>optional string creator = 4;</code>
      */
@@ -905,29 +812,36 @@ public final class CommonFormats {
   /**
    * Protobuf type {@code VersionedFormat}
    */
-  public  static final class VersionedFormat extends
-      com.google.protobuf.GeneratedMessageV3 implements
-      // @@protoc_insertion_point(message_implements:VersionedFormat)
-      VersionedFormatOrBuilder {
+  public static final class VersionedFormat extends
+      com.google.protobuf.GeneratedMessage
+      implements VersionedFormatOrBuilder {
     // Use VersionedFormat.newBuilder() to construct.
-    private VersionedFormat(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+    private VersionedFormat(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
       super(builder);
+      this.unknownFields = builder.getUnknownFields();
     }
-    private VersionedFormat() {
-      systemTimestamp_ = 0L;
-      creator_ = "";
+    private VersionedFormat(boolean noInit) { this.unknownFields = com.google.protobuf.UnknownFieldSet.getDefaultInstance(); }
+
+    private static final VersionedFormat defaultInstance;
+    public static VersionedFormat getDefaultInstance() {
+      return defaultInstance;
     }
 
+    public VersionedFormat getDefaultInstanceForType() {
+      return defaultInstance;
+    }
+
+    private final com.google.protobuf.UnknownFieldSet unknownFields;
     @java.lang.Override
     public final com.google.protobuf.UnknownFieldSet
-    getUnknownFields() {
+        getUnknownFields() {
       return this.unknownFields;
     }
     private VersionedFormat(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
-      this();
+      initFields();
       int mutable_bitField0_ = 0;
       com.google.protobuf.UnknownFieldSet.Builder unknownFields =
           com.google.protobuf.UnknownFieldSet.newBuilder();
@@ -978,9 +892,8 @@ public final class CommonFormats {
               break;
             }
             case 34: {
-              com.google.protobuf.ByteString bs = input.readBytes();
               bitField0_ |= 0x00000008;
-              creator_ = bs;
+              creator_ = input.readBytes();
               break;
             }
           }
@@ -989,7 +902,7 @@ public final class CommonFormats {
         throw e.setUnfinishedMessage(this);
       } catch (java.io.IOException e) {
         throw new com.google.protobuf.InvalidProtocolBufferException(
-            e).setUnfinishedMessage(this);
+            e.getMessage()).setUnfinishedMessage(this);
       } finally {
         this.unknownFields = unknownFields.build();
         makeExtensionsImmutable();
@@ -1000,14 +913,30 @@ public final class CommonFormats {
       return com.rbmhtechnology.eventuate.serializer.CommonFormats.internal_static_VersionedFormat_descriptor;
     }
 
-    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
         internalGetFieldAccessorTable() {
       return com.rbmhtechnology.eventuate.serializer.CommonFormats.internal_static_VersionedFormat_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
               com.rbmhtechnology.eventuate.serializer.CommonFormats.VersionedFormat.class, com.rbmhtechnology.eventuate.serializer.CommonFormats.VersionedFormat.Builder.class);
     }
 
+    public static com.google.protobuf.Parser<VersionedFormat> PARSER =
+        new com.google.protobuf.AbstractParser<VersionedFormat>() {
+      public VersionedFormat parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new VersionedFormat(input, extensionRegistry);
+      }
+    };
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<VersionedFormat> getParserForType() {
+      return PARSER;
+    }
+
     private int bitField0_;
+    // optional .PayloadFormat payload = 1;
     public static final int PAYLOAD_FIELD_NUMBER = 1;
     private com.rbmhtechnology.eventuate.serializer.CommonFormats.PayloadFormat payload_;
     /**
@@ -1020,15 +949,16 @@ public final class CommonFormats {
      * <code>optional .PayloadFormat payload = 1;</code>
      */
     public com.rbmhtechnology.eventuate.serializer.CommonFormats.PayloadFormat getPayload() {
-      return payload_ == null ? com.rbmhtechnology.eventuate.serializer.CommonFormats.PayloadFormat.getDefaultInstance() : payload_;
+      return payload_;
     }
     /**
      * <code>optional .PayloadFormat payload = 1;</code>
      */
     public com.rbmhtechnology.eventuate.serializer.CommonFormats.PayloadFormatOrBuilder getPayloadOrBuilder() {
-      return payload_ == null ? com.rbmhtechnology.eventuate.serializer.CommonFormats.PayloadFormat.getDefaultInstance() : payload_;
+      return payload_;
     }
 
+    // optional .VectorTimeFormat vectorTimestamp = 2;
     public static final int VECTORTIMESTAMP_FIELD_NUMBER = 2;
     private com.rbmhtechnology.eventuate.serializer.CommonFormats.VectorTimeFormat vectorTimestamp_;
     /**
@@ -1041,15 +971,16 @@ public final class CommonFormats {
      * <code>optional .VectorTimeFormat vectorTimestamp = 2;</code>
      */
     public com.rbmhtechnology.eventuate.serializer.CommonFormats.VectorTimeFormat getVectorTimestamp() {
-      return vectorTimestamp_ == null ? com.rbmhtechnology.eventuate.serializer.CommonFormats.VectorTimeFormat.getDefaultInstance() : vectorTimestamp_;
+      return vectorTimestamp_;
     }
     /**
      * <code>optional .VectorTimeFormat vectorTimestamp = 2;</code>
      */
     public com.rbmhtechnology.eventuate.serializer.CommonFormats.VectorTimeFormatOrBuilder getVectorTimestampOrBuilder() {
-      return vectorTimestamp_ == null ? com.rbmhtechnology.eventuate.serializer.CommonFormats.VectorTimeFormat.getDefaultInstance() : vectorTimestamp_;
+      return vectorTimestamp_;
     }
 
+    // optional int64 systemTimestamp = 3;
     public static final int SYSTEMTIMESTAMP_FIELD_NUMBER = 3;
     private long systemTimestamp_;
     /**
@@ -1065,8 +996,9 @@ public final class CommonFormats {
       return systemTimestamp_;
     }
 
+    // optional string creator = 4;
     public static final int CREATOR_FIELD_NUMBER = 4;
-    private volatile java.lang.Object creator_;
+    private java.lang.Object creator_;
     /**
      * <code>optional string creator = 4;</code>
      */
@@ -1107,11 +1039,16 @@ public final class CommonFormats {
       }
     }
 
+    private void initFields() {
+      payload_ = com.rbmhtechnology.eventuate.serializer.CommonFormats.PayloadFormat.getDefaultInstance();
+      vectorTimestamp_ = com.rbmhtechnology.eventuate.serializer.CommonFormats.VectorTimeFormat.getDefaultInstance();
+      systemTimestamp_ = 0L;
+      creator_ = "";
+    }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
-      if (isInitialized == 1) return true;
-      if (isInitialized == 0) return false;
+      if (isInitialized != -1) return isInitialized == 1;
 
       if (hasVectorTimestamp()) {
         if (!getVectorTimestamp().isInitialized()) {
@@ -1125,109 +1062,54 @@ public final class CommonFormats {
 
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
+      getSerializedSize();
       if (((bitField0_ & 0x00000001) == 0x00000001)) {
-        output.writeMessage(1, getPayload());
+        output.writeMessage(1, payload_);
       }
       if (((bitField0_ & 0x00000002) == 0x00000002)) {
-        output.writeMessage(2, getVectorTimestamp());
+        output.writeMessage(2, vectorTimestamp_);
       }
       if (((bitField0_ & 0x00000004) == 0x00000004)) {
         output.writeInt64(3, systemTimestamp_);
       }
       if (((bitField0_ & 0x00000008) == 0x00000008)) {
-        com.google.protobuf.GeneratedMessageV3.writeString(output, 4, creator_);
+        output.writeBytes(4, getCreatorBytes());
       }
-      unknownFields.writeTo(output);
+      getUnknownFields().writeTo(output);
     }
 
+    private int memoizedSerializedSize = -1;
     public int getSerializedSize() {
-      int size = memoizedSize;
+      int size = memoizedSerializedSize;
       if (size != -1) return size;
 
       size = 0;
       if (((bitField0_ & 0x00000001) == 0x00000001)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(1, getPayload());
+          .computeMessageSize(1, payload_);
       }
       if (((bitField0_ & 0x00000002) == 0x00000002)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeMessageSize(2, getVectorTimestamp());
+          .computeMessageSize(2, vectorTimestamp_);
       }
       if (((bitField0_ & 0x00000004) == 0x00000004)) {
         size += com.google.protobuf.CodedOutputStream
           .computeInt64Size(3, systemTimestamp_);
       }
       if (((bitField0_ & 0x00000008) == 0x00000008)) {
-        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(4, creator_);
+        size += com.google.protobuf.CodedOutputStream
+          .computeBytesSize(4, getCreatorBytes());
       }
-      size += unknownFields.getSerializedSize();
-      memoizedSize = size;
+      size += getUnknownFields().getSerializedSize();
+      memoizedSerializedSize = size;
       return size;
     }
 
     private static final long serialVersionUID = 0L;
     @java.lang.Override
-    public boolean equals(final java.lang.Object obj) {
-      if (obj == this) {
-       return true;
-      }
-      if (!(obj instanceof com.rbmhtechnology.eventuate.serializer.CommonFormats.VersionedFormat)) {
-        return super.equals(obj);
-      }
-      com.rbmhtechnology.eventuate.serializer.CommonFormats.VersionedFormat other = (com.rbmhtechnology.eventuate.serializer.CommonFormats.VersionedFormat) obj;
-
-      boolean result = true;
-      result = result && (hasPayload() == other.hasPayload());
-      if (hasPayload()) {
-        result = result && getPayload()
-            .equals(other.getPayload());
-      }
-      result = result && (hasVectorTimestamp() == other.hasVectorTimestamp());
-      if (hasVectorTimestamp()) {
-        result = result && getVectorTimestamp()
-            .equals(other.getVectorTimestamp());
-      }
-      result = result && (hasSystemTimestamp() == other.hasSystemTimestamp());
-      if (hasSystemTimestamp()) {
-        result = result && (getSystemTimestamp()
-            == other.getSystemTimestamp());
-      }
-      result = result && (hasCreator() == other.hasCreator());
-      if (hasCreator()) {
-        result = result && getCreator()
-            .equals(other.getCreator());
-      }
-      result = result && unknownFields.equals(other.unknownFields);
-      return result;
-    }
-
-    @java.lang.Override
-    public int hashCode() {
-      if (memoizedHashCode != 0) {
-        return memoizedHashCode;
-      }
-      int hash = 41;
-      hash = (19 * hash) + getDescriptorForType().hashCode();
-      if (hasPayload()) {
-        hash = (37 * hash) + PAYLOAD_FIELD_NUMBER;
-        hash = (53 * hash) + getPayload().hashCode();
-      }
-      if (hasVectorTimestamp()) {
-        hash = (37 * hash) + VECTORTIMESTAMP_FIELD_NUMBER;
-        hash = (53 * hash) + getVectorTimestamp().hashCode();
-      }
-      if (hasSystemTimestamp()) {
-        hash = (37 * hash) + SYSTEMTIMESTAMP_FIELD_NUMBER;
-        hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
-            getSystemTimestamp());
-      }
-      if (hasCreator()) {
-        hash = (37 * hash) + CREATOR_FIELD_NUMBER;
-        hash = (53 * hash) + getCreator().hashCode();
-      }
-      hash = (29 * hash) + unknownFields.hashCode();
-      memoizedHashCode = hash;
-      return hash;
+    protected java.lang.Object writeReplace()
+        throws java.io.ObjectStreamException {
+      return super.writeReplace();
     }
 
     public static com.rbmhtechnology.eventuate.serializer.CommonFormats.VersionedFormat parseFrom(
@@ -1253,57 +1135,46 @@ public final class CommonFormats {
     }
     public static com.rbmhtechnology.eventuate.serializer.CommonFormats.VersionedFormat parseFrom(java.io.InputStream input)
         throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
+      return PARSER.parseFrom(input);
     }
     public static com.rbmhtechnology.eventuate.serializer.CommonFormats.VersionedFormat parseFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
+      return PARSER.parseFrom(input, extensionRegistry);
     }
     public static com.rbmhtechnology.eventuate.serializer.CommonFormats.VersionedFormat parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input);
+      return PARSER.parseDelimitedFrom(input);
     }
     public static com.rbmhtechnology.eventuate.serializer.CommonFormats.VersionedFormat parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+      return PARSER.parseDelimitedFrom(input, extensionRegistry);
     }
     public static com.rbmhtechnology.eventuate.serializer.CommonFormats.VersionedFormat parseFrom(
         com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
+      return PARSER.parseFrom(input);
     }
     public static com.rbmhtechnology.eventuate.serializer.CommonFormats.VersionedFormat parseFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
+      return PARSER.parseFrom(input, extensionRegistry);
     }
 
+    public static Builder newBuilder() { return Builder.create(); }
     public Builder newBuilderForType() { return newBuilder(); }
-    public static Builder newBuilder() {
-      return DEFAULT_INSTANCE.toBuilder();
-    }
     public static Builder newBuilder(com.rbmhtechnology.eventuate.serializer.CommonFormats.VersionedFormat prototype) {
-      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+      return newBuilder().mergeFrom(prototype);
     }
-    public Builder toBuilder() {
-      return this == DEFAULT_INSTANCE
-          ? new Builder() : new Builder().mergeFrom(this);
-    }
+    public Builder toBuilder() { return newBuilder(this); }
 
     @java.lang.Override
     protected Builder newBuilderForType(
-        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
       Builder builder = new Builder(parent);
       return builder;
     }
@@ -1311,15 +1182,14 @@ public final class CommonFormats {
      * Protobuf type {@code VersionedFormat}
      */
     public static final class Builder extends
-        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-        // @@protoc_insertion_point(builder_implements:VersionedFormat)
-        com.rbmhtechnology.eventuate.serializer.CommonFormats.VersionedFormatOrBuilder {
+        com.google.protobuf.GeneratedMessage.Builder<Builder>
+       implements com.rbmhtechnology.eventuate.serializer.CommonFormats.VersionedFormatOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
         return com.rbmhtechnology.eventuate.serializer.CommonFormats.internal_static_VersionedFormat_descriptor;
       }
 
-      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
           internalGetFieldAccessorTable() {
         return com.rbmhtechnology.eventuate.serializer.CommonFormats.internal_static_VersionedFormat_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
@@ -1332,27 +1202,30 @@ public final class CommonFormats {
       }
 
       private Builder(
-          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
         super(parent);
         maybeForceBuilderInitialization();
       }
       private void maybeForceBuilderInitialization() {
-        if (com.google.protobuf.GeneratedMessageV3
-                .alwaysUseFieldBuilders) {
+        if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
           getPayloadFieldBuilder();
           getVectorTimestampFieldBuilder();
         }
       }
+      private static Builder create() {
+        return new Builder();
+      }
+
       public Builder clear() {
         super.clear();
         if (payloadBuilder_ == null) {
-          payload_ = null;
+          payload_ = com.rbmhtechnology.eventuate.serializer.CommonFormats.PayloadFormat.getDefaultInstance();
         } else {
           payloadBuilder_.clear();
         }
         bitField0_ = (bitField0_ & ~0x00000001);
         if (vectorTimestampBuilder_ == null) {
-          vectorTimestamp_ = null;
+          vectorTimestamp_ = com.rbmhtechnology.eventuate.serializer.CommonFormats.VectorTimeFormat.getDefaultInstance();
         } else {
           vectorTimestampBuilder_.clear();
         }
@@ -1362,6 +1235,10 @@ public final class CommonFormats {
         creator_ = "";
         bitField0_ = (bitField0_ & ~0x00000008);
         return this;
+      }
+
+      public Builder clone() {
+        return create().mergeFrom(buildPartial());
       }
 
       public com.google.protobuf.Descriptors.Descriptor
@@ -1414,32 +1291,6 @@ public final class CommonFormats {
         return result;
       }
 
-      public Builder clone() {
-        return (Builder) super.clone();
-      }
-      public Builder setField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          Object value) {
-        return (Builder) super.setField(field, value);
-      }
-      public Builder clearField(
-          com.google.protobuf.Descriptors.FieldDescriptor field) {
-        return (Builder) super.clearField(field);
-      }
-      public Builder clearOneof(
-          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
-        return (Builder) super.clearOneof(oneof);
-      }
-      public Builder setRepeatedField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          int index, Object value) {
-        return (Builder) super.setRepeatedField(field, index, value);
-      }
-      public Builder addRepeatedField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          Object value) {
-        return (Builder) super.addRepeatedField(field, value);
-      }
       public Builder mergeFrom(com.google.protobuf.Message other) {
         if (other instanceof com.rbmhtechnology.eventuate.serializer.CommonFormats.VersionedFormat) {
           return mergeFrom((com.rbmhtechnology.eventuate.serializer.CommonFormats.VersionedFormat)other);
@@ -1465,14 +1316,14 @@ public final class CommonFormats {
           creator_ = other.creator_;
           onChanged();
         }
-        this.mergeUnknownFields(other.unknownFields);
-        onChanged();
+        this.mergeUnknownFields(other.getUnknownFields());
         return this;
       }
 
       public final boolean isInitialized() {
         if (hasVectorTimestamp()) {
           if (!getVectorTimestamp().isInitialized()) {
+            
             return false;
           }
         }
@@ -1488,7 +1339,7 @@ public final class CommonFormats {
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
         } catch (com.google.protobuf.InvalidProtocolBufferException e) {
           parsedMessage = (com.rbmhtechnology.eventuate.serializer.CommonFormats.VersionedFormat) e.getUnfinishedMessage();
-          throw e.unwrapIOException();
+          throw e;
         } finally {
           if (parsedMessage != null) {
             mergeFrom(parsedMessage);
@@ -1498,8 +1349,9 @@ public final class CommonFormats {
       }
       private int bitField0_;
 
-      private com.rbmhtechnology.eventuate.serializer.CommonFormats.PayloadFormat payload_ = null;
-      private com.google.protobuf.SingleFieldBuilderV3<
+      // optional .PayloadFormat payload = 1;
+      private com.rbmhtechnology.eventuate.serializer.CommonFormats.PayloadFormat payload_ = com.rbmhtechnology.eventuate.serializer.CommonFormats.PayloadFormat.getDefaultInstance();
+      private com.google.protobuf.SingleFieldBuilder<
           com.rbmhtechnology.eventuate.serializer.CommonFormats.PayloadFormat, com.rbmhtechnology.eventuate.serializer.CommonFormats.PayloadFormat.Builder, com.rbmhtechnology.eventuate.serializer.CommonFormats.PayloadFormatOrBuilder> payloadBuilder_;
       /**
        * <code>optional .PayloadFormat payload = 1;</code>
@@ -1512,7 +1364,7 @@ public final class CommonFormats {
        */
       public com.rbmhtechnology.eventuate.serializer.CommonFormats.PayloadFormat getPayload() {
         if (payloadBuilder_ == null) {
-          return payload_ == null ? com.rbmhtechnology.eventuate.serializer.CommonFormats.PayloadFormat.getDefaultInstance() : payload_;
+          return payload_;
         } else {
           return payloadBuilder_.getMessage();
         }
@@ -1553,7 +1405,6 @@ public final class CommonFormats {
       public Builder mergePayload(com.rbmhtechnology.eventuate.serializer.CommonFormats.PayloadFormat value) {
         if (payloadBuilder_ == null) {
           if (((bitField0_ & 0x00000001) == 0x00000001) &&
-              payload_ != null &&
               payload_ != com.rbmhtechnology.eventuate.serializer.CommonFormats.PayloadFormat.getDefaultInstance()) {
             payload_ =
               com.rbmhtechnology.eventuate.serializer.CommonFormats.PayloadFormat.newBuilder(payload_).mergeFrom(value).buildPartial();
@@ -1572,7 +1423,7 @@ public final class CommonFormats {
        */
       public Builder clearPayload() {
         if (payloadBuilder_ == null) {
-          payload_ = null;
+          payload_ = com.rbmhtechnology.eventuate.serializer.CommonFormats.PayloadFormat.getDefaultInstance();
           onChanged();
         } else {
           payloadBuilder_.clear();
@@ -1595,20 +1446,19 @@ public final class CommonFormats {
         if (payloadBuilder_ != null) {
           return payloadBuilder_.getMessageOrBuilder();
         } else {
-          return payload_ == null ?
-              com.rbmhtechnology.eventuate.serializer.CommonFormats.PayloadFormat.getDefaultInstance() : payload_;
+          return payload_;
         }
       }
       /**
        * <code>optional .PayloadFormat payload = 1;</code>
        */
-      private com.google.protobuf.SingleFieldBuilderV3<
+      private com.google.protobuf.SingleFieldBuilder<
           com.rbmhtechnology.eventuate.serializer.CommonFormats.PayloadFormat, com.rbmhtechnology.eventuate.serializer.CommonFormats.PayloadFormat.Builder, com.rbmhtechnology.eventuate.serializer.CommonFormats.PayloadFormatOrBuilder> 
           getPayloadFieldBuilder() {
         if (payloadBuilder_ == null) {
-          payloadBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+          payloadBuilder_ = new com.google.protobuf.SingleFieldBuilder<
               com.rbmhtechnology.eventuate.serializer.CommonFormats.PayloadFormat, com.rbmhtechnology.eventuate.serializer.CommonFormats.PayloadFormat.Builder, com.rbmhtechnology.eventuate.serializer.CommonFormats.PayloadFormatOrBuilder>(
-                  getPayload(),
+                  payload_,
                   getParentForChildren(),
                   isClean());
           payload_ = null;
@@ -1616,8 +1466,9 @@ public final class CommonFormats {
         return payloadBuilder_;
       }
 
-      private com.rbmhtechnology.eventuate.serializer.CommonFormats.VectorTimeFormat vectorTimestamp_ = null;
-      private com.google.protobuf.SingleFieldBuilderV3<
+      // optional .VectorTimeFormat vectorTimestamp = 2;
+      private com.rbmhtechnology.eventuate.serializer.CommonFormats.VectorTimeFormat vectorTimestamp_ = com.rbmhtechnology.eventuate.serializer.CommonFormats.VectorTimeFormat.getDefaultInstance();
+      private com.google.protobuf.SingleFieldBuilder<
           com.rbmhtechnology.eventuate.serializer.CommonFormats.VectorTimeFormat, com.rbmhtechnology.eventuate.serializer.CommonFormats.VectorTimeFormat.Builder, com.rbmhtechnology.eventuate.serializer.CommonFormats.VectorTimeFormatOrBuilder> vectorTimestampBuilder_;
       /**
        * <code>optional .VectorTimeFormat vectorTimestamp = 2;</code>
@@ -1630,7 +1481,7 @@ public final class CommonFormats {
        */
       public com.rbmhtechnology.eventuate.serializer.CommonFormats.VectorTimeFormat getVectorTimestamp() {
         if (vectorTimestampBuilder_ == null) {
-          return vectorTimestamp_ == null ? com.rbmhtechnology.eventuate.serializer.CommonFormats.VectorTimeFormat.getDefaultInstance() : vectorTimestamp_;
+          return vectorTimestamp_;
         } else {
           return vectorTimestampBuilder_.getMessage();
         }
@@ -1671,7 +1522,6 @@ public final class CommonFormats {
       public Builder mergeVectorTimestamp(com.rbmhtechnology.eventuate.serializer.CommonFormats.VectorTimeFormat value) {
         if (vectorTimestampBuilder_ == null) {
           if (((bitField0_ & 0x00000002) == 0x00000002) &&
-              vectorTimestamp_ != null &&
               vectorTimestamp_ != com.rbmhtechnology.eventuate.serializer.CommonFormats.VectorTimeFormat.getDefaultInstance()) {
             vectorTimestamp_ =
               com.rbmhtechnology.eventuate.serializer.CommonFormats.VectorTimeFormat.newBuilder(vectorTimestamp_).mergeFrom(value).buildPartial();
@@ -1690,7 +1540,7 @@ public final class CommonFormats {
        */
       public Builder clearVectorTimestamp() {
         if (vectorTimestampBuilder_ == null) {
-          vectorTimestamp_ = null;
+          vectorTimestamp_ = com.rbmhtechnology.eventuate.serializer.CommonFormats.VectorTimeFormat.getDefaultInstance();
           onChanged();
         } else {
           vectorTimestampBuilder_.clear();
@@ -1713,20 +1563,19 @@ public final class CommonFormats {
         if (vectorTimestampBuilder_ != null) {
           return vectorTimestampBuilder_.getMessageOrBuilder();
         } else {
-          return vectorTimestamp_ == null ?
-              com.rbmhtechnology.eventuate.serializer.CommonFormats.VectorTimeFormat.getDefaultInstance() : vectorTimestamp_;
+          return vectorTimestamp_;
         }
       }
       /**
        * <code>optional .VectorTimeFormat vectorTimestamp = 2;</code>
        */
-      private com.google.protobuf.SingleFieldBuilderV3<
+      private com.google.protobuf.SingleFieldBuilder<
           com.rbmhtechnology.eventuate.serializer.CommonFormats.VectorTimeFormat, com.rbmhtechnology.eventuate.serializer.CommonFormats.VectorTimeFormat.Builder, com.rbmhtechnology.eventuate.serializer.CommonFormats.VectorTimeFormatOrBuilder> 
           getVectorTimestampFieldBuilder() {
         if (vectorTimestampBuilder_ == null) {
-          vectorTimestampBuilder_ = new com.google.protobuf.SingleFieldBuilderV3<
+          vectorTimestampBuilder_ = new com.google.protobuf.SingleFieldBuilder<
               com.rbmhtechnology.eventuate.serializer.CommonFormats.VectorTimeFormat, com.rbmhtechnology.eventuate.serializer.CommonFormats.VectorTimeFormat.Builder, com.rbmhtechnology.eventuate.serializer.CommonFormats.VectorTimeFormatOrBuilder>(
-                  getVectorTimestamp(),
+                  vectorTimestamp_,
                   getParentForChildren(),
                   isClean());
           vectorTimestamp_ = null;
@@ -1734,6 +1583,7 @@ public final class CommonFormats {
         return vectorTimestampBuilder_;
       }
 
+      // optional int64 systemTimestamp = 3;
       private long systemTimestamp_ ;
       /**
        * <code>optional int64 systemTimestamp = 3;</code>
@@ -1766,6 +1616,7 @@ public final class CommonFormats {
         return this;
       }
 
+      // optional string creator = 4;
       private java.lang.Object creator_ = "";
       /**
        * <code>optional string creator = 4;</code>
@@ -1779,12 +1630,9 @@ public final class CommonFormats {
       public java.lang.String getCreator() {
         java.lang.Object ref = creator_;
         if (!(ref instanceof java.lang.String)) {
-          com.google.protobuf.ByteString bs =
-              (com.google.protobuf.ByteString) ref;
-          java.lang.String s = bs.toStringUtf8();
-          if (bs.isValidUtf8()) {
-            creator_ = s;
-          }
+          java.lang.String s = ((com.google.protobuf.ByteString) ref)
+              .toStringUtf8();
+          creator_ = s;
           return s;
         } else {
           return (java.lang.String) ref;
@@ -1841,59 +1689,22 @@ public final class CommonFormats {
         onChanged();
         return this;
       }
-      public final Builder setUnknownFields(
-          final com.google.protobuf.UnknownFieldSet unknownFields) {
-        return super.setUnknownFields(unknownFields);
-      }
-
-      public final Builder mergeUnknownFields(
-          final com.google.protobuf.UnknownFieldSet unknownFields) {
-        return super.mergeUnknownFields(unknownFields);
-      }
-
 
       // @@protoc_insertion_point(builder_scope:VersionedFormat)
     }
 
-    // @@protoc_insertion_point(class_scope:VersionedFormat)
-    private static final com.rbmhtechnology.eventuate.serializer.CommonFormats.VersionedFormat DEFAULT_INSTANCE;
     static {
-      DEFAULT_INSTANCE = new com.rbmhtechnology.eventuate.serializer.CommonFormats.VersionedFormat();
+      defaultInstance = new VersionedFormat(true);
+      defaultInstance.initFields();
     }
 
-    public static com.rbmhtechnology.eventuate.serializer.CommonFormats.VersionedFormat getDefaultInstance() {
-      return DEFAULT_INSTANCE;
-    }
-
-    @java.lang.Deprecated public static final com.google.protobuf.Parser<VersionedFormat>
-        PARSER = new com.google.protobuf.AbstractParser<VersionedFormat>() {
-      public VersionedFormat parsePartialFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws com.google.protobuf.InvalidProtocolBufferException {
-          return new VersionedFormat(input, extensionRegistry);
-      }
-    };
-
-    public static com.google.protobuf.Parser<VersionedFormat> parser() {
-      return PARSER;
-    }
-
-    @java.lang.Override
-    public com.google.protobuf.Parser<VersionedFormat> getParserForType() {
-      return PARSER;
-    }
-
-    public com.rbmhtechnology.eventuate.serializer.CommonFormats.VersionedFormat getDefaultInstanceForType() {
-      return DEFAULT_INSTANCE;
-    }
-
+    // @@protoc_insertion_point(class_scope:VersionedFormat)
   }
 
-  public interface VectorTimeEntryFormatOrBuilder extends
-      // @@protoc_insertion_point(interface_extends:VectorTimeEntryFormat)
-      com.google.protobuf.MessageOrBuilder {
+  public interface VectorTimeEntryFormatOrBuilder
+      extends com.google.protobuf.MessageOrBuilder {
 
+    // required string processId = 1;
     /**
      * <code>required string processId = 1;</code>
      */
@@ -1908,6 +1719,7 @@ public final class CommonFormats {
     com.google.protobuf.ByteString
         getProcessIdBytes();
 
+    // required int64 logicalTime = 2;
     /**
      * <code>required int64 logicalTime = 2;</code>
      */
@@ -1920,29 +1732,36 @@ public final class CommonFormats {
   /**
    * Protobuf type {@code VectorTimeEntryFormat}
    */
-  public  static final class VectorTimeEntryFormat extends
-      com.google.protobuf.GeneratedMessageV3 implements
-      // @@protoc_insertion_point(message_implements:VectorTimeEntryFormat)
-      VectorTimeEntryFormatOrBuilder {
+  public static final class VectorTimeEntryFormat extends
+      com.google.protobuf.GeneratedMessage
+      implements VectorTimeEntryFormatOrBuilder {
     // Use VectorTimeEntryFormat.newBuilder() to construct.
-    private VectorTimeEntryFormat(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+    private VectorTimeEntryFormat(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
       super(builder);
+      this.unknownFields = builder.getUnknownFields();
     }
-    private VectorTimeEntryFormat() {
-      processId_ = "";
-      logicalTime_ = 0L;
+    private VectorTimeEntryFormat(boolean noInit) { this.unknownFields = com.google.protobuf.UnknownFieldSet.getDefaultInstance(); }
+
+    private static final VectorTimeEntryFormat defaultInstance;
+    public static VectorTimeEntryFormat getDefaultInstance() {
+      return defaultInstance;
     }
 
+    public VectorTimeEntryFormat getDefaultInstanceForType() {
+      return defaultInstance;
+    }
+
+    private final com.google.protobuf.UnknownFieldSet unknownFields;
     @java.lang.Override
     public final com.google.protobuf.UnknownFieldSet
-    getUnknownFields() {
+        getUnknownFields() {
       return this.unknownFields;
     }
     private VectorTimeEntryFormat(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
-      this();
+      initFields();
       int mutable_bitField0_ = 0;
       com.google.protobuf.UnknownFieldSet.Builder unknownFields =
           com.google.protobuf.UnknownFieldSet.newBuilder();
@@ -1962,9 +1781,8 @@ public final class CommonFormats {
               break;
             }
             case 10: {
-              com.google.protobuf.ByteString bs = input.readBytes();
               bitField0_ |= 0x00000001;
-              processId_ = bs;
+              processId_ = input.readBytes();
               break;
             }
             case 16: {
@@ -1978,7 +1796,7 @@ public final class CommonFormats {
         throw e.setUnfinishedMessage(this);
       } catch (java.io.IOException e) {
         throw new com.google.protobuf.InvalidProtocolBufferException(
-            e).setUnfinishedMessage(this);
+            e.getMessage()).setUnfinishedMessage(this);
       } finally {
         this.unknownFields = unknownFields.build();
         makeExtensionsImmutable();
@@ -1989,16 +1807,32 @@ public final class CommonFormats {
       return com.rbmhtechnology.eventuate.serializer.CommonFormats.internal_static_VectorTimeEntryFormat_descriptor;
     }
 
-    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
         internalGetFieldAccessorTable() {
       return com.rbmhtechnology.eventuate.serializer.CommonFormats.internal_static_VectorTimeEntryFormat_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
               com.rbmhtechnology.eventuate.serializer.CommonFormats.VectorTimeEntryFormat.class, com.rbmhtechnology.eventuate.serializer.CommonFormats.VectorTimeEntryFormat.Builder.class);
     }
 
+    public static com.google.protobuf.Parser<VectorTimeEntryFormat> PARSER =
+        new com.google.protobuf.AbstractParser<VectorTimeEntryFormat>() {
+      public VectorTimeEntryFormat parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new VectorTimeEntryFormat(input, extensionRegistry);
+      }
+    };
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<VectorTimeEntryFormat> getParserForType() {
+      return PARSER;
+    }
+
     private int bitField0_;
+    // required string processId = 1;
     public static final int PROCESSID_FIELD_NUMBER = 1;
-    private volatile java.lang.Object processId_;
+    private java.lang.Object processId_;
     /**
      * <code>required string processId = 1;</code>
      */
@@ -2039,6 +1873,7 @@ public final class CommonFormats {
       }
     }
 
+    // required int64 logicalTime = 2;
     public static final int LOGICALTIME_FIELD_NUMBER = 2;
     private long logicalTime_;
     /**
@@ -2054,11 +1889,14 @@ public final class CommonFormats {
       return logicalTime_;
     }
 
+    private void initFields() {
+      processId_ = "";
+      logicalTime_ = 0L;
+    }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
-      if (isInitialized == 1) return true;
-      if (isInitialized == 0) return false;
+      if (isInitialized != -1) return isInitialized == 1;
 
       if (!hasProcessId()) {
         memoizedIsInitialized = 0;
@@ -2074,77 +1912,40 @@ public final class CommonFormats {
 
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
+      getSerializedSize();
       if (((bitField0_ & 0x00000001) == 0x00000001)) {
-        com.google.protobuf.GeneratedMessageV3.writeString(output, 1, processId_);
+        output.writeBytes(1, getProcessIdBytes());
       }
       if (((bitField0_ & 0x00000002) == 0x00000002)) {
         output.writeInt64(2, logicalTime_);
       }
-      unknownFields.writeTo(output);
+      getUnknownFields().writeTo(output);
     }
 
+    private int memoizedSerializedSize = -1;
     public int getSerializedSize() {
-      int size = memoizedSize;
+      int size = memoizedSerializedSize;
       if (size != -1) return size;
 
       size = 0;
       if (((bitField0_ & 0x00000001) == 0x00000001)) {
-        size += com.google.protobuf.GeneratedMessageV3.computeStringSize(1, processId_);
+        size += com.google.protobuf.CodedOutputStream
+          .computeBytesSize(1, getProcessIdBytes());
       }
       if (((bitField0_ & 0x00000002) == 0x00000002)) {
         size += com.google.protobuf.CodedOutputStream
           .computeInt64Size(2, logicalTime_);
       }
-      size += unknownFields.getSerializedSize();
-      memoizedSize = size;
+      size += getUnknownFields().getSerializedSize();
+      memoizedSerializedSize = size;
       return size;
     }
 
     private static final long serialVersionUID = 0L;
     @java.lang.Override
-    public boolean equals(final java.lang.Object obj) {
-      if (obj == this) {
-       return true;
-      }
-      if (!(obj instanceof com.rbmhtechnology.eventuate.serializer.CommonFormats.VectorTimeEntryFormat)) {
-        return super.equals(obj);
-      }
-      com.rbmhtechnology.eventuate.serializer.CommonFormats.VectorTimeEntryFormat other = (com.rbmhtechnology.eventuate.serializer.CommonFormats.VectorTimeEntryFormat) obj;
-
-      boolean result = true;
-      result = result && (hasProcessId() == other.hasProcessId());
-      if (hasProcessId()) {
-        result = result && getProcessId()
-            .equals(other.getProcessId());
-      }
-      result = result && (hasLogicalTime() == other.hasLogicalTime());
-      if (hasLogicalTime()) {
-        result = result && (getLogicalTime()
-            == other.getLogicalTime());
-      }
-      result = result && unknownFields.equals(other.unknownFields);
-      return result;
-    }
-
-    @java.lang.Override
-    public int hashCode() {
-      if (memoizedHashCode != 0) {
-        return memoizedHashCode;
-      }
-      int hash = 41;
-      hash = (19 * hash) + getDescriptorForType().hashCode();
-      if (hasProcessId()) {
-        hash = (37 * hash) + PROCESSID_FIELD_NUMBER;
-        hash = (53 * hash) + getProcessId().hashCode();
-      }
-      if (hasLogicalTime()) {
-        hash = (37 * hash) + LOGICALTIME_FIELD_NUMBER;
-        hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
-            getLogicalTime());
-      }
-      hash = (29 * hash) + unknownFields.hashCode();
-      memoizedHashCode = hash;
-      return hash;
+    protected java.lang.Object writeReplace()
+        throws java.io.ObjectStreamException {
+      return super.writeReplace();
     }
 
     public static com.rbmhtechnology.eventuate.serializer.CommonFormats.VectorTimeEntryFormat parseFrom(
@@ -2170,57 +1971,46 @@ public final class CommonFormats {
     }
     public static com.rbmhtechnology.eventuate.serializer.CommonFormats.VectorTimeEntryFormat parseFrom(java.io.InputStream input)
         throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
+      return PARSER.parseFrom(input);
     }
     public static com.rbmhtechnology.eventuate.serializer.CommonFormats.VectorTimeEntryFormat parseFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
+      return PARSER.parseFrom(input, extensionRegistry);
     }
     public static com.rbmhtechnology.eventuate.serializer.CommonFormats.VectorTimeEntryFormat parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input);
+      return PARSER.parseDelimitedFrom(input);
     }
     public static com.rbmhtechnology.eventuate.serializer.CommonFormats.VectorTimeEntryFormat parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+      return PARSER.parseDelimitedFrom(input, extensionRegistry);
     }
     public static com.rbmhtechnology.eventuate.serializer.CommonFormats.VectorTimeEntryFormat parseFrom(
         com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
+      return PARSER.parseFrom(input);
     }
     public static com.rbmhtechnology.eventuate.serializer.CommonFormats.VectorTimeEntryFormat parseFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
+      return PARSER.parseFrom(input, extensionRegistry);
     }
 
+    public static Builder newBuilder() { return Builder.create(); }
     public Builder newBuilderForType() { return newBuilder(); }
-    public static Builder newBuilder() {
-      return DEFAULT_INSTANCE.toBuilder();
-    }
     public static Builder newBuilder(com.rbmhtechnology.eventuate.serializer.CommonFormats.VectorTimeEntryFormat prototype) {
-      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+      return newBuilder().mergeFrom(prototype);
     }
-    public Builder toBuilder() {
-      return this == DEFAULT_INSTANCE
-          ? new Builder() : new Builder().mergeFrom(this);
-    }
+    public Builder toBuilder() { return newBuilder(this); }
 
     @java.lang.Override
     protected Builder newBuilderForType(
-        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
       Builder builder = new Builder(parent);
       return builder;
     }
@@ -2228,15 +2018,14 @@ public final class CommonFormats {
      * Protobuf type {@code VectorTimeEntryFormat}
      */
     public static final class Builder extends
-        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-        // @@protoc_insertion_point(builder_implements:VectorTimeEntryFormat)
-        com.rbmhtechnology.eventuate.serializer.CommonFormats.VectorTimeEntryFormatOrBuilder {
+        com.google.protobuf.GeneratedMessage.Builder<Builder>
+       implements com.rbmhtechnology.eventuate.serializer.CommonFormats.VectorTimeEntryFormatOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
         return com.rbmhtechnology.eventuate.serializer.CommonFormats.internal_static_VectorTimeEntryFormat_descriptor;
       }
 
-      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
           internalGetFieldAccessorTable() {
         return com.rbmhtechnology.eventuate.serializer.CommonFormats.internal_static_VectorTimeEntryFormat_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
@@ -2249,15 +2038,18 @@ public final class CommonFormats {
       }
 
       private Builder(
-          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
         super(parent);
         maybeForceBuilderInitialization();
       }
       private void maybeForceBuilderInitialization() {
-        if (com.google.protobuf.GeneratedMessageV3
-                .alwaysUseFieldBuilders) {
+        if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
         }
       }
+      private static Builder create() {
+        return new Builder();
+      }
+
       public Builder clear() {
         super.clear();
         processId_ = "";
@@ -2265,6 +2057,10 @@ public final class CommonFormats {
         logicalTime_ = 0L;
         bitField0_ = (bitField0_ & ~0x00000002);
         return this;
+      }
+
+      public Builder clone() {
+        return create().mergeFrom(buildPartial());
       }
 
       public com.google.protobuf.Descriptors.Descriptor
@@ -2301,32 +2097,6 @@ public final class CommonFormats {
         return result;
       }
 
-      public Builder clone() {
-        return (Builder) super.clone();
-      }
-      public Builder setField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          Object value) {
-        return (Builder) super.setField(field, value);
-      }
-      public Builder clearField(
-          com.google.protobuf.Descriptors.FieldDescriptor field) {
-        return (Builder) super.clearField(field);
-      }
-      public Builder clearOneof(
-          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
-        return (Builder) super.clearOneof(oneof);
-      }
-      public Builder setRepeatedField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          int index, Object value) {
-        return (Builder) super.setRepeatedField(field, index, value);
-      }
-      public Builder addRepeatedField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          Object value) {
-        return (Builder) super.addRepeatedField(field, value);
-      }
       public Builder mergeFrom(com.google.protobuf.Message other) {
         if (other instanceof com.rbmhtechnology.eventuate.serializer.CommonFormats.VectorTimeEntryFormat) {
           return mergeFrom((com.rbmhtechnology.eventuate.serializer.CommonFormats.VectorTimeEntryFormat)other);
@@ -2346,16 +2116,17 @@ public final class CommonFormats {
         if (other.hasLogicalTime()) {
           setLogicalTime(other.getLogicalTime());
         }
-        this.mergeUnknownFields(other.unknownFields);
-        onChanged();
+        this.mergeUnknownFields(other.getUnknownFields());
         return this;
       }
 
       public final boolean isInitialized() {
         if (!hasProcessId()) {
+          
           return false;
         }
         if (!hasLogicalTime()) {
+          
           return false;
         }
         return true;
@@ -2370,7 +2141,7 @@ public final class CommonFormats {
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
         } catch (com.google.protobuf.InvalidProtocolBufferException e) {
           parsedMessage = (com.rbmhtechnology.eventuate.serializer.CommonFormats.VectorTimeEntryFormat) e.getUnfinishedMessage();
-          throw e.unwrapIOException();
+          throw e;
         } finally {
           if (parsedMessage != null) {
             mergeFrom(parsedMessage);
@@ -2380,6 +2151,7 @@ public final class CommonFormats {
       }
       private int bitField0_;
 
+      // required string processId = 1;
       private java.lang.Object processId_ = "";
       /**
        * <code>required string processId = 1;</code>
@@ -2393,12 +2165,9 @@ public final class CommonFormats {
       public java.lang.String getProcessId() {
         java.lang.Object ref = processId_;
         if (!(ref instanceof java.lang.String)) {
-          com.google.protobuf.ByteString bs =
-              (com.google.protobuf.ByteString) ref;
-          java.lang.String s = bs.toStringUtf8();
-          if (bs.isValidUtf8()) {
-            processId_ = s;
-          }
+          java.lang.String s = ((com.google.protobuf.ByteString) ref)
+              .toStringUtf8();
+          processId_ = s;
           return s;
         } else {
           return (java.lang.String) ref;
@@ -2456,6 +2225,7 @@ public final class CommonFormats {
         return this;
       }
 
+      // required int64 logicalTime = 2;
       private long logicalTime_ ;
       /**
        * <code>required int64 logicalTime = 2;</code>
@@ -2487,59 +2257,22 @@ public final class CommonFormats {
         onChanged();
         return this;
       }
-      public final Builder setUnknownFields(
-          final com.google.protobuf.UnknownFieldSet unknownFields) {
-        return super.setUnknownFields(unknownFields);
-      }
-
-      public final Builder mergeUnknownFields(
-          final com.google.protobuf.UnknownFieldSet unknownFields) {
-        return super.mergeUnknownFields(unknownFields);
-      }
-
 
       // @@protoc_insertion_point(builder_scope:VectorTimeEntryFormat)
     }
 
-    // @@protoc_insertion_point(class_scope:VectorTimeEntryFormat)
-    private static final com.rbmhtechnology.eventuate.serializer.CommonFormats.VectorTimeEntryFormat DEFAULT_INSTANCE;
     static {
-      DEFAULT_INSTANCE = new com.rbmhtechnology.eventuate.serializer.CommonFormats.VectorTimeEntryFormat();
+      defaultInstance = new VectorTimeEntryFormat(true);
+      defaultInstance.initFields();
     }
 
-    public static com.rbmhtechnology.eventuate.serializer.CommonFormats.VectorTimeEntryFormat getDefaultInstance() {
-      return DEFAULT_INSTANCE;
-    }
-
-    @java.lang.Deprecated public static final com.google.protobuf.Parser<VectorTimeEntryFormat>
-        PARSER = new com.google.protobuf.AbstractParser<VectorTimeEntryFormat>() {
-      public VectorTimeEntryFormat parsePartialFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws com.google.protobuf.InvalidProtocolBufferException {
-          return new VectorTimeEntryFormat(input, extensionRegistry);
-      }
-    };
-
-    public static com.google.protobuf.Parser<VectorTimeEntryFormat> parser() {
-      return PARSER;
-    }
-
-    @java.lang.Override
-    public com.google.protobuf.Parser<VectorTimeEntryFormat> getParserForType() {
-      return PARSER;
-    }
-
-    public com.rbmhtechnology.eventuate.serializer.CommonFormats.VectorTimeEntryFormat getDefaultInstanceForType() {
-      return DEFAULT_INSTANCE;
-    }
-
+    // @@protoc_insertion_point(class_scope:VectorTimeEntryFormat)
   }
 
-  public interface VectorTimeFormatOrBuilder extends
-      // @@protoc_insertion_point(interface_extends:VectorTimeFormat)
-      com.google.protobuf.MessageOrBuilder {
+  public interface VectorTimeFormatOrBuilder
+      extends com.google.protobuf.MessageOrBuilder {
 
+    // repeated .VectorTimeEntryFormat entries = 1;
     /**
      * <code>repeated .VectorTimeEntryFormat entries = 1;</code>
      */
@@ -2567,28 +2300,36 @@ public final class CommonFormats {
   /**
    * Protobuf type {@code VectorTimeFormat}
    */
-  public  static final class VectorTimeFormat extends
-      com.google.protobuf.GeneratedMessageV3 implements
-      // @@protoc_insertion_point(message_implements:VectorTimeFormat)
-      VectorTimeFormatOrBuilder {
+  public static final class VectorTimeFormat extends
+      com.google.protobuf.GeneratedMessage
+      implements VectorTimeFormatOrBuilder {
     // Use VectorTimeFormat.newBuilder() to construct.
-    private VectorTimeFormat(com.google.protobuf.GeneratedMessageV3.Builder<?> builder) {
+    private VectorTimeFormat(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
       super(builder);
+      this.unknownFields = builder.getUnknownFields();
     }
-    private VectorTimeFormat() {
-      entries_ = java.util.Collections.emptyList();
+    private VectorTimeFormat(boolean noInit) { this.unknownFields = com.google.protobuf.UnknownFieldSet.getDefaultInstance(); }
+
+    private static final VectorTimeFormat defaultInstance;
+    public static VectorTimeFormat getDefaultInstance() {
+      return defaultInstance;
     }
 
+    public VectorTimeFormat getDefaultInstanceForType() {
+      return defaultInstance;
+    }
+
+    private final com.google.protobuf.UnknownFieldSet unknownFields;
     @java.lang.Override
     public final com.google.protobuf.UnknownFieldSet
-    getUnknownFields() {
+        getUnknownFields() {
       return this.unknownFields;
     }
     private VectorTimeFormat(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws com.google.protobuf.InvalidProtocolBufferException {
-      this();
+      initFields();
       int mutable_bitField0_ = 0;
       com.google.protobuf.UnknownFieldSet.Builder unknownFields =
           com.google.protobuf.UnknownFieldSet.newBuilder();
@@ -2612,8 +2353,7 @@ public final class CommonFormats {
                 entries_ = new java.util.ArrayList<com.rbmhtechnology.eventuate.serializer.CommonFormats.VectorTimeEntryFormat>();
                 mutable_bitField0_ |= 0x00000001;
               }
-              entries_.add(
-                  input.readMessage(com.rbmhtechnology.eventuate.serializer.CommonFormats.VectorTimeEntryFormat.PARSER, extensionRegistry));
+              entries_.add(input.readMessage(com.rbmhtechnology.eventuate.serializer.CommonFormats.VectorTimeEntryFormat.PARSER, extensionRegistry));
               break;
             }
           }
@@ -2622,7 +2362,7 @@ public final class CommonFormats {
         throw e.setUnfinishedMessage(this);
       } catch (java.io.IOException e) {
         throw new com.google.protobuf.InvalidProtocolBufferException(
-            e).setUnfinishedMessage(this);
+            e.getMessage()).setUnfinishedMessage(this);
       } finally {
         if (((mutable_bitField0_ & 0x00000001) == 0x00000001)) {
           entries_ = java.util.Collections.unmodifiableList(entries_);
@@ -2636,13 +2376,29 @@ public final class CommonFormats {
       return com.rbmhtechnology.eventuate.serializer.CommonFormats.internal_static_VectorTimeFormat_descriptor;
     }
 
-    protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
         internalGetFieldAccessorTable() {
       return com.rbmhtechnology.eventuate.serializer.CommonFormats.internal_static_VectorTimeFormat_fieldAccessorTable
           .ensureFieldAccessorsInitialized(
               com.rbmhtechnology.eventuate.serializer.CommonFormats.VectorTimeFormat.class, com.rbmhtechnology.eventuate.serializer.CommonFormats.VectorTimeFormat.Builder.class);
     }
 
+    public static com.google.protobuf.Parser<VectorTimeFormat> PARSER =
+        new com.google.protobuf.AbstractParser<VectorTimeFormat>() {
+      public VectorTimeFormat parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new VectorTimeFormat(input, extensionRegistry);
+      }
+    };
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<VectorTimeFormat> getParserForType() {
+      return PARSER;
+    }
+
+    // repeated .VectorTimeEntryFormat entries = 1;
     public static final int ENTRIES_FIELD_NUMBER = 1;
     private java.util.List<com.rbmhtechnology.eventuate.serializer.CommonFormats.VectorTimeEntryFormat> entries_;
     /**
@@ -2678,11 +2434,13 @@ public final class CommonFormats {
       return entries_.get(index);
     }
 
+    private void initFields() {
+      entries_ = java.util.Collections.emptyList();
+    }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
-      if (isInitialized == 1) return true;
-      if (isInitialized == 0) return false;
+      if (isInitialized != -1) return isInitialized == 1;
 
       for (int i = 0; i < getEntriesCount(); i++) {
         if (!getEntries(i).isInitialized()) {
@@ -2696,14 +2454,16 @@ public final class CommonFormats {
 
     public void writeTo(com.google.protobuf.CodedOutputStream output)
                         throws java.io.IOException {
+      getSerializedSize();
       for (int i = 0; i < entries_.size(); i++) {
         output.writeMessage(1, entries_.get(i));
       }
-      unknownFields.writeTo(output);
+      getUnknownFields().writeTo(output);
     }
 
+    private int memoizedSerializedSize = -1;
     public int getSerializedSize() {
-      int size = memoizedSize;
+      int size = memoizedSerializedSize;
       if (size != -1) return size;
 
       size = 0;
@@ -2711,43 +2471,16 @@ public final class CommonFormats {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(1, entries_.get(i));
       }
-      size += unknownFields.getSerializedSize();
-      memoizedSize = size;
+      size += getUnknownFields().getSerializedSize();
+      memoizedSerializedSize = size;
       return size;
     }
 
     private static final long serialVersionUID = 0L;
     @java.lang.Override
-    public boolean equals(final java.lang.Object obj) {
-      if (obj == this) {
-       return true;
-      }
-      if (!(obj instanceof com.rbmhtechnology.eventuate.serializer.CommonFormats.VectorTimeFormat)) {
-        return super.equals(obj);
-      }
-      com.rbmhtechnology.eventuate.serializer.CommonFormats.VectorTimeFormat other = (com.rbmhtechnology.eventuate.serializer.CommonFormats.VectorTimeFormat) obj;
-
-      boolean result = true;
-      result = result && getEntriesList()
-          .equals(other.getEntriesList());
-      result = result && unknownFields.equals(other.unknownFields);
-      return result;
-    }
-
-    @java.lang.Override
-    public int hashCode() {
-      if (memoizedHashCode != 0) {
-        return memoizedHashCode;
-      }
-      int hash = 41;
-      hash = (19 * hash) + getDescriptorForType().hashCode();
-      if (getEntriesCount() > 0) {
-        hash = (37 * hash) + ENTRIES_FIELD_NUMBER;
-        hash = (53 * hash) + getEntriesList().hashCode();
-      }
-      hash = (29 * hash) + unknownFields.hashCode();
-      memoizedHashCode = hash;
-      return hash;
+    protected java.lang.Object writeReplace()
+        throws java.io.ObjectStreamException {
+      return super.writeReplace();
     }
 
     public static com.rbmhtechnology.eventuate.serializer.CommonFormats.VectorTimeFormat parseFrom(
@@ -2773,57 +2506,46 @@ public final class CommonFormats {
     }
     public static com.rbmhtechnology.eventuate.serializer.CommonFormats.VectorTimeFormat parseFrom(java.io.InputStream input)
         throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
+      return PARSER.parseFrom(input);
     }
     public static com.rbmhtechnology.eventuate.serializer.CommonFormats.VectorTimeFormat parseFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
+      return PARSER.parseFrom(input, extensionRegistry);
     }
     public static com.rbmhtechnology.eventuate.serializer.CommonFormats.VectorTimeFormat parseDelimitedFrom(java.io.InputStream input)
         throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input);
+      return PARSER.parseDelimitedFrom(input);
     }
     public static com.rbmhtechnology.eventuate.serializer.CommonFormats.VectorTimeFormat parseDelimitedFrom(
         java.io.InputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseDelimitedWithIOException(PARSER, input, extensionRegistry);
+      return PARSER.parseDelimitedFrom(input, extensionRegistry);
     }
     public static com.rbmhtechnology.eventuate.serializer.CommonFormats.VectorTimeFormat parseFrom(
         com.google.protobuf.CodedInputStream input)
         throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input);
+      return PARSER.parseFrom(input);
     }
     public static com.rbmhtechnology.eventuate.serializer.CommonFormats.VectorTimeFormat parseFrom(
         com.google.protobuf.CodedInputStream input,
         com.google.protobuf.ExtensionRegistryLite extensionRegistry)
         throws java.io.IOException {
-      return com.google.protobuf.GeneratedMessageV3
-          .parseWithIOException(PARSER, input, extensionRegistry);
+      return PARSER.parseFrom(input, extensionRegistry);
     }
 
+    public static Builder newBuilder() { return Builder.create(); }
     public Builder newBuilderForType() { return newBuilder(); }
-    public static Builder newBuilder() {
-      return DEFAULT_INSTANCE.toBuilder();
-    }
     public static Builder newBuilder(com.rbmhtechnology.eventuate.serializer.CommonFormats.VectorTimeFormat prototype) {
-      return DEFAULT_INSTANCE.toBuilder().mergeFrom(prototype);
+      return newBuilder().mergeFrom(prototype);
     }
-    public Builder toBuilder() {
-      return this == DEFAULT_INSTANCE
-          ? new Builder() : new Builder().mergeFrom(this);
-    }
+    public Builder toBuilder() { return newBuilder(this); }
 
     @java.lang.Override
     protected Builder newBuilderForType(
-        com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
       Builder builder = new Builder(parent);
       return builder;
     }
@@ -2831,15 +2553,14 @@ public final class CommonFormats {
      * Protobuf type {@code VectorTimeFormat}
      */
     public static final class Builder extends
-        com.google.protobuf.GeneratedMessageV3.Builder<Builder> implements
-        // @@protoc_insertion_point(builder_implements:VectorTimeFormat)
-        com.rbmhtechnology.eventuate.serializer.CommonFormats.VectorTimeFormatOrBuilder {
+        com.google.protobuf.GeneratedMessage.Builder<Builder>
+       implements com.rbmhtechnology.eventuate.serializer.CommonFormats.VectorTimeFormatOrBuilder {
       public static final com.google.protobuf.Descriptors.Descriptor
           getDescriptor() {
         return com.rbmhtechnology.eventuate.serializer.CommonFormats.internal_static_VectorTimeFormat_descriptor;
       }
 
-      protected com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
           internalGetFieldAccessorTable() {
         return com.rbmhtechnology.eventuate.serializer.CommonFormats.internal_static_VectorTimeFormat_fieldAccessorTable
             .ensureFieldAccessorsInitialized(
@@ -2852,16 +2573,19 @@ public final class CommonFormats {
       }
 
       private Builder(
-          com.google.protobuf.GeneratedMessageV3.BuilderParent parent) {
+          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
         super(parent);
         maybeForceBuilderInitialization();
       }
       private void maybeForceBuilderInitialization() {
-        if (com.google.protobuf.GeneratedMessageV3
-                .alwaysUseFieldBuilders) {
+        if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
           getEntriesFieldBuilder();
         }
       }
+      private static Builder create() {
+        return new Builder();
+      }
+
       public Builder clear() {
         super.clear();
         if (entriesBuilder_ == null) {
@@ -2871,6 +2595,10 @@ public final class CommonFormats {
           entriesBuilder_.clear();
         }
         return this;
+      }
+
+      public Builder clone() {
+        return create().mergeFrom(buildPartial());
       }
 
       public com.google.protobuf.Descriptors.Descriptor
@@ -2906,32 +2634,6 @@ public final class CommonFormats {
         return result;
       }
 
-      public Builder clone() {
-        return (Builder) super.clone();
-      }
-      public Builder setField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          Object value) {
-        return (Builder) super.setField(field, value);
-      }
-      public Builder clearField(
-          com.google.protobuf.Descriptors.FieldDescriptor field) {
-        return (Builder) super.clearField(field);
-      }
-      public Builder clearOneof(
-          com.google.protobuf.Descriptors.OneofDescriptor oneof) {
-        return (Builder) super.clearOneof(oneof);
-      }
-      public Builder setRepeatedField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          int index, Object value) {
-        return (Builder) super.setRepeatedField(field, index, value);
-      }
-      public Builder addRepeatedField(
-          com.google.protobuf.Descriptors.FieldDescriptor field,
-          Object value) {
-        return (Builder) super.addRepeatedField(field, value);
-      }
       public Builder mergeFrom(com.google.protobuf.Message other) {
         if (other instanceof com.rbmhtechnology.eventuate.serializer.CommonFormats.VectorTimeFormat) {
           return mergeFrom((com.rbmhtechnology.eventuate.serializer.CommonFormats.VectorTimeFormat)other);
@@ -2962,21 +2664,21 @@ public final class CommonFormats {
               entries_ = other.entries_;
               bitField0_ = (bitField0_ & ~0x00000001);
               entriesBuilder_ = 
-                com.google.protobuf.GeneratedMessageV3.alwaysUseFieldBuilders ?
+                com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders ?
                    getEntriesFieldBuilder() : null;
             } else {
               entriesBuilder_.addAllMessages(other.entries_);
             }
           }
         }
-        this.mergeUnknownFields(other.unknownFields);
-        onChanged();
+        this.mergeUnknownFields(other.getUnknownFields());
         return this;
       }
 
       public final boolean isInitialized() {
         for (int i = 0; i < getEntriesCount(); i++) {
           if (!getEntries(i).isInitialized()) {
+            
             return false;
           }
         }
@@ -2992,7 +2694,7 @@ public final class CommonFormats {
           parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
         } catch (com.google.protobuf.InvalidProtocolBufferException e) {
           parsedMessage = (com.rbmhtechnology.eventuate.serializer.CommonFormats.VectorTimeFormat) e.getUnfinishedMessage();
-          throw e.unwrapIOException();
+          throw e;
         } finally {
           if (parsedMessage != null) {
             mergeFrom(parsedMessage);
@@ -3002,6 +2704,7 @@ public final class CommonFormats {
       }
       private int bitField0_;
 
+      // repeated .VectorTimeEntryFormat entries = 1;
       private java.util.List<com.rbmhtechnology.eventuate.serializer.CommonFormats.VectorTimeEntryFormat> entries_ =
         java.util.Collections.emptyList();
       private void ensureEntriesIsMutable() {
@@ -3011,7 +2714,7 @@ public final class CommonFormats {
          }
       }
 
-      private com.google.protobuf.RepeatedFieldBuilderV3<
+      private com.google.protobuf.RepeatedFieldBuilder<
           com.rbmhtechnology.eventuate.serializer.CommonFormats.VectorTimeEntryFormat, com.rbmhtechnology.eventuate.serializer.CommonFormats.VectorTimeEntryFormat.Builder, com.rbmhtechnology.eventuate.serializer.CommonFormats.VectorTimeEntryFormatOrBuilder> entriesBuilder_;
 
       /**
@@ -3143,8 +2846,7 @@ public final class CommonFormats {
           java.lang.Iterable<? extends com.rbmhtechnology.eventuate.serializer.CommonFormats.VectorTimeEntryFormat> values) {
         if (entriesBuilder_ == null) {
           ensureEntriesIsMutable();
-          com.google.protobuf.AbstractMessageLite.Builder.addAll(
-              values, entries_);
+          super.addAll(values, entries_);
           onChanged();
         } else {
           entriesBuilder_.addAllMessages(values);
@@ -3227,11 +2929,11 @@ public final class CommonFormats {
            getEntriesBuilderList() {
         return getEntriesFieldBuilder().getBuilderList();
       }
-      private com.google.protobuf.RepeatedFieldBuilderV3<
+      private com.google.protobuf.RepeatedFieldBuilder<
           com.rbmhtechnology.eventuate.serializer.CommonFormats.VectorTimeEntryFormat, com.rbmhtechnology.eventuate.serializer.CommonFormats.VectorTimeEntryFormat.Builder, com.rbmhtechnology.eventuate.serializer.CommonFormats.VectorTimeEntryFormatOrBuilder> 
           getEntriesFieldBuilder() {
         if (entriesBuilder_ == null) {
-          entriesBuilder_ = new com.google.protobuf.RepeatedFieldBuilderV3<
+          entriesBuilder_ = new com.google.protobuf.RepeatedFieldBuilder<
               com.rbmhtechnology.eventuate.serializer.CommonFormats.VectorTimeEntryFormat, com.rbmhtechnology.eventuate.serializer.CommonFormats.VectorTimeEntryFormat.Builder, com.rbmhtechnology.eventuate.serializer.CommonFormats.VectorTimeEntryFormatOrBuilder>(
                   entries_,
                   ((bitField0_ & 0x00000001) == 0x00000001),
@@ -3241,81 +2943,44 @@ public final class CommonFormats {
         }
         return entriesBuilder_;
       }
-      public final Builder setUnknownFields(
-          final com.google.protobuf.UnknownFieldSet unknownFields) {
-        return super.setUnknownFields(unknownFields);
-      }
-
-      public final Builder mergeUnknownFields(
-          final com.google.protobuf.UnknownFieldSet unknownFields) {
-        return super.mergeUnknownFields(unknownFields);
-      }
-
 
       // @@protoc_insertion_point(builder_scope:VectorTimeFormat)
     }
 
-    // @@protoc_insertion_point(class_scope:VectorTimeFormat)
-    private static final com.rbmhtechnology.eventuate.serializer.CommonFormats.VectorTimeFormat DEFAULT_INSTANCE;
     static {
-      DEFAULT_INSTANCE = new com.rbmhtechnology.eventuate.serializer.CommonFormats.VectorTimeFormat();
+      defaultInstance = new VectorTimeFormat(true);
+      defaultInstance.initFields();
     }
 
-    public static com.rbmhtechnology.eventuate.serializer.CommonFormats.VectorTimeFormat getDefaultInstance() {
-      return DEFAULT_INSTANCE;
-    }
-
-    @java.lang.Deprecated public static final com.google.protobuf.Parser<VectorTimeFormat>
-        PARSER = new com.google.protobuf.AbstractParser<VectorTimeFormat>() {
-      public VectorTimeFormat parsePartialFrom(
-          com.google.protobuf.CodedInputStream input,
-          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-          throws com.google.protobuf.InvalidProtocolBufferException {
-          return new VectorTimeFormat(input, extensionRegistry);
-      }
-    };
-
-    public static com.google.protobuf.Parser<VectorTimeFormat> parser() {
-      return PARSER;
-    }
-
-    @java.lang.Override
-    public com.google.protobuf.Parser<VectorTimeFormat> getParserForType() {
-      return PARSER;
-    }
-
-    public com.rbmhtechnology.eventuate.serializer.CommonFormats.VectorTimeFormat getDefaultInstanceForType() {
-      return DEFAULT_INSTANCE;
-    }
-
+    // @@protoc_insertion_point(class_scope:VectorTimeFormat)
   }
 
-  private static final com.google.protobuf.Descriptors.Descriptor
+  private static com.google.protobuf.Descriptors.Descriptor
     internal_static_PayloadFormat_descriptor;
-  private static final 
-    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+  private static
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_PayloadFormat_fieldAccessorTable;
-  private static final com.google.protobuf.Descriptors.Descriptor
+  private static com.google.protobuf.Descriptors.Descriptor
     internal_static_VersionedFormat_descriptor;
-  private static final 
-    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+  private static
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_VersionedFormat_fieldAccessorTable;
-  private static final com.google.protobuf.Descriptors.Descriptor
+  private static com.google.protobuf.Descriptors.Descriptor
     internal_static_VectorTimeEntryFormat_descriptor;
-  private static final 
-    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+  private static
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_VectorTimeEntryFormat_fieldAccessorTable;
-  private static final com.google.protobuf.Descriptors.Descriptor
+  private static com.google.protobuf.Descriptors.Descriptor
     internal_static_VectorTimeFormat_descriptor;
-  private static final 
-    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+  private static
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_VectorTimeFormat_fieldAccessorTable;
 
   public static com.google.protobuf.Descriptors.FileDescriptor
       getDescriptor() {
     return descriptor;
   }
-  private static  com.google.protobuf.Descriptors.FileDescriptor
+  private static com.google.protobuf.Descriptors.FileDescriptor
       descriptor;
   static {
     java.lang.String[] descriptorData = {
@@ -3332,41 +2997,41 @@ public final class CommonFormats {
       ".rbmhtechnology.eventuate.serializerH\001"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
-        new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
-          public com.google.protobuf.ExtensionRegistry assignDescriptors(
-              com.google.protobuf.Descriptors.FileDescriptor root) {
-            descriptor = root;
-            return null;
-          }
-        };
+      new com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner() {
+        public com.google.protobuf.ExtensionRegistry assignDescriptors(
+            com.google.protobuf.Descriptors.FileDescriptor root) {
+          descriptor = root;
+          internal_static_PayloadFormat_descriptor =
+            getDescriptor().getMessageTypes().get(0);
+          internal_static_PayloadFormat_fieldAccessorTable = new
+            com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+              internal_static_PayloadFormat_descriptor,
+              new java.lang.String[] { "SerializerId", "Payload", "PayloadManifest", "IsStringManifest", });
+          internal_static_VersionedFormat_descriptor =
+            getDescriptor().getMessageTypes().get(1);
+          internal_static_VersionedFormat_fieldAccessorTable = new
+            com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+              internal_static_VersionedFormat_descriptor,
+              new java.lang.String[] { "Payload", "VectorTimestamp", "SystemTimestamp", "Creator", });
+          internal_static_VectorTimeEntryFormat_descriptor =
+            getDescriptor().getMessageTypes().get(2);
+          internal_static_VectorTimeEntryFormat_fieldAccessorTable = new
+            com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+              internal_static_VectorTimeEntryFormat_descriptor,
+              new java.lang.String[] { "ProcessId", "LogicalTime", });
+          internal_static_VectorTimeFormat_descriptor =
+            getDescriptor().getMessageTypes().get(3);
+          internal_static_VectorTimeFormat_fieldAccessorTable = new
+            com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+              internal_static_VectorTimeFormat_descriptor,
+              new java.lang.String[] { "Entries", });
+          return null;
+        }
+      };
     com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
         new com.google.protobuf.Descriptors.FileDescriptor[] {
         }, assigner);
-    internal_static_PayloadFormat_descriptor =
-      getDescriptor().getMessageTypes().get(0);
-    internal_static_PayloadFormat_fieldAccessorTable = new
-      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_PayloadFormat_descriptor,
-        new java.lang.String[] { "SerializerId", "Payload", "PayloadManifest", "IsStringManifest", });
-    internal_static_VersionedFormat_descriptor =
-      getDescriptor().getMessageTypes().get(1);
-    internal_static_VersionedFormat_fieldAccessorTable = new
-      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_VersionedFormat_descriptor,
-        new java.lang.String[] { "Payload", "VectorTimestamp", "SystemTimestamp", "Creator", });
-    internal_static_VectorTimeEntryFormat_descriptor =
-      getDescriptor().getMessageTypes().get(2);
-    internal_static_VectorTimeEntryFormat_fieldAccessorTable = new
-      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_VectorTimeEntryFormat_descriptor,
-        new java.lang.String[] { "ProcessId", "LogicalTime", });
-    internal_static_VectorTimeFormat_descriptor =
-      getDescriptor().getMessageTypes().get(3);
-    internal_static_VectorTimeFormat_fieldAccessorTable = new
-      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
-        internal_static_VectorTimeFormat_descriptor,
-        new java.lang.String[] { "Entries", });
   }
 
   // @@protoc_insertion_point(outer_class_scope)
