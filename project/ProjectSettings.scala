@@ -113,7 +113,7 @@ object ProjectSettings {
 
   lazy val protocSettings: Seq[Setting[_]] = ProtobufPlugin.protobufSettings ++ Seq(
     version in ProtobufPlugin.protobufConfig := ProtobufVersion,
-    ProtobufPlugin.runProtoc in ProtobufPlugin.protobufConfig := (args => com.github.os72.protocjar.Protoc.runProtoc("-v250" +: args.toArray)),
+    ProtobufPlugin.runProtoc in ProtobufPlugin.protobufConfig := (args => com.github.os72.protocjar.Protoc.runProtoc("-v310" +: args.toArray)),
     libraryDependencies += Protobuf
   )
 

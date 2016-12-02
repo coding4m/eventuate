@@ -12,6 +12,6 @@ addSbtPlugin("org.scalariform" % "sbt-scalariform" % "1.6.0")
 
 addSbtPlugin("de.heikoseeberger" % "sbt-header" % "1.5.1")
 
-addSbtPlugin("com.github.gseitz" % "sbt-protobuf" % "0.4.0")
+addSbtPlugin("com.github.gseitz" % "sbt-protobuf" % "0.5.3")
 
-libraryDependencies += "com.github.os72" % "protoc-jar" % "2.x.5"
+libraryDependencies += "com.github.os72" % "protoc-jar" % "3.1.0"
