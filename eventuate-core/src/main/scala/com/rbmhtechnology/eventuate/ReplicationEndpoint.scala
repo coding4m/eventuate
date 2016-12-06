@@ -300,7 +300,8 @@ class ReplicationEndpoint(
   val connectionRoles: Set[String] = Set.empty,
   val endpointFilters: EndpointFilters = NoFilters,
   val applicationName: String = ReplicationEndpoint.DefaultApplicationName,
-  val applicationVersion: ApplicationVersion = ReplicationEndpoint.DefaultApplicationVersion)(implicit val system: ActorSystem) {
+  val applicationVersion: ApplicationVersion = ReplicationEndpoint.DefaultApplicationVersion
+)(implicit val system: ActorSystem) {
 
   private val active: AtomicBoolean =
     new AtomicBoolean(false)
@@ -342,7 +343,7 @@ class ReplicationEndpoint(
     for {
       connections <- recovery.awaitConnections
     } yield recovery.activateConnections(connections)
-  } else Future.failed(new IllegalStateException("Recovery running or endpoint already activated"))
+  } else Future.failed(new IllegalStateException("Replication running or endpoint already activated"))
 
   /**
    * Runs an asynchronous disaster recovery procedure. This procedure recovers this endpoint in case of total or
@@ -401,16 +402,19 @@ class ReplicationEndpoint(
   private def logRecoverySequenceNrs(connections: Set[ReplicationConnection], info: ReplicationInfo): Unit = {
     system.log.info(
       "Disaster recovery initiated for endpoint {}. Sequence numbers of local logs are: {}",
-      info.endpointId, sequenceNrsLogString(info))
+      info.endpointId, sequenceNrsLogString(info)
+    )
     system.log.info(
       "Need to reset replication progress stored at remote replicas {}",
-      connections.map(replicationAcceptor).mkString(","))
+      connections.map(replicationAcceptor).mkString(",")
+    )
   }
 
   private def logRecoveryLinks(links: Set[RecoveryLink], linkType: String): Unit = {
     system.log.info(
       "Start recovery for {} links: (from remote source log (target seq no) -> local target log (initial seq no))\n{}",
-      linkType, links.map(l => s"(${l.replicationLink.source.logId} (${l.remoteSequenceNr}) -> ${l.replicationLink.target.logName} (${l.localSequenceNr}))").mkString(", "))
+      linkType, links.map(l => s"(${l.replicationLink.source.logId} (${l.remoteSequenceNr}) -> ${l.replicationLink.target.logName} (${l.localSequenceNr}))").mkString(", ")
+    )
   }
 
   private def sequenceNrsLogString(info: ReplicationInfo): String =
@@ -462,7 +466,8 @@ class ReplicationEndpoint(
   private[eventuate] def source(
     logName: String,
     connection: ReplicationConnection,
-    endpointInfo: ReplicationInfo): ReplicationSource = {
+    endpointInfo: ReplicationInfo
+  ): ReplicationSource = {
     ReplicationSource(
       endpointInfo.endpointId, logName, endpointInfo.logId(logName), replicationAcceptor(connection)
     )
@@ -470,7 +475,8 @@ class ReplicationEndpoint(
 
   private[eventuate] def replicationLinks(
     connection: ReplicationConnection,
-    endpointInfo: ReplicationInfo): Set[ReplicationLink] = {
+    endpointInfo: ReplicationInfo
+  ): Set[ReplicationLink] = {
     replicationLogs(endpointInfo).map { logName =>
       ReplicationLink(source(logName, connection, endpointInfo), target(logName))
     }
@@ -487,10 +493,10 @@ class ReplicationEndpoint(
     val actor = Acceptor.Name
     val protocol = system match {
       case sys: ExtendedActorSystem => sys.provider.getDefaultAddress.protocol
-      case sys                      => "akka.tcp"
+      case _                        => "akka.tcp"
     }
 
-    system.actorSelection(s"""$protocol://$name@$host:$port/user/$actor""")
+    system.actorSelection(s"$protocol://$name@$host:$port/user/$actor")
   }
 }
 
