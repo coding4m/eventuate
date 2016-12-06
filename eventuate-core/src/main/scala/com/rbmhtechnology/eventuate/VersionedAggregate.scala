@@ -16,14 +16,15 @@
 
 package com.rbmhtechnology.eventuate
 
-import java.util.{ List => JList, Optional => JOption }
+import java.util.{List => JList, Optional => JOption}
 import java.util.function.BiFunction
 
 import scala.collection.JavaConverters._
 import scala.compat.java8.OptionConverters._
 import scala.util._
-
 import VersionedAggregate._
+
+import scala.annotation.implicitNotFound
 
 /**
  * Manages concurrent versions of an event-sourced aggregate.
@@ -42,7 +43,9 @@ case class VersionedAggregate[S, C: DomainCmd, E: DomainEvt](
   evtHandler: (S, E) => S,
   aggregate: Option[ConcurrentVersions[S, E]] = None) {
 
+  @implicitNotFound("No DomainCmd for VersionedAggregate.")
   val C = implicitly[DomainCmd[C]]
+  @implicitNotFound("No DomainEvt for VersionedAggregate.")
   val E = implicitly[DomainEvt[E]]
 
   /**
