@@ -22,9 +22,7 @@ import akka.contrib.pattern.ReceivePipeline.Inner
 /**
  * @author siuming
  */
-trait SnapshotOnEvent {
-
-  this: EventsourcedView with ReceivePipeline =>
+trait SnapshotOnEvent { this: EventsourcedView with ReceivePipeline =>
 
   import EventsourcingProtocol._
 
