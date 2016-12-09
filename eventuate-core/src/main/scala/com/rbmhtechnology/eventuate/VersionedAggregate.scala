@@ -16,7 +16,7 @@
 
 package com.rbmhtechnology.eventuate
 
-import java.util.{List => JList, Optional => JOption}
+import java.util.{ List => JList, Optional => JOption }
 import java.util.function.BiFunction
 
 import scala.collection.JavaConverters._

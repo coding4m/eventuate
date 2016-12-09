@@ -64,7 +64,7 @@ trait EventsourcedPersister extends Actor with Stash {
   val logger: LoggingAdapter =
     Logging(context.system, this)
 
-  def id: String
+  def id: Option[String] = None
 
   /**
    * Event log actor.
@@ -210,14 +210,12 @@ trait EventsourcedPersister extends Actor with Stash {
   /**
    * Internal API.
    */
-  protected def durableEvent(payload: Any, customDestinationAggregateIds: Set[String],
-    deliveryId: Option[String] = None, persistOnEventSequenceNr: Option[Long] = None): DurableEvent =
+  protected def durableEvent(payload: Any, customDestinationAggregateIds: Set[String], deliveryId: Option[String] = None): DurableEvent =
     DurableEvent(
       payload = payload,
-      emitterId = id,
+      emitterId = id.getOrElse(DurableEvent.UndefinedEmittedId),
       customDestinationAggregateIds = customDestinationAggregateIds,
-      deliveryId = deliveryId,
-      persistOnEventSequenceNr = persistOnEventSequenceNr)
+      deliveryId = deliveryId)
 
   /**
    * Adds the current command to the user's command stash. Must not be used in the event handler
