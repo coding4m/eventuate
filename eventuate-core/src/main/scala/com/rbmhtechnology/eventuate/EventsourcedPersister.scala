@@ -25,10 +25,10 @@ import com.rbmhtechnology.eventuate.EventsourcingProtocol.{ Write, WriteFailure,
 import scala.util.{ Failure, Success, Try }
 
 object EventsourcedPersister {
-  type Handler[A] = (ActorRef, Try[A]) => Unit
+  type Handler[A] = Try[A] => Unit
 
   object Handler {
-    def empty[A]: Handler[A] = (_: ActorRef, _: Try[A]) => Unit
+    def empty[A]: Handler[A] = (_: Try[A]) => Unit
   }
 
   /**
@@ -99,15 +99,13 @@ trait EventsourcedPersister extends Actor with Stash {
    * `aggregateId`. Further routing destinations can be defined with the `customDestinationAggregateIds`
    * parameter.
    */
-  final def persistN[A](events: Seq[A], onLast: Handler[A] = Handler.empty[A], customDestinationAggregateIds: Set[String] = Set())(handler: Handler[A]): Unit = events match {
+  final def persistN[A](events: Seq[A], onLast: Handler[A], customDestinationAggregateIds: Set[String] = Set())(handler: Handler[A] = Handler.empty[A]): Unit = events match {
     case Seq() =>
     case es :+ e =>
-      es.foreach { event =>
-        persist(event, customDestinationAggregateIds)(handler)
-      }
-      persist(e, customDestinationAggregateIds) { (sdr, r) =>
-        handler(sdr, r)
-        onLast(sdr, r)
+      es.foreach(event => persist(event, customDestinationAggregateIds)(handler))
+      persist(e, customDestinationAggregateIds) { r =>
+        handler(r)
+        onLast(r)
       }
   }
 
@@ -123,7 +121,7 @@ trait EventsourcedPersister extends Actor with Stash {
    * `aggregateId`. Further routing destinations can be defined with the `customDestinationAggregateIds`
    * parameter.
    */
-  final def persist[A](event: A, customDestinationAggregateIds: Set[String] = Set())(handler: Handler[A]): Unit =
+  final def persist[A](event: A, customDestinationAggregateIds: Set[String] = Set())(handler: Handler[A] = Handler.empty[A]): Unit =
     persistDurableEvent(durableEvent(event, customDestinationAggregateIds), handler.asInstanceOf[Handler[Any]])
 
   /**
@@ -139,11 +137,10 @@ trait EventsourcedPersister extends Actor with Stash {
    */
   def onCommand: Receive
 
-  final def receive: Receive = {
+  final override def receive: Receive = {
     case WriteSuccess(events, cid, iid) => if (writesInProgress.contains(cid) && iid == instanceId) writeReplyHandling(cid) {
-      val sdr = sender()
       events.foreach { event =>
-        writeHandlers.head(sdr, Success(event.payload))
+        writeHandlers.head(Success(event.payload))
         writeHandlers = writeHandlers.tail
       }
       if (stateSync) {
@@ -152,9 +149,8 @@ trait EventsourcedPersister extends Actor with Stash {
       }
     }
     case WriteFailure(events, cause, cid, iid) => if (writesInProgress.contains(cid) && iid == instanceId) writeReplyHandling(cid) {
-      val sdr = sender()
       events.foreach { _ =>
-        writeHandlers.head(sdr, Failure(cause))
+        writeHandlers.head(Failure(cause))
         writeHandlers = writeHandlers.tail
       }
       if (stateSync) {

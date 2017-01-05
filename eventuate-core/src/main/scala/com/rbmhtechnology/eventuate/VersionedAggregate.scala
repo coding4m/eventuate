@@ -16,15 +16,15 @@
 
 package com.rbmhtechnology.eventuate
 
-import java.util.{ List => JList, Optional => JOption }
 import java.util.function.BiFunction
+import java.util.{ List => JList, Optional => JOption }
 
+import com.rbmhtechnology.eventuate.VersionedAggregate._
+
+import scala.annotation.implicitNotFound
 import scala.collection.JavaConverters._
 import scala.compat.java8.OptionConverters._
 import scala.util._
-import VersionedAggregate._
-
-import scala.annotation.implicitNotFound
 
 /**
  * Manages concurrent versions of an event-sourced aggregate.
@@ -100,29 +100,42 @@ case class VersionedAggregate[S, C: DomainCmd, E: DomainEvt](
       Seq.empty
   }
 
-  def validateCreate(cmd: C): Try[E] = aggregate match {
+  def validateCreate(
+    cmd: C,
+    onViolated: (String) => Throwable = id => new AggregateAlreadyExistsException(id)
+  ): Try[E] = aggregate match {
     case None =>
       cmdHandler(null.asInstanceOf[S] /* FIXME */ , cmd)
     case Some(_) =>
-      Failure(new AggregateAlreadyExistsException(id))
+      Failure(onViolated(id))
   }
 
-  def validateUpdate(cmd: C): Try[E] = aggregate match {
+  def validateUpdate(
+    cmd: C,
+    onViolated: (String) => Throwable = id => new AggregateDoesNotExistException(id),
+    onConflicted: (String, Seq[Versioned[S]]) => Throwable = (id, versioneds) => new ConflictDetectedException[S](id, versioneds)
+  ): Try[E] = aggregate match {
     case None =>
-      Failure(new AggregateDoesNotExistException(id))
+      Failure(onViolated(id))
     case Some(versions) if versions.conflict =>
-      Failure(new ConflictDetectedException[S](id, versions.all))
+      Failure(onConflicted(id, versions.all))
     case Some(versions) =>
-      cmdHandler(versions.all(0).value, cmd)
+      cmdHandler(versions.all.head.value, cmd)
   }
 
-  def validateResolve(selected: Int, origin: String): Try[Resolved] = aggregate match {
+  def validateResolve(
+    selected: Int,
+    origin: String,
+    onViolated: (String) => Throwable = id => new AggregateDoesNotExistException(id),
+    onConflictNotDetected: (String) => Throwable = id => new ConflictNotDetectedException(id),
+    onConflictResolutionRejected: (String, String, String) => Throwable = (id, owner, origin) => new ConflictResolutionRejectedException(id, owner, origin)
+  ): Try[Resolved] = aggregate match {
     case None =>
-      Failure(new AggregateDoesNotExistException(id))
+      Failure(onViolated(id))
     case Some(versions) if !versions.conflict =>
-      Failure(new ConflictNotDetectedException(id))
+      Failure(onConflictNotDetected(id))
     case Some(versions) if versions.owner != origin =>
-      Failure(new ConflictResolutionRejectedException(id, versions.owner, origin))
+      Failure(onConflictResolutionRejected(id, versions.owner, origin))
     case Some(versions) =>
       Success(Resolved(id, versions.all(selected).vectorTimestamp, origin))
   }
@@ -131,8 +144,8 @@ case class VersionedAggregate[S, C: DomainCmd, E: DomainEvt](
     val versions = aggregate match {
       case None =>
         ConcurrentVersionsTree(evtHandler).withOwner(E.origin(evt))
-      case Some(versions) => // concurrent create
-        versions.withOwner(priority(versions.owner, E.origin(evt)))
+      case Some(cv) => // concurrent create
+        cv.withOwner(priority(cv.owner, E.origin(evt)))
     }
     copy(aggregate = Some(versions.update(evt, timestamp)))
   }
@@ -166,22 +179,22 @@ object VersionedAggregate {
   }
 
   class AggregateNotLoadedException(id: String)
-    extends Exception(s"aggregate ${id} not loaded")
+    extends Exception(s"aggregate $id not loaded")
 
   class AggregateAlreadyExistsException(id: String)
-    extends Exception(s"aggregate ${id} already exists")
+    extends Exception(s"aggregate $id already exists")
 
   class AggregateDoesNotExistException(id: String)
-    extends Exception(s"aggregate ${id} does not exist")
+    extends Exception(s"aggregate $id does not exist")
 
   class ConflictResolutionRejectedException(id: String, origin1: String, origin2: String)
-    extends Exception(s"conflict for aggregate ${id} can only be resolved by ${origin1} but ${origin2} has attempted")
+    extends Exception(s"conflict for aggregate $id can only be resolved by $origin1 but $origin2 has attempted")
 
   class ConflictNotDetectedException(id: String)
-    extends Exception(s"conflict for aggregate ${id} not detected")
+    extends Exception(s"conflict for aggregate $id not detected")
 
   class ConflictDetectedException[S](id: String, val versions: Seq[Versioned[S]])
-    extends Exception(s"conflict for aggregate ${id} detected") {
+    extends Exception(s"conflict for aggregate $id detected") {
 
     /**
      * Java API that returns the [[versions]].
