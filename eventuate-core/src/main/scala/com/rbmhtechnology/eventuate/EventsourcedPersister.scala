@@ -99,7 +99,7 @@ trait EventsourcedPersister extends Actor with Stash {
    * `aggregateId`. Further routing destinations can be defined with the `customDestinationAggregateIds`
    * parameter.
    */
-  final def persistN[A](events: Seq[A], onLast: Handler[A], customDestinationAggregateIds: Set[String] = Set())(handler: Handler[A] = Handler.empty[A]): Unit = events match {
+  final def persistN[A](events: Seq[A], onLast: Handler[A], customDestinationAggregateIds: Set[String] = Set())(handler: Handler[A]): Unit = events match {
     case Seq() =>
     case es :+ e =>
       es.foreach(event => persist(event, customDestinationAggregateIds)(handler))
@@ -121,7 +121,7 @@ trait EventsourcedPersister extends Actor with Stash {
    * `aggregateId`. Further routing destinations can be defined with the `customDestinationAggregateIds`
    * parameter.
    */
-  final def persist[A](event: A, customDestinationAggregateIds: Set[String] = Set())(handler: Handler[A] = Handler.empty[A]): Unit =
+  final def persist[A](event: A, customDestinationAggregateIds: Set[String] = Set())(handler: Handler[A]): Unit =
     persistDurableEvent(durableEvent(event, customDestinationAggregateIds), handler.asInstanceOf[Handler[Any]])
 
   /**
