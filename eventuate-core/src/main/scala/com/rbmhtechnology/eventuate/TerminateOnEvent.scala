@@ -25,7 +25,7 @@ import scala.concurrent.duration._
  */
 trait TerminateOnEvent extends Actor {
 
-  val terminateSettings: TerminateSettings = TerminateSettings(PoisonPill, 30.minutes, context.parent)
+  private val terminateSettings: TerminateSettings = TerminateSettings(PoisonPill, 30.minutes, context.parent)
 
   @scala.throws[Exception](classOf[Exception])
   override def preStart() = {
