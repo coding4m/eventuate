@@ -17,24 +17,24 @@
 package com.rbmhtechnology.eventuate
 
 import akka.actor.{ Actor, PoisonPill, ReceiveTimeout }
-import akka.contrib.pattern.ReceivePipeline
-import akka.contrib.pattern.ReceivePipeline.{ HandledCompletely, Inner }
 
 import scala.concurrent.duration._
 
 /**
  * @author siuming
  */
-trait TerminateOnEvent { this: EventsourcedView with ReceivePipeline =>
-  lazy val terminateSettings: TerminateSettings = TerminateSettings(PoisonPill, 30.minutes, context.parent)
+trait TerminateOnEvent extends Actor {
 
-  context.setReceiveTimeout(terminateSettings.terminateTimeout)
-  pipelineOuter {
-    case ReceiveTimeout =>
-      terminateSettings.terminateSupervisor ! terminateSettings.terminateMsg
-      HandledCompletely
-    case any =>
-      Inner(any)
+  val terminateSettings: TerminateSettings = TerminateSettings(PoisonPill, 30.minutes, context.parent)
+
+  @scala.throws[Exception](classOf[Exception])
+  override def preStart() = {
+    super.preStart()
+    context.setReceiveTimeout(terminateSettings.terminateTimeout)
   }
 
+  override def unhandled(message: Any) = message match {
+    case ReceiveTimeout => terminateSettings.terminateSupervisor ! terminateSettings.terminateMsg
+    case _              => super.unhandled(message)
+  }
 }
