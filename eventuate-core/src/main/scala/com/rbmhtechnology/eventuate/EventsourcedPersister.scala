@@ -99,11 +99,11 @@ trait EventsourcedPersister extends Actor with Stash {
    * `aggregateId`. Further routing destinations can be defined with the `customDestinationAggregateIds`
    * parameter.
    */
-  final def persistN[A](events: Seq[A], onLast: Handler[A], customDestinationAggregateIds: Set[String] = Set())(handler: Handler[A]): Unit = events match {
+  final def persistN[A](events: Seq[A], onLast: Handler[A], aggregateId: Option[String] = None, customDestinationAggregateIds: Set[String] = Set())(handler: Handler[A]): Unit = events match {
     case Seq() =>
     case es :+ e =>
-      es.foreach(event => persist(event, customDestinationAggregateIds)(handler))
-      persist(e, customDestinationAggregateIds) { r =>
+      es.foreach(event => persist(event, aggregateId, customDestinationAggregateIds)(handler))
+      persist(e, aggregateId, customDestinationAggregateIds) { r =>
         handler(r)
         onLast(r)
       }
@@ -121,8 +121,8 @@ trait EventsourcedPersister extends Actor with Stash {
    * `aggregateId`. Further routing destinations can be defined with the `customDestinationAggregateIds`
    * parameter.
    */
-  final def persist[A](event: A, customDestinationAggregateIds: Set[String] = Set())(handler: Handler[A]): Unit =
-    persistDurableEvent(durableEvent(event, customDestinationAggregateIds), handler.asInstanceOf[Handler[Any]])
+  final def persist[A](event: A, aggregateId: Option[String] = None, customDestinationAggregateIds: Set[String] = Set())(handler: Handler[A]): Unit =
+    persistDurableEvent(durableEvent(event, aggregateId, customDestinationAggregateIds), handler.asInstanceOf[Handler[Any]])
 
   /**
    * Internal API.
@@ -206,10 +206,11 @@ trait EventsourcedPersister extends Actor with Stash {
   /**
    * Internal API.
    */
-  protected def durableEvent(payload: Any, customDestinationAggregateIds: Set[String], deliveryId: Option[String] = None): DurableEvent =
+  protected def durableEvent(payload: Any, aggregateId: Option[String] = None, customDestinationAggregateIds: Set[String], deliveryId: Option[String] = None): DurableEvent =
     DurableEvent(
       payload = payload,
       emitterId = id.getOrElse(DurableEvent.UndefinedEmittedId),
+      emitterAggregateId = aggregateId,
       customDestinationAggregateIds = customDestinationAggregateIds,
       deliveryId = deliveryId)
 
