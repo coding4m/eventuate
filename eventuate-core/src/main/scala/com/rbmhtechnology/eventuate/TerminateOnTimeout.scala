@@ -23,7 +23,7 @@ import scala.concurrent.duration._
 /**
  * @author siuming
  */
-trait TerminateOnEvent extends Actor {
+trait TerminateOnTimeout extends Actor {
 
   def terminateSettings: TerminateSettings =
     TerminateSettings(PoisonPill, 30.seconds, context.parent)
