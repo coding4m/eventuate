@@ -104,10 +104,8 @@ case class VersionedAggregate[S, C: DomainCmd, E: DomainEvt](
     cmd: C,
     onViolated: (String) => Throwable = id => new AggregateAlreadyExistsException(id)
   ): Try[E] = aggregate match {
-    case None =>
-      cmdHandler(null.asInstanceOf[S] /* FIXME */ , cmd)
-    case Some(_) =>
-      Failure(onViolated(id))
+    case None    => cmdHandler(null.asInstanceOf[S] /* FIXME */ , cmd)
+    case Some(_) => Failure(onViolated(id))
   }
 
   def validateUpdate(
@@ -115,12 +113,9 @@ case class VersionedAggregate[S, C: DomainCmd, E: DomainEvt](
     onViolated: (String) => Throwable = id => new AggregateDoesNotExistException(id),
     onConflicted: (String, Seq[Versioned[S]]) => Throwable = (id, versioneds) => new ConflictDetectedException[S](id, versioneds)
   ): Try[E] = aggregate match {
-    case None =>
-      Failure(onViolated(id))
-    case Some(versions) if versions.conflict =>
-      Failure(onConflicted(id, versions.all))
-    case Some(versions) =>
-      cmdHandler(versions.all.head.value, cmd)
+    case None                                => Failure(onViolated(id))
+    case Some(versions) if versions.conflict => Failure(onConflicted(id, versions.all))
+    case Some(versions)                      => cmdHandler(versions.all.head.value, cmd)
   }
 
   def validateResolve(
@@ -130,22 +125,17 @@ case class VersionedAggregate[S, C: DomainCmd, E: DomainEvt](
     onConflictNotDetected: (String) => Throwable = id => new ConflictNotDetectedException(id),
     onConflictResolutionRejected: (String, String, String) => Throwable = (id, owner, origin) => new ConflictResolutionRejectedException(id, owner, origin)
   ): Try[Resolved] = aggregate match {
-    case None =>
-      Failure(onViolated(id))
-    case Some(versions) if !versions.conflict =>
-      Failure(onConflictNotDetected(id))
-    case Some(versions) if versions.owner != origin =>
-      Failure(onConflictResolutionRejected(id, versions.owner, origin))
-    case Some(versions) =>
-      Success(Resolved(id, versions.all(selected).vectorTimestamp, origin))
+    case None                                       => Failure(onViolated(id))
+    case Some(versions) if !versions.conflict       => Failure(onConflictNotDetected(id))
+    case Some(versions) if versions.owner != origin => Failure(onConflictResolutionRejected(id, versions.owner, origin))
+    case Some(versions)                             => Success(Resolved(id, versions.all(selected).vectorTimestamp, origin))
   }
 
   def handleCreated(evt: E, timestamp: VectorTime, sequenceNr: Long): VersionedAggregate[S, C, E] = {
     val versions = aggregate match {
-      case None =>
-        ConcurrentVersionsTree(evtHandler).withOwner(E.origin(evt))
-      case Some(cv) => // concurrent create
-        cv.withOwner(priority(cv.owner, E.origin(evt)))
+      case None     => ConcurrentVersionsTree(evtHandler).withOwner(E.origin(evt))
+      // concurrent create
+      case Some(cv) => cv.withOwner(priority(cv.owner, E.origin(evt)))
     }
     copy(aggregate = Some(versions.update(evt, timestamp)))
   }
@@ -207,10 +197,7 @@ object VersionedAggregate {
     id: String,
     cmdHandler: BiFunction[S, C, E],
     evtHandler: BiFunction[S, E, S]) =
-    new VersionedAggregate[S, C, E](
-      id,
-      (s, c) => Try(cmdHandler.apply(s, c)),
-      (s, e) => evtHandler.apply(s, e))
+    new VersionedAggregate[S, C, E](id, (s, c) => Try(cmdHandler.apply(s, c)), (s, e) => evtHandler.apply(s, e))
 
   def priority(creator1: String, creator2: String): String =
     if (creator1 < creator2) creator1 else creator2
