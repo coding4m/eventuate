@@ -98,6 +98,8 @@ trait EventsourcedProcessor extends EventsourcedWriter[Long, Long] with ActorLog
    */
   def processEvent: Process
 
+  def postProcessEvent(payload: Any, e: DurableEvent): DurableEvent = e
+
   /**
    * Returns an command [[BehaviorContext]] that doesn't allow event handler behavior changes. An
    * attempt to change the event handler behavior with `eventContext.become()` will throw an
@@ -113,7 +115,9 @@ trait EventsourcedProcessor extends EventsourcedWriter[Long, Long] with ActorLog
     case payload if processEvent.isDefinedAt(payload) =>
       val currentProcessedEvents = processEvent(payload)
       if (lastSequenceNr > processingProgress)
-        processedEvents = processedEvents :+ currentProcessedEvents.map(createEvent(_, lastHandledEvent.customDestinationAggregateIds))
+        processedEvents = processedEvents :+ currentProcessedEvents.map { payload =>
+          postProcessEvent(payload, createEvent(payload, lastHandledEvent.customDestinationAggregateIds))
+        }
   }
 
   /**
@@ -176,18 +180,6 @@ trait EventsourcedProcessor extends EventsourcedWriter[Long, Long] with ActorLog
   /**
    * Internal API.
    */
-  protected def durableEvent(payload: Any, customDestinationAggregateIds: Set[String]): DurableEvent =
-    DurableEvent(
-      payload = payload,
-      emitterId = id,
-      emitterAggregateId = aggregateId,
-      customDestinationAggregateIds = customDestinationAggregateIds,
-      vectorTimestamp = lastVectorTimestamp,
-      processId = DurableEvent.UndefinedLogId)
-
-  /**
-   * Internal API.
-   */
   private[eventuate] def createEvent(payload: Any, customDestinationAggregateIds: Set[String]): DurableEvent = payload match {
     case e: DurableEvent => e
     case _ => DurableEvent(
@@ -196,7 +188,7 @@ trait EventsourcedProcessor extends EventsourcedWriter[Long, Long] with ActorLog
       emitterAggregateId = aggregateId,
       customDestinationAggregateIds = customDestinationAggregateIds,
       vectorTimestamp = lastVectorTimestamp,
-      processId = DurableEvent.UndefinedLogId)
+      processId = lastProcessId)
   }
 
   private def splitBatches(events: Vector[Seq[DurableEvent]]): (Vector[Seq[DurableEvent]], Vector[Seq[DurableEvent]]) = {
@@ -242,8 +234,10 @@ trait StatefulProcessor extends EventsourcedProcessor with EventsourcedVersion {
   /**
    * Internal API.
    */
-  override private[eventuate] def createEvent(payload: Any, customDestinationAggregateIds: Set[String]): DurableEvent =
-    durableEvent(payload, customDestinationAggregateIds)
+  override private[eventuate] def createEvent(payload: Any, customDestinationAggregateIds: Set[String]): DurableEvent = payload match {
+    case e: DurableEvent => e
+    case _               => durableEvent(payload, customDestinationAggregateIds)
+  }
 
   /**
    * Sets the read processing progress for this processor and returns `None`.
