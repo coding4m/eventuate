@@ -65,13 +65,13 @@ trait EventsourcedPersister extends Actor with Stash {
     Logging(context.system, this)
 
   /**
-   *
+   * emit aggregate id.
    */
   def aggregateId: Option[String] =
     None
 
   /**
-   * Global unique actor id.
+   * emit id.
    */
   def id: String
 
