@@ -176,7 +176,7 @@ trait EventsourcedProcessor extends EventsourcedWriter[Long, Long] with ActorLog
   /**
    * Internal API.
    */
-  private[eventuate] def createEvent(payload: Any, customDestinationAggregateIds: Set[String]): DurableEvent =
+  protected def durableEvent(payload: Any, customDestinationAggregateIds: Set[String]): DurableEvent =
     DurableEvent(
       payload = payload,
       emitterId = id,
@@ -184,6 +184,20 @@ trait EventsourcedProcessor extends EventsourcedWriter[Long, Long] with ActorLog
       customDestinationAggregateIds = customDestinationAggregateIds,
       vectorTimestamp = lastVectorTimestamp,
       processId = DurableEvent.UndefinedLogId)
+
+  /**
+   * Internal API.
+   */
+  private[eventuate] def createEvent(payload: Any, customDestinationAggregateIds: Set[String]): DurableEvent = payload match {
+    case e: DurableEvent => e
+    case _ => DurableEvent(
+      payload = payload,
+      emitterId = id,
+      emitterAggregateId = aggregateId,
+      customDestinationAggregateIds = customDestinationAggregateIds,
+      vectorTimestamp = lastVectorTimestamp,
+      processId = DurableEvent.UndefinedLogId)
+  }
 
   private def splitBatches(events: Vector[Seq[DurableEvent]]): (Vector[Seq[DurableEvent]], Vector[Seq[DurableEvent]]) = {
     var num = 0

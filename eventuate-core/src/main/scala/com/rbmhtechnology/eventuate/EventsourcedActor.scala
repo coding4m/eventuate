@@ -87,9 +87,7 @@ trait EventsourcedActor extends EventsourcedView with EventsourcedVersion {
   final def persistN[A](events: Seq[A], onLast: Handler[A] = (_: Try[A]) => (), customDestinationAggregateIds: Set[String] = Set())(handler: Handler[A]): Unit = events match {
     case Seq() =>
     case es :+ e =>
-      es.foreach { event =>
-        persist(event, customDestinationAggregateIds)(handler)
-      }
+      es.foreach(event => persist(event, customDestinationAggregateIds)(handler))
       persist(e, customDestinationAggregateIds) { r =>
         handler(r)
         onLast(r)
