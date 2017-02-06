@@ -60,6 +60,12 @@ case class VersionedAggregate[S, C: DomainCmd, E: DomainEvt](
   def getVersions: JList[Versioned[S]] =
     versions.asJava
 
+  def getHeadVersion: Versioned[S] =
+    versions.head
+
+  def getLastVersion: Versioned[S] =
+    versions.last
+
   /**
    * Java API.
    *
@@ -99,6 +105,12 @@ case class VersionedAggregate[S, C: DomainCmd, E: DomainEvt](
     case None =>
       Seq.empty
   }
+
+  def headVersion: Versioned[S] =
+    versions.head
+
+  def lastVersion: Versioned[S] =
+    versions.last
 
   def validateCreate(
     cmd: C,
