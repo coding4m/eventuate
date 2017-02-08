@@ -65,8 +65,8 @@ object ReplicationEndpoint {
    */
   private object Address {
 
-    val hostAndPort = new Regex("([^:]+):(.+)")
-    val hostAndPortWithName = new Regex("([^@]+)@([^:]+):(.+)")
+    val hostAndPort = "([^:]+):([0-9]+)".r
+    val hostAndPortWithName = "([^@]+)@([^:]+):([0-9]+)".r
 
     def unapply(s: String): Option[(String, String, Int)] = s match {
       case hostAndPort(host, port) =>
