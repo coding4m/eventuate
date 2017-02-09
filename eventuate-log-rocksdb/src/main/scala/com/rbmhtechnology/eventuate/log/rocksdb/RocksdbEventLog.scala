@@ -131,8 +131,7 @@ class RocksdbEventLog(id: String, prefix: String) extends EventLog[RocksdbEventL
   protected val rocksdbWriteOptions = new WriteOptions().setSync(settings.fsync)
   protected val rocksdb = {
     Files.createDirectories(rocksdbDir)
-    RocksDB.loadLibrary()
-    RocksDB.open(rocksdbOptions, rocksdbDir.toString)
+    RocksDB.open(rocksdbOptions, rocksdbDir.toAbsolutePath.toString)
   }
 
   private val aggregateIdMap = new RocksdbNumericIdentifierStore(rocksdb, -1)
@@ -141,6 +140,13 @@ class RocksdbEventLog(id: String, prefix: String) extends EventLog[RocksdbEventL
   private val deletionMetadataStore = new RocksdbDeletionMetadataStore(rocksdb, rocksdbWriteOptions, -4)
 
   private var updateCount: Long = 0L
+
+  override def preStart(): Unit = {
+    withIterator(iter => aggregateIdMap.readIdMap(iter))
+    withIterator(iter => eventLogIdMap.readIdMap(iter))
+    rocksdb.put(eventKeyEndBytes, Array.empty[Byte])
+    super.preStart()
+  }
 
   /**
    * Asynchronously recovers event log state from the storage backend.
@@ -322,6 +328,11 @@ class RocksdbEventLog(id: String, prefix: String) extends EventLog[RocksdbEventL
 
   private def spawnDeletionActor(toSequenceNr: Long, promise: Promise[Unit]): ActorRef =
     context.actorOf(RocksdbDeletionActor.props(rocksdb, new ReadOptions().setVerifyChecksums(false), rocksdbWriteOptions, settings.deletionBatchSize, toSequenceNr, promise))
+
+  override def postStop(): Unit = {
+    rocksdb.close()
+    super.postStop()
+  }
 
   private def eventBytes(e: DurableEvent): Array[Byte] =
     serialization.serialize(e).get

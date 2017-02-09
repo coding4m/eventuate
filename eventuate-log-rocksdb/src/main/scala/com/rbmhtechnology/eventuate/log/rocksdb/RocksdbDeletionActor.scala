@@ -53,7 +53,7 @@ private class RocksdbDeletionActor(
     case DeleteBatch =>
       withBatch { batch =>
         eventKeyIterator.take(batchSize).foreach { eventKey =>
-          batch.remove(RocksdbEventLog.eventKeyBytes(eventKey.classifier, eventKey.sequenceNr))
+          batch.remove(eventKeyBytes(eventKey.classifier, eventKey.sequenceNr))
         }
       }
       if (eventKeyIterator.hasNext) {
