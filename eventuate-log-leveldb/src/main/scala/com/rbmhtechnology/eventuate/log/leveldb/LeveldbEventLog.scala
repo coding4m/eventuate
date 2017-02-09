@@ -89,7 +89,7 @@ class LeveldbEventLog(id: String, prefix: String) extends EventLog[LeveldbEventL
   override val settings = new LeveldbEventLogSettings(context.system.settings.config)
   private val serialization = SerializationExtension(context.system)
 
-  private val leveldbDir = new File(settings.rootDir, s"${prefix}-${id}"); leveldbDir.mkdirs()
+  private val leveldbDir = new File(settings.rootDir, s"$prefix-$id"); leveldbDir.mkdirs()
   private val leveldbOptions = new Options().createIfMissing(true)
   private def leveldbReadOptions = new ReadOptions().verifyChecksums(false)
 
