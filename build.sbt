@@ -124,7 +124,7 @@ lazy val adapterStream = (project in file("eventuate-adapter-stream"))
 //  .enablePlugins(HeaderPlugin, AutomateHeaderPlugin)
 
 lazy val examples = (project in file("eventuate-examples"))
-  .dependsOn(core, logLeveldb)
+  .dependsOn(core, logLeveldb, logRocksdb)
   .settings(name := "eventuate-examples")
   .settings(commonSettings: _*)
   .settings(exampleSettings: _*)

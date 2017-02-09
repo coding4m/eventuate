@@ -126,13 +126,10 @@ class RocksdbEventLog(id: String, prefix: String) extends EventLog[RocksdbEventL
   override val settings = new RocksdbEventLogSettings(context.system.settings.config)
   private val serialization = SerializationExtension(context.system)
 
-  private val rocksdbDir = Paths.get(settings.rootDir, s"$prefix-$id")
+  private val rocksdbDir = Paths.get(settings.rootDir, s"$prefix-$id"); Files.createDirectories(rocksdbDir)
   private val rocksdbOptions = new Options().setCreateIfMissing(true)
   protected val rocksdbWriteOptions = new WriteOptions().setSync(settings.fsync)
-  protected val rocksdb = {
-    Files.createDirectories(rocksdbDir)
-    RocksDB.open(rocksdbOptions, rocksdbDir.toAbsolutePath.toString)
-  }
+  protected val rocksdb = RocksDB.open(rocksdbOptions, rocksdbDir.toAbsolutePath.toString)
 
   private val aggregateIdMap = new RocksdbNumericIdentifierStore(rocksdb, -1)
   private val eventLogIdMap = new RocksdbNumericIdentifierStore(rocksdb, -2)
