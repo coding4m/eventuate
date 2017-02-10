@@ -17,10 +17,9 @@
 package com.rbmhtechnology.example.ordermgnt
 
 import akka.actor._
-
 import com.rbmhtechnology.eventuate._
 import com.rbmhtechnology.eventuate.VersionedAggregate._
-import com.rbmhtechnology.eventuate.log.leveldb.LeveldbEventLog
+import com.rbmhtechnology.eventuate.log.rocksdb.RocksdbEventLog
 import com.typesafe.config.ConfigFactory
 
 import scala.concurrent.Future
@@ -88,7 +87,7 @@ class OrderExample(manager: ActorRef, view: ActorRef) extends Actor {
 object OrderExample extends App {
   val recover = args(1) == "recover"
   val system = ActorSystem(ReplicationConnection.DefaultRemoteSystemName, ConfigFactory.load(args(0)))
-  val endpoint = ReplicationEndpoint(id => LeveldbEventLog.props(id, "s"))(system)
+  val endpoint = ReplicationEndpoint(id => RocksdbEventLog.props(id, "s"))(system)
 
   import system.dispatcher
 
