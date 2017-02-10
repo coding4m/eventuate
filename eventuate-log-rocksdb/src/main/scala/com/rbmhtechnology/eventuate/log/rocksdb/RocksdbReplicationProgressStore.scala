@@ -55,25 +55,26 @@ private class RocksdbReplicationProgressStore(rocksdb: RocksDB, classifier: Int,
   @tailrec
   private def readReplicationProgresses(rpMap: Map[Int, Long], iter: RocksIterator): Map[Int, Long] = {
     if (!iter.isValid) rpMap else {
-      iter.next()
       val nextKey = rpKey(iter.key())
       if (nextKey == rpKeyEnd) rpMap else {
         val nextVal = RocksdbEventLog.longFromBytes(iter.value())
+        iter.next()
         readReplicationProgresses(rpMap + (nextKey -> nextVal), iter)
       }
     }
   }
 
   private def rpKeyBytes(nid: Int): Array[Byte] = {
-    val bb = ByteBuffer.allocate(8)
+    // to ensure key order, key length same to event key length.
+    val bb = ByteBuffer.allocate(12)
     bb.putInt(classifier)
-    bb.putInt(nid)
+    bb.putLong(nid)
     bb.array
   }
 
   private def rpKey(a: Array[Byte]): Int = {
     val bb = ByteBuffer.wrap(a)
     bb.getInt
-    bb.getInt
+    bb.getLong.toInt
   }
 }

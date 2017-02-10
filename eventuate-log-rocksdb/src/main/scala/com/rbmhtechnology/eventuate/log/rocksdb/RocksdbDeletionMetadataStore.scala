@@ -22,8 +22,8 @@ import com.rbmhtechnology.eventuate.log.DeletionMetadata
 import org.rocksdb.{ RocksDB, WriteOptions }
 
 private class RocksdbDeletionMetadataStore(val rocksdb: RocksDB, val rocksdbWriteOptions: WriteOptions, classifier: Int) extends RocksdbBatchLayer {
-  private val DeletedToSequenceNrKey: Int = 1
-  private val RemoteLogIdsKey: Int = 2
+  private val DeletedToSequenceNrKey: Long = 1L
+  private val RemoteLogIdsKey: Long = 2L
 
   private val StringSetSeparatorChar = '\u0000'
 
@@ -38,10 +38,10 @@ private class RocksdbDeletionMetadataStore(val rocksdb: RocksDB, val rocksdbWrit
     DeletionMetadata(toSequenceNr, remoteLogIds)
   }
 
-  private def idKeyBytes(key: Int): Array[Byte] = {
-    val bb = ByteBuffer.allocate(8)
+  private def idKeyBytes(key: Long): Array[Byte] = {
+    val bb = ByteBuffer.allocate(12)
     bb.putInt(classifier)
-    bb.putInt(key)
+    bb.putLong(key)
     bb.array
   }
 

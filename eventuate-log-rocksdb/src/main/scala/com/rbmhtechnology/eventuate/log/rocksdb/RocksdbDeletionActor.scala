@@ -66,15 +66,12 @@ private class RocksdbDeletionActor(
 
   private def newEventKeyIterator: CloseableIterator[EventKey] = {
     new Iterator[EventKey] with Closeable {
-      val iterator = rocksdb.newIterator(rocksdbReadOptions.setSnapshot(rocksdb.getSnapshot))
+      val iterator = rocksdb.newIterator(rocksdbReadOptions)
       iterator.seek(eventKeyBytes(EventKey.DefaultClassifier, 1L))
 
       @tailrec
       override def hasNext: Boolean = {
-        val key = if (iterator.isValid) {
-          iterator.next()
-          eventKey(iterator.key())
-        } else eventKeyEnd
+        val key = if (iterator.isValid) eventKey(iterator.key()) else eventKeyEnd
         key != eventKeyEnd &&
           (key.sequenceNr <= toSequenceNr || {
             iterator.seek(eventKeyBytes(key.classifier + 1, 1L))
@@ -82,7 +79,11 @@ private class RocksdbDeletionActor(
           })
       }
 
-      override def next() = eventKey(iterator.key())
+      override def next() = {
+        val res = eventKey(iterator.key())
+        iterator.next()
+        res
+      }
       override def close() = {
         iterator.close()
         rocksdbReadOptions.snapshot().close()

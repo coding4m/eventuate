@@ -30,8 +30,8 @@ import com.typesafe.config.Config
 import org.rocksdb._
 
 import scala.collection.immutable.{ Seq, VectorBuilder }
-import scala.concurrent.{ Future, Promise }
 import scala.concurrent.duration._
+import scala.concurrent.{ Future, Promise }
 import scala.util.{ Failure, Success, Try }
 
 /**
@@ -181,7 +181,7 @@ class RocksdbEventLog(id: String, prefix: String) extends EventLog[RocksdbEventL
    *                       or earlier if `max` events have already been read.
    */
   override def read(fromSequenceNr: Long, toSequenceNr: Long, max: Int) =
-    eventReader().ask(EventReader.ReadSync(fromSequenceNr, toSequenceNr, EventKey.DefaultClassifier, max))(settings.readTimeout, self).mapTo[BatchReadResult]
+    eventReader().ask(EventReader.ReadSync(fromSequenceNr, toSequenceNr, EventKey.DefaultClassifier, max, Int.MaxValue, _ => true))(settings.readTimeout, self).mapTo[BatchReadResult]
 
   /**
    * Asynchronously batch-reads events whose `destinationAggregateIds` contains the given `aggregateId`. At most
@@ -192,7 +192,7 @@ class RocksdbEventLog(id: String, prefix: String) extends EventLog[RocksdbEventL
    *                       or earlier if `max` events have already been read.
    */
   override def read(fromSequenceNr: Long, toSequenceNr: Long, max: Int, aggregateId: String) =
-    eventReader().ask(EventReader.ReadSync(fromSequenceNr, toSequenceNr, aggregateIdMap.numericId(aggregateId), max))(settings.readTimeout, self).mapTo[BatchReadResult]
+    eventReader().ask(EventReader.ReadSync(fromSequenceNr, toSequenceNr, aggregateIdMap.numericId(aggregateId), max, Int.MaxValue, _ => true))(settings.readTimeout, self).mapTo[BatchReadResult]
 
   /**
    * Asynchronously batch-reads events from the raw event log. At most `max` events must be returned that are
@@ -203,26 +203,9 @@ class RocksdbEventLog(id: String, prefix: String) extends EventLog[RocksdbEventL
    *                       or earlier if `max` events have already been read.
    */
   override def replicationRead(fromSequenceNr: Long, toSequenceNr: Long, max: Int, scanLimit: Int, filter: (DurableEvent) => Boolean) =
-    eventReader().ask(EventReader.ReadIteratorSync(fromSequenceNr, toSequenceNr, EventKey.DefaultClassifier, max, scanLimit, filter))(settings.readTimeout, self).mapTo[BatchReadResult]
+    eventReader().ask(EventReader.ReadSync(fromSequenceNr, toSequenceNr, EventKey.DefaultClassifier, max, scanLimit, filter))(settings.readTimeout, self).mapTo[BatchReadResult]
 
-  private def readSync(fromSequenceNr: Long, toSequenceNr: Long, classifier: Int, maxNr: Int): BatchReadResult = {
-    import scala.collection.JavaConversions._
-
-    val first = 1L max fromSequenceNr
-    val last = (toSequenceNr - fromSequenceNr) min maxNr
-    val opts = new ReadOptions().setVerifyChecksums(false).setSnapshot(rocksdb.getSnapshot)
-    try {
-      val readKeys = for (sequenceNr <- first to last) yield eventKeyBytes(classifier, sequenceNr)
-      val readEvents = rocksdb.multiGet(opts, readKeys).map(kv => event(kv._2)).toSeq.sortWith((e1, e2) => e1.localSequenceNr < e2.localSequenceNr)
-      BatchReadResult(Seq(readEvents: _*), readEvents.lastOption.map(_.localSequenceNr).getOrElse(first - 1))
-    } finally {
-      opts.snapshot().close()
-    }
-
-  }
-
-  private def readIteratorSync(fromSequenceNr: Long, toSequenceNr: Long, classifier: Int, max: Int, scanLimit: Int, filter: DurableEvent => Boolean): BatchReadResult = {
-    val builder = new VectorBuilder[DurableEvent]
+  private def readSync(fromSequenceNr: Long, toSequenceNr: Long, classifier: Int, max: Int, scanLimit: Int, filter: DurableEvent => Boolean): BatchReadResult = {
 
     val first = 1L max fromSequenceNr
     var last = first - 1L
@@ -230,6 +213,7 @@ class RocksdbEventLog(id: String, prefix: String) extends EventLog[RocksdbEventL
     var scanned = 0
     var filtered = 0
 
+    val builder = new VectorBuilder[DurableEvent]
     withEventIterator(first, classifier) { iter =>
       while (iter.hasNext && filtered < max && scanned < scanLimit) {
         val event = iter.next()
@@ -240,6 +224,7 @@ class RocksdbEventLog(id: String, prefix: String) extends EventLog[RocksdbEventL
         scanned += 1
         last = event.localSequenceNr
       }
+
       BatchReadResult(builder.result(), last)
     }
   }
@@ -319,12 +304,10 @@ class RocksdbEventLog(id: String, prefix: String) extends EventLog[RocksdbEventL
   override def delete(toSequenceNr: Long) = {
     val adjusted = readEventLogClockSnapshotSync.sequenceNr min toSequenceNr
     val promise = Promise[Unit]()
-    spawnDeletionActor(adjusted, promise)
+    val opts = new ReadOptions().setVerifyChecksums(false).setSnapshot(rocksdb.getSnapshot)
+    context.actorOf(RocksdbDeletionActor.props(rocksdb, opts, rocksdbWriteOptions, settings.deletionBatchSize, toSequenceNr, promise))
     promise.future.map(_ => adjusted)(context.dispatcher)
   }
-
-  private def spawnDeletionActor(toSequenceNr: Long, promise: Promise[Unit]): ActorRef =
-    context.actorOf(RocksdbDeletionActor.props(rocksdb, new ReadOptions().setVerifyChecksums(false), rocksdbWriteOptions, settings.deletionBatchSize, toSequenceNr, promise))
 
   override def postStop(): Unit = {
     rocksdb.close()
@@ -374,8 +357,9 @@ class RocksdbEventLog(id: String, prefix: String) extends EventLog[RocksdbEventL
       override def hasNext = iter1.isValid
 
       override def next() = {
+        val res = (iter1.key(), iter1.value())
         iter1.next()
-        (iter1.key(), iter1.value())
+        res
       }
     }.takeWhile(entry => eventKey(entry._1).classifier == classifier).map(entry => event(entry._2))
 
@@ -398,15 +382,8 @@ class RocksdbEventLog(id: String, prefix: String) extends EventLog[RocksdbEventL
     import EventReader._
 
     def receive = {
-      case ReadSync(from, to, classifier, max) =>
-        Try(readSync(from, to, classifier, max)) match {
-          case Success(r) => sender() ! r
-          case Failure(e) => sender() ! Status.Failure(e)
-        }
-        context.stop(self)
-
-      case ReadIteratorSync(from, to, classifier, max, scanLimit, filter) =>
-        Try(readIteratorSync(from, to, classifier, max, scanLimit, filter)) match {
+      case ReadSync(from, to, classifier, max, scanLimit, filter) =>
+        Try(readSync(from, to, classifier, max, scanLimit, filter)) match {
           case Success(r) => sender() ! r
           case Failure(e) => sender() ! Status.Failure(e)
         }
@@ -415,7 +392,6 @@ class RocksdbEventLog(id: String, prefix: String) extends EventLog[RocksdbEventL
   }
 
   private object EventReader {
-    case class ReadSync(fromSequenceNr: Long, toSequenceNr: Long, classifier: Int, max: Int)
-    case class ReadIteratorSync(fromSequenceNr: Long, toSequenceNr: Long, classifier: Int, max: Int, scanLimit: Int, filter: DurableEvent => Boolean)
+    case class ReadSync(fromSequenceNr: Long, toSequenceNr: Long, classifier: Int, max: Int, scanLimit: Int, filter: DurableEvent => Boolean)
   }
 }

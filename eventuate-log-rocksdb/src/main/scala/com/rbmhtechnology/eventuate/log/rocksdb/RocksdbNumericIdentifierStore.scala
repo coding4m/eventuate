@@ -50,10 +50,10 @@ private class RocksdbNumericIdentifierStore(rocksdb: RocksDB, classifier: Int) {
   @tailrec
   private def readIdMap(idMap: Map[String, Int], iter: RocksIterator): Map[String, Int] = {
     if (!iter.isValid) idMap else {
-      iter.next()
       val nextKey = idKey(iter.key())
       if (nextKey == idKeyEnd) idMap else {
         val nextVal = new String(iter.value(), "UTF-8")
+        iter.next()
         readIdMap(idMap + (nextVal -> nextKey), iter)
       }
     }
@@ -66,15 +66,17 @@ private class RocksdbNumericIdentifierStore(rocksdb: RocksDB, classifier: Int) {
   }
 
   private def idKeyBytes(nid: Int): Array[Byte] = {
-    val bb = ByteBuffer.allocate(8)
+    // key1 is at first when key1.length > key2.length
+    // to ensure key order, key length same to event key length.
+    val bb = ByteBuffer.allocate(12)
     bb.putInt(classifier)
-    bb.putInt(nid)
+    bb.putLong(nid.toLong)
     bb.array
   }
 
   private def idKey(a: Array[Byte]): Int = {
     val bb = ByteBuffer.wrap(a)
     bb.getInt
-    bb.getInt
+    bb.getLong.toInt
   }
 }
