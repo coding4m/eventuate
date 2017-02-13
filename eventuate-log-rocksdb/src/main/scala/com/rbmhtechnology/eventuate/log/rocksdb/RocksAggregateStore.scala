@@ -20,26 +20,27 @@ import org.rocksdb.{ ColumnFamilyHandle, RocksDB }
 
 private class RocksAggregateStore(rocksdb: RocksDB, columnHandle: ColumnFamilyHandle) {
 
-  private val IdSequence = "$SEQUENCE"
+  private val IdSequence = "$SEQUENCE$"
   private val IdSequenceBytes = RocksEventLog.stringBytes(IdSequence)
 
   private val IdSequenceInc = 1
-  private val IdSequenceIncBytes = RocksEventLog.intBytes(IdSequenceInc)
+  private val IdSequenceIncBytes = RocksEventLog.longBytes(IdSequenceInc)
 
   if (null == rocksdb.get(columnHandle, IdSequenceBytes)) {
-    rocksdb.put(columnHandle, IdSequenceBytes, RocksEventLog.longBytes(0L))
+    rocksdb.put(columnHandle, IdSequenceBytes, RocksEventLog.longBytes(1L))
   }
 
   def numericId(aggregateId: String): Int = {
     val res = rocksdb.get(columnHandle, RocksEventLog.stringBytes(aggregateId))
-    if (null == res) writeNumericId(aggregateId) else RocksEventLog.intFromBytes(res)
+    if (null == res) writeNumericId(aggregateId) else RocksEventLog.longFromBytes(res).toInt
   }
 
   private def writeNumericId(aggregateId: String) = {
     // todo use transaction api.
+    val nidBytes = rocksdb.get(columnHandle, IdSequenceBytes)
+    val nid = RocksEventLog.longFromBytes(nidBytes)
+    rocksdb.put(columnHandle, RocksEventLog.stringBytes(aggregateId), nidBytes)
     rocksdb.merge(columnHandle, IdSequenceBytes, IdSequenceIncBytes)
-    val nid = rocksdb.get(columnHandle, IdSequenceBytes)
-    rocksdb.put(columnHandle, RocksEventLog.stringBytes(aggregateId), nid)
-    RocksEventLog.intFromBytes(nid)
+    nid.toInt
   }
 }

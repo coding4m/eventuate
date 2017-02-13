@@ -154,7 +154,7 @@ class RocksEventLog(id: String, prefix: String) extends EventLog[RocksEventLogSt
 
   private val columnFamilies = new JList[ColumnFamilyDescriptor]() {
     add(0, new ColumnFamilyDescriptor(stringBytes("events"), new ColumnFamilyOptions().useFixedLengthPrefixExtractor(4)))
-    add(1, new ColumnFamilyDescriptor(stringBytes("aggregates"), new ColumnFamilyOptions().setMergeOperatorName("uint32add")))
+    add(1, new ColumnFamilyDescriptor(stringBytes("aggregates"), new ColumnFamilyOptions().setMergeOperatorName("uint64add")))
     add(2, new ColumnFamilyDescriptor(stringBytes("progresses")))
     add(3, new ColumnFamilyDescriptor(stringBytes("metadata")))
   }

@@ -16,8 +16,6 @@
 
 package com.rbmhtechnology.eventuate.log.rocksdb
 
-import java.nio.ByteBuffer
-
 import org.rocksdb.{ ColumnFamilyHandle, RocksDB, RocksIterator, WriteBatch }
 
 import scala.annotation.tailrec
