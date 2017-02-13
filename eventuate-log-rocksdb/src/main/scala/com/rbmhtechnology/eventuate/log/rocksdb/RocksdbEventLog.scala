@@ -18,6 +18,7 @@ package com.rbmhtechnology.eventuate.log.rocksdb
 
 import java.io.Closeable
 import java.nio.ByteBuffer
+import java.nio.charset.Charset
 import java.nio.file.{ Files, Paths }
 import java.util.concurrent.TimeUnit
 
@@ -69,6 +70,9 @@ class RocksdbEventLogSettings(config: Config) extends EventLogSettings {
 case class RocksdbEventLogState(eventLogClock: EventLogClock, deletionMetadata: DeletionMetadata) extends EventLogState
 object RocksdbEventLog {
 
+  private val StringCharset = Charset.forName("UTF-8")
+  private val StringSetSeparatorChar = '\u0000'
+
   private[rocksdb]type CloseableIterator[A] = Iterator[A] with Closeable
 
   private[rocksdb] case class EventKey(classifier: Int, sequenceNr: Long)
@@ -77,13 +81,13 @@ object RocksdbEventLog {
     val DefaultClassifier: Int = 0
   }
 
-  private val clockKeyBytes: Array[Byte] =
+  private[rocksdb] val clockKeyBytes: Array[Byte] =
     eventKeyBytes(0, 0L)
 
   private[rocksdb] val eventKeyEnd: EventKey =
     EventKey(Int.MaxValue, Long.MaxValue)
 
-  private val eventKeyEndBytes: Array[Byte] =
+  private[rocksdb] val eventKeyEndBytes: Array[Byte] =
     eventKeyBytes(eventKeyEnd.classifier, eventKeyEnd.sequenceNr)
 
   private[rocksdb] def eventKeyBytes(classifier: Int, sequenceNr: Long): Array[Byte] = {
@@ -93,7 +97,7 @@ object RocksdbEventLog {
     bb.array
   }
 
-  private[rocksdb] def eventKey(a: Array[Byte]): EventKey = {
+  private[rocksdb] def eventKeyFromBytes(a: Array[Byte]): EventKey = {
     val bb = ByteBuffer.wrap(a)
     EventKey(bb.getInt, bb.getLong)
   }
@@ -104,7 +108,22 @@ object RocksdbEventLog {
   private[rocksdb] def longFromBytes(a: Array[Byte]): Long =
     ByteBuffer.wrap(a).getLong
 
-  private def completed[A](body: => A): Future[A] =
+  private[rocksdb] def stringBytes(s: String): Array[Byte] =
+    s.getBytes(StringCharset)
+
+  private[rocksdb] def stringFromBytes(a: Array[Byte]) =
+    new String(a, StringCharset)
+
+  private[rocksdb] def stringSetBytes(set: Set[String]): Array[Byte] =
+    stringBytes(set.mkString(StringSetSeparatorChar.toString))
+
+  private[rocksdb] def stringSetFromBytes(setBytes: Array[Byte]): Set[String] =
+    if (setBytes == null || setBytes.length == 0)
+      Set.empty
+    else
+      stringFromBytes(setBytes).split(StringSetSeparatorChar).toSet
+
+  private[rocksdb] def completed[A](body: => A): Future[A] =
     Future.fromTry(Try(body))
 
   /**
@@ -361,7 +380,7 @@ class RocksdbEventLog(id: String, prefix: String) extends EventLog[RocksdbEventL
         iter1.next()
         res
       }
-    }.takeWhile(entry => eventKey(entry._1).classifier == classifier).map(entry => event(entry._2))
+    }.takeWhile(entry => eventKeyFromBytes(entry._1).classifier == classifier).map(entry => event(entry._2))
 
     override def hasNext: Boolean =
       iter2.hasNext

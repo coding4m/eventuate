@@ -25,16 +25,14 @@ private class RocksdbDeletionMetadataStore(val rocksdb: RocksDB, val rocksdbWrit
   private val DeletedToSequenceNrKey: Long = 1L
   private val RemoteLogIdsKey: Long = 2L
 
-  private val StringSetSeparatorChar = '\u0000'
-
   def writeDeletionMetadata(info: DeletionMetadata): Unit = withBatch { batch =>
     batch.put(idKeyBytes(DeletedToSequenceNrKey), RocksdbEventLog.longBytes(info.toSequenceNr))
-    batch.put(idKeyBytes(RemoteLogIdsKey), stringSetBytes(info.remoteLogIds))
+    batch.put(idKeyBytes(RemoteLogIdsKey), RocksdbEventLog.stringSetBytes(info.remoteLogIds))
   }
 
   def readDeletionMetadata(): DeletionMetadata = {
     val toSequenceNr = longFromBytes(rocksdb.get(idKeyBytes(DeletedToSequenceNrKey)))
-    val remoteLogIds = stringSetFromBytes(rocksdb.get(idKeyBytes(RemoteLogIdsKey)))
+    val remoteLogIds = RocksdbEventLog.stringSetFromBytes(rocksdb.get(idKeyBytes(RemoteLogIdsKey)))
     DeletionMetadata(toSequenceNr, remoteLogIds)
   }
 
@@ -47,13 +45,4 @@ private class RocksdbDeletionMetadataStore(val rocksdb: RocksDB, val rocksdbWrit
 
   private def longFromBytes(longBytes: Array[Byte]): Long =
     if (longBytes == null) 0 else RocksdbEventLog.longFromBytes(longBytes)
-
-  private def stringSetBytes(set: Set[String]): Array[Byte] =
-    set.mkString(StringSetSeparatorChar.toString).getBytes("UTF-8")
-
-  private def stringSetFromBytes(setBytes: Array[Byte]): Set[String] =
-    if (setBytes == null || setBytes.length == 0)
-      Set.empty
-    else
-      new String(setBytes, "UTF-8").split(StringSetSeparatorChar).toSet
 }

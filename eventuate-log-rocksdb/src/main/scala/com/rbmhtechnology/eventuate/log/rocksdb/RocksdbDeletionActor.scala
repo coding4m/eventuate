@@ -71,7 +71,7 @@ private class RocksdbDeletionActor(
 
       @tailrec
       override def hasNext: Boolean = {
-        val key = if (iterator.isValid) eventKey(iterator.key()) else eventKeyEnd
+        val key = if (iterator.isValid) eventKeyFromBytes(iterator.key()) else eventKeyEnd
         key != eventKeyEnd &&
           (key.sequenceNr <= toSequenceNr || {
             iterator.seek(eventKeyBytes(key.classifier + 1, 1L))
@@ -80,7 +80,7 @@ private class RocksdbDeletionActor(
       }
 
       override def next() = {
-        val res = eventKey(iterator.key())
+        val res = eventKeyFromBytes(iterator.key())
         iterator.next()
         res
       }
