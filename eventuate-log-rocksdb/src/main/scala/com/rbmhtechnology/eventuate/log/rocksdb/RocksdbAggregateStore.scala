@@ -18,28 +18,29 @@ package com.rbmhtechnology.eventuate.log.rocksdb
 
 import org.rocksdb.{ ColumnFamilyHandle, RocksDB }
 
-private class RocksAggregateStore(rocksdb: RocksDB, columnHandle: ColumnFamilyHandle) {
+private class RocksdbAggregateStore(rocksdb: RocksDB, columnHandle: ColumnFamilyHandle) {
 
   private val IdSequence = "$SEQUENCE$"
-  private val IdSequenceBytes = RocksEventLog.stringBytes(IdSequence)
+  private val IdSequenceBytes = RocksdbEventLog.stringBytes(IdSequence)
 
   private val IdSequenceInc = 1
-  private val IdSequenceIncBytes = RocksEventLog.longBytes(IdSequenceInc)
+  private val IdSequenceIncBytes = RocksdbEventLog.longBytes(IdSequenceInc)
 
   if (null == rocksdb.get(columnHandle, IdSequenceBytes)) {
-    rocksdb.put(columnHandle, IdSequenceBytes, RocksEventLog.longBytes(1L))
+    rocksdb.put(columnHandle, IdSequenceBytes, RocksdbEventLog.longBytes(1L))
   }
 
   def numericId(aggregateId: String): Int = {
-    val res = rocksdb.get(columnHandle, RocksEventLog.stringBytes(aggregateId))
-    if (null == res) writeNumericId(aggregateId) else RocksEventLog.longFromBytes(res).toInt
+    assert(aggregateId != IdSequence, s"aggregateId must not eq $IdSequence .")
+    val res = rocksdb.get(columnHandle, RocksdbEventLog.stringBytes(aggregateId))
+    if (null == res) writeNumericId(aggregateId) else RocksdbEventLog.longFromBytes(res).toInt
   }
 
   private def writeNumericId(aggregateId: String) = {
     // todo use transaction api.
     val nidBytes = rocksdb.get(columnHandle, IdSequenceBytes)
-    val nid = RocksEventLog.longFromBytes(nidBytes)
-    rocksdb.put(columnHandle, RocksEventLog.stringBytes(aggregateId), nidBytes)
+    val nid = RocksdbEventLog.longFromBytes(nidBytes)
+    rocksdb.put(columnHandle, RocksdbEventLog.stringBytes(aggregateId), nidBytes)
     rocksdb.merge(columnHandle, IdSequenceBytes, IdSequenceIncBytes)
     nid.toInt
   }

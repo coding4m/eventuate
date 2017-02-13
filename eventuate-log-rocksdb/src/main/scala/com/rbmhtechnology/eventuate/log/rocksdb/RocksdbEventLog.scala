@@ -20,6 +20,7 @@ import java.io.Closeable
 import java.nio.ByteBuffer
 import java.nio.charset.Charset
 import java.nio.file.{ Files, Paths }
+import java.util.{ ArrayList => JList }
 import java.util.concurrent.TimeUnit
 
 import akka.actor.{ Actor, ActorRef, Props, Status }
@@ -145,22 +146,28 @@ class RocksdbEventLog(id: String, prefix: String) extends EventLog[RocksdbEventL
   override val settings = new RocksdbEventLogSettings(context.system.settings.config)
   private val serialization = SerializationExtension(context.system)
 
-  private val rocksdbDir = Paths.get(settings.rootDir, s"$prefix-$id"); Files.createDirectories(rocksdbDir)
-  private val rocksdbOptions = new Options().setCreateIfMissing(true)
-  protected val rocksdbWriteOptions = new WriteOptions().setSync(settings.fsync)
-  protected val rocksdb = RocksDB.open(rocksdbOptions, rocksdbDir.toAbsolutePath.toString)
+  // default column family must specified.
+  private val columnFamilies = new JList[ColumnFamilyDescriptor]() {
+    add(0, new ColumnFamilyDescriptor(stringBytes("default"), new ColumnFamilyOptions().useFixedLengthPrefixExtractor(4)))
+    add(1, new ColumnFamilyDescriptor(stringBytes("aggregates"), new ColumnFamilyOptions().setMergeOperatorName("uint64add")))
+    add(2, new ColumnFamilyDescriptor(stringBytes("progresses")))
+    add(3, new ColumnFamilyDescriptor(stringBytes("metadata")))
+  }
+  private val columnHandles = new JList[ColumnFamilyHandle]()
 
-  private val aggregateIdMap = new RocksdbNumericIdentifierStore(rocksdb, -1)
-  private val eventLogIdMap = new RocksdbNumericIdentifierStore(rocksdb, -2)
-  private val replicationProgressMap = new RocksdbReplicationProgressStore(rocksdb, -3, eventLogIdMap.numericId, eventLogIdMap.findId)
-  private val deletionMetadataStore = new RocksdbDeletionMetadataStore(rocksdb, rocksdbWriteOptions, -4)
+  private val rocksdbDir = Paths.get(settings.rootDir, s"$prefix-$id"); Files.createDirectories(rocksdbDir)
+  private val rocksdbOptions = new DBOptions().setCreateIfMissing(true).setCreateMissingColumnFamilies(true)
+  protected val rocksdbWriteOptions = new WriteOptions().setSync(settings.fsync)
+  protected val rocksdb = RocksDB.open(rocksdbOptions, rocksdbDir.toAbsolutePath.toString, columnFamilies, columnHandles)
+
+  private val aggregateStore = new RocksdbAggregateStore(rocksdb, columnHandles.get(1))
+  private val progressStore = new RocksdbProgressStore(rocksdb, columnHandles.get(2))
+  private val metadataStore = new RocksdbMetadataStore(rocksdb, rocksdbWriteOptions, columnHandles.get(3))
 
   private var updateCount: Long = 0L
 
   override def preStart(): Unit = {
-    withIterator(iter => aggregateIdMap.readIdMap(iter))
-    withIterator(iter => eventLogIdMap.readIdMap(iter))
-    rocksdb.put(eventKeyEndBytes, Array.empty[Byte])
+    rocksdb.put(columnHandles.get(0), eventKeyEndBytes, Array.empty[Byte])
     super.preStart()
   }
 
@@ -172,7 +179,7 @@ class RocksdbEventLog(id: String, prefix: String) extends EventLog[RocksdbEventL
     val clockRecovered = withEventIterator(clockSnapshot.sequenceNr + 1L, EventKey.DefaultClassifier) { iter =>
       iter.foldLeft(clockSnapshot)(_ update _)
     }
-    RocksdbEventLogState(clockRecovered, deletionMetadataStore.readDeletionMetadata())
+    RocksdbEventLogState(clockRecovered, metadataStore.readDeletionMetadata())
   }
 
   /**
@@ -181,7 +188,7 @@ class RocksdbEventLog(id: String, prefix: String) extends EventLog[RocksdbEventL
    * @see [[com.rbmhtechnology.eventuate.ReplicationProtocol.GetReplicationProgresses]]
    */
   override def readReplicationProgresses =
-    completed(withIterator(iter => replicationProgressMap.readReplicationProgresses(iter)))
+    completed(withIterator(columnHandles.get(2))(iter => progressStore.readReplicationProgresses(iter)))
 
   /**
    * Asynchronously reads the replication progress for given source `logId`.
@@ -189,7 +196,7 @@ class RocksdbEventLog(id: String, prefix: String) extends EventLog[RocksdbEventL
    * @see [[com.rbmhtechnology.eventuate.ReplicationProtocol.GetReplicationProgress]]
    */
   override def readReplicationProgress(logId: String) =
-    completed(withIterator(_ => replicationProgressMap.readReplicationProgress(logId)))
+    completed(withIterator(columnHandles.get(2))(_ => progressStore.readReplicationProgress(logId)))
 
   /**
    * Asynchronously batch-reads events from the raw event log. At most `max` events must be returned that are
@@ -211,7 +218,7 @@ class RocksdbEventLog(id: String, prefix: String) extends EventLog[RocksdbEventL
    *                       or earlier if `max` events have already been read.
    */
   override def read(fromSequenceNr: Long, toSequenceNr: Long, max: Int, aggregateId: String) =
-    eventReader().ask(EventReader.ReadSync(fromSequenceNr, toSequenceNr, aggregateIdMap.numericId(aggregateId), max, Int.MaxValue, _ => true))(settings.readTimeout, self).mapTo[BatchReadResult]
+    eventReader().ask(EventReader.ReadSync(fromSequenceNr, toSequenceNr, aggregateStore.numericId(aggregateId), max, Int.MaxValue, _ => true))(settings.readTimeout, self).mapTo[BatchReadResult]
 
   /**
    * Asynchronously batch-reads events from the raw event log. At most `max` events must be returned that are
@@ -252,7 +259,7 @@ class RocksdbEventLog(id: String, prefix: String) extends EventLog[RocksdbEventL
    * Asynchronously writes the replication progresses for source log ids given by `progresses` keys.
    */
   override def writeReplicationProgresses(progresses: Map[String, Long]) =
-    completed(withBatch(batch => progresses.foreach(p => replicationProgressMap.writeReplicationProgress(p._1, p._2, batch))))
+    completed(withBatch(batch => progresses.foreach(p => progressStore.writeReplicationProgress(p._1, p._2, batch))))
 
   /**
    * Synchronously writes `events` to the given `partition`. The partition is calculated from the configured
@@ -276,9 +283,9 @@ class RocksdbEventLog(id: String, prefix: String) extends EventLog[RocksdbEventL
     events.foreach { event =>
       val sequenceNr = event.localSequenceNr
       val eventBytes = this.eventBytes(event)
-      batch.put(eventKeyBytes(EventKey.DefaultClassifier, sequenceNr), eventBytes)
+      batch.put(columnHandles.get(0), eventKeyBytes(EventKey.DefaultClassifier, sequenceNr), eventBytes)
       event.destinationAggregateIds.foreach { id => // additionally index events by aggregate id
-        batch.put(eventKeyBytes(aggregateIdMap.numericId(id), sequenceNr), eventBytes)
+        batch.put(columnHandles.get(0), eventKeyBytes(aggregateStore.numericId(id), sequenceNr), eventBytes)
       }
     }
 
@@ -296,7 +303,7 @@ class RocksdbEventLog(id: String, prefix: String) extends EventLog[RocksdbEventL
    * must have replicated these events before they are allowed to be physically deleted locally.
    */
   override def writeDeletionMetadata(data: DeletionMetadata) =
-    deletionMetadataStore.writeDeletionMetadata(data)
+    metadataStore.writeDeletionMetadata(data)
 
   /**
    * Asynchronously writes the current snapshot of the event log clock
@@ -307,7 +314,7 @@ class RocksdbEventLog(id: String, prefix: String) extends EventLog[RocksdbEventL
   private def readEventLogClockSnapshotSync: EventLogClock = {
     rocksdb.get(clockKeyBytes) match {
       case null => EventLogClock()
-      case cval => clock(cval)
+      case cval => clockFromBytes(cval)
     }
   }
 
@@ -323,8 +330,8 @@ class RocksdbEventLog(id: String, prefix: String) extends EventLog[RocksdbEventL
   override def delete(toSequenceNr: Long) = {
     val adjusted = readEventLogClockSnapshotSync.sequenceNr min toSequenceNr
     val promise = Promise[Unit]()
-    val opts = new ReadOptions().setVerifyChecksums(false).setSnapshot(rocksdb.getSnapshot)
-    context.actorOf(RocksdbDeletionActor.props(rocksdb, opts, rocksdbWriteOptions, settings.deletionBatchSize, toSequenceNr, promise))
+    val opts = new ReadOptions().setVerifyChecksums(false).setPrefixSameAsStart(false).setSnapshot(rocksdb.getSnapshot)
+    context.actorOf(RocksdbDeletionActor.props(rocksdb, opts, rocksdbWriteOptions, columnHandles.get(0), settings.deletionBatchSize, toSequenceNr, promise))
     promise.future.map(_ => adjusted)(context.dispatcher)
   }
 
@@ -336,18 +343,18 @@ class RocksdbEventLog(id: String, prefix: String) extends EventLog[RocksdbEventL
   private def eventBytes(e: DurableEvent): Array[Byte] =
     serialization.serialize(e).get
 
-  private def event(a: Array[Byte]): DurableEvent =
+  private def eventFromBytes(a: Array[Byte]): DurableEvent =
     serialization.deserialize(a, classOf[DurableEvent]).get
 
   private def clockBytes(clock: EventLogClock): Array[Byte] =
     serialization.serialize(clock).get
 
-  private def clock(a: Array[Byte]): EventLogClock =
+  private def clockFromBytes(a: Array[Byte]): EventLogClock =
     serialization.deserialize(a, classOf[EventLogClock]).get
 
-  private def withIterator[R](body: RocksIterator => R): R = {
+  private def withIterator[R](familyHandle: ColumnFamilyHandle)(body: RocksIterator => R): R = {
     val so = new ReadOptions().setVerifyChecksums(false).setSnapshot(rocksdb.getSnapshot)
-    val iter = rocksdb.newIterator(so)
+    val iter = rocksdb.newIterator(familyHandle, so)
     try {
       body(iter)
     } finally {
@@ -369,9 +376,9 @@ class RocksdbEventLog(id: String, prefix: String) extends EventLog[RocksdbEventL
     new EventIterator(from, classifier)
 
   private class EventIterator(from: Long, classifier: Int) extends Iterator[DurableEvent] with Closeable {
-    val opts = new ReadOptions().setVerifyChecksums(false).setSnapshot(rocksdb.getSnapshot)
+    val opts = new ReadOptions().setVerifyChecksums(false).setPrefixSameAsStart(true).setSnapshot(rocksdb.getSnapshot)
 
-    val iter1 = rocksdb.newIterator(opts); iter1.seek(eventKeyBytes(classifier, from))
+    val iter1 = rocksdb.newIterator(columnHandles.get(0), opts); iter1.seek(eventKeyBytes(classifier, from))
     val iter2 = new Iterator[(Array[Byte], Array[Byte])] {
       override def hasNext = iter1.isValid
 
@@ -380,7 +387,7 @@ class RocksdbEventLog(id: String, prefix: String) extends EventLog[RocksdbEventL
         iter1.next()
         res
       }
-    }.takeWhile(entry => eventKeyFromBytes(entry._1).classifier == classifier).map(entry => event(entry._2))
+    }.takeWhile(entry => eventKeyFromBytes(entry._1).classifier == classifier).map(entry => eventFromBytes(entry._2))
 
     override def hasNext: Boolean =
       iter2.hasNext

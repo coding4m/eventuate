@@ -19,7 +19,7 @@ package com.rbmhtechnology.eventuate.log.rocksdb
 import java.io.Closeable
 
 import akka.actor.{ Actor, PoisonPill, Props }
-import org.rocksdb.{ ReadOptions, RocksDB, WriteOptions }
+import org.rocksdb.{ ColumnFamilyHandle, ReadOptions, RocksDB, WriteOptions }
 
 import scala.annotation.tailrec
 import scala.concurrent.Promise
@@ -27,14 +27,21 @@ import scala.concurrent.Promise
 private object RocksdbDeletionActor {
   case object DeleteBatch
 
-  def props(rocksdb: RocksDB, rocksdbReadOptions: ReadOptions, rocksdbWriteOptions: WriteOptions, batchSize: Int, toSequenceNr: Long, promise: Promise[Unit]): Props =
-    Props(new RocksdbDeletionActor(rocksdb, rocksdbReadOptions, rocksdbWriteOptions, batchSize, toSequenceNr, promise))
+  def props(
+    rocksdb: RocksDB,
+    rocksdbReadOptions: ReadOptions,
+    rocksdbWriteOptions: WriteOptions,
+    columnHandle: ColumnFamilyHandle,
+    batchSize: Int,
+    toSequenceNr: Long,
+    promise: Promise[Unit]): Props =
+    Props(new RocksdbDeletionActor(rocksdb, rocksdbReadOptions, rocksdbWriteOptions, columnHandle, batchSize, toSequenceNr, promise))
 }
-
 private class RocksdbDeletionActor(
   val rocksdb: RocksDB,
   val rocksdbReadOptions: ReadOptions,
   val rocksdbWriteOptions: WriteOptions,
+  columnHandle: ColumnFamilyHandle,
   batchSize: Int,
   toSequenceNr: Long,
   promise: Promise[Unit])
@@ -53,7 +60,7 @@ private class RocksdbDeletionActor(
     case DeleteBatch =>
       withBatch { batch =>
         eventKeyIterator.take(batchSize).foreach { eventKey =>
-          batch.remove(eventKeyBytes(eventKey.classifier, eventKey.sequenceNr))
+          batch.remove(columnHandle, eventKeyBytes(eventKey.classifier, eventKey.sequenceNr))
         }
       }
       if (eventKeyIterator.hasNext) {
@@ -66,7 +73,7 @@ private class RocksdbDeletionActor(
 
   private def newEventKeyIterator: CloseableIterator[EventKey] = {
     new Iterator[EventKey] with Closeable {
-      val iterator = rocksdb.newIterator(rocksdbReadOptions)
+      val iterator = rocksdb.newIterator(columnHandle, rocksdbReadOptions)
       iterator.seek(eventKeyBytes(EventKey.DefaultClassifier, 1L))
 
       @tailrec
