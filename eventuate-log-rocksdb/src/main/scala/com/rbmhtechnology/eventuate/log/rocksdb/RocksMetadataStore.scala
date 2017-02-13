@@ -16,30 +16,22 @@
 
 package com.rbmhtechnology.eventuate.log.rocksdb
 
-import java.nio.ByteBuffer
-
 import com.rbmhtechnology.eventuate.log.DeletionMetadata
-import org.rocksdb.{ ColumnFamilyHandle, RocksDB, WriteOptions }
+import org.rocksdb.{ColumnFamilyHandle, RocksDB, WriteOptions}
 
 private class RocksMetadataStore(val rocksdb: RocksDB, val rocksdbWriteOptions: WriteOptions, columnHandle: ColumnFamilyHandle) extends RocksdbBatchLayer {
   private val DeletedToSequenceNrKey: Long = 1L
   private val RemoteLogIdsKey: Long = 2L
 
   def writeDeletionMetadata(info: DeletionMetadata): Unit = withBatch { batch =>
-    batch.put(columnHandle, idKeyBytes(DeletedToSequenceNrKey), RocksEventLog.longBytes(info.toSequenceNr))
-    batch.put(columnHandle, idKeyBytes(RemoteLogIdsKey), RocksEventLog.stringSetBytes(info.remoteLogIds))
+    batch.put(columnHandle, RocksEventLog.longBytes(DeletedToSequenceNrKey), RocksEventLog.longBytes(info.toSequenceNr))
+    batch.put(columnHandle, RocksEventLog.longBytes(RemoteLogIdsKey), RocksEventLog.stringSetBytes(info.remoteLogIds))
   }
 
   def readDeletionMetadata(): DeletionMetadata = {
-    val toSequenceNr = longFromBytes(rocksdb.get(columnHandle, idKeyBytes(DeletedToSequenceNrKey)))
-    val remoteLogIds = RocksEventLog.stringSetFromBytes(rocksdb.get(columnHandle, idKeyBytes(RemoteLogIdsKey)))
+    val toSequenceNr = longFromBytes(rocksdb.get(columnHandle, RocksEventLog.longBytes(DeletedToSequenceNrKey)))
+    val remoteLogIds = RocksEventLog.stringSetFromBytes(rocksdb.get(columnHandle, RocksEventLog.longBytes(RemoteLogIdsKey)))
     DeletionMetadata(toSequenceNr, remoteLogIds)
-  }
-
-  private def idKeyBytes(key: Long): Array[Byte] = {
-    val bb = ByteBuffer.allocate(8)
-    bb.putLong(key)
-    bb.array
   }
 
   private def longFromBytes(longBytes: Array[Byte]): Long =
