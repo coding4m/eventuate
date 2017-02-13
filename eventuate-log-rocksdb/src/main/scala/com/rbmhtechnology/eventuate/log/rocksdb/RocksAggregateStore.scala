@@ -20,7 +20,7 @@ import org.rocksdb.{ ColumnFamilyHandle, RocksDB }
 
 private class RocksAggregateStore(rocksdb: RocksDB, columnHandle: ColumnFamilyHandle) {
 
-  private val IdSequence = "_$SEQ$_"
+  private val IdSequence = "$SEQUENCE"
   private val IdSequenceBytes = RocksEventLog.stringBytes(IdSequence)
 
   private val IdSequenceInc = 1
