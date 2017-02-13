@@ -381,7 +381,7 @@ class RocksEventLog(id: String, prefix: String) extends EventLog[RocksEventLogSt
     new EventIterator(from, classifier)
 
   private class EventIterator(from: Long, classifier: Int) extends Iterator[DurableEvent] with Closeable {
-    val opts = new ReadOptions().setVerifyChecksums(false).setSnapshot(rocksdb.getSnapshot)
+    val opts = new ReadOptions().setVerifyChecksums(false).setPrefixSameAsStart(true).setSnapshot(rocksdb.getSnapshot)
 
     val iter1 = rocksdb.newIterator(columnHandles.get(0), opts); iter1.seek(eventKeyBytes(classifier, from))
     val iter2 = new Iterator[(Array[Byte], Array[Byte])] {
