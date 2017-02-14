@@ -21,14 +21,15 @@ import org.rocksdb.{ ColumnFamilyHandle, RocksDB, RocksIterator, WriteBatch }
 import scala.annotation.tailrec
 
 private class RocksdbProgressStore(rocksdb: RocksDB, columnHandle: ColumnFamilyHandle) {
+  import RocksdbEventLog._
 
   def writeReplicationProgress(logId: String, logSnr: Long, batch: WriteBatch): Unit = {
-    batch.put(columnHandle, RocksdbEventLog.stringBytes(logId), RocksdbEventLog.longBytes(logSnr))
+    batch.put(columnHandle, stringBytes(logId), longBytes(logSnr))
   }
 
   def readReplicationProgress(logId: String): Long = {
-    val progress = rocksdb.get(columnHandle, RocksdbEventLog.stringBytes(logId))
-    if (progress == null) 0L else RocksdbEventLog.longFromBytes(progress)
+    val progress = rocksdb.get(columnHandle, stringBytes(logId))
+    if (progress == null) 0L else longFromBytes(progress)
   }
 
   def readReplicationProgresses(iter: RocksIterator): Map[String, Long] = {
@@ -39,8 +40,8 @@ private class RocksdbProgressStore(rocksdb: RocksDB, columnHandle: ColumnFamilyH
   @tailrec
   private def readReplicationProgresses(rpMap: Map[String, Long], iter: RocksIterator): Map[String, Long] = {
     if (!iter.isValid) rpMap else {
-      val nextKey = RocksdbEventLog.stringFromBytes(iter.key())
-      val nextVal = RocksdbEventLog.longFromBytes(iter.value())
+      val nextKey = stringFromBytes(iter.key())
+      val nextVal = longFromBytes(iter.value())
       iter.next()
       readReplicationProgresses(rpMap + (nextKey -> nextVal), iter)
     }

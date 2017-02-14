@@ -20,6 +20,7 @@ import com.rbmhtechnology.eventuate.log.DeletionMetadata
 import org.rocksdb.{ ColumnFamilyHandle, RocksDB, WriteOptions }
 
 private class RocksdbMetadataStore(val rocksdb: RocksDB, val rocksdbWriteOptions: WriteOptions, columnHandle: ColumnFamilyHandle) extends RocksdbBatchLayer {
+
   private val DeletedToSequenceNrKey: Long = 1L
   private val RemoteLogIdsKey: Long = 2L
 
