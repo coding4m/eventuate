@@ -312,14 +312,14 @@ class RocksdbEventLog(id: String, prefix: String) extends EventLog[RocksdbEventL
     withBatch(batch => Future.fromTry(Try(writeEventLogClockSnapshotSync(clock, batch))))
 
   private def readEventLogClockSnapshotSync: EventLogClock = {
-    rocksdb.get(clockKeyBytes) match {
+    rocksdb.get(columnHandles.get(0), clockKeyBytes) match {
       case null => EventLogClock()
       case cval => clockFromBytes(cval)
     }
   }
 
   private def writeEventLogClockSnapshotSync(clock: EventLogClock, batch: WriteBatch): Unit =
-    batch.put(clockKeyBytes, clockBytes(clock))
+    batch.put(columnHandles.get(0), clockKeyBytes, clockBytes(clock))
 
   /**
    * Instructs the log to asynchronously and physically delete events up to `toSequenceNr`. This operation completes when
