@@ -40,10 +40,10 @@ private class RocksdbProgressStore(rocksdb: RocksDB, columnHandle: ColumnFamilyH
   @tailrec
   private def readReplicationProgresses(rpMap: Map[String, Long], iter: RocksIterator): Map[String, Long] = {
     if (!iter.isValid) rpMap else {
-      val nextKey = stringFromBytes(iter.key())
-      val nextVal = longFromBytes(iter.value())
+      val key = stringFromBytes(iter.key())
+      val value = longFromBytes(iter.value())
       iter.next()
-      readReplicationProgresses(rpMap + (nextKey -> nextVal), iter)
+      readReplicationProgresses(rpMap + (key -> value), iter)
     }
   }
 }
