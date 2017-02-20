@@ -166,6 +166,21 @@ case class VersionedAggregate[S, C: DomainCmd, E: DomainEvt](
     resolver: VersionedResolver[S]): ConcurrentVersions[S, E] = if (versions.conflict) {
     versions.resolve(resolver.select(versions.all).vectorTimestamp)
   } else versions
+
+  def reslove(
+    resolver: VersionedResolver[S],
+    vectorTimestamp: VectorTime,
+    systemTimestamp: Long = 0L): VersionedAggregate[S, C, E] = {
+    copy(aggregate = aggregate.map(versions => resolveIfConflict(versions, resolver, vectorTimestamp, systemTimestamp)))
+  }
+
+  private def resolveIfConflict(
+    versions: ConcurrentVersions[S, E],
+    resolver: VersionedResolver[S],
+    vectorTimestamp: VectorTime,
+    systemTimestamp: Long) = if (versions.conflict) {
+    versions.resolve(resolver.select(versions.all).vectorTimestamp, vectorTimestamp, systemTimestamp)
+  } else versions
 }
 
 object VersionedAggregate {
