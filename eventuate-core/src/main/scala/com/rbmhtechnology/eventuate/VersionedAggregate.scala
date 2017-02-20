@@ -114,8 +114,7 @@ case class VersionedAggregate[S, C: DomainCmd, E: DomainEvt](
 
   def validateCreate(
     cmd: C,
-    onViolated: (String) => Throwable = id => new AggregateAlreadyExistsException(id)
-  ): Try[E] = aggregate match {
+    onViolated: (String) => Throwable = id => new AggregateAlreadyExistsException(id)): Try[E] = aggregate match {
     case None    => cmdHandler(null.asInstanceOf[S] /* FIXME */ , cmd)
     case Some(_) => Failure(onViolated(id))
   }
@@ -123,8 +122,7 @@ case class VersionedAggregate[S, C: DomainCmd, E: DomainEvt](
   def validateUpdate(
     cmd: C,
     onViolated: (String) => Throwable = id => new AggregateDoesNotExistException(id),
-    onConflicted: (String, Seq[Versioned[S]]) => Throwable = (id, versioneds) => new ConflictDetectedException[S](id, versioneds)
-  ): Try[E] = aggregate match {
+    onConflicted: (String, Seq[Versioned[S]]) => Throwable = (id, versioneds) => new ConflictDetectedException[S](id, versioneds)): Try[E] = aggregate match {
     case None                                => Failure(onViolated(id))
     case Some(versions) if versions.conflict => Failure(onConflicted(id, versions.all))
     case Some(versions)                      => cmdHandler(versions.all.head.value, cmd)
@@ -135,8 +133,7 @@ case class VersionedAggregate[S, C: DomainCmd, E: DomainEvt](
     origin: String,
     onViolated: (String) => Throwable = id => new AggregateDoesNotExistException(id),
     onConflictNotDetected: (String) => Throwable = id => new ConflictNotDetectedException(id),
-    onConflictResolutionRejected: (String, String, String) => Throwable = (id, owner, origin) => new ConflictResolutionRejectedException(id, owner, origin)
-  ): Try[Resolved] = aggregate match {
+    onConflictResolutionRejected: (String, String, String) => Throwable = (id, owner, origin) => new ConflictResolutionRejectedException(id, owner, origin)): Try[Resolved] = aggregate match {
     case None                                       => Failure(onViolated(id))
     case Some(versions) if !versions.conflict       => Failure(onConflictNotDetected(id))
     case Some(versions) if versions.owner != origin => Failure(onConflictResolutionRejected(id, versions.owner, origin))
@@ -159,6 +156,16 @@ case class VersionedAggregate[S, C: DomainCmd, E: DomainEvt](
   def handleResolved(evt: Resolved, updateTimestamp: VectorTime, sequenceNr: Long): VersionedAggregate[S, C, E] = {
     copy(aggregate = aggregate.map(_.resolve(evt.selected, updateTimestamp)))
   }
+
+  def reslove(resolver: VersionedResolver[S]): VersionedAggregate[S, C, E] = {
+    copy(aggregate = aggregate.map(versions => resolveIfConflict(versions, resolver)))
+  }
+
+  private def resolveIfConflict(
+    versions: ConcurrentVersions[S, E],
+    resolver: VersionedResolver[S]): ConcurrentVersions[S, E] = if (versions.conflict) {
+    versions.resolve(resolver.select(versions.all).vectorTimestamp)
+  } else versions
 }
 
 object VersionedAggregate {

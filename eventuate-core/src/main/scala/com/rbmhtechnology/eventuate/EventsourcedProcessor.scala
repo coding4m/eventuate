@@ -99,8 +99,8 @@ trait EventsourcedProcessor extends EventsourcedWriter[Long, Long] with ActorLog
   def processEvent: Process
 
   /**
-    * hook for change durable event.
-    */
+   * hook for change durable event.
+   */
   def postProcessEvent(payload: Any, e: DurableEvent): DurableEvent = e
 
   /**
