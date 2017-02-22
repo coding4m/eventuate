@@ -153,6 +153,10 @@ case class VersionedAggregate[S, C: DomainCmd, E: DomainEvt](
     copy(aggregate = aggregate.map(_.update(evt, timestamp, systemTimestamp)))
   }
 
+  def handleResolved(evt: Resolved): VersionedAggregate[S, C, E] = {
+    copy(aggregate = aggregate.map(_.resolve(evt.selected)))
+  }
+
   def handleResolved(evt: Resolved, timestamp: VectorTime, systemTimestamp: Long, sequenceNr: Long): VersionedAggregate[S, C, E] = {
     copy(aggregate = aggregate.map(_.resolve(evt.selected, timestamp, systemTimestamp)))
   }
