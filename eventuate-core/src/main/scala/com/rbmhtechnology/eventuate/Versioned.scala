@@ -192,18 +192,16 @@ class ConcurrentVersionsTree[A, B](private[eventuate] val root: ConcurrentVersio
   }
 
   override def resolve(selectedTimestamp: VectorTime, vectorTimestamp: VectorTime, systemTimestamp: Long = 0L): ConcurrentVersionsTree[A, B] = {
-    leaves.find(n => n.versioned.vectorTimestamp == selectedTimestamp) match {
-      case None =>
-      case Some(node) =>
-        val parent = merge(vectorTimestamp)
-        parent.addChild(new Node(versioned = node.versioned.copy(vectorTimestamp = vectorTimestamp, systemTimestamp = systemTimestamp)))
-        leaves.foreach {
-          case n if n.rejected => // ignore rejected leaf
-          case n if n.versioned.vectorTimestamp.conc(vectorTimestamp) => // ignore concurrent update
-          case n if n.versioned.vectorTimestamp == vectorTimestamp => // ignore
-          case n => n.reject()
-        }
-    }
+    leaves.find(n => n.versioned.vectorTimestamp == selectedTimestamp).foreach(n => {
+      val parent = merge(vectorTimestamp)
+      parent.addChild(new Node(versioned = n.versioned.copy(vectorTimestamp = vectorTimestamp, systemTimestamp = systemTimestamp)))
+      leaves.foreach {
+        case node if node.rejected => // ignore rejected leaf
+        case node if node.versioned.vectorTimestamp.conc(vectorTimestamp) => // ignore concurrent update
+        case node if node.versioned.vectorTimestamp == vectorTimestamp => // ignore
+        case node => node.reject()
+      }
+    })
     this
   }
 
