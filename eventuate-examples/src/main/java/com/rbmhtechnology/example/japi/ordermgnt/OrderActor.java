@@ -82,15 +82,15 @@ public class OrderActor extends AbstractEventsourcedActor {
 
         setOnEvent(ReceiveBuilder
                 .match(OrderCreated.class, e -> {
-                    order = order.handleCreated(e, lastVectorTimestamp(), lastSequenceNr());
+                    order = order.handleCreated(e, lastVectorTimestamp(), lastSystemTimestamp(), lastSequenceNr());
                     if (!recovering()) printOrder(order.getVersions());
                 })
                 .match(OrderEvent.class, e -> {
-                    order = order.handleUpdated(e, lastVectorTimestamp(), lastSequenceNr());
+                    order = order.handleUpdated(e, lastVectorTimestamp(), lastSystemTimestamp(), lastSequenceNr());
                     if (!recovering()) printOrder(order.getVersions());
                 })
                 .match(Resolved.class, e -> {
-                    order = order.handleResolved(e, lastVectorTimestamp(), lastSequenceNr());
+                    order = order.handleResolved(e, lastVectorTimestamp(), lastSystemTimestamp(), lastSequenceNr());
                     if (!recovering()) printOrder(order.getVersions());
                 })
                 .build());

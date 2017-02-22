@@ -140,21 +140,21 @@ case class VersionedAggregate[S, C: DomainCmd, E: DomainEvt](
     case Some(versions)                             => Success(Resolved(id, versions.all(selected).vectorTimestamp, origin))
   }
 
-  def handleCreated(evt: E, timestamp: VectorTime, sequenceNr: Long): VersionedAggregate[S, C, E] = {
+  def handleCreated(evt: E, timestamp: VectorTime, systemTimestamp: Long, sequenceNr: Long): VersionedAggregate[S, C, E] = {
     val versions = aggregate match {
       case None     => ConcurrentVersionsTree(evtHandler).withOwner(E.origin(evt))
       // concurrent create
       case Some(cv) => cv.withOwner(priority(cv.owner, E.origin(evt)))
     }
-    copy(aggregate = Some(versions.update(evt, timestamp)))
+    copy(aggregate = Some(versions.update(evt, timestamp, systemTimestamp)))
   }
 
-  def handleUpdated(evt: E, timestamp: VectorTime, sequenceNr: Long): VersionedAggregate[S, C, E] = {
-    copy(aggregate = aggregate.map(_.update(evt, timestamp)))
+  def handleUpdated(evt: E, timestamp: VectorTime, systemTimestamp: Long, sequenceNr: Long): VersionedAggregate[S, C, E] = {
+    copy(aggregate = aggregate.map(_.update(evt, timestamp, systemTimestamp)))
   }
 
-  def handleResolved(evt: Resolved, updateTimestamp: VectorTime, sequenceNr: Long): VersionedAggregate[S, C, E] = {
-    copy(aggregate = aggregate.map(_.resolve(evt.selected, updateTimestamp)))
+  def handleResolved(evt: Resolved, timestamp: VectorTime, systemTimestamp: Long, sequenceNr: Long): VersionedAggregate[S, C, E] = {
+    copy(aggregate = aggregate.map(_.resolve(evt.selected, timestamp, systemTimestamp)))
   }
 
   def reslove(resolver: VersionedResolver[S]): VersionedAggregate[S, C, E] = {

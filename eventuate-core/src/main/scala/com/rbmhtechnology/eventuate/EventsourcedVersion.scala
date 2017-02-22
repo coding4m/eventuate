@@ -30,6 +30,12 @@ trait EventsourcedVersion extends EventsourcedView {
     _currentVersion
 
   /**
+   * Internal API.
+   */
+  override private[eventuate] def currentTimestamp: Long =
+    System.currentTimeMillis()
+
+  /**
    * Updates the current version from the given `event`.
    */
   private def updateVersion(event: DurableEvent): Unit =
@@ -45,6 +51,7 @@ trait EventsourcedVersion extends EventsourcedView {
       emitterId = id,
       emitterAggregateId = aggregateId,
       customDestinationAggregateIds = customDestinationAggregateIds,
+      systemTimestamp = currentTimestamp,
       vectorTimestamp = currentVersion,
       deliveryId = deliveryId,
       persistOnEventSequenceNr = persistOnEventSequenceNr)

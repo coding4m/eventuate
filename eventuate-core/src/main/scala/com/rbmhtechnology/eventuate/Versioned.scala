@@ -186,17 +186,23 @@ class ConcurrentVersionsTree[A, B](private[eventuate] val root: ConcurrentVersio
   private var _owner: String = ""
 
   override def update(b: B, vectorTimestamp: VectorTime, systemTimestamp: Long = 0L, creator: String = ""): ConcurrentVersionsTree[A, B] = {
-    val p = pred(vectorTimestamp)
-    p.addChild(new Node(Versioned(_projection(p.versioned.value, b), vectorTimestamp, systemTimestamp, creator)))
+    val parent = pred(vectorTimestamp)
+    parent.addChild(new Node(Versioned(_projection(parent.versioned.value, b), vectorTimestamp, systemTimestamp, creator)))
     this
   }
 
   override def resolve(selectedTimestamp: VectorTime, vectorTimestamp: VectorTime, systemTimestamp: Long = 0L): ConcurrentVersionsTree[A, B] = {
-    leaves.foreach {
-      case n if n.rejected => // ignore rejected leaf
-      case n if n.versioned.vectorTimestamp.conc(vectorTimestamp) => // ignore concurrent update
-      case n if n.versioned.vectorTimestamp == selectedTimestamp => n.stamp(vectorTimestamp, systemTimestamp)
-      case n => n.reject()
+    leaves.find(n => n.versioned.vectorTimestamp == selectedTimestamp) match {
+      case None =>
+      case Some(node) =>
+        val parent = merge(vectorTimestamp)
+        parent.addChild(new Node(versioned = node.versioned.copy(vectorTimestamp = vectorTimestamp, systemTimestamp = systemTimestamp)))
+        leaves.foreach {
+          case n if n.rejected => // ignore rejected leaf
+          case n if n.versioned.vectorTimestamp.conc(vectorTimestamp) => // ignore concurrent update
+          case n if n.versioned.vectorTimestamp == vectorTimestamp => // ignore
+          case n => n.reject()
+        }
     }
     this
   }
@@ -235,13 +241,19 @@ class ConcurrentVersionsTree[A, B](private[eventuate] val root: ConcurrentVersio
     case (candidate, n) => if (timestamp > n.versioned.vectorTimestamp && n.versioned.vectorTimestamp > candidate.versioned.vectorTimestamp) n else candidate
   }
 
+  private[eventuate] def merge(timestamp: VectorTime): Node[A] = foldLeft(root, root) {
+    case (candidate, n) => if (timestamp > n.versioned.vectorTimestamp
+      && (timestamp.value.keySet -- n.versioned.vectorTimestamp.value.keySet).isEmpty
+      && n.versioned.vectorTimestamp > candidate.versioned.vectorTimestamp) n else candidate
+  }
+
   // TODO: make tail recursive or create a trampolined version
   private[eventuate] def foldLeft[C](node: Node[A], acc: C)(f: (C, Node[A]) => C): C = {
     val acc2 = f(acc, node)
     node.children match {
       case Seq() => acc2
       case ns => ns.foldLeft(acc2) {
-        case (acc, n) => foldLeft(n, acc)(f)
+        case (ncc, n) => foldLeft(n, ncc)(f)
       }
     }
   }

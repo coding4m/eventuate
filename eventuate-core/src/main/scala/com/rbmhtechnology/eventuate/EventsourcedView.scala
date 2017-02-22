@@ -258,6 +258,9 @@ trait EventsourcedView extends Actor with Stash {
   private[eventuate] def currentVersion: VectorTime =
     VectorTime.Zero
 
+  private[eventuate] def currentTimestamp: Long =
+    0L
+
   /**
    * Internal API.
    */

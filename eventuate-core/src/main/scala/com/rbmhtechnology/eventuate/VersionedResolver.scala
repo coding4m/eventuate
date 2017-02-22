@@ -26,14 +26,18 @@ object VersionedResolver {
    * @tparam S
    * @return
    */
-  def firstWriteWins[S]: VersionedResolver[S] = apply[S]((v1, v2) => v1.vectorTimestamp < v2.vectorTimestamp)
+  def firstWriteWins[S]: VersionedResolver[S] = VersionedResolver[S]((v1, v2) => {
+    if (v1.systemTimestamp == v2.systemTimestamp) v1.creator < v2.creator else v1.systemTimestamp < v2.systemTimestamp
+  })
 
   /**
    * last write wins model.
    * @tparam S
    * @return
    */
-  def lastWriteWins[S]: VersionedResolver[S] = apply[S]((v1, v2) => v2.vectorTimestamp < v1.vectorTimestamp)
+  def lastWriteWins[S]: VersionedResolver[S] = VersionedResolver[S]((v1, v2) => {
+    if (v1.systemTimestamp == v2.systemTimestamp) v2.creator < v1.creator else v2.systemTimestamp < v1.systemTimestamp
+  })
 
   def apply[S](lt: (Versioned[S], Versioned[S]) => Boolean): VersionedResolver[S] = new VersionedResolver[S] {
     override def select(versions: Seq[Versioned[S]]) = versions.sortWith(lt).head

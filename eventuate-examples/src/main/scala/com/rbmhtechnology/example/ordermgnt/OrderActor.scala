@@ -109,13 +109,15 @@ class OrderActor(orderId: String, replicaId: String, val eventLog: ActorRef) ext
 
   override def onEvent = {
     case e: OrderCreated =>
-      order = order.handleCreated(e, lastVectorTimestamp, lastSequenceNr)
+      order = order.handleCreated(e, lastVectorTimestamp, lastSystemTimestamp, lastSequenceNr)
+      order = order.reslove(VersionedResolver.lastWriteWins)
       if (!recovering) printOrder(order.versions)
     case e: OrderEvent =>
-      order = order.handleUpdated(e, lastVectorTimestamp, lastSequenceNr)
+      order = order.handleUpdated(e, lastVectorTimestamp, lastSystemTimestamp, lastSequenceNr)
+      order = order.reslove(VersionedResolver.lastWriteWins)
       if (!recovering) printOrder(order.versions)
     case e: Resolved =>
-      order = order.handleResolved(e, lastVectorTimestamp, lastSequenceNr)
+      order = order.handleResolved(e, lastVectorTimestamp, lastSystemTimestamp, lastSequenceNr)
       if (!recovering) printOrder(order.versions)
   }
 
@@ -153,4 +155,6 @@ class OrderActor(orderId: String, replicaId: String, val eventLog: ActorRef) ext
     case (order, OrderItemAdded(`orderId`, item))   => order.addItem(item)
     case (order, OrderItemRemoved(`orderId`, item)) => order.removeItem(item)
   }
+
+
 }
