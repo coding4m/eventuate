@@ -54,12 +54,13 @@ object ProgressWriter {
       val in = Inlet[Long]("ProgressWriter.in")
       val out = Outlet[Long]("ProgressWriter.out")
 
-      var writing = false
-      var finished = false
-
       override def shape = FlowShape.of(in, out)
 
       override def createLogic(inheritedAttributes: Attributes) = new GraphStageLogic(shape) {
+
+        var writing = false
+        var finished = false
+
         setHandler(in, new InHandler {
           override def onPush() = {
             val sequenceNr = grab(in)
