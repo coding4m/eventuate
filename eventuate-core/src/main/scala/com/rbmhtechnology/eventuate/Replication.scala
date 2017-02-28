@@ -94,9 +94,7 @@ private class Recovery(endpoint: ReplicationEndpoint) {
   private implicit val timeout = Timeout(remoteOperationTimeout)
 
   def awaitConnections(implicit ec: ExecutionContext): Future[Set[ReplicationConnection]] = {
-    endpoint.controller.ask(GetReplicationConnections)(recoveryTimeout).asInstanceOf[Future[GetReplicationConnectionsSuccess]] map {
-      _.connections
-    }
+    endpoint.controller.ask(GetReplicationConnections)(recoveryTimeout).mapTo[GetReplicationConnectionsSuccess].map(_.connections)
   }
 
   def activateConnections(connections: Set[ReplicationConnection]): Unit = {
