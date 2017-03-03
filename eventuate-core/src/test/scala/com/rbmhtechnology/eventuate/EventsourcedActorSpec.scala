@@ -58,7 +58,7 @@ object EventsourcedActorSpec {
         persist("b")(r => cmdProbe ! ((s"${r.get}-2", lastVectorTimestamp, currentVersion, lastSequenceNr)))
       case "test-multi-persist" =>
         val handler = (r: Try[String]) => cmdProbe ! ((r.get, currentVersion, lastVectorTimestamp, lastSequenceNr))
-        persistN(Seq("a", "b", "c"), handler)(handler)
+        persistN(Seq("a", "b", "c"), handler = handler)(handler)
       case Cmd(p, num) => 1 to num foreach { i =>
         persist(s"${p}-${i}") {
           case Success(evt) =>

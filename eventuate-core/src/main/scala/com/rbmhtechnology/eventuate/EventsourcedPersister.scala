@@ -108,7 +108,7 @@ trait EventsourcedPersister extends Actor with Stash {
    * `aggregateId`. Further routing destinations can be defined with the `customDestinationAggregateIds`
    * parameter.
    */
-  final def persistN[A](events: Seq[A], customDestinationAggregateIds: Set[String] = Set(), onLast: Handler[A])(handler: Handler[A]): Unit = events match {
+  final def persistN[A](events: Seq[A], customDestinationAggregateIds: Set[String] = Set(), handler: Handler[A] = Handler.empty[A])(onLast: Handler[A]): Unit = events match {
     case Seq() =>
     case es :+ e =>
       es.foreach(event => persist(event, customDestinationAggregateIds)(handler))

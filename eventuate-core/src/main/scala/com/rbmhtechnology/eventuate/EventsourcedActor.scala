@@ -19,6 +19,7 @@ package com.rbmhtechnology.eventuate
 import java.util.concurrent.TimeUnit
 
 import akka.actor._
+import com.rbmhtechnology.eventuate.EventsourcedView.Handler
 import com.rbmhtechnology.eventuate.PersistOnEvent._
 import com.typesafe.config.Config
 
@@ -84,7 +85,7 @@ trait EventsourcedActor extends EventsourcedView with EventsourcedVersion {
    * `aggregateId`. Further routing destinations can be defined with the `customDestinationAggregateIds`
    * parameter.
    */
-  final def persistN[A](events: Seq[A], onLast: Handler[A] = (_: Try[A]) => (), customDestinationAggregateIds: Set[String] = Set())(handler: Handler[A]): Unit = events match {
+  final def persistN[A](events: Seq[A], customDestinationAggregateIds: Set[String] = Set(), handler: Handler[A] = Handler.empty[A])(onLast: Handler[A]): Unit = events match {
     case Seq() =>
     case es :+ e =>
       es.foreach(event => persist(event, customDestinationAggregateIds)(handler))

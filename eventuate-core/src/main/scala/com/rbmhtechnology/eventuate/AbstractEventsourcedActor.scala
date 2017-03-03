@@ -20,6 +20,7 @@ import java.lang.{ Iterable => JIterable }
 import java.util.{ Set => JSet }
 
 import akka.actor.ActorRef
+import com.rbmhtechnology.eventuate.EventsourcedView.Handler
 
 import scala.collection.JavaConverters._
 
@@ -62,7 +63,7 @@ abstract class AbstractEventsourcedActor(id: String, eventLog: ActorRef) extends
    * @see [[EventsourcedActor]]
    */
   final def persistN[A](events: JIterable[A], handler: ResultHandler[A]): Unit =
-    persistN(events.asScala.toSeq)(handler.asScala)
+    persistN(events.asScala.toSeq, handler = handler.asScala)(Handler.empty[A])
 
   /**
    * Java API of [[EventsourcedActor.persistN persistN]].
@@ -74,7 +75,7 @@ abstract class AbstractEventsourcedActor(id: String, eventLog: ActorRef) extends
    * @see [[EventsourcedActor]]
    */
   final def persistN[A](events: JIterable[A], onLast: ResultHandler[A], handler: ResultHandler[A]): Unit =
-    persistN(events.asScala.toSeq, onLast = onLast.asScala)(handler.asScala)
+    persistN(events.asScala.toSeq, handler = handler.asScala)(onLast.asScala)
 
   /**
    * Java API of [[EventsourcedActor.persistN persistN]].
@@ -86,7 +87,7 @@ abstract class AbstractEventsourcedActor(id: String, eventLog: ActorRef) extends
    * @see [[EventsourcedActor]]
    */
   final def persistN[A](events: JIterable[A], customDestinationAggregateIds: JSet[String], handler: ResultHandler[A]): Unit =
-    persistN(events.asScala.toSeq, customDestinationAggregateIds = customDestinationAggregateIds.asScala.toSet)(handler.asScala)
+    persistN(events.asScala.toSeq, customDestinationAggregateIds.asScala.toSet, handler.asScala)(Handler.empty[A])
 
   /**
    * Java API of [[EventsourcedActor.persistN persistN]].
@@ -99,9 +100,8 @@ abstract class AbstractEventsourcedActor(id: String, eventLog: ActorRef) extends
    *
    * @see [[EventsourcedActor]]
    */
-  final def persistN[A](events: JIterable[A], onLast: ResultHandler[A], customDestinationAggregateIds: JSet[String],
-    handler: ResultHandler[A]): Unit =
-    persistN(events.asScala.toSeq, onLast.asScala, customDestinationAggregateIds.asScala.toSet)(handler.asScala)
+  final def persistN[A](events: JIterable[A], customDestinationAggregateIds: JSet[String], handler: ResultHandler[A], onLast: ResultHandler[A]): Unit =
+    persistN(events.asScala.toSeq, customDestinationAggregateIds.asScala.toSet, handler.asScala)(onLast.asScala)
 
   /**
    * Java API of [[ConfirmedDelivery.persistConfirmation persistConfirmation]].
