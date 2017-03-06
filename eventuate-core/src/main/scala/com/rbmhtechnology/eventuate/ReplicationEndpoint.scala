@@ -466,27 +466,27 @@ class ReplicationEndpoint(
   private[eventuate] def source(
     logName: String,
     connection: ReplicationConnection,
-    endpointInfo: ReplicationInfo
+    remoteInfo: ReplicationInfo
   ): ReplicationSource = {
     ReplicationSource(
-      endpointInfo.endpointId, logName, endpointInfo.logId(logName), replicationAcceptor(connection)
+      remoteInfo.endpointId, logName, remoteInfo.logId(logName), replicationAcceptor(connection)
     )
   }
 
   private[eventuate] def replicationLinks(
     connection: ReplicationConnection,
-    endpointInfo: ReplicationInfo
+    remoteInfo: ReplicationInfo
   ): Set[ReplicationLink] = {
-    replicationLogs(endpointInfo).map { logName =>
-      ReplicationLink(source(logName, connection, endpointInfo), target(logName))
+    replicationLogs(remoteInfo).map { logName =>
+      ReplicationLink(source(logName, connection, remoteInfo), target(logName))
     }
   }
 
   /**
    * Returns all log names this endpoint and `endpointInfo` have in common.
    */
-  private[eventuate] def replicationLogs(endpointInfo: ReplicationInfo) =
-    this.logNames.intersect(endpointInfo.logNames)
+  private[eventuate] def replicationLogs(remoteInfo: ReplicationInfo) =
+    this.logNames.intersect(remoteInfo.logNames)
 
   private[eventuate] def replicationAcceptor(connection: ReplicationConnection): ActorSelection = {
     import connection._
