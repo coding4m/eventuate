@@ -92,6 +92,9 @@ object DurableEventProcessor {
   def statefulProcessor[S, O](id: String, eventLog: ActorRef)(zero: S)(logic: (S, DurableEvent) => (S, Seq[O]))(implicit system: ActorSystem): Graph[FlowShape[DurableEvent, DurableEvent], NotUsed] =
     Flow.fromGraph(transformer(zero)(logic)).via(replicationWriter(id, eventLog))
 
+  def statefulProcessorWithCustom[S, O](id: String, eventLog: ActorRef)(zero: S)(logic: (S, DurableEvent) => (S, Seq[O]))(customLogic: Seq[DurableEvent] => Seq[DurableEvent])(implicit system: ActorSystem): Graph[FlowShape[DurableEvent, DurableEvent], NotUsed] =
+    Flow.fromGraph(transformer(zero)(logic)).map(customLogic).via(replicationWriter(id, eventLog))
+
   private def transformer[S, O](zero: S)(logic: (S, DurableEvent) => (S, Seq[O])): Graph[FlowShape[DurableEvent, Seq[DurableEvent]], NotUsed] =
     Flow.fromGraph[DurableEvent, Seq[DurableEvent], NotUsed](GraphDSL.create() { implicit builder =>
       import GraphDSL.Implicits._
