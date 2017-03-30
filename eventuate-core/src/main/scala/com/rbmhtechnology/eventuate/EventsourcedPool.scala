@@ -45,13 +45,13 @@ trait EventsourcedPool[ID] { this: Actor =>
    * @param message
    * @param sender
    */
-  protected def route(message: Any, sender: ActorRef): Unit = {
+  protected def relay(message: Any, sender: ActorRef): Unit = {
     val aggregateId = aggregateIdProjection(message)
     aggregateOf(aggregateId).tell(message, sender)
   }
 
   final protected def ~~>(message: Any, sender: ActorRef): Unit =
-    route(message, sender)
+    relay(message, sender)
 
   private def aggregateOf(aggregateId: ID): ActorRef = aggregateRefs.get(aggregateId) match {
     case Some(actorRef) => actorRef
