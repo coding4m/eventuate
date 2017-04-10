@@ -19,6 +19,16 @@ package com.rbmhtechnology.eventuate
 import scala.collection.immutable.Seq
 
 /**
+ * Unique id of a [[DurableEvent]].
+ *
+ * This is a stable id of an event across all replicated logs.
+ *
+ * @param processId the id of the event log the initially wrote the event.
+ * @param sequenceNr the initial sequence number in this log.
+ */
+case class EventId(processId: String, sequenceNr: Long)
+
+/**
  * Provider API.
  *
  * Event storage format. Fields `localLogId` and `localSequenceNr` differ among replicas, all other fields are not changed
@@ -56,15 +66,16 @@ case class DurableEvent(
   localLogId: String = DurableEvent.UndefinedLogId,
   localSequenceNr: Long = DurableEvent.UndefinedSequenceNr,
   deliveryId: Option[String] = None,
-  persistOnEventSequenceNr: Option[Long] = None) {
+  persistOnEventSequenceNr: Option[Long] = None,
+  persistOnEventId: Option[EventId] = None) {
 
   import DurableEvent._
 
   /**
    * Unique event identifier.
    */
-  def id: VectorTime =
-    vectorTimestamp
+  def id: EventId =
+    EventId(processId, vectorTimestamp.localTime(processId))
 
   /**
    * Returns `true` if this event did not happen before or at the given `vectorTime`

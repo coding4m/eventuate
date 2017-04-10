@@ -2722,15 +2722,15 @@ public final class SnapshotFormats {
   public interface PersistOnEventRequestFormatOrBuilder
       extends com.google.protobuf.MessageOrBuilder {
 
-    // optional int64 persistOnEventSequenceNr = 1;
+    // optional int64 sequenceNr = 1;
     /**
-     * <code>optional int64 persistOnEventSequenceNr = 1;</code>
+     * <code>optional int64 sequenceNr = 1;</code>
      */
-    boolean hasPersistOnEventSequenceNr();
+    boolean hasSequenceNr();
     /**
-     * <code>optional int64 persistOnEventSequenceNr = 1;</code>
+     * <code>optional int64 sequenceNr = 1;</code>
      */
-    long getPersistOnEventSequenceNr();
+    long getSequenceNr();
 
     // repeated .PersistOnEventInvocationFormat invocation = 2;
     /**
@@ -2766,6 +2766,20 @@ public final class SnapshotFormats {
      * <code>optional int32 instanceId = 3;</code>
      */
     int getInstanceId();
+
+    // optional .EventIdFormat eventId = 4;
+    /**
+     * <code>optional .EventIdFormat eventId = 4;</code>
+     */
+    boolean hasEventId();
+    /**
+     * <code>optional .EventIdFormat eventId = 4;</code>
+     */
+    com.rbmhtechnology.eventuate.serializer.DurableEventFormats.EventIdFormat getEventId();
+    /**
+     * <code>optional .EventIdFormat eventId = 4;</code>
+     */
+    com.rbmhtechnology.eventuate.serializer.DurableEventFormats.EventIdFormatOrBuilder getEventIdOrBuilder();
   }
   /**
    * Protobuf type {@code PersistOnEventRequestFormat}
@@ -2820,7 +2834,7 @@ public final class SnapshotFormats {
             }
             case 8: {
               bitField0_ |= 0x00000001;
-              persistOnEventSequenceNr_ = input.readInt64();
+              sequenceNr_ = input.readInt64();
               break;
             }
             case 18: {
@@ -2834,6 +2848,19 @@ public final class SnapshotFormats {
             case 24: {
               bitField0_ |= 0x00000002;
               instanceId_ = input.readInt32();
+              break;
+            }
+            case 34: {
+              com.rbmhtechnology.eventuate.serializer.DurableEventFormats.EventIdFormat.Builder subBuilder = null;
+              if (((bitField0_ & 0x00000004) == 0x00000004)) {
+                subBuilder = eventId_.toBuilder();
+              }
+              eventId_ = input.readMessage(com.rbmhtechnology.eventuate.serializer.DurableEventFormats.EventIdFormat.PARSER, extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom(eventId_);
+                eventId_ = subBuilder.buildPartial();
+              }
+              bitField0_ |= 0x00000004;
               break;
             }
           }
@@ -2879,20 +2906,20 @@ public final class SnapshotFormats {
     }
 
     private int bitField0_;
-    // optional int64 persistOnEventSequenceNr = 1;
-    public static final int PERSISTONEVENTSEQUENCENR_FIELD_NUMBER = 1;
-    private long persistOnEventSequenceNr_;
+    // optional int64 sequenceNr = 1;
+    public static final int SEQUENCENR_FIELD_NUMBER = 1;
+    private long sequenceNr_;
     /**
-     * <code>optional int64 persistOnEventSequenceNr = 1;</code>
+     * <code>optional int64 sequenceNr = 1;</code>
      */
-    public boolean hasPersistOnEventSequenceNr() {
+    public boolean hasSequenceNr() {
       return ((bitField0_ & 0x00000001) == 0x00000001);
     }
     /**
-     * <code>optional int64 persistOnEventSequenceNr = 1;</code>
+     * <code>optional int64 sequenceNr = 1;</code>
      */
-    public long getPersistOnEventSequenceNr() {
-      return persistOnEventSequenceNr_;
+    public long getSequenceNr() {
+      return sequenceNr_;
     }
 
     // repeated .PersistOnEventInvocationFormat invocation = 2;
@@ -2947,10 +2974,33 @@ public final class SnapshotFormats {
       return instanceId_;
     }
 
+    // optional .EventIdFormat eventId = 4;
+    public static final int EVENTID_FIELD_NUMBER = 4;
+    private com.rbmhtechnology.eventuate.serializer.DurableEventFormats.EventIdFormat eventId_;
+    /**
+     * <code>optional .EventIdFormat eventId = 4;</code>
+     */
+    public boolean hasEventId() {
+      return ((bitField0_ & 0x00000004) == 0x00000004);
+    }
+    /**
+     * <code>optional .EventIdFormat eventId = 4;</code>
+     */
+    public com.rbmhtechnology.eventuate.serializer.DurableEventFormats.EventIdFormat getEventId() {
+      return eventId_;
+    }
+    /**
+     * <code>optional .EventIdFormat eventId = 4;</code>
+     */
+    public com.rbmhtechnology.eventuate.serializer.DurableEventFormats.EventIdFormatOrBuilder getEventIdOrBuilder() {
+      return eventId_;
+    }
+
     private void initFields() {
-      persistOnEventSequenceNr_ = 0L;
+      sequenceNr_ = 0L;
       invocation_ = java.util.Collections.emptyList();
       instanceId_ = 0;
+      eventId_ = com.rbmhtechnology.eventuate.serializer.DurableEventFormats.EventIdFormat.getDefaultInstance();
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
@@ -2965,13 +3015,16 @@ public final class SnapshotFormats {
                         throws java.io.IOException {
       getSerializedSize();
       if (((bitField0_ & 0x00000001) == 0x00000001)) {
-        output.writeInt64(1, persistOnEventSequenceNr_);
+        output.writeInt64(1, sequenceNr_);
       }
       for (int i = 0; i < invocation_.size(); i++) {
         output.writeMessage(2, invocation_.get(i));
       }
       if (((bitField0_ & 0x00000002) == 0x00000002)) {
         output.writeInt32(3, instanceId_);
+      }
+      if (((bitField0_ & 0x00000004) == 0x00000004)) {
+        output.writeMessage(4, eventId_);
       }
       getUnknownFields().writeTo(output);
     }
@@ -2984,7 +3037,7 @@ public final class SnapshotFormats {
       size = 0;
       if (((bitField0_ & 0x00000001) == 0x00000001)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeInt64Size(1, persistOnEventSequenceNr_);
+          .computeInt64Size(1, sequenceNr_);
       }
       for (int i = 0; i < invocation_.size(); i++) {
         size += com.google.protobuf.CodedOutputStream
@@ -2993,6 +3046,10 @@ public final class SnapshotFormats {
       if (((bitField0_ & 0x00000002) == 0x00000002)) {
         size += com.google.protobuf.CodedOutputStream
           .computeInt32Size(3, instanceId_);
+      }
+      if (((bitField0_ & 0x00000004) == 0x00000004)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(4, eventId_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
@@ -3103,6 +3160,7 @@ public final class SnapshotFormats {
       private void maybeForceBuilderInitialization() {
         if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
           getInvocationFieldBuilder();
+          getEventIdFieldBuilder();
         }
       }
       private static Builder create() {
@@ -3111,7 +3169,7 @@ public final class SnapshotFormats {
 
       public Builder clear() {
         super.clear();
-        persistOnEventSequenceNr_ = 0L;
+        sequenceNr_ = 0L;
         bitField0_ = (bitField0_ & ~0x00000001);
         if (invocationBuilder_ == null) {
           invocation_ = java.util.Collections.emptyList();
@@ -3121,6 +3179,12 @@ public final class SnapshotFormats {
         }
         instanceId_ = 0;
         bitField0_ = (bitField0_ & ~0x00000004);
+        if (eventIdBuilder_ == null) {
+          eventId_ = com.rbmhtechnology.eventuate.serializer.DurableEventFormats.EventIdFormat.getDefaultInstance();
+        } else {
+          eventIdBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00000008);
         return this;
       }
 
@@ -3152,7 +3216,7 @@ public final class SnapshotFormats {
         if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
           to_bitField0_ |= 0x00000001;
         }
-        result.persistOnEventSequenceNr_ = persistOnEventSequenceNr_;
+        result.sequenceNr_ = sequenceNr_;
         if (invocationBuilder_ == null) {
           if (((bitField0_ & 0x00000002) == 0x00000002)) {
             invocation_ = java.util.Collections.unmodifiableList(invocation_);
@@ -3166,6 +3230,14 @@ public final class SnapshotFormats {
           to_bitField0_ |= 0x00000002;
         }
         result.instanceId_ = instanceId_;
+        if (((from_bitField0_ & 0x00000008) == 0x00000008)) {
+          to_bitField0_ |= 0x00000004;
+        }
+        if (eventIdBuilder_ == null) {
+          result.eventId_ = eventId_;
+        } else {
+          result.eventId_ = eventIdBuilder_.build();
+        }
         result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
@@ -3182,8 +3254,8 @@ public final class SnapshotFormats {
 
       public Builder mergeFrom(com.rbmhtechnology.eventuate.serializer.SnapshotFormats.PersistOnEventRequestFormat other) {
         if (other == com.rbmhtechnology.eventuate.serializer.SnapshotFormats.PersistOnEventRequestFormat.getDefaultInstance()) return this;
-        if (other.hasPersistOnEventSequenceNr()) {
-          setPersistOnEventSequenceNr(other.getPersistOnEventSequenceNr());
+        if (other.hasSequenceNr()) {
+          setSequenceNr(other.getSequenceNr());
         }
         if (invocationBuilder_ == null) {
           if (!other.invocation_.isEmpty()) {
@@ -3214,6 +3286,9 @@ public final class SnapshotFormats {
         if (other.hasInstanceId()) {
           setInstanceId(other.getInstanceId());
         }
+        if (other.hasEventId()) {
+          mergeEventId(other.getEventId());
+        }
         this.mergeUnknownFields(other.getUnknownFields());
         return this;
       }
@@ -3241,35 +3316,35 @@ public final class SnapshotFormats {
       }
       private int bitField0_;
 
-      // optional int64 persistOnEventSequenceNr = 1;
-      private long persistOnEventSequenceNr_ ;
+      // optional int64 sequenceNr = 1;
+      private long sequenceNr_ ;
       /**
-       * <code>optional int64 persistOnEventSequenceNr = 1;</code>
+       * <code>optional int64 sequenceNr = 1;</code>
        */
-      public boolean hasPersistOnEventSequenceNr() {
+      public boolean hasSequenceNr() {
         return ((bitField0_ & 0x00000001) == 0x00000001);
       }
       /**
-       * <code>optional int64 persistOnEventSequenceNr = 1;</code>
+       * <code>optional int64 sequenceNr = 1;</code>
        */
-      public long getPersistOnEventSequenceNr() {
-        return persistOnEventSequenceNr_;
+      public long getSequenceNr() {
+        return sequenceNr_;
       }
       /**
-       * <code>optional int64 persistOnEventSequenceNr = 1;</code>
+       * <code>optional int64 sequenceNr = 1;</code>
        */
-      public Builder setPersistOnEventSequenceNr(long value) {
+      public Builder setSequenceNr(long value) {
         bitField0_ |= 0x00000001;
-        persistOnEventSequenceNr_ = value;
+        sequenceNr_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional int64 persistOnEventSequenceNr = 1;</code>
+       * <code>optional int64 sequenceNr = 1;</code>
        */
-      public Builder clearPersistOnEventSequenceNr() {
+      public Builder clearSequenceNr() {
         bitField0_ = (bitField0_ & ~0x00000001);
-        persistOnEventSequenceNr_ = 0L;
+        sequenceNr_ = 0L;
         onChanged();
         return this;
       }
@@ -3545,6 +3620,123 @@ public final class SnapshotFormats {
         instanceId_ = 0;
         onChanged();
         return this;
+      }
+
+      // optional .EventIdFormat eventId = 4;
+      private com.rbmhtechnology.eventuate.serializer.DurableEventFormats.EventIdFormat eventId_ = com.rbmhtechnology.eventuate.serializer.DurableEventFormats.EventIdFormat.getDefaultInstance();
+      private com.google.protobuf.SingleFieldBuilder<
+          com.rbmhtechnology.eventuate.serializer.DurableEventFormats.EventIdFormat, com.rbmhtechnology.eventuate.serializer.DurableEventFormats.EventIdFormat.Builder, com.rbmhtechnology.eventuate.serializer.DurableEventFormats.EventIdFormatOrBuilder> eventIdBuilder_;
+      /**
+       * <code>optional .EventIdFormat eventId = 4;</code>
+       */
+      public boolean hasEventId() {
+        return ((bitField0_ & 0x00000008) == 0x00000008);
+      }
+      /**
+       * <code>optional .EventIdFormat eventId = 4;</code>
+       */
+      public com.rbmhtechnology.eventuate.serializer.DurableEventFormats.EventIdFormat getEventId() {
+        if (eventIdBuilder_ == null) {
+          return eventId_;
+        } else {
+          return eventIdBuilder_.getMessage();
+        }
+      }
+      /**
+       * <code>optional .EventIdFormat eventId = 4;</code>
+       */
+      public Builder setEventId(com.rbmhtechnology.eventuate.serializer.DurableEventFormats.EventIdFormat value) {
+        if (eventIdBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          eventId_ = value;
+          onChanged();
+        } else {
+          eventIdBuilder_.setMessage(value);
+        }
+        bitField0_ |= 0x00000008;
+        return this;
+      }
+      /**
+       * <code>optional .EventIdFormat eventId = 4;</code>
+       */
+      public Builder setEventId(
+          com.rbmhtechnology.eventuate.serializer.DurableEventFormats.EventIdFormat.Builder builderForValue) {
+        if (eventIdBuilder_ == null) {
+          eventId_ = builderForValue.build();
+          onChanged();
+        } else {
+          eventIdBuilder_.setMessage(builderForValue.build());
+        }
+        bitField0_ |= 0x00000008;
+        return this;
+      }
+      /**
+       * <code>optional .EventIdFormat eventId = 4;</code>
+       */
+      public Builder mergeEventId(com.rbmhtechnology.eventuate.serializer.DurableEventFormats.EventIdFormat value) {
+        if (eventIdBuilder_ == null) {
+          if (((bitField0_ & 0x00000008) == 0x00000008) &&
+              eventId_ != com.rbmhtechnology.eventuate.serializer.DurableEventFormats.EventIdFormat.getDefaultInstance()) {
+            eventId_ =
+              com.rbmhtechnology.eventuate.serializer.DurableEventFormats.EventIdFormat.newBuilder(eventId_).mergeFrom(value).buildPartial();
+          } else {
+            eventId_ = value;
+          }
+          onChanged();
+        } else {
+          eventIdBuilder_.mergeFrom(value);
+        }
+        bitField0_ |= 0x00000008;
+        return this;
+      }
+      /**
+       * <code>optional .EventIdFormat eventId = 4;</code>
+       */
+      public Builder clearEventId() {
+        if (eventIdBuilder_ == null) {
+          eventId_ = com.rbmhtechnology.eventuate.serializer.DurableEventFormats.EventIdFormat.getDefaultInstance();
+          onChanged();
+        } else {
+          eventIdBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00000008);
+        return this;
+      }
+      /**
+       * <code>optional .EventIdFormat eventId = 4;</code>
+       */
+      public com.rbmhtechnology.eventuate.serializer.DurableEventFormats.EventIdFormat.Builder getEventIdBuilder() {
+        bitField0_ |= 0x00000008;
+        onChanged();
+        return getEventIdFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>optional .EventIdFormat eventId = 4;</code>
+       */
+      public com.rbmhtechnology.eventuate.serializer.DurableEventFormats.EventIdFormatOrBuilder getEventIdOrBuilder() {
+        if (eventIdBuilder_ != null) {
+          return eventIdBuilder_.getMessageOrBuilder();
+        } else {
+          return eventId_;
+        }
+      }
+      /**
+       * <code>optional .EventIdFormat eventId = 4;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilder<
+          com.rbmhtechnology.eventuate.serializer.DurableEventFormats.EventIdFormat, com.rbmhtechnology.eventuate.serializer.DurableEventFormats.EventIdFormat.Builder, com.rbmhtechnology.eventuate.serializer.DurableEventFormats.EventIdFormatOrBuilder> 
+          getEventIdFieldBuilder() {
+        if (eventIdBuilder_ == null) {
+          eventIdBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+              com.rbmhtechnology.eventuate.serializer.DurableEventFormats.EventIdFormat, com.rbmhtechnology.eventuate.serializer.DurableEventFormats.EventIdFormat.Builder, com.rbmhtechnology.eventuate.serializer.DurableEventFormats.EventIdFormatOrBuilder>(
+                  eventId_,
+                  getParentForChildren(),
+                  isClean());
+          eventId_ = null;
+        }
+        return eventIdBuilder_;
       }
 
       // @@protoc_insertion_point(builder_scope:PersistOnEventRequestFormat)
@@ -6554,22 +6746,23 @@ public final class SnapshotFormats {
       "tRequestFormat\022\022\n\nsequenceNr\030\007 \001(\003\"a\n\025De" +
       "liveryAttemptFormat\022\022\n\ndeliveryId\030\001 \001(\t\022",
       "\037\n\007message\030\002 \001(\0132\016.PayloadFormat\022\023\n\013dest" +
-      "ination\030\003 \001(\t\"\210\001\n\033PersistOnEventRequestF" +
-      "ormat\022 \n\030persistOnEventSequenceNr\030\001 \001(\003\022" +
-      "3\n\ninvocation\030\002 \003(\0132\037.PersistOnEventInvo" +
-      "cationFormat\022\022\n\ninstanceId\030\003 \001(\005\"f\n\036Pers" +
-      "istOnEventInvocationFormat\022\035\n\005event\030\001 \001(" +
-      "\0132\016.PayloadFormat\022%\n\035customDestinationAg" +
-      "gregateIds\030\002 \003(\t\"^\n\034ConcurrentVersionsTr" +
-      "eeFormat\022/\n\004root\030\001 \001(\0132!.ConcurrentVersi" +
-      "onsTreeNodeFormat\022\r\n\005owner\030\002 \001(\t\"\216\001\n Con",
-      "currentVersionsTreeNodeFormat\022#\n\tversion" +
-      "ed\030\001 \001(\0132\020.VersionedFormat\022\020\n\010rejected\030\002" +
-      " \001(\010\0223\n\010children\030\003 \003(\0132!.ConcurrentVersi" +
-      "onsTreeNodeFormat\"S\n\023EventLogClockFormat" +
-      "\022\022\n\nsequenceNr\030\001 \001(\003\022(\n\rversionVector\030\002 " +
-      "\001(\0132\021.VectorTimeFormatB+\n\'com.rbmhtechno" +
-      "logy.eventuate.serializerH\001"
+      "ination\030\003 \001(\t\"\233\001\n\033PersistOnEventRequestF" +
+      "ormat\022\022\n\nsequenceNr\030\001 \001(\003\0223\n\ninvocation\030" +
+      "\002 \003(\0132\037.PersistOnEventInvocationFormat\022\022" +
+      "\n\ninstanceId\030\003 \001(\005\022\037\n\007eventId\030\004 \001(\0132\016.Ev" +
+      "entIdFormat\"f\n\036PersistOnEventInvocationF" +
+      "ormat\022\035\n\005event\030\001 \001(\0132\016.PayloadFormat\022%\n\035" +
+      "customDestinationAggregateIds\030\002 \003(\t\"^\n\034C" +
+      "oncurrentVersionsTreeFormat\022/\n\004root\030\001 \001(" +
+      "\0132!.ConcurrentVersionsTreeNodeFormat\022\r\n\005",
+      "owner\030\002 \001(\t\"\216\001\n ConcurrentVersionsTreeNo" +
+      "deFormat\022#\n\tversioned\030\001 \001(\0132\020.VersionedF" +
+      "ormat\022\020\n\010rejected\030\002 \001(\010\0223\n\010children\030\003 \003(" +
+      "\0132!.ConcurrentVersionsTreeNodeFormat\"S\n\023" +
+      "EventLogClockFormat\022\022\n\nsequenceNr\030\001 \001(\003\022" +
+      "(\n\rversionVector\030\002 \001(\0132\021.VectorTimeForma" +
+      "tB+\n\'com.rbmhtechnology.eventuate.serial" +
+      "izerH\001"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
       new com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner() {
@@ -6593,7 +6786,7 @@ public final class SnapshotFormats {
           internal_static_PersistOnEventRequestFormat_fieldAccessorTable = new
             com.google.protobuf.GeneratedMessage.FieldAccessorTable(
               internal_static_PersistOnEventRequestFormat_descriptor,
-              new java.lang.String[] { "PersistOnEventSequenceNr", "Invocation", "InstanceId", });
+              new java.lang.String[] { "SequenceNr", "Invocation", "InstanceId", "EventId", });
           internal_static_PersistOnEventInvocationFormat_descriptor =
             getDescriptor().getMessageTypes().get(3);
           internal_static_PersistOnEventInvocationFormat_fieldAccessorTable = new
