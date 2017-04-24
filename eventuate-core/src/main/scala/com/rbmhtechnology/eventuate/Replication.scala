@@ -383,41 +383,33 @@ private class Controller(endpoint: ReplicationEndpoint) extends Actor with Actor
 
   import Controller._
 
-  private var replicatorRegistry = ReplicatorRegistry()
+  private var replicationRegistry = ReplicationRegistry()
   private val replicationDetector = context.actorOf(
-    NetworkDetector.props(endpoint.connections, endpoint.connectionRoles).withDispatcher(endpoint.settings.controllerDispatcher),
-    NetworkDetector.Name
+    RecoveryDetector.props(endpoint.connections, endpoint.connectionRoles).withDispatcher(endpoint.settings.controllerDispatcher),
+    RecoveryDetector.Name
   )
 
   pipelineOuter {
     case cmd @ ActivateReplication(link) =>
-      log.warning("activate replication link with {}", link)
+      log.debug("activate replication link with {}", link)
       Inner(cmd)
     case cmd @ DeactivateReplication(link) =>
-      log.warning("deactivate replication link with {}", link)
+      log.debug("deactivate replication link with {}", link)
       Inner(cmd)
     case event @ ReplicationConnectionUp(conn) =>
-      log.warning(
-        "replication connection[{}@{}:{}] up.", conn.name, conn.host, conn.port
-      )
+      log.debug("replication connection[{}@{}:{}] up.", conn.name, conn.host, conn.port)
       Inner(event)
     case event @ ReplicationConnectionDown(conn) =>
-      log.warning(
-        "replication connection[{}@{}:{}] down.", conn.name, conn.host, conn.port
-      )
+      log.debug("replication connection[{}@{}:{}] down.", conn.name, conn.host, conn.port)
       Inner(event)
     case event @ ReplicationConnectionReachable(conn) =>
-      log.warning(
-        "replication connection[{}@{}:{}] reachable.", conn.name, conn.host, conn.port
-      )
+      log.debug("replication connection[{}@{}:{}] reachable.", conn.name, conn.host, conn.port)
       Inner(event)
     case event @ ReplicationConnectionUnreachable(conn) =>
-      log.warning(
-        "replication connection[{}@{}:{}] unreachable.", conn.name, conn.host, conn.port
-      )
+      log.debug("replication connection[{}@{}:{}] unreachable.", conn.name, conn.host, conn.port)
       Inner(event)
     case Terminated(actor) =>
-      log.warning("replicator[path={}] terminated.", actor.path)
+      log.debug("replicator[path={}] terminated.", actor.path)
       HandledCompletely
     case any =>
       Inner(any)
@@ -429,8 +421,8 @@ private class Controller(endpoint: ReplicationEndpoint) extends Actor with Actor
       replicationDetector forward GetReplicationConnections
 
     case ActivateReplication(link) =>
-      replicatorRegistry(link).foreach { replicator =>
-        replicatorRegistry = replicatorRegistry - link
+      replicationRegistry(link).foreach { replicator =>
+        replicationRegistry = replicationRegistry - link
         context stop replicator
       }
 
@@ -438,11 +430,10 @@ private class Controller(endpoint: ReplicationEndpoint) extends Actor with Actor
         Props(new Replicator(link.target, link.source)).withDispatcher(endpoint.settings.controllerDispatcher)
       )
       context.watch(replicator)
-      replicatorRegistry = replicatorRegistry + (link, replicator)
-
+      replicationRegistry = replicationRegistry + (link, replicator)
     case DeactivateReplication(link) =>
-      replicatorRegistry(link).foreach { replicator =>
-        replicatorRegistry = replicatorRegistry - link
+      replicationRegistry(link).foreach { replicator =>
+        replicationRegistry = replicationRegistry - link
         context stop replicator
       }
 
@@ -450,9 +441,8 @@ private class Controller(endpoint: ReplicationEndpoint) extends Actor with Actor
       context.actorOf(
         Props(new ReplicatorInitializer(endpoint, connection)).withDispatcher(endpoint.settings.controllerDispatcher)
       )
-
     case UnreachableReplicationConnection(connection) =>
-      replicatorRegistry.relicators.keys filter { link =>
+      replicationRegistry.relicators.keys filter { link =>
         endpoint.replicationAcceptor(connection) == link.source.acceptor
       } foreach { link =>
         self ! DeactivateReplication(link)
@@ -460,16 +450,12 @@ private class Controller(endpoint: ReplicationEndpoint) extends Actor with Actor
 
     case ReplicationConnectionUp(conn) =>
       self ! ReachableReplicationConnection(conn)
-
     case ReplicationConnectionReachable(conn) =>
       self ! ReachableReplicationConnection(conn)
-
     case ReplicationConnectionUnreachable(conn) =>
       self ! UnreachableReplicationConnection(conn)
-
     case ReplicationConnectionDown(conn) =>
       self ! UnreachableReplicationConnection(conn)
-
     case _ =>
   }
 }
@@ -583,13 +569,13 @@ private class Replicator(target: ReplicationTarget, source: ReplicationSource) e
     readSchedule.foreach(_.cancel())
 }
 
-private case class ReplicatorRegistry(relicators: Map[ReplicationLink, ActorRef] = Map.empty) {
+private case class ReplicationRegistry(relicators: Map[ReplicationLink, ActorRef] = Map.empty) {
 
-  def +(link: ReplicationLink, replicator: ActorRef): ReplicatorRegistry = {
+  def +(link: ReplicationLink, replicator: ActorRef): ReplicationRegistry = {
     copy(relicators = relicators + (link -> replicator))
   }
 
-  def -(link: ReplicationLink): ReplicatorRegistry = {
+  def -(link: ReplicationLink): ReplicationRegistry = {
     copy(relicators = relicators - link)
   }
 
@@ -707,37 +693,37 @@ private class FailureDetector(sourceEndpointId: String, logName: String, failure
   }
 }
 
-private object NetworkDetector {
+private object RecoveryDetector {
 
-  val Name = "network-detector"
+  val Name = "recovery-detector"
 
   def props(connections: Set[ReplicationConnection], connectionRoles: Set[String]): Props = {
     require(
       connections.nonEmpty || connectionRoles.nonEmpty,
       "eventuate.endpoint.connections and eventuate.endpoint.connection-roles both empty."
     )
-    Props(classOf[NetworkDetector], connections, connectionRoles)
+    Props(classOf[RecoveryDetector], connections, connectionRoles)
   }
 
-  private case object NetworkInitiated
-  private case class NetworkRegistry(connections: Set[ReplicationConnection] = Set.empty) {
-    def +(connection: ReplicationConnection): NetworkRegistry =
+  private case object RecoveryInitiated
+  private case class RecoveryRegistry(connections: Set[ReplicationConnection] = Set.empty) {
+    def +(connection: ReplicationConnection): RecoveryRegistry =
       copy(connections = connections + connection)
 
-    def -(connection: ReplicationConnection): NetworkRegistry =
+    def -(connection: ReplicationConnection): RecoveryRegistry =
       copy(connections = connections - connection)
   }
 }
 
-private class NetworkDetector(connections: Set[ReplicationConnection], connectionRoles: Set[String]) extends Actor with ActorLogging with Stash {
+private class RecoveryDetector(connections: Set[ReplicationConnection], connectionRoles: Set[String]) extends Actor with ActorLogging with Stash {
 
   import Controller._
-  import NetworkDetector._
-
-  private val directRegistry = NetworkRegistry(connections)
+  import RecoveryDetector._
 
   private val cluster = Cluster(context.system)
-  private var clusterRegistry = NetworkRegistry()
+  private var clusterRegistry = RecoveryRegistry()
+
+  private val staticRegistry = RecoveryRegistry(connections)
 
   @scala.throws[Exception](classOf[Exception])
   override def preStart(): Unit = if (connectionRoles.nonEmpty) {
@@ -746,23 +732,22 @@ private class NetworkDetector(connections: Set[ReplicationConnection], connectio
       initialStateMode = InitialStateAsEvents,
       classOf[MemberUp], classOf[MemberRemoved], classOf[ReachableMember], classOf[UnreachableMember]
     )
-    cluster.registerOnMemberUp(self ! NetworkInitiated)
+    cluster.registerOnMemberUp(self ! RecoveryInitiated)
     context become initiating
   } else {
-    self ! NetworkInitiated
+    self ! RecoveryInitiated
     context become initiating
   }
 
   override def receive: Receive = initiating
 
   private def initiating: Receive = {
-    case MemberUp(member) => if (avaliableMember(member)) {
+    case MemberUp(member) if avaliableMember(member) =>
       avaliableConnection(member).foreach { conn =>
         clusterRegistry = clusterRegistry + conn
       }
-    }
 
-    case NetworkInitiated =>
+    case RecoveryInitiated =>
       context become initiated
       unstashAll()
       log.warning("connections ready, network initiated.")
@@ -774,43 +759,36 @@ private class NetworkDetector(connections: Set[ReplicationConnection], connectio
 
   private def initiated: Receive = {
     case GetReplicationConnections =>
-      sender ! GetReplicationConnectionsSuccess(directRegistry.connections ++ clusterRegistry.connections)
+      sender ! GetReplicationConnectionsSuccess(staticRegistry.connections ++ clusterRegistry.connections)
 
-    case MemberUp(member) => if (avaliableMember(member)) {
+    case MemberUp(member) if avaliableMember(member) =>
       avaliableConnection(member).foreach { conn =>
         clusterRegistry = clusterRegistry + conn
-        if (!directRegistry.connections(conn)) {
+        if (!staticRegistry.connections(conn)) {
           context.parent ! ReplicationConnectionUp(conn)
         }
       }
-    }
-
-    case ReachableMember(member) => if (avaliableMember(member)) {
+    case ReachableMember(member) if avaliableMember(member) =>
       avaliableConnection(member).foreach { conn =>
         clusterRegistry = clusterRegistry + conn
-        if (!directRegistry.connections(conn)) {
+        if (!staticRegistry.connections(conn)) {
           context.parent ! ReplicationConnectionReachable(conn)
         }
       }
-    }
-
-    case UnreachableMember(member) => if (avaliableMember(member)) {
+    case UnreachableMember(member) if avaliableMember(member) =>
       avaliableConnection(member).foreach { conn =>
         clusterRegistry = clusterRegistry - conn
-        if (!directRegistry.connections(conn)) {
+        if (!staticRegistry.connections(conn)) {
           context.parent ! ReplicationConnectionUnreachable(conn)
         }
       }
-    }
-
-    case MemberRemoved(member, _) => if (avaliableMember(member)) {
+    case MemberRemoved(member, _) if avaliableMember(member) =>
       avaliableConnection(member).foreach { conn =>
         clusterRegistry = clusterRegistry - conn
-        if (!directRegistry.connections(conn)) {
+        if (!staticRegistry.connections(conn)) {
           context.parent ! ReplicationConnectionDown(conn)
         }
       }
-    }
     case _ =>
   }
 

@@ -583,3 +583,10 @@ object EndpointFilters {
   }
 }
 
+trait EndpointProcessors {
+
+}
+object EndpointProcessors {
+
+}
+
