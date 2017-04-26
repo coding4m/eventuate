@@ -19,10 +19,10 @@ package com.rbmhtechnology.eventuate
 import java.util.concurrent.TimeUnit
 
 import akka.actor._
+import akka.actor.MessagePipeline
+import akka.actor.MessagePipeline.{ HandledCompletely, Inner }
 import akka.cluster.ClusterEvent._
 import akka.cluster.{ Cluster, Member }
-import akka.contrib.pattern.ReceivePipeline
-import akka.contrib.pattern.ReceivePipeline.{ HandledCompletely, Inner }
 import akka.event.Logging
 import akka.pattern.{ ask, pipe }
 import akka.util.Timeout
@@ -379,7 +379,7 @@ private object Controller {
   case class DeactivateReplication(link: ReplicationLink)
 }
 
-private class Controller(endpoint: ReplicationEndpoint) extends Actor with ActorLogging with ReceivePipeline {
+private class Controller(endpoint: ReplicationEndpoint) extends Actor with ActorLogging with MessagePipeline {
 
   import Controller._
 

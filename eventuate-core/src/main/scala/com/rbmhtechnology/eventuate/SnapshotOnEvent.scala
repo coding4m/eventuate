@@ -16,13 +16,13 @@
 
 package com.rbmhtechnology.eventuate
 
-import akka.contrib.pattern.ReceivePipeline
-import akka.contrib.pattern.ReceivePipeline.Inner
+import akka.actor.MessagePipeline
+import akka.actor.MessagePipeline.Inner
 
 /**
  * @author siuming
  */
-trait SnapshotOnEvent { this: EventsourcedView with ReceivePipeline =>
+trait SnapshotOnEvent { this: EventsourcedView with MessagePipeline =>
 
   import EventsourcingProtocol._
 

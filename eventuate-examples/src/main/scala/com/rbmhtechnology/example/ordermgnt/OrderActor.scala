@@ -17,7 +17,7 @@
 package com.rbmhtechnology.example.ordermgnt
 
 import akka.actor._
-import akka.contrib.pattern.ReceivePipeline
+import akka.actor.MessagePipeline
 import com.rbmhtechnology.eventuate.EventsourcingProtocol.Snapshotting
 import com.rbmhtechnology.eventuate._
 import com.rbmhtechnology.eventuate.VersionedAggregate._
@@ -75,7 +75,7 @@ object OrderActor {
 /**
  * An event-sourced actor that manages a single order aggregate, identified by `orderId`.
  */
-class OrderActor(orderId: String, replicaId: String, val eventLog: ActorRef) extends EventsourcedActor with ReceivePipeline with SnapshotOnEvent {
+class OrderActor(orderId: String, replicaId: String, val eventLog: ActorRef) extends EventsourcedActor with MessagePipeline with SnapshotOnEvent {
   import OrderActor._
 
   override val id = s"s-$orderId-$replicaId"

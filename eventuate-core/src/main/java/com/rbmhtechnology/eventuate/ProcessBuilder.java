@@ -39,7 +39,7 @@ public final class ProcessBuilder {
      * @return a builder with the case statement added
      */
     public static <P> PFBuilder<Object, Iterable<Object>> match(final Class<? extends P> type, final IterableApply<? extends P> apply) {
-        return Match.match(type, apply);
+        return Match.matchUnchecked(type, apply);
     }
 
     /**
@@ -54,7 +54,7 @@ public final class ProcessBuilder {
     public static <P> PFBuilder<Object, Iterable<Object>> match(final Class<? extends P> type,
                                                                 final FI.TypedPredicate<? extends P> predicate,
                                                                 final IterableApply<? extends P> apply) {
-        return Match.match(type, predicate, apply);
+        return Match.matchUnchecked(type, predicate, apply);
     }
 
     /**
