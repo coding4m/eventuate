@@ -17,10 +17,10 @@
 import sbt._
 
 object ProjectDependencyVersions {
-  val AkkaVersion = "2.5.0"
+  val AkkaVersion = "2.5.1"
   val CassandraVersion = "3.4"
   val Log4jVersion = "2.5"
-  val ProtobufVersion = "2.5.0"
+  val ProtobufVersion = "2.6.1"
   val SparkVersion = "1.6.1"
   val VertxVersion = "3.0.0"
   val ExampleVertxVersion = "3.3.2"
@@ -29,9 +29,9 @@ object ProjectDependencyVersions {
 object ProjectDependencies {
   import ProjectDependencyVersions._
 
-  val CassandraDriver =      "com.datastax.cassandra"     % "cassandra-driver-core"     % "3.0.2"
-  val CassandraConnector =   "com.datastax.spark"        %% "spark-cassandra-connector" % "1.6.0-M2"
-  val Javaslang =            "io.javaslang"              % "javaslang"                 % "2.0.5"
+  val CassandraDriver =      "com.datastax.cassandra"     % "cassandra-driver-core"     % "3.2.0"
+  val CassandraConnector =   "com.datastax.spark"        %% "spark-cassandra-connector" % "1.6.6"
+  val Javaslang =            "io.javaslang"              % "javaslang"                  % "2.0.6"
   val Protobuf =             "com.google.protobuf"        % "protobuf-java"             % ProtobufVersion
   val JunitInterface =       "com.novocode"               % "junit-interface"           % "0.11"
   val AkkaContrib =          "com.typesafe.akka"         %% "akka-contrib"              % AkkaVersion
@@ -49,12 +49,12 @@ object ProjectDependencies {
   val SparkCore =            "org.apache.spark"          %% "spark-core"                % SparkVersion
   val SparkSql =             "org.apache.spark"          %% "spark-sql"                 % SparkVersion
   val SparkStreaming =       "org.apache.spark"          %% "spark-streaming"           % SparkVersion
-  val CassandraUnit =        "org.cassandraunit"          % "cassandra-unit"            % "3.0.0.1"
+  val CassandraUnit =        "org.cassandraunit"          % "cassandra-unit"            % "3.1.3.2"
   val Leveldb =              "org.fusesource.leveldbjni"  % "leveldbjni-all"            % "1.8"
   val Rocksdb =              "org.rocksdb"                % "rocksdbjni"                % "5.1.2"
   val Sigar =                "org.fusesource"             % "sigar"                     % "1.6.4"
   val Java8Compat =          "org.scala-lang.modules"    %% "scala-java8-compat"        % "0.8.0"
-  val Scalatest =            "org.scalatest"             %% "scalatest"                 % "3.0.0"
+  val Scalatest =            "org.scalatest"             %% "scalatest"                 % "3.0.3"
   val Scalaz =               "org.scalaz"                %% "scalaz-core"               % "7.2.7"
   val VertxCore =            "io.vertx"                   % "vertx-core"                % VertxVersion
   val VertxRxJava =          "io.vertx"                   % "vertx-rx-java"             % VertxVersion

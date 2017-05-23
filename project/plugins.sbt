@@ -12,6 +12,9 @@ addSbtPlugin("org.scalariform" % "sbt-scalariform" % "1.6.0")
 
 addSbtPlugin("de.heikoseeberger" % "sbt-header" % "1.5.1")
 
-addSbtPlugin("com.github.gseitz" % "sbt-protobuf" % "0.5.3")
+addSbtPlugin("com.github.gseitz" % "sbt-protobuf" % "0.5.5")
 
-libraryDependencies += "com.github.os72" % "protoc-jar" % "2.x.5"
+addSbtPlugin("net.virtual-void" % "sbt-dependency-graph" % "0.8.2")
+
+libraryDependencies += "com.github.os72" % "protoc-jar" % "2.6.1.4"
+
