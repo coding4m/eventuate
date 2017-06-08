@@ -7,12 +7,13 @@
  *
  * http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
+ * Unless by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+syntax = "proto3";
 option java_package = "com.rbmhtechnology.eventuate.serializer";
 option optimize_for = SPEED;
 
@@ -21,22 +22,22 @@ option optimize_for = SPEED;
  * custom events, snapshots or replication filters
  */
 message PayloadFormat {
-  optional int32 serializerId = 1;
-  optional bytes payload = 2;
-  optional string payloadManifest = 3;
-  optional bool isStringManifest = 4;
+  int32 serializerId = 1;
+  bytes payload = 2;
+  string payloadManifest = 3;
+  bool isStringManifest = 4;
 }
 
 message VersionedFormat {
-  optional PayloadFormat payload = 1;
-  optional VectorTimeFormat vectorTimestamp = 2;
-  optional int64 systemTimestamp = 3;
-  optional string creator = 4;
+  PayloadFormat payload = 1;
+  VectorTimeFormat vectorTimestamp = 2;
+  int64 systemTimestamp = 3;
+  string creator = 4;
 }
 
 message VectorTimeEntryFormat {
-  required string processId = 1;
-  required int64 logicalTime = 2;
+  string processId = 1;
+  int64 logicalTime = 2;
 }
 
 message VectorTimeFormat {

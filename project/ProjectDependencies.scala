@@ -20,7 +20,7 @@ object ProjectDependencyVersions {
   val AkkaVersion = "2.5.2"
   val CassandraVersion = "3.4"
   val Log4jVersion = "2.5"
-  val ProtobufVersion = "2.5.0"
+  val ProtobufVersion = "3.3.0"
   val SparkVersion = "1.6.1"
   val VertxVersion = "3.0.0"
   val ExampleVertxVersion = "3.3.2"

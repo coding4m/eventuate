@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+syntax = "proto3";
 option java_package = "com.rbmhtechnology.eventuate.crdt";
 option optimize_for = SPEED;
 
@@ -23,16 +24,16 @@ message ORSetFormat {
 }
 
 message ORCartFormat {
-  optional ORSetFormat orSet = 1;
+  ORSetFormat orSet = 1;
 }
 
 message ORCartEntryFormat {
-  optional PayloadFormat key = 1;
-  optional int32 quantity = 2;
+  PayloadFormat key = 1;
+  int32 quantity = 2;
 }
 
 message LWWRegisterFormat {
-  optional MVRegisterFormat mvRegister = 1;
+  MVRegisterFormat mvRegister = 1;
 }
 
 message MVRegisterFormat {
@@ -40,22 +41,22 @@ message MVRegisterFormat {
 }
 
 message ValueUpdatedFormat {
-  optional PayloadFormat operation = 1;
+  PayloadFormat operation = 1;
 }
 
 message UpdateOpFormat {
-  optional PayloadFormat delta = 1;
+  PayloadFormat delta = 1;
 }
 
 message AssignOpFormat {
-  optional PayloadFormat value = 1;
+  PayloadFormat value = 1;
 }
 
 message AddOpFormat {
-  optional PayloadFormat entry = 1;
+  PayloadFormat entry = 1;
 }
 
 message RemoveOpFormat {
-  optional PayloadFormat entry = 1;
+  PayloadFormat entry = 1;
   repeated VectorTimeFormat timestamps = 2;
 }

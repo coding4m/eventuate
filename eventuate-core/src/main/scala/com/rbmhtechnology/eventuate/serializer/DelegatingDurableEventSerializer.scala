@@ -130,14 +130,14 @@ abstract class DurableEventSerializer(
 
   def durableEvent(durableEventFormat: DurableEventFormat): DurableEvent = {
     val emitterAggregateId: Option[String] =
-      if (durableEventFormat.hasEmitterAggregateId) Some(durableEventFormat.getEmitterAggregateId) else None
+      if (durableEventFormat.getEmitterAggregateId.nonEmpty) Some(durableEventFormat.getEmitterAggregateId) else None
 
     val customDestinationAggregateIds = durableEventFormat.getCustomDestinationAggregateIdsList.iterator.asScala.foldLeft(Set.empty[String]) {
       case (result, dest) => result + dest
     }
 
-    val deliveryId = if (durableEventFormat.hasDeliveryId) Some(durableEventFormat.getDeliveryId) else None
-    val persistOnEventSequenceNr = if (durableEventFormat.hasPersistOnEventSequenceNr) Some(durableEventFormat.getPersistOnEventSequenceNr) else None
+    val deliveryId = if (durableEventFormat.getDeliveryId.nonEmpty) Some(durableEventFormat.getDeliveryId) else None
+    val persistOnEventSequenceNr = if (durableEventFormat.getPersistOnEventSequenceNr > 0) Some(durableEventFormat.getPersistOnEventSequenceNr) else None
     val persistOnEventId = if (durableEventFormat.hasPersistOnEventId) Some(eventId(durableEventFormat.getPersistOnEventId)) else None
 
     DurableEvent(

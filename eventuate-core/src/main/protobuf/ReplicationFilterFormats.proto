@@ -7,12 +7,13 @@
  *
  * http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
+ * Unless by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+syntax = "proto3";
 option java_package = "com.rbmhtechnology.eventuate.serializer";
 option optimize_for = SPEED;
 
@@ -20,13 +21,13 @@ import "CommonFormats.proto";
 
 message ReplicationFilterTreeFormat {
   enum NodeType {
-    LEAF = 1;
-    AND = 2;
-    OR = 3;
+    LEAF = 0;
+    AND = 1;
+    OR = 2;
   }
-  required NodeType nodeType = 1;
-  repeated ReplicationFilterTreeFormat children = 2; // set if nodeType == AND | OR
-  optional PayloadFormat filter = 3;   // set if nodeType == LEAF
+  NodeType nodeType = 1;
+  PayloadFormat filter = 2;   // set if nodeType == LEAF
+  repeated ReplicationFilterTreeFormat children = 3; // set if nodeType == AND | OR
 }
 
 message NoFilterFormat {

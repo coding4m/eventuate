@@ -167,7 +167,7 @@ class SnapshotSerializer(system: ExtendedActorSystem) extends Serializer {
 
     val durableEvent = eventSerializer.durableEvent(snapshotFormat.getLastEvent)
     val sequenceNr =
-      if (snapshotFormat.hasSequenceNr) snapshotFormat.getSequenceNr
+      if (snapshotFormat.getSequenceNr > 0) snapshotFormat.getSequenceNr
       else durableEvent.localSequenceNr
 
     Snapshot(

@@ -13,27 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+syntax = "proto3";
 option java_package = "com.rbmhtechnology.eventuate.serializer";
 option optimize_for = SPEED;
 
 import "CommonFormats.proto";
 
 message DurableEventFormat {
-  optional PayloadFormat payload = 1;
-  optional string emitterId = 2;
-  optional string emitterAggregateId = 3;
+  PayloadFormat payload = 1;
+  string emitterId = 2;
+  string emitterAggregateId = 3;
   repeated string customDestinationAggregateIds = 4;
-  optional int64 systemTimestamp = 5;
-  optional VectorTimeFormat vectorTimestamp = 6;
-  optional string processId = 7;
-  optional string localLogId = 8;
-  optional int64 localSequenceNr = 9;
-  optional int64 persistOnEventSequenceNr = 10;
-  optional string deliveryId = 11;
-  optional EventIdFormat persistOnEventId = 12;
+  int64 systemTimestamp = 5;
+  VectorTimeFormat vectorTimestamp = 6;
+  string processId = 7;
+  string localLogId = 8;
+  int64 localSequenceNr = 9;
+  int64 persistOnEventSequenceNr = 10;
+  string deliveryId = 11;
+  EventIdFormat persistOnEventId = 12;
 }
 
 message EventIdFormat {
-   optional string processId = 1;
-   optional int64 sequenceNr = 2;
+   string processId = 1;
+   int64 sequenceNr = 2;
 }

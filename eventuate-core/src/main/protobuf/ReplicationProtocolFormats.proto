@@ -7,12 +7,13 @@
  *
  * http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
+ * Unless by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+syntax = "proto3";
 option java_package = "com.rbmhtechnology.eventuate.serializer";
 option optimize_for = SPEED;
 
@@ -21,17 +22,17 @@ import "DurableEventFormats.proto";
 import "ReplicationFilterFormats.proto";
 
 message ApplicationVersionFormat {
-  required int32 major = 1;
-  required int32 minor = 2;
+  int32 major = 1;
+  int32 minor = 2;
 }
 
 message LogInfoFormat {
-  required string logName = 1;
-  required int64 sequenceNr = 2;
+  string logName = 1;
+  int64 sequenceNr = 2;
 }
 
 message ReplicationInfoFormat {
-  required string endpointId = 1;
+  string endpointId = 1;
   repeated LogInfoFormat logInfos = 2;
 }
 
@@ -40,63 +41,63 @@ message GetReplicationInfoFormat {
 }
 
 message GetReplicationInfoSuccessFormat {
-  required ReplicationInfoFormat info = 1;
+  ReplicationInfoFormat info = 1;
 }
 
 message SynchronizeReplicationProgressFormat {
-  optional ReplicationInfoFormat info = 1;
+  ReplicationInfoFormat info = 1;
 }
 
 message SynchronizeReplicationProgressSuccessFormat {
-  optional ReplicationInfoFormat info = 1;
+  ReplicationInfoFormat info = 1;
 }
 
 message SynchronizeReplicationProgressFailureFormat {
-  optional PayloadFormat cause = 1;
+  PayloadFormat cause = 1;
 }
 
 message SynchronizeReplicationProgressSourceExceptionFormat {
-  optional string message = 1;
+  string message = 1;
 }
 
 message ReplicationReadEnvelopeFormat {
-  optional ReplicationReadFormat payload = 1;
-  optional string logName = 2;
-  optional string targetApplicationName = 3;
-  optional ApplicationVersionFormat targetApplicationVersion = 4;
+  ReplicationReadFormat payload = 1;
+  string logName = 2;
+  string targetApplicationName = 3;
+  ApplicationVersionFormat targetApplicationVersion = 4;
 }
 
 message ReplicationReadFormat {
-  optional int64 fromSequenceNr = 1;
-  optional int32 max = 2;
-  optional int32 scanLimit = 3;
-  optional ReplicationFilterTreeFormat filter = 4;
-  optional string targetLogId = 5;
-  optional string replicator = 6;
-  optional VectorTimeFormat currentTargetVersionVector = 7;
+  int64 fromSequenceNr = 1;
+  int32 max = 2;
+  int32 scanLimit = 3;
+  ReplicationFilterTreeFormat filter = 4;
+  string targetLogId = 5;
+  string replicator = 6;
+  VectorTimeFormat currentTargetVersionVector = 7;
 }
 
 message ReplicationReadSuccessFormat {
   repeated DurableEventFormat events = 1;
-  optional int64 fromSequenceNr = 2;
-  optional int64 replicationProgress = 3;
-  optional string targetLogId = 4;
-  optional VectorTimeFormat currentSourceVersionVector = 5;
+  int64 fromSequenceNr = 2;
+  int64 replicationProgress = 3;
+  string targetLogId = 4;
+  VectorTimeFormat currentSourceVersionVector = 5;
 }
 
 message ReplicationReadFailureFormat {
-  optional PayloadFormat cause = 1;
-  optional string targetLogId = 2;
+  PayloadFormat cause = 1;
+  string targetLogId = 2;
 }
 
 message ReplicationReadSourceExceptionFormat {
-  optional string message = 1;
+  string message = 1;
 }
 
 message IncompatibleApplicationVersionExceptionFormat {
-  optional string sourceEndpointId = 1;
-  optional ApplicationVersionFormat sourceApplicationVersion = 2;
-  optional ApplicationVersionFormat targetApplicationVersion = 3;
+  string sourceEndpointId = 1;
+  ApplicationVersionFormat sourceApplicationVersion = 2;
+  ApplicationVersionFormat targetApplicationVersion = 3;
 }
 
 message ReplicationDueFormat {

@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+syntax = "proto3";
 option java_package = "com.rbmhtechnology.eventuate.serializer";
 option optimize_for = SPEED;
 
@@ -20,46 +21,46 @@ import "CommonFormats.proto";
 import "DurableEventFormats.proto";
 
 message SnapshotFormat {
-  optional PayloadFormat payload = 1;
-  optional string emitterId = 2;
-  optional DurableEventFormat lastEvent = 3;
-  optional VectorTimeFormat currentTime = 4;
+  PayloadFormat payload = 1;
+  string emitterId = 2;
+  DurableEventFormat lastEvent = 3;
+  VectorTimeFormat currentTime = 4;
   repeated DeliveryAttemptFormat deliveryAttempts = 5;
   repeated PersistOnEventRequestFormat persistOnEventRequests = 6;
-  optional int64 sequenceNr = 7;
+  int64 sequenceNr = 7;
 }
 
 message DeliveryAttemptFormat {
-  optional string deliveryId = 1;
-  optional PayloadFormat message = 2;
-  optional string destination = 3;
+  string deliveryId = 1;
+  PayloadFormat message = 2;
+  string destination = 3;
 }
 
 message PersistOnEventRequestFormat {
-  optional int64 sequenceNr = 1;
+  int64 sequenceNr = 1;
   repeated PersistOnEventInvocationFormat invocation = 2;
-  optional int32 instanceId = 3;
-  optional EventIdFormat eventId = 4;
+  int32 instanceId = 3;
+  EventIdFormat eventId = 4;
 }
 
 message PersistOnEventInvocationFormat {
-  optional PayloadFormat event = 1;
+  PayloadFormat event = 1;
   repeated string customDestinationAggregateIds = 2;
 }
 
 message ConcurrentVersionsTreeFormat {
-  optional ConcurrentVersionsTreeNodeFormat root = 1;
-  optional string owner = 2;
+  ConcurrentVersionsTreeNodeFormat root = 1;
+  string owner = 2;
 }
 
 message ConcurrentVersionsTreeNodeFormat {
-  optional VersionedFormat versioned = 1;
-  optional bool rejected = 2;
+  VersionedFormat versioned = 1;
+  bool rejected = 2;
   repeated ConcurrentVersionsTreeNodeFormat children = 3;
 }
 
 message EventLogClockFormat {
-  optional int64 sequenceNr = 1;
-  optional VectorTimeFormat versionVector = 2;
+  int64 sequenceNr = 1;
+  VectorTimeFormat versionVector = 2;
 }
 

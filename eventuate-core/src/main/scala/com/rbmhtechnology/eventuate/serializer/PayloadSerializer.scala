@@ -63,7 +63,7 @@ class DelegatingPayloadSerializer(system: ExtendedActorSystem) extends PayloadSe
         payloadFormat.getPayload.toByteArray,
         payloadFormat.getSerializerId,
         payloadFormat.getPayloadManifest)
-    } else if (payloadFormat.hasPayloadManifest) {
+    } else if (payloadFormat.getPayloadManifest.nonEmpty) {
       val manifestClass = system.dynamicAccess.getClassFor[AnyRef](payloadFormat.getPayloadManifest).get
       SerializationExtension(system).deserialize(
         payloadFormat.getPayload.toByteArray,
@@ -97,7 +97,7 @@ class BinaryPayloadSerializer(system: ExtendedActorSystem) extends PayloadSerial
     BinaryPayload(
       payloadFormat.getPayload,
       payloadFormat.getSerializerId,
-      if (payloadFormat.hasPayloadManifest) Some(payloadFormat.getPayloadManifest) else None,
+      if (payloadFormat.getPayloadManifest.nonEmpty) Some(payloadFormat.getPayloadManifest) else None,
       payloadFormat.getIsStringManifest)
   }
 }
