@@ -16,11 +16,9 @@
 
 package com.rbmhtechnology.eventuate
 
-import scala.collection.immutable.SortedMap
-
-import java.util.{ Set => JSet }
 import akka.actor._
-import scala.collection.JavaConverters._
+
+import scala.collection.immutable.SortedMap
 
 object ConfirmedDelivery {
   case class DeliveryAttempt(deliveryId: String, message: Any, destination: ActorPath)
@@ -58,22 +56,32 @@ trait ConfirmedDelivery extends EventsourcedActor {
    * tracked as unconfirmed message until delivery is confirmed by persisting a confirmation event
    * with `persistConfirmation`, using the same `deliveryId`.
    */
-  def deliver(deliveryId: String, message: Any, destination: ActorPath): Unit = {
+  final def deliver(deliveryId: String, message: Any, destination: ActorPath): Unit = {
     _unconfirmed = _unconfirmed + (deliveryId -> DeliveryAttempt(deliveryId, message, destination))
-    if (!recovering) send(message, destination)
+    if (!recovering) deliverInternal(deliveryId, message, destination)
   }
+
+  protected def deliverInternal(deliveryId: String, message: Any, destination: ActorPath): Unit =
+    context.actorSelection(destination) ! message
 
   /**
    * Redelivers all unconfirmed messages.
    */
-  def redeliverUnconfirmed(): Unit = _unconfirmed.foreach {
-    case (_, DeliveryAttempt(_, m, d)) => send(m, d)
+  final def redeliverUnconfirmed(): Unit = _unconfirmed.foreach {
+    case (_, DeliveryAttempt(i, m, d)) => deliverInternal(i, m, d)
+  }
+
+  /**
+   * Redelivers unconfirmed message with deliveryId.
+   */
+  final def redeliverUnconfirmed(deliveryId: String): Unit = _unconfirmed.get(deliveryId).foreach { attempt =>
+    deliverInternal(attempt.deliveryId, attempt.message, attempt.destination)
   }
 
   /**
    * Delivery ids of unconfirmed messages.
    */
-  def unconfirmed: Set[String] =
+  final def unconfirmed: Set[String] =
     _unconfirmed.keySet
 
   /**
@@ -83,7 +91,7 @@ trait ConfirmedDelivery extends EventsourcedActor {
     super.receiveEvent(event)
 
     event.deliveryId.foreach { deliveryId =>
-      if (event.emitterId == id) confirm(deliveryId)
+      if (event.emitterId == id) _unconfirmed = _unconfirmed - deliveryId
     }
   }
 
@@ -113,10 +121,4 @@ trait ConfirmedDelivery extends EventsourcedActor {
     super.recovered()
     redeliverUnconfirmed()
   }
-
-  private def confirm(deliveryId: String): Unit =
-    _unconfirmed = _unconfirmed - deliveryId
-
-  private def send(message: Any, destination: ActorPath): Unit =
-    context.actorSelection(destination) ! message
 }
