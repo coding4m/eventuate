@@ -742,8 +742,8 @@ private class RecoveryDetector(connections: Set[ReplicationConnection], connecti
   override def receive: Receive = initiating
 
   private def initiating: Receive = {
-    case MemberUp(member) if avaliableMember(member) =>
-      avaliableConnection(member).foreach { conn =>
+    case MemberUp(member) if availbleMember(member) =>
+      availableConnection(member).foreach { conn =>
         clusterRegistry = clusterRegistry + conn
       }
 
@@ -761,29 +761,29 @@ private class RecoveryDetector(connections: Set[ReplicationConnection], connecti
     case GetReplicationConnections =>
       sender ! GetReplicationConnectionsSuccess(staticRegistry.connections ++ clusterRegistry.connections)
 
-    case MemberUp(member) if avaliableMember(member) =>
-      avaliableConnection(member).foreach { conn =>
+    case MemberUp(member) if availbleMember(member) =>
+      availableConnection(member).foreach { conn =>
         clusterRegistry = clusterRegistry + conn
         if (!staticRegistry.connections(conn)) {
           context.parent ! ReplicationConnectionUp(conn)
         }
       }
-    case ReachableMember(member) if avaliableMember(member) =>
-      avaliableConnection(member).foreach { conn =>
+    case ReachableMember(member) if availbleMember(member) =>
+      availableConnection(member).foreach { conn =>
         clusterRegistry = clusterRegistry + conn
         if (!staticRegistry.connections(conn)) {
           context.parent ! ReplicationConnectionReachable(conn)
         }
       }
-    case UnreachableMember(member) if avaliableMember(member) =>
-      avaliableConnection(member).foreach { conn =>
+    case UnreachableMember(member) if availbleMember(member) =>
+      availableConnection(member).foreach { conn =>
         clusterRegistry = clusterRegistry - conn
         if (!staticRegistry.connections(conn)) {
           context.parent ! ReplicationConnectionUnreachable(conn)
         }
       }
-    case MemberRemoved(member, _) if avaliableMember(member) =>
-      avaliableConnection(member).foreach { conn =>
+    case MemberRemoved(member, _) if availbleMember(member) =>
+      availableConnection(member).foreach { conn =>
         clusterRegistry = clusterRegistry - conn
         if (!staticRegistry.connections(conn)) {
           context.parent ! ReplicationConnectionDown(conn)
@@ -792,11 +792,11 @@ private class RecoveryDetector(connections: Set[ReplicationConnection], connecti
     case _ =>
   }
 
-  private def avaliableMember(member: Member): Boolean = {
+  private def availbleMember(member: Member): Boolean = {
     cluster.selfUniqueAddress != member.uniqueAddress && connectionRoles.intersect(member.roles).nonEmpty
   }
 
-  private def avaliableConnection(member: Member): Option[ReplicationConnection] = for {
+  private def availableConnection(member: Member): Option[ReplicationConnection] = for {
     host <- member.address.host
     port <- member.address.port
     system = member.address.system
