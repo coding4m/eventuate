@@ -94,13 +94,13 @@ private class Recovery(endpoint: ReplicationEndpoint) {
   private implicit val timeout = Timeout(remoteOperationTimeout)
 
   def awaitConnections(implicit ec: ExecutionContext): Future[Set[ReplicationConnection]] = {
-    endpoint.controller.ask(GetReplicationConnections)(recoveryTimeout).mapTo[GetReplicationConnectionsSuccess].map(_.connections)
+    endpoint.controller.ask(GetConnections)(recoveryTimeout).mapTo[GetConnectionsSuccess].map(_.connections)
   }
 
   def activateConnections(connections: Set[ReplicationConnection]): Unit = {
     endpoint.acceptor ! Process
     for (conn <- connections) {
-      endpoint.controller ! ReachableReplicationConnection(conn)
+      endpoint.controller ! ReachableConnection(conn)
     }
   }
 
@@ -366,17 +366,17 @@ private object Controller {
   def props(endpoint: ReplicationEndpoint): Props =
     Props(classOf[Controller], endpoint).withDispatcher(endpoint.settings.controllerDispatcher)
 
-  case object GetReplicationConnections
-  case class GetReplicationConnectionsSuccess(connections: Set[ReplicationConnection])
-  case class ReplicationConnectionUp(conn: ReplicationConnection)
-  case class ReplicationConnectionReachable(conn: ReplicationConnection)
-  case class ReplicationConnectionUnreachable(conn: ReplicationConnection)
-  case class ReplicationConnectionDown(conn: ReplicationConnection)
-  case class ReachableReplicationConnection(connection: ReplicationConnection)
-  case class UnreachableReplicationConnection(connection: ReplicationConnection)
+  case object GetConnections
+  case class GetConnectionsSuccess(connections: Set[ReplicationConnection])
+  case class ConnectionUp(conn: ReplicationConnection)
+  case class ConnectionDown(conn: ReplicationConnection)
+  case class ConnectionReachable(conn: ReplicationConnection)
+  case class ConnectionUnreachable(conn: ReplicationConnection)
+  case class ReachableConnection(connection: ReplicationConnection)
+  case class UnreachableConnection(connection: ReplicationConnection)
 
   case class ActivateReplication(link: ReplicationLink)
-  case class DeactivateReplication(link: ReplicationLink)
+  case class InactivateReplication(link: ReplicationLink)
 }
 
 private class Controller(endpoint: ReplicationEndpoint) extends Actor with ActorLogging with MessagePipeline {
@@ -393,19 +393,19 @@ private class Controller(endpoint: ReplicationEndpoint) extends Actor with Actor
     case cmd @ ActivateReplication(link) =>
       log.debug("activate replication link with {}", link)
       Inner(cmd)
-    case cmd @ DeactivateReplication(link) =>
+    case cmd @ InactivateReplication(link) =>
       log.debug("deactivate replication link with {}", link)
       Inner(cmd)
-    case event @ ReplicationConnectionUp(conn) =>
+    case event @ ConnectionUp(conn) =>
       log.debug("replication connection[{}@{}:{}] up.", conn.name, conn.host, conn.port)
       Inner(event)
-    case event @ ReplicationConnectionDown(conn) =>
+    case event @ ConnectionDown(conn) =>
       log.debug("replication connection[{}@{}:{}] down.", conn.name, conn.host, conn.port)
       Inner(event)
-    case event @ ReplicationConnectionReachable(conn) =>
+    case event @ ConnectionReachable(conn) =>
       log.debug("replication connection[{}@{}:{}] reachable.", conn.name, conn.host, conn.port)
       Inner(event)
-    case event @ ReplicationConnectionUnreachable(conn) =>
+    case event @ ConnectionUnreachable(conn) =>
       log.debug("replication connection[{}@{}:{}] unreachable.", conn.name, conn.host, conn.port)
       Inner(event)
     case Terminated(actor) =>
@@ -417,8 +417,8 @@ private class Controller(endpoint: ReplicationEndpoint) extends Actor with Actor
 
   override def receive: Receive = {
 
-    case GetReplicationConnections =>
-      replicationDetector forward GetReplicationConnections
+    case GetConnections =>
+      replicationDetector forward GetConnections
 
     case ActivateReplication(link) =>
       replicationRegistry(link).foreach { replicator =>
@@ -431,31 +431,31 @@ private class Controller(endpoint: ReplicationEndpoint) extends Actor with Actor
       )
       context.watch(replicator)
       replicationRegistry = replicationRegistry + (link, replicator)
-    case DeactivateReplication(link) =>
+    case InactivateReplication(link) =>
       replicationRegistry(link).foreach { replicator =>
         replicationRegistry = replicationRegistry - link
         context stop replicator
       }
 
-    case ReachableReplicationConnection(connection) =>
+    case ReachableConnection(connection) =>
       context.actorOf(
         Props(new ReplicatorInitializer(endpoint, connection)).withDispatcher(endpoint.settings.controllerDispatcher)
       )
-    case UnreachableReplicationConnection(connection) =>
+    case UnreachableConnection(connection) =>
       replicationRegistry.relicators.keys filter { link =>
         endpoint.replicationAcceptor(connection) == link.source.acceptor
       } foreach { link =>
-        self ! DeactivateReplication(link)
+        self ! InactivateReplication(link)
       }
 
-    case ReplicationConnectionUp(conn) =>
-      self ! ReachableReplicationConnection(conn)
-    case ReplicationConnectionReachable(conn) =>
-      self ! ReachableReplicationConnection(conn)
-    case ReplicationConnectionUnreachable(conn) =>
-      self ! UnreachableReplicationConnection(conn)
-    case ReplicationConnectionDown(conn) =>
-      self ! UnreachableReplicationConnection(conn)
+    case ConnectionUp(conn) =>
+      self ! ReachableConnection(conn)
+    case ConnectionReachable(conn) =>
+      self ! ReachableConnection(conn)
+    case ConnectionUnreachable(conn) =>
+      self ! UnreachableConnection(conn)
+    case ConnectionDown(conn) =>
+      self ! UnreachableConnection(conn)
     case _ =>
   }
 }
@@ -752,41 +752,41 @@ private class RecoveryDetector(connections: Set[ReplicationConnection], connecti
       unstashAll()
       log.warning("connections ready, network initiated.")
 
-    case GetReplicationConnections =>
+    case GetConnections =>
       stash()
     case _ =>
   }
 
   private def initiated: Receive = {
-    case GetReplicationConnections =>
-      sender ! GetReplicationConnectionsSuccess(staticRegistry.connections ++ clusterRegistry.connections)
+    case GetConnections =>
+      sender ! GetConnectionsSuccess(staticRegistry.connections ++ clusterRegistry.connections)
 
     case MemberUp(member) if availbleMember(member) =>
       availableConnection(member).foreach { conn =>
         clusterRegistry = clusterRegistry + conn
         if (!staticRegistry.connections(conn)) {
-          context.parent ! ReplicationConnectionUp(conn)
+          context.parent ! ConnectionUp(conn)
         }
       }
     case ReachableMember(member) if availbleMember(member) =>
       availableConnection(member).foreach { conn =>
         clusterRegistry = clusterRegistry + conn
         if (!staticRegistry.connections(conn)) {
-          context.parent ! ReplicationConnectionReachable(conn)
+          context.parent ! ConnectionReachable(conn)
         }
       }
     case UnreachableMember(member) if availbleMember(member) =>
       availableConnection(member).foreach { conn =>
         clusterRegistry = clusterRegistry - conn
         if (!staticRegistry.connections(conn)) {
-          context.parent ! ReplicationConnectionUnreachable(conn)
+          context.parent ! ConnectionUnreachable(conn)
         }
       }
     case MemberRemoved(member, _) if availbleMember(member) =>
       availableConnection(member).foreach { conn =>
         clusterRegistry = clusterRegistry - conn
         if (!staticRegistry.connections(conn)) {
-          context.parent ! ReplicationConnectionDown(conn)
+          context.parent ! ConnectionDown(conn)
         }
       }
     case _ =>

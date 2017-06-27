@@ -66,13 +66,17 @@ object ReplicationEndpoint {
   private object Address {
 
     val hostAndPort = "([^:]+):([0-9]+)".r
+
+    def unapply(s: String): Option[(String, Int)] = s match {
+      case hostAndPort(host, port) => Some((host, port.toInt))
+    }
+  }
+
+  private object AddressWithName {
     val hostAndPortWithName = "([^@]+)@([^:]+):([0-9]+)".r
 
     def unapply(s: String): Option[(String, String, Int)] = s match {
-      case hostAndPort(host, port) =>
-        Some((ReplicationConnection.DefaultRemoteSystemName, host, port.toInt))
-      case hostAndPortWithName(name, host, port) =>
-        Some((name, host, port.toInt))
+      case hostAndPortWithName(name, host, port) => Some((name, host, port.toInt))
     }
   }
 
@@ -98,8 +102,9 @@ object ReplicationEndpoint {
    */
   def apply(logFactory: String => Props)(implicit system: ActorSystem): ReplicationEndpoint = {
     val config = system.settings.config
-    val connections = config.getStringList("eventuate.endpoint.connections").asScala.toSet[String].map {
-      case Address(name, host, port) => ReplicationConnection(host, port, name)
+    val connections = config.getStringList("eventuate.endpoint.connections").asScala.toSet[String].collect {
+      case Address(host, port)               => ReplicationConnection(host, port, system.name)
+      case AddressWithName(name, host, port) => ReplicationConnection(host, port, name)
     }
     val connectionRoles = config.getStringList("eventuate.endpoint.connection-roles").asScala.toSet
     apply(logFactory, connections, connectionRoles)
@@ -463,20 +468,13 @@ class ReplicationEndpoint(
     ReplicationTarget(this, logName, logId(logName), logs(logName))
   }
 
-  private[eventuate] def source(
-    logName: String,
-    connection: ReplicationConnection,
-    remoteInfo: ReplicationInfo
-  ): ReplicationSource = {
+  private[eventuate] def source(logName: String, connection: ReplicationConnection, remoteInfo: ReplicationInfo): ReplicationSource = {
     ReplicationSource(
       remoteInfo.endpointId, logName, remoteInfo.logId(logName), replicationAcceptor(connection)
     )
   }
 
-  private[eventuate] def replicationLinks(
-    connection: ReplicationConnection,
-    remoteInfo: ReplicationInfo
-  ): Set[ReplicationLink] = {
+  private[eventuate] def replicationLinks(connection: ReplicationConnection, remoteInfo: ReplicationInfo): Set[ReplicationLink] = {
     replicationLogs(remoteInfo).map { logName =>
       ReplicationLink(source(logName, connection, remoteInfo), target(logName))
     }
@@ -582,11 +580,3 @@ object EndpointFilters {
     override def filterFor(targetLogId: String, sourceLogName: String): ReplicationFilter = NoFilter
   }
 }
-
-trait EndpointProcessors {
-
-}
-object EndpointProcessors {
-
-}
-
