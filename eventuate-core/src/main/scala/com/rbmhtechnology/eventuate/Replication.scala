@@ -101,7 +101,7 @@ private class Recovery(endpoint: ReplicationEndpoint) {
   def activateConnections(connections: Set[ReplicationConnection]): Unit = {
     endpoint.acceptor ! Process
     for (conn <- connections) {
-      endpoint.controller ! ReachableConnection(conn)
+      endpoint.controller ! ConnectionUp(conn)
     }
   }
 
@@ -211,7 +211,7 @@ private class Recovery(endpoint: ReplicationEndpoint) {
         case _ =>
           endpoint.acceptor ! Recover(recoveryLinks, recoveryFinishedPromise)
           recoveryLinks.foreach { link =>
-            endpoint.controller ! EstablishReplicator(link.replicationLink)
+            endpoint.controller ! ReplicatorDown(link.replicationLink)
           }
       }
       recoveryFinishedPromise.future
@@ -369,13 +369,15 @@ private object Controller {
 
   case object ListConnection
   case class ConnectionList(connections: Set[ReplicationConnection])
-  case class ConnectionReachable(conn: ReplicationConnection)
-  case class ConnectionUnreachable(conn: ReplicationConnection)
-  case class ReachableConnection(connection: ReplicationConnection)
-  case class UnreachableConnection(connection: ReplicationConnection)
 
-  case class AbolishReplicator(link: ReplicationLink)
-  case class EstablishReplicator(link: ReplicationLink)
+  case class ReachableConnection(conn: ReplicationConnection)
+  case class UnreachableConnection(conn: ReplicationConnection)
+
+  case class ConnectionUp(connection: ReplicationConnection)
+  case class ConnectionDown(connection: ReplicationConnection)
+
+  case class ReplicatorUp(link: ReplicationLink)
+  case class ReplicatorDown(link: ReplicationLink)
 }
 
 private class Controller(endpoint: ReplicationEndpoint) extends Actor with ActorLogging with MessagePipeline {
@@ -384,26 +386,23 @@ private class Controller(endpoint: ReplicationEndpoint) extends Actor with Actor
 
   private var replicationRegistry = ReplicationRegistry()
   private val replicationDetector = context.actorOf(
-    ReplicaDetector.props(endpoint.connections, endpoint.connectionRoles, endpoint.maxConnections).withDispatcher(endpoint.settings.controllerDispatcher),
-    ReplicaDetector.Name
+    ReplicationDetector.props(endpoint.connections, endpoint.connectionRoles, endpoint.maxConnections).withDispatcher(endpoint.settings.controllerDispatcher),
+    ReplicationDetector.Name
   )
 
   pipelineOuter {
-    case cmd @ AbolishReplicator(link) =>
+    case cmd @ ConnectionUp(conn) =>
+      log.debug("replication connection[{}@{}:{}] reachable.", conn.name, conn.host, conn.port)
+      Inner(cmd)
+    case cmd @ ConnectionDown(conn) =>
+      log.debug("replication connection[{}@{}:{}] unreachable.", conn.name, conn.host, conn.port)
+      Inner(cmd)
+    case cmd @ ReplicatorUp(link) =>
       log.debug("deactivate replication link with {}", link)
       Inner(cmd)
-    case cmd @ EstablishReplicator(link) =>
+    case cmd @ ReplicatorDown(link) =>
       log.debug("activate replication link with {}", link)
       Inner(cmd)
-    case event @ ConnectionReachable(conn) =>
-      log.debug("replication connection[{}@{}:{}] reachable.", conn.name, conn.host, conn.port)
-      Inner(event)
-    case event @ ConnectionUnreachable(conn) =>
-      log.debug("replication connection[{}@{}:{}] unreachable.", conn.name, conn.host, conn.port)
-      Inner(event)
-    case Terminated(actor) =>
-      log.debug("replicator[path={}] terminated.", actor.path)
-      HandledCompletely
     case any =>
       Inner(any)
   }
@@ -413,7 +412,18 @@ private class Controller(endpoint: ReplicationEndpoint) extends Actor with Actor
     case ListConnection =>
       replicationDetector forward ListConnection
 
-    case EstablishReplicator(link) =>
+    case ConnectionUp(connection) =>
+      context.actorOf(
+        Props(new ReplicatorInitializer(endpoint, connection)).withDispatcher(endpoint.settings.controllerDispatcher)
+      )
+    case ConnectionDown(connection) =>
+      replicationRegistry.replicators.keys filter { link =>
+        endpoint.replicationAcceptor(connection) == link.source.acceptor
+      } foreach { link =>
+        self ! ReplicatorDown(link)
+      }
+
+    case ReplicatorUp(link) =>
       replicationRegistry(link).foreach { replicator =>
         replicationRegistry = replicationRegistry - link
         context stop replicator
@@ -422,28 +432,17 @@ private class Controller(endpoint: ReplicationEndpoint) extends Actor with Actor
       val replicator = context.actorOf(
         Props(new Replicator(link.target, link.source)).withDispatcher(endpoint.settings.controllerDispatcher)
       )
-      context.watch(replicator)
       replicationRegistry = replicationRegistry + (link, replicator)
-    case AbolishReplicator(link) =>
+    case ReplicatorDown(link) =>
       replicationRegistry(link).foreach { replicator =>
         replicationRegistry = replicationRegistry - link
         context stop replicator
       }
 
-    case ReachableConnection(connection) =>
-      context.actorOf(
-        Props(new ReplicatorInitializer(endpoint, connection)).withDispatcher(endpoint.settings.controllerDispatcher)
-      )
-    case UnreachableConnection(connection) =>
-      replicationRegistry.replicators.keys filter { link =>
-        endpoint.replicationAcceptor(connection) == link.source.acceptor
-      } foreach { link =>
-        self ! AbolishReplicator(link)
-      }
-    case ConnectionReachable(conn) =>
-      self ! ReachableConnection(conn)
-    case ConnectionUnreachable(conn) =>
-      self ! UnreachableConnection(conn)
+    case ReachableConnection(conn) =>
+      self ! ConnectionUp(conn)
+    case UnreachableConnection(conn) =>
+      self ! ConnectionDown(conn)
     case _ =>
   }
 }
@@ -593,7 +592,7 @@ private class ReplicatorInitializer(
     case GetReplicationInfoSuccess(info) =>
       acceptorRequestSchedule.foreach(_.cancel())
       endpoint.replicationLinks(connection, info).foreach { link =>
-        context.parent ! EstablishReplicator(link)
+        context.parent ! ReplicatorUp(link)
       }
       context stop self
   }
@@ -679,23 +678,23 @@ private class FailureDetector(sourceEndpointId: String, logName: String, failure
     context.system.scheduler.scheduleOnce(failureDetectionLimit, self, FailureDetectionLimitReached(counter))
   }
 }
-private object ReplicaDetector {
-  val Name = "replica-detector"
+private object ReplicationDetector {
+  val Name = "replication-detector"
 
   def props(connections: Set[ReplicationConnection], connectionRoles: Set[String], maxConnections: Int): Props = {
     require(
       connections.nonEmpty || connectionRoles.nonEmpty,
       "connections and connectionRoles both empty."
     )
-    Props(new ReplicaDetector(connections, connectionRoles, maxConnections))
+    Props(new ReplicationDetector(connections, connectionRoles, maxConnections))
   }
 
   private case object ReplicaDetected
 }
-private class ReplicaDetector(connections: Set[ReplicationConnection], connectionRoles: Set[String], maxConnections: Int) extends Actor with ActorLogging with Stash {
+private class ReplicationDetector(connections: Set[ReplicationConnection], connectionRoles: Set[String], maxConnections: Int) extends Actor with ActorLogging with Stash {
 
   import Controller._
-  import ReplicaDetector._
+  import ReplicationDetector._
 
   private val cluster = Cluster(context.system)
   private val selfAddress = cluster.selfAddress
@@ -767,7 +766,7 @@ private class ReplicaDetector(connections: Set[ReplicationConnection], connectio
   private def connectionUnreachable(conn: ReplicationConnection) = if (!staticList(conn)) {
     if (syncList(conn)) {
       syncList = syncList - conn
-      context.parent ! ConnectionUnreachable(conn)
+      context.parent ! UnreachableConnection(conn)
     }
     backupList = backupList - conn
     promoteConnection()
@@ -791,7 +790,7 @@ private class ReplicaDetector(connections: Set[ReplicationConnection], connectio
     val candidate = candidateList(new Random().nextInt(candidateList.size))
     syncList = syncList + candidate
     backupList = backupList - candidate
-    context.parent ! ConnectionReachable(candidate)
+    context.parent ! ReachableConnection(candidate)
   }
 
   override def postStop(): Unit = if (connectionRoles.nonEmpty) cluster.unsubscribe(self)
