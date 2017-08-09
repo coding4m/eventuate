@@ -29,13 +29,13 @@ trait TerminateOnTimeout extends Actor {
     TerminateSettings(PoisonPill, 30.seconds, context.parent)
 
   @scala.throws[Exception](classOf[Exception])
-  override def preStart() = {
+  override def preStart(): Unit = {
     super.preStart()
-    context.setReceiveTimeout(terminateSettings.terminateTimeout)
+    context.setReceiveTimeout(terminateSettings.timeout)
   }
 
-  override def unhandled(message: Any) = message match {
-    case ReceiveTimeout => terminateSettings.terminateSupervisor ! terminateSettings.terminateMsg
+  override def unhandled(message: Any): Unit = message match {
+    case ReceiveTimeout => terminateSettings.target ! terminateSettings.message
     case _              => super.unhandled(message)
   }
 }

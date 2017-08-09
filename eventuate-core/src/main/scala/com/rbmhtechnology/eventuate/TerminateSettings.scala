@@ -23,4 +23,4 @@ import scala.concurrent.duration.Duration
 /**
  * @author siuming
  */
-case class TerminateSettings(terminateMsg: AnyRef, terminateTimeout: Duration, terminateSupervisor: ActorRef)
+case class TerminateSettings(message: AnyRef, timeout: Duration, target: ActorRef)
