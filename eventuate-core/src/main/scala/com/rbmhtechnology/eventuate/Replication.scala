@@ -424,26 +424,30 @@ private class Controller(endpoint: ReplicationEndpoint) extends Actor with Actor
       }
 
     case ReplicatorUp(link) =>
-      replicationRegistry(link).foreach { replicator =>
-        replicationRegistry = replicationRegistry - link
-        context stop replicator
-      }
-
-      val replicator = context.actorOf(
-        Props(new Replicator(link.target, link.source)).withDispatcher(endpoint.settings.controllerDispatcher)
-      )
-      replicationRegistry = replicationRegistry + (link, replicator)
+      replicatorDown(link)
+      replicatorUp(link)
     case ReplicatorDown(link) =>
-      replicationRegistry(link).foreach { replicator =>
-        replicationRegistry = replicationRegistry - link
-        context stop replicator
-      }
+      replicatorDown(link)
 
     case ReachableConnection(conn) =>
       self ! ConnectionUp(conn)
     case UnreachableConnection(conn) =>
       self ! ConnectionDown(conn)
     case _ =>
+  }
+
+  private def replicatorUp(link: ReplicationLink) = {
+    val replicator = context.actorOf(
+      Props(new Replicator(link.target, link.source)).withDispatcher(endpoint.settings.controllerDispatcher)
+    )
+    replicationRegistry = replicationRegistry + (link, replicator)
+  }
+
+  private def replicatorDown(link: ReplicationLink) = {
+    replicationRegistry(link).foreach { replicator =>
+      replicationRegistry = replicationRegistry - link
+      context stop replicator
+    }
   }
 }
 
