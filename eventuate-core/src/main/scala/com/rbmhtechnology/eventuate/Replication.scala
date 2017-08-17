@@ -706,7 +706,6 @@ private class ReplicationDetector(connections: Set[ReplicationConnection], conne
 
   private var syncList = Set.empty[ReplicationConnection]
   private var backupList = Set.empty[ReplicationConnection]
-  private val staticList = Set.empty[ReplicationConnection] ++ connections
 
   @scala.throws[Exception](classOf[Exception])
   override def preStart(): Unit = {
@@ -740,7 +739,7 @@ private class ReplicationDetector(connections: Set[ReplicationConnection], conne
 
   private def initiated: Receive = {
     case ListConnection =>
-      sender ! ConnectionList(staticList ++ syncList)
+      sender ! ConnectionList(connections ++ syncList)
     case MemberUp(member) if availableMember(member) =>
       availableConnection(member).foreach(connectionReachable)
     case ReachableMember(member) if availableMember(member) =>
@@ -752,22 +751,22 @@ private class ReplicationDetector(connections: Set[ReplicationConnection], conne
     case _ =>
   }
 
-  private def connectionUp(conn: ReplicationConnection) = if (!staticList(conn)) {
+  private def connectionUp(conn: ReplicationConnection) = if (!connections(conn)) {
     if (maxConnections <= 0 || syncList.size < maxConnections)
       syncList = syncList + conn
     else backupList = backupList + conn
   }
 
-  private def connectionDown(conn: ReplicationConnection) = if (!staticList(conn)) {
+  private def connectionDown(conn: ReplicationConnection) = if (!connections(conn)) {
     syncList = syncList - conn
     backupList = backupList - conn
   }
-  private def connectionReachable(conn: ReplicationConnection) = if (!staticList(conn)) {
+  private def connectionReachable(conn: ReplicationConnection) = if (!connections(conn)) {
     backupList = backupList + conn
     promoteConnection()
   }
 
-  private def connectionUnreachable(conn: ReplicationConnection) = if (!staticList(conn)) {
+  private def connectionUnreachable(conn: ReplicationConnection) = if (!connections(conn)) {
     if (syncList(conn)) {
       syncList = syncList - conn
       context.parent ! UnreachableConnection(conn)
