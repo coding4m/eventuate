@@ -656,7 +656,7 @@ private class FailureDetector(sourceEndpointId: String, logName: String, failure
   private val failureDetectionLimitNanos = failureDetectionLimit.toNanos
   private var lastReportedAvailability: Long = 0L
 
-  def receive = {
+  override def receive: Receive = {
     case AvailabilityDetected =>
       val currentTime = System.nanoTime()
       val lastInterval = currentTime - lastReportedAvailability

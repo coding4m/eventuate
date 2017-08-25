@@ -38,4 +38,12 @@ trait TerminateOnTimeout extends Actor {
     case ReceiveTimeout => terminateSettings.target ! terminateSettings.message
     case _              => super.unhandled(message)
   }
+
+  protected final def turnOnTerminate(): Unit = {
+    context.setReceiveTimeout(terminateSettings.timeout)
+  }
+
+  protected final def turnOffTerminate(): Unit = {
+    context.setReceiveTimeout(Duration.Inf)
+  }
 }
