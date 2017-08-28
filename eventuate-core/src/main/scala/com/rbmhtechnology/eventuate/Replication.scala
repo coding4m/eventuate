@@ -704,8 +704,8 @@ private class ReplicationDetector(connections: Set[ReplicationConnection], conne
   private val selfAddress = cluster.selfAddress
   private val selfUniqueAddress = cluster.selfUniqueAddress
 
-  private var syncList = Set.empty[ReplicationConnection]
-  private var backupList = Set.empty[ReplicationConnection]
+  private var syncSet = Set.empty[ReplicationConnection]
+  private var backSet = Set.empty[ReplicationConnection]
 
   @scala.throws[Exception](classOf[Exception])
   override def preStart(): Unit = {
@@ -739,7 +739,7 @@ private class ReplicationDetector(connections: Set[ReplicationConnection], conne
 
   private def initiated: Receive = {
     case ListConnection =>
-      sender ! ConnectionList(connections ++ syncList)
+      sender ! ConnectionList(connections ++ syncSet)
     case MemberUp(member) if availableMember(member) =>
       availableConnection(member).foreach(connectionReachable)
     case ReachableMember(member) if availableMember(member) =>
@@ -752,26 +752,26 @@ private class ReplicationDetector(connections: Set[ReplicationConnection], conne
   }
 
   private def connectionUp(conn: ReplicationConnection) = if (!connections(conn)) {
-    if (maxConnections <= 0 || syncList.size < maxConnections)
-      syncList = syncList + conn
-    else backupList = backupList + conn
+    if (maxConnections <= 0 || syncSet.size < maxConnections)
+      syncSet = syncSet + conn
+    else backSet = backSet + conn
   }
 
   private def connectionDown(conn: ReplicationConnection) = if (!connections(conn)) {
-    syncList = syncList - conn
-    backupList = backupList - conn
+    syncSet = syncSet - conn
+    backSet = backSet - conn
   }
   private def connectionReachable(conn: ReplicationConnection) = if (!connections(conn)) {
-    backupList = backupList + conn
+    backSet = backSet + conn
     promoteConnection()
   }
 
   private def connectionUnreachable(conn: ReplicationConnection) = if (!connections(conn)) {
-    if (syncList(conn)) {
-      syncList = syncList - conn
+    if (syncSet(conn)) {
+      syncSet = syncSet - conn
       context.parent ! UnreachableConnection(conn)
     }
-    backupList = backupList - conn
+    backSet = backSet - conn
     promoteConnection()
   }
 
@@ -785,14 +785,14 @@ private class ReplicationDetector(connections: Set[ReplicationConnection], conne
     system = member.address.system
   } yield ReplicationConnection(host, port, name = system)
 
-  private def promoteConnection(): Unit = if ((maxConnections <= 0 || syncList.size < maxConnections) && backupList.nonEmpty) {
-    var candidateList = backupList.toSeq
-    backupList.filterNot(conn => selfAddress.host.contains(conn.host)).foreach { conn =>
+  private def promoteConnection(): Unit = if ((maxConnections <= 0 || syncSet.size < maxConnections) && backSet.nonEmpty) {
+    var candidateList = backSet.toSeq
+    backSet.filterNot(conn => selfAddress.host.contains(conn.host)).foreach { conn =>
       candidateList = candidateList :+ conn
     }
     val candidate = candidateList(new Random().nextInt(candidateList.size))
-    syncList = syncList + candidate
-    backupList = backupList - candidate
+    syncSet = syncSet + candidate
+    backSet = backSet - candidate
     context.parent ! ReachableConnection(candidate)
   }
 

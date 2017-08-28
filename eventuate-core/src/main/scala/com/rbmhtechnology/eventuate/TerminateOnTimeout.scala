@@ -39,11 +39,11 @@ trait TerminateOnTimeout extends Actor {
     case _              => super.unhandled(message)
   }
 
-  protected final def turnOnTerminate(): Unit = {
+  protected final def operationQueued(): Unit = {
     context.setReceiveTimeout(terminateSettings.timeout)
   }
 
-  protected final def turnOffTerminate(): Unit = {
+  protected final def operationCompleted(): Unit = {
     context.setReceiveTimeout(Duration.Inf)
   }
 }
