@@ -40,10 +40,10 @@ trait TerminateOnTimeout extends Actor {
   }
 
   protected final def operationQueued(): Unit = {
-    context.setReceiveTimeout(terminateSettings.timeout)
+    context.setReceiveTimeout(Duration.Inf)
   }
 
   protected final def operationCompleted(): Unit = {
-    context.setReceiveTimeout(Duration.Inf)
+    context.setReceiveTimeout(terminateSettings.timeout)
   }
 }
