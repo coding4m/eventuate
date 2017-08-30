@@ -18,9 +18,8 @@ package com.rbmhtechnology.eventuate
 
 import java.util.concurrent.TimeUnit
 
-import akka.actor._
-import akka.actor.MessagePipeline
-import akka.actor.MessagePipeline.{ HandledCompletely, Inner }
+import akka.actor.MessagePipeline.Inner
+import akka.actor.{ MessagePipeline, _ }
 import akka.cluster.ClusterEvent._
 import akka.cluster.{ Cluster, Member }
 import akka.event.Logging
@@ -790,10 +789,11 @@ private class ReplicationDetector(connections: Set[ReplicationConnection], conne
     backSet.filterNot(conn => selfAddress.host.contains(conn.host)).foreach { conn =>
       candidateList = candidateList :+ conn
     }
-    val candidate = candidateList(new Random().nextInt(candidateList.size))
-    syncSet = syncSet + candidate
-    backSet = backSet - candidate
-    context.parent ! ReachableConnection(candidate)
+    Random.shuffle(candidateList).headOption.foreach { candidate =>
+      syncSet = syncSet + candidate
+      backSet = backSet - candidate
+      context.parent ! ReachableConnection(candidate)
+    }
   }
 
   override def postStop(): Unit = if (connectionRoles.nonEmpty) cluster.unsubscribe(self)
