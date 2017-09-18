@@ -166,14 +166,14 @@ object ProjectSettings {
   lazy val publishSettings: Seq[Setting[_]] = {
     val dddlibCredentials = Credentials(
       "Sonatype Nexus Repository Manager",
-      "nexus.dddlib.org",
+      "nexus.workplus.io",
       sys.env.getOrElse("DDDLIB_USER", ""),
       sys.env.getOrElse("DDDLIB_PASS", "")
     )
 
-    val dddlibBase = "http://nexus.dddlib.org/content/repositories"
-    val dddlibSnapshotRepo = Some("DDDLib Snapshots" at dddlibBase + "/snapshots")
-    val dddlibReleaseRepo = Some("DDDLib Releases" at dddlibBase + "/releases")
+    val dddlibBase = "http://nexus.workplus.io:8081/repository"
+    val dddlibSnapshotRepo = Some("DDDLib Snapshots" at dddlibBase+ "/maven-snapshots/")
+    val dddlibReleaseRepo = Some("DDDLib Releases" at dddlibBase + "/maven-releases/")
 
     Seq(
       credentials += dddlibCredentials,

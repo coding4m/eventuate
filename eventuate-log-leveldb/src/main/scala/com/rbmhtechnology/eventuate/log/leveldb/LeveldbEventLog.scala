@@ -43,6 +43,9 @@ class LeveldbEventLogSettings(config: Config) extends EventLogSettings {
   val readTimeout: FiniteDuration =
     config.getDuration("eventuate.log.read-timeout", TimeUnit.MILLISECONDS).millis
 
+  val prefix: String =
+    config.getString("eventuate.log.leveldb.prefix")
+
   val rootDir: String =
     config.getString("eventuate.log.leveldb.dir")
 
@@ -81,15 +84,14 @@ case class LeveldbEventLogState(eventLogClock: EventLogClock, deletionMetadata: 
  * '''Please note:''' `prefix` and `id` are currently not escaped when creating the directory name.
  *
  * @param id unique log id.
- * @param prefix prefix of the directory that contains the LevelDB files
  */
-class LeveldbEventLog(id: String, prefix: String) extends EventLog[LeveldbEventLogState](id) with WithBatch {
+class LeveldbEventLog(id: String) extends EventLog[LeveldbEventLogState](id) with WithBatch {
   import LeveldbEventLog._
 
   override val settings = new LeveldbEventLogSettings(context.system.settings.config)
   private val serialization = SerializationExtension(context.system)
 
-  private val leveldbDir = new File(settings.rootDir, s"$prefix-$id"); leveldbDir.mkdirs()
+  private val leveldbDir = new File(settings.rootDir, s"${settings.prefix}_$id"); leveldbDir.mkdirs()
   private val leveldbOptions = new Options().createIfMissing(true)
   private def leveldbReadOptions = new ReadOptions().verifyChecksums(false)
 
@@ -355,11 +357,10 @@ object LeveldbEventLog {
    * Creates a [[LeveldbEventLog]] configuration object.
    *
    * @param logId unique log id.
-   * @param prefix prefix of the directory that contains the LevelDB files.
    * @param batching `true` if write-batching shall be enabled (recommended).
    */
-  def props(logId: String, prefix: String = "log", batching: Boolean = true): Props = {
-    val logProps = Props(new LeveldbEventLog(logId, prefix)).withDispatcher("eventuate.log.dispatchers.write-dispatcher")
+  def props(logId: String, batching: Boolean = true): Props = {
+    val logProps = Props(new LeveldbEventLog(logId)).withDispatcher("eventuate.log.dispatchers.write-dispatcher")
     if (batching) Props(new BatchingLayer(logProps)) else logProps
   }
 }

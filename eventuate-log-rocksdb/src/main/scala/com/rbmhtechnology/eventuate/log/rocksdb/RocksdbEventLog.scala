@@ -44,6 +44,9 @@ class RocksdbEventLogSettings(config: Config) extends EventLogSettings {
   val readTimeout: FiniteDuration =
     config.getDuration("eventuate.log.read-timeout", TimeUnit.MILLISECONDS).millis
 
+  val prefix: String =
+    config.getString("eventuate.log.rocksdb.prefix")
+
   val rootDir: String =
     config.getString("eventuate.log.rocksdb.dir")
 
@@ -131,15 +134,14 @@ object RocksdbEventLog {
    * Creates a [[RocksdbEventLog]] configuration object.
    *
    * @param logId unique log id.
-   * @param prefix prefix of the directory that contains the LevelDB files.
    * @param batching `true` if write-batching shall be enabled (recommended).
    */
-  def props(logId: String, prefix: String = "log", batching: Boolean = true): Props = {
-    val logProps = Props(new RocksdbEventLog(logId, prefix)).withDispatcher("eventuate.log.dispatchers.write-dispatcher")
+  def props(logId: String, batching: Boolean = true): Props = {
+    val logProps = Props(new RocksdbEventLog(logId)).withDispatcher("eventuate.log.dispatchers.write-dispatcher")
     if (batching) Props(new BatchingLayer(logProps)) else logProps
   }
 }
-class RocksdbEventLog(id: String, prefix: String) extends EventLog[RocksdbEventLogState](id) with RocksdbBatchLayer {
+class RocksdbEventLog(id: String) extends EventLog[RocksdbEventLogState](id) with RocksdbBatchLayer {
 
   import RocksdbEventLog._
 
@@ -155,7 +157,7 @@ class RocksdbEventLog(id: String, prefix: String) extends EventLog[RocksdbEventL
   }
   private val columnHandles = new JList[ColumnFamilyHandle]()
 
-  private val rocksdbDir = Paths.get(settings.rootDir, s"$prefix-$id"); Files.createDirectories(rocksdbDir)
+  private val rocksdbDir = Paths.get(settings.rootDir, s"${settings.prefix}_$id"); Files.createDirectories(rocksdbDir)
   private val rocksdbOptions = new DBOptions().setCreateIfMissing(true).setCreateMissingColumnFamilies(true)
   protected val rocksdbWriteOptions = new WriteOptions().setSync(settings.fsync)
   protected val rocksdb = RocksDB.open(rocksdbOptions, rocksdbDir.toAbsolutePath.toString, columnFamilies, columnHandles)
