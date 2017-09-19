@@ -397,10 +397,10 @@ private class Controller(endpoint: ReplicationEndpoint) extends Actor with Actor
       log.debug("replication connection[{}@{}:{}] unreachable.", conn.name, conn.host, conn.port)
       Inner(cmd)
     case cmd @ ReplicatorUp(link) =>
-      log.debug("deactivate replication link with {}", link)
+      log.debug("up replication link with {}", link)
       Inner(cmd)
     case cmd @ ReplicatorDown(link) =>
-      log.debug("activate replication link with {}", link)
+      log.debug("down replication link with {}", link)
       Inner(cmd)
     case any =>
       Inner(any)
@@ -751,9 +751,9 @@ private class ReplicationDetector(connections: Set[ReplicationConnection], conne
   }
 
   private def connectionUp(conn: ReplicationConnection) = if (!connections(conn)) {
-    if (maxConnections <= 0 || syncSet.size < maxConnections)
+    if (maxConnections <= 0 || syncSet.size < maxConnections) {
       syncSet = syncSet + conn
-    else backSet = backSet + conn
+    } else backSet = backSet + conn
   }
 
   private def connectionDown(conn: ReplicationConnection) = if (!connections(conn)) {
