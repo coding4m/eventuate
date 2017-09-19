@@ -760,6 +760,7 @@ private class ReplicationDetector(connections: Set[ReplicationConnection], conne
     syncSet = syncSet - conn
     backSet = backSet - conn
   }
+
   private def connectionReachable(conn: ReplicationConnection) = if (!connections(conn)) {
     backSet = backSet + conn
     promoteConnection()
