@@ -51,16 +51,20 @@ public class OrderManager extends AbstractEventsourcedView {
         this.orderActors = HashMap.empty();
 
         setOnCommand(ReceiveBuilder
+                .create()
                 .match(OrderCommand.class, c -> orderActor(c.orderId).tell(c, sender()))
                 .match(SaveSnapshot.class, c -> orderActor(c.orderId).tell(c, sender()))
                 .match(Resolve.class, c -> orderActor(c.id()).tell(c, sender()))
                 .match(GetState.class, c -> orderActors.isEmpty(), c -> replyStateZero(sender()))
                 .match(GetState.class, c -> !orderActors.isEmpty(), c -> replyState(sender()))
-                .build());
+                .build()
+        .onMessage());
 
         setOnEvent(ReceiveBuilder
+                .create()
                 .match(OrderCreated.class, e -> !orderActors.containsKey(e.orderId), e -> orderActor(e.orderId))
-                .build());
+                .build()
+        .onMessage());
     }
 
     private ActorRef orderActor(final String orderId) {

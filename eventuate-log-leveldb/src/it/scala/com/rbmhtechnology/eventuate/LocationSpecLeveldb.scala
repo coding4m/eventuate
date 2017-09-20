@@ -38,7 +38,7 @@ object SingleLocationSpecLeveldb {
     }
   }
 
-  class TestEventLog(id: String) extends LeveldbEventLog(id, "log-test") with SingleLocationSpec.TestEventLog[LeveldbEventLogState] {
+  class TestEventLog(id: String) extends LeveldbEventLog(id) with SingleLocationSpec.TestEventLog[LeveldbEventLogState] {
     override def unhandled(message: Any): Unit = message match {
       case "boom" => throw IntegrationTestException
       case "dir"  => sender() ! logDir

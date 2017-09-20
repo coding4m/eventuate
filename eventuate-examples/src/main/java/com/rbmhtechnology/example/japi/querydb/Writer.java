@@ -51,9 +51,11 @@ public class Writer extends AbstractEventsourcedWriter<Long, Void> {
         updateProgressStmt = session.prepare("UPDATE PROGRESS SET sequence_nr = ? WHERE id = 0");
 
         setOnEvent(ReceiveBuilder
+                .create()
                 .match(CustomerCreated.class, c -> batch = batch.append(insertCustomerStmt.bind(c.cid, c.first, c.last, c.address)))
                 .match(AddressUpdated.class, u -> batch = batch.append(updateCustomerStmt.bind(u.address, u.cid)))
-                .build());
+                .build()
+        .onMessage());
     }
 
     @Override

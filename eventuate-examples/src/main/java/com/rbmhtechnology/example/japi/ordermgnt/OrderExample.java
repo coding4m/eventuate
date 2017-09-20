@@ -25,7 +25,6 @@ import akka.actor.ActorRef;
 import akka.actor.AbstractActor;
 import akka.actor.ActorSystem;
 import akka.actor.Props;
-import akka.japi.pf.ReceiveBuilder;
 
 import com.rbmhtechnology.eventuate.ReplicationConnection;
 import com.rbmhtechnology.eventuate.ReplicationEndpoint;
@@ -52,13 +51,9 @@ public class OrderExample extends AbstractActor {
 
     private BufferedReader reader;
 
-    public OrderExample(ActorRef manager, ActorRef view) {
-        this.manager = manager;
-        this.view = view;
-
-        this.reader = new BufferedReader(new InputStreamReader(System.in));
-
-        receive(ReceiveBuilder
+    @Override
+    public Receive createReceive() {
+        return receiveBuilder()
                 .match(GetStateSuccess.class, r -> {
                     r.state.values().stream().forEach(OrderActor::printOrder);
                     prompt();
@@ -90,7 +85,13 @@ public class OrderExample extends AbstractActor {
                     prompt();
                 })
                 .match(CommandSuccess.class, r -> prompt())
-                .match(String.class, this::process).build());
+                .match(String.class, this::process).build();
+    }
+
+    public OrderExample(ActorRef manager, ActorRef view) {
+        this.manager = manager;
+        this.view = view;
+        this.reader = new BufferedReader(new InputStreamReader(System.in));
     }
 
     private void prompt() throws IOException {
@@ -151,7 +152,7 @@ public class OrderExample extends AbstractActor {
         }
 
         ActorSystem system = ActorSystem.create(ReplicationConnection.DefaultRemoteSystemName(), ConfigFactory.load(args[0]));
-        ReplicationEndpoint endpoint = ReplicationEndpoint.create(id -> LeveldbEventLog.props(id, "j", true), system);
+        ReplicationEndpoint endpoint = ReplicationEndpoint.create(id -> LeveldbEventLog.props(id, true), system);
 
         ActorRef manager = system.actorOf(Props.create(OrderManager.class, endpoint.id(), endpoint.logs().apply(ReplicationEndpoint.DefaultLogName())));
         ActorRef view = system.actorOf(Props.create(OrderView.class, endpoint.id(), endpoint.logs().apply(ReplicationEndpoint.DefaultLogName())));

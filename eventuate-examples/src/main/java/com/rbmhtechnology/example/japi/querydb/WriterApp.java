@@ -43,7 +43,7 @@ public class WriterApp {
     public static void main(final String[] args) {
         withQueryDB(false, session -> {
             final ActorSystem system = ActorSystem.create("example-querydb", ConfigFactory.load(args[0]));
-            final ActorRef log = system.actorOf(LeveldbEventLog.props("example", "log", true));
+            final ActorRef log = system.actorOf(LeveldbEventLog.props("example", true));
 
             final ActorRef emitter = system.actorOf(Props.create(Emitter.class, () -> new Emitter("emitter", log)));
             final ActorRef writer = system.actorOf(Props.create(Writer.class, () -> new Writer("writer", log, session)));

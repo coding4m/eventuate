@@ -73,14 +73,17 @@ public class OrderActor extends AbstractEventsourcedActor {
         this.order = VersionedAggregate.create(orderId, commandValidation, eventProjection, OrderDomainCmd.instance, OrderDomainEvt.instance);
 
         setOnCommand(ReceiveBuilder
+                .create()
                 .match(CreateOrder.class, c -> order.validateCreate(c, processCommand(orderId, sender(), self())))
                 .match(OrderCommand.class, c -> order.validateUpdate(c, processCommand(orderId, sender(), self())))
                 .match(Resolve.class, c -> order.validateResolve(c.selected(), replicaId, processCommand(orderId, sender(), self())))
                 .match(GetState.class, c -> sender().tell(createStateFromAggregate(orderId, order), self()))
                 .match(SaveSnapshot.class, c -> saveState(sender(), self()))
-                .build());
+                .build()
+        .onMessage());
 
         setOnEvent(ReceiveBuilder
+                .create()
                 .match(OrderCreated.class, e -> {
                     order = order.handleCreated(e, lastVectorTimestamp(), lastSystemTimestamp(), lastSequenceNr());
                     if (!recovering()) printOrder(order.getVersions());
@@ -93,15 +96,18 @@ public class OrderActor extends AbstractEventsourcedActor {
                     order = order.handleResolved(e, lastVectorTimestamp(), lastSystemTimestamp(), lastSequenceNr());
                     if (!recovering()) printOrder(order.getVersions());
                 })
-                .build());
+                .build()
+        .onMessage());
 
         setOnSnapshot(ReceiveBuilder
+                .create()
                 .match(ConcurrentVersionsTree.class, s -> {
                     order = order.withAggregate(((ConcurrentVersionsTree<Order, OrderEvent>) s).withProjection(eventProjection));
                     System.out.println(String.format("[%s] Snapshot loaded:", orderId));
                     printOrder(order.getVersions());
                 })
-                .build());
+                .build()
+                .onMessage());
 
         setOnRecover(ResultHandler
                 .onSuccess(v -> {

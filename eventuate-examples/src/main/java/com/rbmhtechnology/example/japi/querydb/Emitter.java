@@ -31,6 +31,7 @@ public class Emitter extends AbstractEventsourcedActor {
         super(id, eventLog);
 
         setOnCommand(ReceiveBuilder
+                .create()
                 .match(CreateCustomer.class,
                         cmd -> persist(new CustomerCreated(highestCustomerId + 1, cmd.first, cmd.last, cmd.address), ResultHandler.on(
                                 c -> sender().tell(c, self()),
@@ -44,13 +45,16 @@ public class Emitter extends AbstractEventsourcedActor {
                 .match(UpdateAddress.class,
                         cmd -> sender().tell(new Exception(String.format("Customer with %s does not exist", cmd.cid)), self())
                 )
-                .build());
+                .build()
+        .onMessage());
 
         setOnEvent(ReceiveBuilder
+                .create()
                 .match(CustomerCreated.class,
                         evt -> highestCustomerId = evt.cid
                 )
-                .build());
+                .build()
+        .onMessage());
     }
 
     private void handleFailure(final Throwable failure) {
