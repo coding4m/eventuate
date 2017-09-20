@@ -87,7 +87,7 @@ class OrderExample(manager: ActorRef, view: ActorRef) extends Actor {
 object OrderExample extends App {
   val recover = args(1) == "recover"
   val system = ActorSystem(ReplicationConnection.DefaultRemoteSystemName, ConfigFactory.load(args(0)))
-  val endpoint = ReplicationEndpoint(id => RocksdbEventLog.props(id, "s"))(system)
+  val endpoint = ReplicationEndpoint(id => RocksdbEventLog.props(id))(system)
 
   import system.dispatcher
 
