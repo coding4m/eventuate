@@ -26,7 +26,7 @@ import scala.concurrent.duration._
 trait TerminateOnTimeout extends Actor {
 
   def terminateSettings: TerminateSettings =
-    TerminateSettings(PoisonPill, 30.seconds, context.parent)
+    TerminateSettings(Terminating, 30.seconds, context.parent)
 
   @scala.throws[Exception](classOf[Exception])
   override def preStart(): Unit = {

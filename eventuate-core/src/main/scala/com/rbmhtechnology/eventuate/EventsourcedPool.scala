@@ -37,9 +37,6 @@ trait EventsourcedPool[ID] { this: Actor =>
     context stop value._2
   }
 
-  final protected def <~>(actorRef: ActorRef): Unit =
-    resize(actorRef)
-
   /**
    *
    * @param message
@@ -49,9 +46,6 @@ trait EventsourcedPool[ID] { this: Actor =>
     val aggregateId = aggregateIdProjection(message)
     aggregateOf(aggregateId).tell(message, sender)
   }
-
-  final protected def ~~>(message: Any, sender: ActorRef): Unit =
-    relay(message, sender)
 
   private def aggregateOf(aggregateId: ID): ActorRef = aggregateRefs.get(aggregateId) match {
     case Some(actorRef) => actorRef
