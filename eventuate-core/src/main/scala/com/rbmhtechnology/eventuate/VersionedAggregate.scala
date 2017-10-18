@@ -63,8 +63,14 @@ case class VersionedAggregate[S, C: DomainCmd, E: DomainEvt](
   def getHeadVersion: Versioned[S] =
     versions.head
 
+  def getHeadValue: S =
+    getHeadVersion.value
+
   def getLastVersion: Versioned[S] =
     versions.last
+
+  def getLastValue: S =
+    getLastVersion.value
 
   /**
    * Java API.
@@ -109,8 +115,14 @@ case class VersionedAggregate[S, C: DomainCmd, E: DomainEvt](
   def headVersion: Versioned[S] =
     versions.head
 
+  def headValue: S =
+    headVersion.value
+
   def lastVersion: Versioned[S] =
     versions.last
+
+  def lastValue: S =
+    lastVersion.value
 
   def validateCreate(
     cmd: C,
