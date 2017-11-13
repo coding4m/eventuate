@@ -786,14 +786,14 @@ private class ReplicationDetector(connections: Set[ReplicationConnection], conne
   } yield ReplicationConnection(host, port, name = system)
 
   private def promoteConnection(): Unit = if ((maxConnections <= 0 || syncSet.size < maxConnections) && backSet.nonEmpty) {
-    var candidateList = backSet.toSeq
-    backSet.filterNot(conn => selfAddress.host.contains(conn.host)).foreach { conn =>
-      candidateList = candidateList :+ conn
+    var connections = backSet.toSeq
+    backSet.filterNot(connection => selfAddress.host.contains(connection.host)).foreach { conn =>
+      connections = connections :+ conn
     }
-    Random.shuffle(candidateList).headOption.foreach { candidate =>
-      syncSet = syncSet + candidate
-      backSet = backSet - candidate
-      context.parent ! ReachableConnection(candidate)
+    Random.shuffle(connections).headOption.foreach { connection =>
+      syncSet = syncSet + connection
+      backSet = backSet - connection
+      context.parent ! ReachableConnection(connection)
     }
   }
 
