@@ -6,16 +6,17 @@ import sbt._
 
 version in ThisBuild := "v0.8-SNAPSHOT"
 
-scalaVersion in ThisBuild := "2.11.8"
+scalaVersion in ThisBuild := "2.12.4"
+crossScalaVersions := Seq("2.12.4", "2.11.12")
 
 organization in ThisBuild := "com.rbmhtechnology"
 
 isSnapshot in ThisBuild := true
 
 lazy val root = (project in file("."))
-  .aggregate(core, crdt, logCassandra, logLeveldb, logRocksdb, logAdapter, adapterSpark, adapterStream)
+  .aggregate(core, crdt, logCassandra, logLeveldb, logRocksdb, logAdapter, adapterStream)
   //  .aggregate(core, crdt, logCassandra, logLeveldb, adapterStream, adapterVertx, examples, exampleStream, exampleVertx)
-  .dependsOn(core, logCassandra, logLeveldb, logRocksdb, adapterSpark, logAdapter, adapterStream)
+  .dependsOn(core, logCassandra, logLeveldb, logRocksdb, logAdapter, adapterStream)
   .settings(name := "eventuate")
   .settings(rootSettings: _*)
   //  .settings(documentationSettings: _*)
@@ -108,21 +109,21 @@ lazy val logAdapter = (project in file("eventuate-log-adapter"))
   .configs(IntegrationTest, MultiJvm)
   .enablePlugins(HeaderPlugin, AutomateHeaderPlugin)
 
-lazy val adapterSpark = (project in file("eventuate-adapter-spark"))
-  .dependsOn(logCassandra % "compile->compile;it->it;multi-jvm->multi-jvm")
-  .dependsOn(logLeveldb % "compile->compile;it->it;multi-jvm->multi-jvm")
-  .settings(name := "eventuate-adapter-spark")
-  .settings(commonSettings: _*)
-  .settings(integrationTestSettings: _*)
-  .settings(libraryDependencies ++= Seq(AkkaRemote, CassandraClientUtil, CassandraConnector,
-    SparkCore % "provided" exclude("org.slf4j", "slf4j-log4j12"),
-    SparkSql % "provided" exclude("org.slf4j", "slf4j-log4j12"),
-    SparkStreaming % "provided" exclude("org.slf4j", "slf4j-log4j12")))
-  .settings(libraryDependencies ++= Seq(AkkaTestkit % "test,it", AkkaTestkitMultiNode % "test", Scalatest % "test,it", Sigar % "test,it"))
-  .settings(libraryDependencies ++= Seq(CassandraUnit % "test,it" excludeAll ExclusionRule(organization = "ch.qos.logback")))
-  .settings(jvmOptions in MultiJvm += "-Dmultinode.server-port=4714")
-  .configs(IntegrationTest, MultiJvm)
-  .enablePlugins(HeaderPlugin, AutomateHeaderPlugin)
+//lazy val adapterSpark = (project in file("eventuate-adapter-spark"))
+//  .dependsOn(logCassandra % "compile->compile;it->it;multi-jvm->multi-jvm")
+//  .dependsOn(logLeveldb % "compile->compile;it->it;multi-jvm->multi-jvm")
+//  .settings(name := "eventuate-adapter-spark")
+//  .settings(commonSettings: _*)
+//  .settings(integrationTestSettings: _*)
+//  .settings(libraryDependencies ++= Seq(AkkaRemote, CassandraClientUtil, CassandraConnector,
+//    SparkCore % "provided" exclude("org.slf4j", "slf4j-log4j12"),
+//    SparkSql % "provided" exclude("org.slf4j", "slf4j-log4j12"),
+//    SparkStreaming % "provided" exclude("org.slf4j", "slf4j-log4j12")))
+//  .settings(libraryDependencies ++= Seq(AkkaTestkit % "test,it", AkkaTestkitMultiNode % "test", Scalatest % "test,it", Sigar % "test,it"))
+//  .settings(libraryDependencies ++= Seq(CassandraUnit % "test,it" excludeAll ExclusionRule(organization = "ch.qos.logback")))
+//  .settings(jvmOptions in MultiJvm += "-Dmultinode.server-port=4714")
+//  .configs(IntegrationTest, MultiJvm)
+//  .enablePlugins(HeaderPlugin, AutomateHeaderPlugin)
 
 lazy val adapterStream = (project in file("eventuate-adapter-stream"))
   .dependsOn(core % "compile->compile;it->it")

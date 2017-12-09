@@ -30,7 +30,7 @@ object ProjectDependencies {
   import ProjectDependencyVersions._
 
   val CassandraDriver =      "com.datastax.cassandra"     % "cassandra-driver-core"     % "3.2.0"
-  val CassandraConnector =   "com.datastax.spark"        %% "spark-cassandra-connector" % "1.6.6"
+  val CassandraConnector =   "com.datastax.spark"         % "spark-cassandra-connector_2.11" % "1.6.6"
   val Javaslang =            "io.javaslang"              % "javaslang"                  % "2.0.6"
   val Protobuf =             "com.google.protobuf"        % "protobuf-java"             % ProtobufVersion
   val JunitInterface =       "com.novocode"               % "junit-interface"           % "0.11"
@@ -46,9 +46,9 @@ object ProjectDependencies {
   val Log4jApi =             "org.apache.logging.log4j"   % "log4j-api"                 % Log4jVersion
   val Log4jCore =            "org.apache.logging.log4j"   % "log4j-core"                % Log4jVersion
   val Log4jSlf4j =           "org.apache.logging.log4j"   % "log4j-slf4j-impl"          % Log4jVersion
-  val SparkCore =            "org.apache.spark"          %% "spark-core"                % SparkVersion
-  val SparkSql =             "org.apache.spark"          %% "spark-sql"                 % SparkVersion
-  val SparkStreaming =       "org.apache.spark"          %% "spark-streaming"           % SparkVersion
+  val SparkCore =            "org.apache.spark"           % "spark-core_2.11"                % SparkVersion
+  val SparkSql =             "org.apache.spark"           % "spark-sql_2.11"                 % SparkVersion
+  val SparkStreaming =       "org.apache.spark"           % "spark-streaming_2.11"           % SparkVersion
   val CassandraUnit =        "org.cassandraunit"          % "cassandra-unit"            % "3.1.3.2"
   val Leveldb =              "org.fusesource.leveldbjni"  % "leveldbjni-all"            % "1.8"
   val Rocksdb =              "org.rocksdb"                % "rocksdbjni"                % "5.3.6"
