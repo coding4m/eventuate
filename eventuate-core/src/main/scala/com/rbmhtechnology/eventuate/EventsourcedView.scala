@@ -314,7 +314,7 @@ trait EventsourcedView extends Actor with Stash {
    * snapshot metadata. The `handler` can obtain a reference to the initial message
    * sender with `sender()`.
    */
-  final def save(snapshot: Any, purging: Boolean = false)(handler: Handler[SnapshotMetadata]): Unit = {
+  final def save(snapshot: Any, purging: Boolean = true)(handler: Handler[SnapshotMetadata]): Unit = {
     implicit val timeout = Timeout(settings.saveTimeout)
 
     val payload = snapshot match {

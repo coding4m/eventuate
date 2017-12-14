@@ -237,7 +237,7 @@ class ConcurrentVersionsTree[A, B](private[eventuate] val root: ConcurrentVersio
     else {
       val leafNode = leafNodes.head
       // copy leaf value to root node, and reset vector time to zero.
-      val rootNode = new ConcurrentVersionsTree.Node(leafNode.versioned.copy(vectorTimestamp = VectorTime.Zero))
+      val rootNode = new ConcurrentVersionsTree.Node(leafNode.versioned.copy(vectorTimestamp = VectorTime.Zero, systemTimestamp = 0L))
       // append leaf node to root
       new ConcurrentVersionsTree[A, B](rootNode.addChild(leafNode).copy()).withOwner(_owner).withProjection(_projection)
     }
