@@ -318,8 +318,9 @@ trait EventsourcedView extends Actor with Stash {
     implicit val timeout = Timeout(settings.saveTimeout)
 
     val payload = snapshot match {
-      case tree: ConcurrentVersionsTree[_, _] => tree.copy(purging)
-      case other                              => other
+      case tree: ConcurrentVersionsTree[_, _] if purging => tree.purge()
+      case tree: ConcurrentVersionsTree[_, _]            => tree.copy()
+      case other                                         => other
     }
 
     val prototype = Snapshot(payload, id, lastHandledEvent, currentVersion, _lastReceivedSequenceNr)

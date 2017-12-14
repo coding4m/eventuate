@@ -224,20 +224,22 @@ class ConcurrentVersionsTree[A, B](private[eventuate] val root: ConcurrentVersio
   def withProjection(f: BiFunction[A, B, A]): ConcurrentVersionsTree[A, B] =
     withProjection((a, b) => f.apply(a, b))
 
-  private[eventuate] def copy(purging: Boolean): ConcurrentVersionsTree[A, B] = {
-    if (!purging) new ConcurrentVersionsTree[A, B](root.copy()).withOwner(_owner).withProjection(_projection)
-    else {
-      val leafNodes = leaves.filterNot(_.rejected)
-      if (leafNodes.length > 1) {
-        throw new IllegalStateException("versions conflicted.")
-      }
+  private[eventuate] def copy(): ConcurrentVersionsTree[A, B] =
+    new ConcurrentVersionsTree[A, B](root.copy()).withOwner(_owner).withProjection(_projection)
 
-      if (leafNodes.isEmpty) new ConcurrentVersionsTree[A, B](root.copy()).withOwner(_owner).withProjection(_projection)
-      else {
-        val leafNode = leafNodes.head
-        val rootNode = new ConcurrentVersionsTree.Node(leafNode.versioned.copy(vectorTimestamp = VectorTime.Zero))
-        new ConcurrentVersionsTree[A, B](rootNode.addChild(leafNode).copy()).withOwner(_owner).withProjection(_projection)
-      }
+  private[eventuate] def purge(): ConcurrentVersionsTree[A, B] = {
+    val leafNodes = leaves.filterNot(_.rejected)
+    if (leafNodes.length > 1) {
+      throw new IllegalStateException("versions conflicted.")
+    }
+
+    if (leafNodes.isEmpty) new ConcurrentVersionsTree[A, B](root.copy()).withOwner(_owner).withProjection(_projection)
+    else {
+      val leafNode = leafNodes.head
+      // copy leaf value to root node, and reset vector time to zero.
+      val rootNode = new ConcurrentVersionsTree.Node(leafNode.versioned.copy(vectorTimestamp = VectorTime.Zero))
+      // append leaf node to root
+      new ConcurrentVersionsTree[A, B](rootNode.addChild(leafNode).copy()).withOwner(_owner).withProjection(_projection)
     }
   }
 
