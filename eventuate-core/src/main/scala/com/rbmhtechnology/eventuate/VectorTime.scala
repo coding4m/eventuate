@@ -17,8 +17,8 @@
 package com.rbmhtechnology.eventuate
 
 import scala.annotation.tailrec
+import scalaz.Scalaz._
 import scalaz._
-import Scalaz._
 
 /**
  * Vector time, represented as ''process id'' -> ''logical time'' map.

@@ -87,6 +87,16 @@ abstract class AbstractEventsourcedView(val id: String, val eventLog: ActorRef) 
     save(snapshot)(handler.asScala)
 
   /**
+   * Java API of [[EventsourcedView.save save]].
+   *
+   * Must be supplied with a [[ResultHandler]] to process successful or failed results.
+   *
+   * @see [[com.rbmhtechnology.eventuate.EventsourcedView EventsourcedView]]
+   */
+  def save(snapshot: Any, purging: Boolean, handler: ResultHandler[SnapshotMetadata]): Unit =
+    save(snapshot, purging)(handler.asScala)
+
+  /**
    * Java API of the [[EventsourcedView.onCommand command]] handler.
    *
    * Returns a partial function that defines the actor's command handling behaviour.

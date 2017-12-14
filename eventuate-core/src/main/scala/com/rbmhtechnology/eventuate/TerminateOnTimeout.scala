@@ -16,7 +16,7 @@
 
 package com.rbmhtechnology.eventuate
 
-import akka.actor.{ Actor, PoisonPill, ReceiveTimeout }
+import akka.actor.{ Actor, ReceiveTimeout }
 
 import scala.concurrent.duration._
 
