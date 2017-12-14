@@ -18,6 +18,7 @@ package com.rbmhtechnology.eventuate.serializer
 
 import akka.actor._
 import akka.serialization.Serializer
+import com.google.protobuf.CodedInputStream
 import com.rbmhtechnology.eventuate._
 import com.rbmhtechnology.eventuate.ConfirmedDelivery._
 import com.rbmhtechnology.eventuate.PersistOnEvent._
@@ -28,6 +29,7 @@ import scala.collection.JavaConverters._
 import scala.collection.immutable.VectorBuilder
 
 class SnapshotSerializer(system: ExtendedActorSystem) extends Serializer {
+  val settings = new SnapshotSerializeSettings(system.settings.config)
   val eventSerializer = new DelegatingDurableEventSerializer(system)
 
   import eventSerializer.commonSerializer
@@ -57,7 +59,10 @@ class SnapshotSerializer(system: ExtendedActorSystem) extends Serializer {
       case SnapshotClass =>
         snapshot(SnapshotFormat.parseFrom(bytes))
       case ConcurrentVersionsTreeClass =>
-        concurrentVersionsTree(ConcurrentVersionsTreeFormat.parseFrom(bytes))
+        val input = CodedInputStream.newInstance(bytes)
+        input.setSizeLimit(settings.sizeLimit)
+        input.setRecursionLimit(settings.recusionLimit)
+        concurrentVersionsTree(ConcurrentVersionsTreeFormat.parseFrom(input))
       case ClockClass =>
         eventLogClock(EventLogClockFormat.parseFrom(bytes))
       case _ =>

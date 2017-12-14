@@ -224,8 +224,19 @@ class ConcurrentVersionsTree[A, B](private[eventuate] val root: ConcurrentVersio
   def withProjection(f: BiFunction[A, B, A]): ConcurrentVersionsTree[A, B] =
     withProjection((a, b) => f.apply(a, b))
 
-  private[eventuate] def copy(): ConcurrentVersionsTree[A, B] =
-    new ConcurrentVersionsTree[A, B](root.copy()).withOwner(_owner).withProjection(_projection)
+  private[eventuate] def copy(purging: Boolean): ConcurrentVersionsTree[A, B] = if (purging) {
+    val leafNodes = leaves.filterNot(_.rejected)
+    if (leafNodes.length > 1) {
+      throw new IllegalStateException("versions conflicted.")
+    }
+
+    if (leafNodes.isEmpty) new ConcurrentVersionsTree[A, B](root.copy()).withOwner(_owner).withProjection(_projection)
+    else {
+      val leafNode = leafNodes.head
+      val rootNode = new ConcurrentVersionsTree.Node(leafNode.versioned.copy(vectorTimestamp = VectorTime.Zero))
+      new ConcurrentVersionsTree[A, B](rootNode.addChild(leafNode).copy()).withOwner(_owner).withProjection(_projection)
+    }
+  } else new ConcurrentVersionsTree[A, B](root.copy()).withOwner(_owner).withProjection(_projection)
 
   private[eventuate] def nodes: Seq[Node[A]] = foldLeft(root, Vector.empty[Node[A]]) {
     case (acc, n) => acc :+ n
@@ -316,9 +327,10 @@ object ConcurrentVersionsTree {
     def leaf: Boolean = children.isEmpty
     def root: Boolean = parent == this
 
-    def addChild(node: Node[A]): Unit = {
+    def addChild(node: Node[A]): Node[A] = {
       node.parent = this
       children = children :+ node
+      this
     }
 
     def reject(): Unit = {
