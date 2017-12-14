@@ -168,11 +168,11 @@ class ConcurrentVersionsTreeSpec extends ConcurrentVersionsSpec {
         .update("b", vectorTime(2, 0, 0))
         .update("c", vectorTime(1, 1, 0))
 
-      val upd1 = tree.copy(false).resolve(
+      val upd1 = tree.copy().resolve(
         vectorTime(2, 0, 0),
         vectorTime(2, 2, 0))
 
-      val upd2 = tree.copy(false).resolve(
+      val upd2 = tree.copy().resolve(
         vectorTime(1, 1, 0),
         vectorTime(2, 2, 0))
 
