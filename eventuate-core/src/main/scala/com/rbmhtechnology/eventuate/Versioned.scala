@@ -21,6 +21,7 @@ import java.util.{ List => JList }
 
 import scala.collection.JavaConverters._
 import scala.collection.immutable.Seq
+import scala.util.control.TailCalls._
 
 /**
  * A versioned value.
@@ -245,30 +246,32 @@ class ConcurrentVersionsTree[A, B](private[eventuate] val root: ConcurrentVersio
 
   private[eventuate] def nodes: Seq[Node[A]] = foldLeft(root, Vector.empty[Node[A]]) {
     case (acc, n) => acc :+ n
-  }
+  }.result
 
   private[eventuate] def leaves: Seq[Node[A]] = foldLeft(root, Vector.empty[Node[A]]) {
     case (leaves, n) => if (n.leaf) leaves :+ n else leaves
-  }
+  }.result
 
   private[eventuate] def pred(timestamp: VectorTime): Node[A] = foldLeft(root, root) {
     case (candidate, n) => if (timestamp > n.versioned.vectorTimestamp && n.versioned.vectorTimestamp > candidate.versioned.vectorTimestamp) n else candidate
-  }
+  }.result
 
   private[eventuate] def merge(timestamp: VectorTime): Node[A] = foldLeft(root, root) {
     case (candidate, n) => if (timestamp > n.versioned.vectorTimestamp
       && (timestamp.value.keySet -- n.versioned.vectorTimestamp.value.keySet).isEmpty
       && n.versioned.vectorTimestamp > candidate.versioned.vectorTimestamp) n else candidate
-  }
+  }.result
 
   // TODO: make tail recursive or create a trampolined version
-  private[eventuate] def foldLeft[C](node: Node[A], acc: C)(f: (C, Node[A]) => C): C = {
+  private[eventuate] def foldLeft[C](node: Node[A], acc: C)(f: (C, Node[A]) => C): TailRec[C] = {
     val acc2 = f(acc, node)
-    node.children match {
-      case Seq() => acc2
-      case ns => ns.foldLeft(acc2) {
-        case (ncc, n) => foldLeft(n, ncc)(f)
-      }
+    if (node.children.isEmpty) done(acc2) else tailcall(foldRec(node.children, acc2)(f))
+  }
+
+  private[eventuate] def foldRec[C](nodes: Vector[Node[A]], acc: C)(f: (C, Node[A]) => C): TailRec[C] = {
+    nodes match {
+      case Seq()        => done(acc)
+      case head +: tail => tailcall(foldLeft(head, acc)(f)).flatMap(foldRec(tail, _)(f))
     }
   }
 }
