@@ -262,7 +262,6 @@ class ConcurrentVersionsTree[A, B](private[eventuate] val root: ConcurrentVersio
       && n.versioned.vectorTimestamp > candidate.versioned.vectorTimestamp) n else candidate
   }.result
 
-  // TODO: make tail recursive or create a trampolined version
   private[eventuate] def foldLeft[C](node: Node[A], acc: C)(f: (C, Node[A]) => C): TailRec[C] = {
     val acc2 = f(acc, node)
     if (node.children.isEmpty) done(acc2) else tailcall(foldRec(node.children, acc2)(f))
