@@ -234,8 +234,10 @@ class ConcurrentVersionsTree[A, B](private[eventuate] val root: ConcurrentVersio
       throw new IllegalStateException("versions conflicted.")
     }
 
-    if (leafNodes.isEmpty) new ConcurrentVersionsTree[A, B](root.copy()).withOwner(_owner).withProjection(_projection)
-    else {
+    if (leafNodes.isEmpty) {
+      val rootNode = new ConcurrentVersionsTree.Node(root.versioned.copy())
+      new ConcurrentVersionsTree[A, B](rootNode).withOwner(_owner).withProjection(_projection)
+    } else {
       val leafNode = leafNodes.head
       // copy leaf value to root node, and reset vector time to zero.
       val rootNode = new ConcurrentVersionsTree.Node(leafNode.versioned.copy(vectorTimestamp = VectorTime.Zero, systemTimestamp = 0L))
