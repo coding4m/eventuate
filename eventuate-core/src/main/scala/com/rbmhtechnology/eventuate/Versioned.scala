@@ -351,12 +351,25 @@ object ConcurrentVersionsTree {
       versioned = versioned.copy(vectorTimestamp = vt, systemTimestamp = st)
     }
 
-    // TODO: make tail recursive or create a trampolined version
     def copy(): Node[A] = {
-      val cn = new Node[A](versioned)
-      cn.rejected = rejected
-      cn.children = children.map(_.copy())
-      cn
+      val target = new Node[A](versioned)
+      copyNode(this, target).map(_ => target).result
+    }
+
+    private def copyNode(source: Node[A], target: Node[A]): TailRec[Unit] = {
+      target.rejected = source.rejected
+      if (source.children.isEmpty) done(Unit)
+      else tailcall(copyChild(target, source.children, 0))
+    }
+
+    private def copyChild(target: Node[A], children: Vector[Node[A]], childIdx: Int): TailRec[Unit] = {
+      if (children.lengthCompare(childIdx) < 0) done(Unit)
+      else {
+        val old = children(childIdx)
+        val chd = new Node[A](old.versioned)
+        target.addChild(chd)
+        tailcall(copyNode(old, chd)).flatMap(_ => copyChild(target, children, childIdx + 1))
+      }
     }
   }
 }
