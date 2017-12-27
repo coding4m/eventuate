@@ -363,7 +363,7 @@ object ConcurrentVersionsTree {
     }
 
     private def copyChild(target: Node[A], children: Vector[Node[A]], childIdx: Int): TailRec[Unit] = {
-      if (children.lengthCompare(childIdx) < 0) done(Unit)
+      if (children.lengthCompare(childIdx) <= 0) done(Unit)
       else {
         val old = children(childIdx)
         val chd = new Node[A](old.versioned)
