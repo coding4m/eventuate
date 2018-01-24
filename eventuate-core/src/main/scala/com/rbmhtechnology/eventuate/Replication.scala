@@ -202,16 +202,14 @@ private class Recovery(endpoint: ReplicationEndpoint) {
    * all events are successfully recovered.
    */
   def recoverLinks(recoveryLinks: Set[RecoveryLink])(implicit ec: ExecutionContext): Future[Unit] = {
-    if (recoveryLinks.isEmpty) {
-      Future.successful(())
-    } else {
+    if (recoveryLinks.isEmpty) Future.successful(())
+    else {
       val recoveryFinishedPromise = Promise[Unit]()
-      deleteSnapshots(recoveryLinks).onSuccess {
-        case _ =>
-          endpoint.acceptor ! Recover(recoveryLinks, recoveryFinishedPromise)
-          recoveryLinks.foreach { link =>
-            endpoint.controller ! ReplicatorDown(link.replicationLink)
-          }
+      deleteSnapshots(recoveryLinks).foreach { _ =>
+        endpoint.acceptor ! Recover(recoveryLinks, recoveryFinishedPromise)
+        recoveryLinks.foreach { link =>
+          endpoint.controller ! ReplicatorDown(link.replicationLink)
+        }
       }
       recoveryFinishedPromise.future
     }
@@ -385,7 +383,7 @@ private class Controller(endpoint: ReplicationEndpoint) extends Actor with Actor
 
   private var replicationRegistry = ReplicationRegistry()
   private val replicationDetector = context.actorOf(
-    ReplicationDetector.props(endpoint.connections, endpoint.connectionRoles, endpoint.maxConnections).withDispatcher(endpoint.settings.controllerDispatcher),
+    ReplicationDetector.props(endpoint.connections, endpoint.connectionRoles, endpoint.connectionLimits).withDispatcher(endpoint.settings.controllerDispatcher),
     ReplicationDetector.Name
   )
 
@@ -450,237 +448,6 @@ private class Controller(endpoint: ReplicationEndpoint) extends Actor with Actor
   }
 }
 
-/**
- * Replicates events from a remote source log to a local target log. This replicator guarantees that
- * the ordering of replicated events is preserved. Potential duplicates are either detected at source
- * (which is an optimization) or at target (for correctness). Duplicate detection is based on tracked
- * event vector times.
- */
-private class Replicator(target: ReplicationTarget, source: ReplicationSource) extends Actor with ActorLogging {
-
-  import FailureDetector._
-  import context.dispatcher
-  import target.endpoint.settings
-
-  private val scheduler = context.system.scheduler
-  private val detector = context.actorOf(Props(new FailureDetector(source.endpointId, source.logName, settings.failureDetectionLimit)))
-
-  private var readSchedule: Option[Cancellable] = None
-
-  val fetching: Receive = {
-    case GetReplicationProgressSuccess(_, storedReplicationProgress, currentTargetVersionVector) =>
-      context.become(reading)
-      read(storedReplicationProgress, currentTargetVersionVector)
-    case GetReplicationProgressFailure(cause) =>
-      log.warning("replication progress read failed: {}", cause)
-      scheduleFetch()
-  }
-
-  val idle: Receive = {
-    case ReplicationDue =>
-      readSchedule.foreach(_.cancel()) // if it's notification from source concurrent to a scheduled read
-      context.become(fetching)
-      fetch()
-  }
-
-  val reading: Receive = {
-    case ReplicationReadSuccess(events, fromSequenceNr, replicationProgress, _, currentSourceVersionVector) =>
-      detector ! AvailabilityDetected
-      context.become(writing)
-      write(events, replicationProgress, currentSourceVersionVector, replicationProgress >= fromSequenceNr)
-    case ReplicationReadFailure(cause, _) =>
-      detector ! FailureDetected(cause)
-      log.warning(s"replication read failed: {}", cause)
-      context.become(idle)
-      scheduleRead()
-  }
-
-  val writing: Receive = {
-    case writeSuccess @ ReplicationWriteSuccess(_, _, false) =>
-      notifyLocalAcceptor(writeSuccess)
-      context.become(idle)
-      scheduleRead()
-    case writeSuccess @ ReplicationWriteSuccess(_, metadata, true) =>
-      val sourceMetadata = metadata(source.logId)
-      notifyLocalAcceptor(writeSuccess)
-      context.become(reading)
-      read(sourceMetadata.replicationProgress, sourceMetadata.currentVersionVector)
-    case ReplicationWriteFailure(cause) =>
-      log.warning("replication write failed: {}", cause)
-      context.become(idle)
-      scheduleRead()
-  }
-
-  def receive = fetching
-
-  override def unhandled(message: Any): Unit = message match {
-    case ReplicationDue => // currently replicating, ignore
-    case other          => super.unhandled(other)
-  }
-
-  private def notifyLocalAcceptor(writeSuccess: ReplicationWriteSuccess): Unit =
-    target.endpoint.acceptor ! writeSuccess
-
-  private def scheduleFetch(): Unit =
-    scheduler.scheduleOnce(settings.retryDelay)(fetch())
-
-  private def scheduleRead(): Unit =
-    readSchedule = Some(scheduler.scheduleOnce(settings.retryDelay, self, ReplicationDue))
-
-  private def fetch(): Unit = {
-    implicit val timeout = Timeout(settings.readTimeout)
-
-    target.log ? GetReplicationProgress(source.logId) recover {
-      case t => GetReplicationProgressFailure(t)
-    } pipeTo self
-  }
-
-  private def read(storedReplicationProgress: Long, currentTargetVersionVector: VectorTime): Unit = {
-    implicit val timeout = Timeout(settings.remoteReadTimeout)
-    val replicationRead = ReplicationRead(storedReplicationProgress + 1, settings.writeBatchSize, settings.remoteScanLimit, NoFilter, target.logId, self, currentTargetVersionVector)
-
-    (source.acceptor ? ReplicationReadEnvelope(replicationRead, source.logName, target.endpoint.applicationName, target.endpoint.applicationVersion)) recover {
-      case t => ReplicationReadFailure(ReplicationReadTimeoutException(settings.remoteReadTimeout), target.logId)
-    } pipeTo self
-  }
-
-  private def write(events: Seq[DurableEvent], replicationProgress: Long, currentSourceVersionVector: VectorTime, continueReplication: Boolean): Unit = {
-    implicit val timeout = Timeout(settings.writeTimeout)
-
-    target.log ? ReplicationWrite(events, Map(source.logId -> ReplicationMetadata(replicationProgress, currentSourceVersionVector)), continueReplication) recover {
-      case t => ReplicationWriteFailure(t)
-    } pipeTo self
-  }
-
-  override def preStart(): Unit =
-    fetch()
-
-  override def postStop(): Unit =
-    readSchedule.foreach(_.cancel())
-}
-
-private case class ReplicationRegistry(replicators: Map[ReplicationLink, ActorRef] = Map.empty) {
-
-  def +(link: ReplicationLink, replicator: ActorRef): ReplicationRegistry = {
-    copy(replicators = replicators + (link -> replicator))
-  }
-
-  def -(link: ReplicationLink): ReplicationRegistry = {
-    copy(replicators = replicators - link)
-  }
-
-  def apply(link: ReplicationLink): Option[ActorRef] = {
-    replicators.get(link)
-  }
-}
-
-/**
- * If `replicationLinks` is [[None]] reliably sends [[GetReplicationInfo]] requests to the [[Acceptor]] at a source [[ReplicationEndpoint]].
- * On receiving a [[GetReplicationInfoSuccess]] reply, this connector sets up log [[Replicator]]s, one per
- * common log name between source and target endpoints.
- *
- * If `replicationLinks` is not [[None]] [[Replicator]]s will be setup for the given [[ReplicationLink]]s.
- */
-private class ReplicatorInitializer(
-  endpoint: ReplicationEndpoint,
-  connection: ReplicationConnection) extends Actor {
-
-  import Controller._
-  import context.dispatcher
-
-  private val acceptor = endpoint.replicationAcceptor(connection)
-  private var acceptorRequestSchedule: Option[Cancellable] = None
-
-  def receive = {
-    case GetReplicationInfoSuccess(info) =>
-      acceptorRequestSchedule.foreach(_.cancel())
-      endpoint.replicationLinks(connection, info).foreach { link =>
-        context.parent ! ReplicatorUp(link)
-      }
-      context stop self
-  }
-
-  private def scheduleAcceptorRequest(acceptor: ActorSelection): Cancellable =
-    context.system.scheduler.schedule(0.seconds, endpoint.settings.retryDelay, new Runnable {
-      override def run() = acceptor ! GetReplicationInfo
-    })
-
-  override def preStart(): Unit =
-    acceptorRequestSchedule = Some(scheduleAcceptorRequest(acceptor))
-
-  override def postStop(): Unit =
-    acceptorRequestSchedule.foreach(_.cancel())
-}
-
-/**
- * References a remote event log at a source [[ReplicationEndpoint]].
- */
-private case class ReplicationSource(
-  endpointId: String,
-  logName: String,
-  logId: String,
-  acceptor: ActorSelection
-)
-
-/**
- * References a local event log at a target [[ReplicationEndpoint]].
- */
-private case class ReplicationTarget(
-  endpoint: ReplicationEndpoint,
-  logName: String,
-  logId: String,
-  log: ActorRef
-)
-
-/**
- * Represents an unidirectional replication link between a `source` and a `target`.
- */
-private case class ReplicationLink(source: ReplicationSource, target: ReplicationTarget)
-
-private object FailureDetector {
-  case object AvailabilityDetected
-  case class FailureDetected(cause: Throwable)
-  case class FailureDetectionLimitReached(counter: Int)
-}
-private class FailureDetector(sourceEndpointId: String, logName: String, failureDetectionLimit: FiniteDuration) extends Actor with ActorLogging {
-
-  import FailureDetector._
-  import ReplicationEndpoint._
-  import context.dispatcher
-
-  private var counter: Int = 0
-  private var causes: Vector[Throwable] = Vector.empty
-  private var schedule: Cancellable = scheduleFailureDetectionLimitReached()
-
-  private val failureDetectionLimitNanos = failureDetectionLimit.toNanos
-  private var lastReportedAvailability: Long = 0L
-
-  override def receive: Receive = {
-    case AvailabilityDetected =>
-      val currentTime = System.nanoTime()
-      val lastInterval = currentTime - lastReportedAvailability
-      if (lastInterval >= failureDetectionLimitNanos) {
-        context.system.eventStream.publish(Available(sourceEndpointId, logName))
-        lastReportedAvailability = currentTime
-      }
-      schedule.cancel()
-      schedule = scheduleFailureDetectionLimitReached()
-      causes = Vector.empty
-    case FailureDetected(cause) =>
-      causes = causes :+ cause
-    case FailureDetectionLimitReached(scheduledCount) if scheduledCount == counter =>
-      log.error(causes.lastOption.getOrElse(Logging.Error.NoCause), "replication failure detection limit reached ({})," +
-        " publishing Unavailable for {}/{} (last exception being reported)", failureDetectionLimit, sourceEndpointId, logName)
-      context.system.eventStream.publish(Unavailable(sourceEndpointId, logName, causes))
-      schedule = scheduleFailureDetectionLimitReached()
-      causes = Vector.empty
-  }
-
-  private def scheduleFailureDetectionLimitReached(): Cancellable = {
-    counter += 1
-    context.system.scheduler.scheduleOnce(failureDetectionLimit, self, FailureDetectionLimitReached(counter))
-  }
-}
 private object ReplicationDetector {
   val Name = "replication-detector"
 
@@ -798,4 +565,235 @@ private class ReplicationDetector(connections: Set[ReplicationConnection], conne
   }
 
   override def postStop(): Unit = if (connectionRoles.nonEmpty) cluster.unsubscribe(self)
+}
+private case class ReplicationRegistry(replicators: Map[ReplicationLink, ActorRef] = Map.empty) {
+
+  def +(link: ReplicationLink, replicator: ActorRef): ReplicationRegistry = {
+    copy(replicators = replicators + (link -> replicator))
+  }
+
+  def -(link: ReplicationLink): ReplicationRegistry = {
+    copy(replicators = replicators - link)
+  }
+
+  def apply(link: ReplicationLink): Option[ActorRef] = {
+    replicators.get(link)
+  }
+}
+
+/**
+ * Replicates events from a remote source log to a local target log. This replicator guarantees that
+ * the ordering of replicated events is preserved. Potential duplicates are either detected at source
+ * (which is an optimization) or at target (for correctness). Duplicate detection is based on tracked
+ * event vector times.
+ */
+private class Replicator(target: ReplicationTarget, source: ReplicationSource) extends Actor with ActorLogging {
+
+  import FailureDetector._
+  import context.dispatcher
+  import target.endpoint.settings
+
+  private val scheduler = context.system.scheduler
+  private val detector = context.actorOf(Props(new FailureDetector(source.endpointId, source.logName, settings.failureDetectionLimit)))
+
+  private var readSchedule: Option[Cancellable] = None
+
+  val fetching: Receive = {
+    case GetReplicationProgressSuccess(_, storedReplicationProgress, currentTargetVersionVector) =>
+      context.become(reading)
+      read(storedReplicationProgress, currentTargetVersionVector)
+    case GetReplicationProgressFailure(cause) =>
+      log.warning("replication progress read failed: {}", cause)
+      scheduleFetch()
+  }
+
+  val idle: Receive = {
+    case ReplicationDue =>
+      readSchedule.foreach(_.cancel()) // if it's notification from source concurrent to a scheduled read
+      context.become(fetching)
+      fetch()
+  }
+
+  val reading: Receive = {
+    case ReplicationReadSuccess(events, fromSequenceNr, replicationProgress, _, currentSourceVersionVector) =>
+      detector ! AvailabilityDetected
+      context.become(writing)
+      write(events, replicationProgress, currentSourceVersionVector, replicationProgress >= fromSequenceNr)
+    case ReplicationReadFailure(cause, _) =>
+      detector ! FailureDetected(cause)
+      log.warning(s"replication read failed: {}", cause)
+      context.become(idle)
+      scheduleRead()
+  }
+
+  val writing: Receive = {
+    case writeSuccess @ ReplicationWriteSuccess(_, _, false) =>
+      notifyLocalAcceptor(writeSuccess)
+      context.become(idle)
+      scheduleRead()
+    case writeSuccess @ ReplicationWriteSuccess(_, metadata, true) =>
+      val sourceMetadata = metadata(source.logId)
+      notifyLocalAcceptor(writeSuccess)
+      context.become(reading)
+      read(sourceMetadata.replicationProgress, sourceMetadata.currentVersionVector)
+    case ReplicationWriteFailure(cause) =>
+      log.warning("replication write failed: {}", cause)
+      context.become(idle)
+      scheduleRead()
+  }
+
+  def receive = fetching
+
+  override def unhandled(message: Any): Unit = message match {
+    case ReplicationDue => // currently replicating, ignore
+    case other          => super.unhandled(other)
+  }
+
+  private def notifyLocalAcceptor(writeSuccess: ReplicationWriteSuccess): Unit =
+    target.endpoint.acceptor ! writeSuccess
+
+  private def scheduleFetch(): Unit =
+    scheduler.scheduleOnce(settings.retryDelay)(fetch())
+
+  private def scheduleRead(): Unit =
+    readSchedule = Some(scheduler.scheduleOnce(settings.retryDelay, self, ReplicationDue))
+
+  private def fetch(): Unit = {
+    implicit val timeout = Timeout(settings.readTimeout)
+
+    target.log ? GetReplicationProgress(source.logId) recover {
+      case t => GetReplicationProgressFailure(t)
+    } pipeTo self
+  }
+
+  private def read(storedReplicationProgress: Long, currentTargetVersionVector: VectorTime): Unit = {
+    implicit val timeout = Timeout(settings.remoteReadTimeout)
+    val replicationRead = ReplicationRead(storedReplicationProgress + 1, settings.writeBatchSize, settings.remoteScanLimit, NoFilter, target.logId, self, currentTargetVersionVector)
+
+    (source.acceptor ? ReplicationReadEnvelope(replicationRead, source.logName, target.endpoint.applicationName, target.endpoint.applicationVersion)) recover {
+      case t => ReplicationReadFailure(ReplicationReadTimeoutException(settings.remoteReadTimeout), target.logId)
+    } pipeTo self
+  }
+
+  private def write(events: Seq[DurableEvent], replicationProgress: Long, currentSourceVersionVector: VectorTime, continueReplication: Boolean): Unit = {
+    implicit val timeout = Timeout(settings.writeTimeout)
+
+    target.log ? ReplicationWrite(events, Map(source.logId -> ReplicationMetadata(replicationProgress, currentSourceVersionVector)), continueReplication) recover {
+      case t => ReplicationWriteFailure(t)
+    } pipeTo self
+  }
+
+  override def preStart(): Unit =
+    fetch()
+
+  override def postStop(): Unit =
+    readSchedule.foreach(_.cancel())
+}
+
+/**
+ * If `replicationLinks` is [[None]] reliably sends [[GetReplicationInfo]] requests to the [[Acceptor]] at a source [[ReplicationEndpoint]].
+ * On receiving a [[GetReplicationInfoSuccess]] reply, this connector sets up log [[Replicator]]s, one per
+ * common log name between source and target endpoints.
+ *
+ * If `replicationLinks` is not [[None]] [[Replicator]]s will be setup for the given [[ReplicationLink]]s.
+ */
+private class ReplicatorInitializer(
+  endpoint: ReplicationEndpoint,
+  connection: ReplicationConnection) extends Actor {
+
+  import Controller._
+  import context.dispatcher
+
+  private val acceptor = endpoint.replicationAcceptor(connection)
+  private var acceptorRequestSchedule: Option[Cancellable] = None
+
+  def receive = {
+    case GetReplicationInfoSuccess(info) =>
+      acceptorRequestSchedule.foreach(_.cancel())
+      endpoint.replicationLinks(connection, info).foreach { link =>
+        context.parent ! ReplicatorUp(link)
+      }
+      context stop self
+  }
+
+  private def scheduleAcceptorRequest(acceptor: ActorSelection): Cancellable =
+    context.system.scheduler.schedule(0.seconds, endpoint.settings.retryDelay, new Runnable {
+      override def run() = acceptor ! GetReplicationInfo
+    })
+
+  override def preStart(): Unit =
+    acceptorRequestSchedule = Some(scheduleAcceptorRequest(acceptor))
+
+  override def postStop(): Unit =
+    acceptorRequestSchedule.foreach(_.cancel())
+}
+
+/**
+ * References a remote event log at a source [[ReplicationEndpoint]].
+ */
+private case class ReplicationSource(
+  endpointId: String,
+  logName: String,
+  logId: String,
+  acceptor: ActorSelection
+)
+
+/**
+ * References a local event log at a target [[ReplicationEndpoint]].
+ */
+private case class ReplicationTarget(
+  endpoint: ReplicationEndpoint,
+  logName: String,
+  logId: String,
+  log: ActorRef
+)
+
+/**
+ * Represents an unidirectional replication link between a `source` and a `target`.
+ */
+private case class ReplicationLink(source: ReplicationSource, target: ReplicationTarget)
+
+private object FailureDetector {
+  case object AvailabilityDetected
+  case class FailureDetected(cause: Throwable)
+  case class FailureDetectionLimitReached(counter: Int)
+}
+private class FailureDetector(sourceEndpointId: String, logName: String, failureDetectionLimit: FiniteDuration) extends Actor with ActorLogging {
+
+  import FailureDetector._
+  import ReplicationEndpoint._
+  import context.dispatcher
+
+  private var counter: Int = 0
+  private var causes: Vector[Throwable] = Vector.empty
+  private var schedule: Cancellable = scheduleFailureDetectionLimitReached()
+
+  private val failureDetectionLimitNanos = failureDetectionLimit.toNanos
+  private var lastReportedAvailability: Long = 0L
+
+  override def receive: Receive = {
+    case AvailabilityDetected =>
+      val currentTime = System.nanoTime()
+      val lastInterval = currentTime - lastReportedAvailability
+      if (lastInterval >= failureDetectionLimitNanos) {
+        context.system.eventStream.publish(Available(sourceEndpointId, logName))
+        lastReportedAvailability = currentTime
+      }
+      schedule.cancel()
+      schedule = scheduleFailureDetectionLimitReached()
+      causes = Vector.empty
+    case FailureDetected(cause) =>
+      causes = causes :+ cause
+    case FailureDetectionLimitReached(scheduledCount) if scheduledCount == counter =>
+      log.error(causes.lastOption.getOrElse(Logging.Error.NoCause), "replication failure detection limit reached ({})," +
+        " publishing Unavailable for {}/{} (last exception being reported)", failureDetectionLimit, sourceEndpointId, logName)
+      context.system.eventStream.publish(Unavailable(sourceEndpointId, logName, causes))
+      schedule = scheduleFailureDetectionLimitReached()
+      causes = Vector.empty
+  }
+
+  private def scheduleFailureDetectionLimitReached(): Cancellable = {
+    counter += 1
+    context.system.scheduler.scheduleOnce(failureDetectionLimit, self, FailureDetectionLimitReached(counter))
+  }
 }
