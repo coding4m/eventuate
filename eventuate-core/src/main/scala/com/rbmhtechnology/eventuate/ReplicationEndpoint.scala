@@ -107,7 +107,7 @@ object ReplicationEndpoint {
       case AddressWithName(name, host, port) => ReplicationConnection(host, port, name)
     }
     val connectionRoles = config.getStringList("eventuate.endpoint.connection-roles").asScala.toSet
-    val connectionLimits = config.getInt("eventuate.endpoint.connections-limits")
+    val connectionLimits = config.getInt("eventuate.endpoint.connection-limits")
     apply(logFactory, connections, connectionRoles, connectionLimits)
   }
 
