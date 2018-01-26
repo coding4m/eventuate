@@ -27,10 +27,12 @@ import com.rbmhtechnology.eventuate.EndpointFilters.NoFilters
 import com.rbmhtechnology.eventuate.EventsourcingProtocol.{ Delete, DeleteFailure, DeleteSuccess }
 import com.rbmhtechnology.eventuate.ReplicationFilter.NoFilter
 import com.rbmhtechnology.eventuate.ReplicationProtocol.ReplicationInfo
+import com.typesafe.config.Config
 
 import scala.collection.JavaConverters._
 import scala.collection.immutable.Seq
 import scala.concurrent._
+import scala.util.Try
 import scala.util.matching.Regex
 
 object ReplicationEndpoint {
@@ -102,12 +104,9 @@ object ReplicationEndpoint {
    */
   def apply(logFactory: String => Props)(implicit system: ActorSystem): ReplicationEndpoint = {
     val config = system.settings.config
-    val connections = config.getStringList("eventuate.endpoint.connections").asScala.toSet[String].collect {
-      case Address(host, port)               => ReplicationConnection(host, port, system.name)
-      case AddressWithName(name, host, port) => ReplicationConnection(host, port, name)
-    }
-    val connectionRoles = config.getStringList("eventuate.endpoint.connection-roles").asScala.toSet
-    val connectionLimits = config.getInt("eventuate.endpoint.connection-limits")
+    val connections = getConnections(config)
+    val connectionRoles = getConnectionRoles(config)
+    val connectionLimits = getConnectionLimits(config)
     apply(logFactory, connections, connectionRoles, connectionLimits)
   }
 
@@ -270,6 +269,24 @@ object ReplicationEndpoint {
     system: ActorSystem
   ): ReplicationEndpoint =
     new ReplicationEndpoint(id, logNames.asScala.toSet, id => logFactory.apply(id), connections.asScala.toSet, Set.empty, 0, endpointFilters, applicationName, applicationVersion)(system)
+
+  private def getConnections(config: Config)(implicit system: ActorSystem) = {
+    Try(config.getStringList("eventuate.endpoint.connections").asScala.toSet)
+      .getOrElse(config.getString("eventuate.endpoint.connections").split(",").toSet)
+      .collect {
+        case Address(host, port)               => ReplicationConnection(host, port, system.name)
+        case AddressWithName(name, host, port) => ReplicationConnection(host, port, name)
+      }
+  }
+
+  private def getConnectionRoles(config: Config) = {
+    Try(config.getStringList("eventuate.endpoint.connection-roles").asScala.toSet)
+      .getOrElse(config.getString("eventuate.endpoint.connection-roles").split(",").toSet)
+  }
+
+  private def getConnectionLimits(config: Config) = {
+    config.getInt("eventuate.endpoint.connection-limits")
+  }
 }
 
 /**

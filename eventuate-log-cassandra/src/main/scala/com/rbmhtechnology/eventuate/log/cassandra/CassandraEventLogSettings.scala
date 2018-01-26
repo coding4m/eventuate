@@ -20,14 +20,13 @@ import java.net.InetSocketAddress
 import java.util.concurrent.TimeUnit
 
 import akka.util.Helpers.Requiring
-
 import com.datastax.driver.core.{ Cluster, ConsistencyLevel }
 import com.typesafe.config.Config
-
 import com.rbmhtechnology.eventuate.log._
 
 import scala.collection.JavaConverters._
 import scala.concurrent.duration._
+import scala.util.Try
 
 class CassandraEventLogSettings(config: Config) extends EventLogSettings {
   import CassandraEventLogSettings._
@@ -63,13 +62,15 @@ class CassandraEventLogSettings(config: Config) extends EventLogSettings {
     config.getInt("eventuate.log.cassandra.default-port")
 
   val contactPoints =
-    getContactPoints(config.getStringList("eventuate.log.cassandra.contact-points").asScala, defaultPort)
+    getContactPoints(
+      Try(config.getStringList("eventuate.log.cassandra.contact-points").asScala)
+        .getOrElse(config.getString("eventuate.log.cassandra.contact-points").split(",").toSeq), defaultPort)
 
   val partitionSize: Long =
     config.getLong("eventuate.log.cassandra.partition-size")
       .requiring(
         _ > writeBatchSize,
-        s"eventuate.log.cassandra.partition-size must be greater than eventuate.log.write-batch-size (${writeBatchSize})")
+        s"eventuate.log.cassandra.partition-size must be greater than eventuate.log.write-batch-size ($writeBatchSize)")
 
   val indexUpdateLimit: Int =
     config.getInt("eventuate.log.cassandra.index-update-limit")
