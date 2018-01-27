@@ -93,8 +93,7 @@ class LeveldbEventLog(id: String) extends EventLog[LeveldbEventLogState](id) wit
 
   private val leveldbDir = new File(settings.rootDir, s"${settings.prefix}_$id"); leveldbDir.mkdirs()
   private val leveldbOptions = new Options().createIfMissing(true)
-  private def leveldbReadOptions = new ReadOptions().verifyChecksums(false)
-
+  protected def leveldbReadOptions = new ReadOptions().verifyChecksums(false)
   protected val leveldbWriteOptions = new WriteOptions().sync(settings.fsync).snapshot(false)
   protected val leveldb = factory.open(leveldbDir, leveldbOptions)
 

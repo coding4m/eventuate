@@ -343,11 +343,10 @@ private class Acceptor(endpoint: ReplicationEndpoint) extends Actor {
     case GetReplicationInfo =>
       recovery.readReplicationInfo.map(GetReplicationInfoSuccess).pipeTo(sender())
     case SynchronizeReplicationProgress(remoteInfo) =>
-      val localInfo = for {
+      (for {
         _ <- recovery.synchronizeReplicationProgress(remoteInfo)
         localInfo <- recovery.readReplicationInfo.map(SynchronizeReplicationProgressSuccess)
-      } yield localInfo
-      localInfo.recover {
+      } yield localInfo) recover {
         case ex: Throwable => SynchronizeReplicationProgressFailure(SynchronizeReplicationProgressSourceException(ex.getMessage))
       } pipeTo sender()
     case _ =>

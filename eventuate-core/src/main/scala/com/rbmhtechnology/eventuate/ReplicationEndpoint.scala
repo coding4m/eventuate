@@ -340,7 +340,7 @@ class ReplicationEndpoint(
    * The log actors managed by this endpoint, indexed by their name.
    */
   val logs: Map[String, ActorRef] =
-    logNames.map(logName => logName -> system.actorOf(logFactory(logId(logName)), logId(logName))).toMap
+    logNames.map(logName => logName -> system.actorOf(logFactory(logName), logName)).toMap
 
   // lazy to make sure concurrently running (created actors) do not access null-reference
   // https://github.com/RBMHTechnology/eventuate/issues/183
