@@ -71,6 +71,7 @@ object ReplicationEndpoint {
 
     def unapply(s: String): Option[(String, Int)] = s match {
       case hostAndPort(host, port) => Some((host, port.toInt))
+      case _                       => None
     }
   }
 
@@ -79,6 +80,7 @@ object ReplicationEndpoint {
 
     def unapply(s: String): Option[(String, String, Int)] = s match {
       case hostAndPortWithName(name, host, port) => Some((name, host, port.toInt))
+      case _                                     => None
     }
   }
 
