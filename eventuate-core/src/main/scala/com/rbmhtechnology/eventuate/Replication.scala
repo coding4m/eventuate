@@ -409,14 +409,12 @@ private class Controller(endpoint: ReplicationEndpoint) extends Actor with Actor
       replicationDetector forward ListConnection
 
     case ConnectionUp(connection) =>
-      context.actorOf(
-        Props(new ReplicatorInitializer(endpoint, connection)).withDispatcher(endpoint.settings.controllerDispatcher)
-      )
+      context.actorOf(Props(new ReplicatorInitializer(endpoint, connection)).withDispatcher(endpoint.settings.controllerDispatcher))
     case ConnectionDown(connection) =>
-      replicationRegistry.replicators.keys filter { link =>
-        endpoint.replicationAcceptor(connection) == link.source.acceptor
-      } foreach { link =>
-        self ! ReplicatorDown(link)
+      replicationRegistry.replicators.keys filter {
+        endpoint.replicationAcceptor(connection) == _.source.acceptor
+      } foreach {
+        self ! ReplicatorDown(_)
       }
 
     case ReplicatorUp(link) =>
@@ -433,16 +431,14 @@ private class Controller(endpoint: ReplicationEndpoint) extends Actor with Actor
   }
 
   private def replicatorUp(link: ReplicationLink) = {
-    val replicator = context.actorOf(
-      Props(new Replicator(link.target, link.source)).withDispatcher(endpoint.settings.controllerDispatcher)
-    )
+    val replicator = context.actorOf(Props(new Replicator(endpoint, link.target, link.source)).withDispatcher(endpoint.settings.controllerDispatcher))
     replicationRegistry = replicationRegistry + (link, replicator)
   }
 
   private def replicatorDown(link: ReplicationLink) = {
-    replicationRegistry(link).foreach { replicator =>
+    replicationRegistry(link).foreach { r =>
       replicationRegistry = replicationRegistry - link
-      context stop replicator
+      context stop r
     }
   }
 }
@@ -451,10 +447,7 @@ private object ReplicationDetector {
   val Name = "replication-detector"
 
   def props(connections: Set[ReplicationConnection], connectionRoles: Set[String], maxConnections: Int): Props = {
-    require(
-      connections.nonEmpty || connectionRoles.nonEmpty,
-      "connections and connectionRoles both empty."
-    )
+    require(connections.nonEmpty || connectionRoles.nonEmpty, "connections and connectionRoles both empty.")
     Props(new ReplicationDetector(connections, connectionRoles, maxConnections))
   }
 
@@ -476,11 +469,7 @@ private class ReplicationDetector(connections: Set[ReplicationConnection], conne
   override def preStart(): Unit = {
     context become initiating
     if (connectionRoles.nonEmpty) {
-      cluster.subscribe(
-        self,
-        initialStateMode = InitialStateAsEvents,
-        classOf[MemberUp], classOf[MemberRemoved], classOf[ReachableMember], classOf[UnreachableMember]
-      )
+      cluster.subscribe(self, initialStateMode = InitialStateAsEvents, classOf[MemberUp], classOf[MemberRemoved], classOf[ReachableMember], classOf[UnreachableMember])
       cluster.registerOnMemberUp(self ! ReplicaDetected)
     } else self ! ReplicaDetected
   }
@@ -586,14 +575,14 @@ private case class ReplicationRegistry(replicators: Map[ReplicationLink, ActorRe
  * (which is an optimization) or at target (for correctness). Duplicate detection is based on tracked
  * event vector times.
  */
-private class Replicator(target: ReplicationTarget, source: ReplicationSource) extends Actor with ActorLogging {
+private class Replicator(endpoint: ReplicationEndpoint, target: ReplicationTarget, source: ReplicationSource) extends Actor with ActorLogging {
 
   import FailureDetector._
   import context.dispatcher
   import target.endpoint.settings
 
   private val scheduler = context.system.scheduler
-  private val detector = context.actorOf(Props(new FailureDetector(source.endpointId, source.logName, settings.failureDetectionLimit)))
+  private val detector = context.actorOf(Props(new FailureDetector(source.endpointId, source.logName, settings.failureDetectionLimit)).withDispatcher(endpoint.settings.controllerDispatcher))
 
   private var readSchedule: Option[Cancellable] = None
 
@@ -602,7 +591,7 @@ private class Replicator(target: ReplicationTarget, source: ReplicationSource) e
       context.become(reading)
       read(storedReplicationProgress, currentTargetVersionVector)
     case GetReplicationProgressFailure(cause) =>
-      log.warning("replication progress read failed: {}", cause)
+      log.warning("replication[target-log={}, source-log={}] progress read failed: {}", target.logId, source.logId, cause)
       scheduleFetch()
   }
 
@@ -620,7 +609,7 @@ private class Replicator(target: ReplicationTarget, source: ReplicationSource) e
       write(events, replicationProgress, currentSourceVersionVector, replicationProgress >= fromSequenceNr)
     case ReplicationReadFailure(cause, _) =>
       detector ! FailureDetected(cause)
-      log.warning(s"replication read failed: {}", cause)
+      log.warning(s"replication[target-log={}, source-log={}] read failed: {}", target.logId, source.logId, cause)
       context.become(idle)
       scheduleRead()
   }
@@ -636,7 +625,7 @@ private class Replicator(target: ReplicationTarget, source: ReplicationSource) e
       context.become(reading)
       read(sourceMetadata.replicationProgress, sourceMetadata.currentVersionVector)
     case ReplicationWriteFailure(cause) =>
-      log.warning("replication write failed: {}", cause)
+      log.warning("replication[target-log={}, source-log={}] write failed: {}", target.logId, source.logId, cause)
       context.become(idle)
       scheduleRead()
   }
@@ -696,9 +685,7 @@ private class Replicator(target: ReplicationTarget, source: ReplicationSource) e
  *
  * If `replicationLinks` is not [[None]] [[Replicator]]s will be setup for the given [[ReplicationLink]]s.
  */
-private class ReplicatorInitializer(
-  endpoint: ReplicationEndpoint,
-  connection: ReplicationConnection) extends Actor {
+private class ReplicatorInitializer(endpoint: ReplicationEndpoint, connection: ReplicationConnection) extends Actor {
 
   import Controller._
   import context.dispatcher
