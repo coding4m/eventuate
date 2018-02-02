@@ -518,7 +518,7 @@ private class ReplicationDetector(connections: Set[ReplicationConnection], conne
 
   private def connectionReachable(conn: ReplicationConnection) = if (!connections(conn)) {
     backSet = backSet + conn
-    promoteConnection()
+    upgradeConnection()
   }
 
   private def connectionUnreachable(conn: ReplicationConnection) = if (!connections(conn)) {
@@ -527,7 +527,7 @@ private class ReplicationDetector(connections: Set[ReplicationConnection], conne
       context.parent ! UnreachableConnection(conn)
     }
     backSet = backSet - conn
-    promoteConnection()
+    upgradeConnection()
   }
 
   private def availableMember(member: Member): Boolean = {
@@ -540,7 +540,7 @@ private class ReplicationDetector(connections: Set[ReplicationConnection], conne
     system = member.address.system
   } yield ReplicationConnection(host, port, name = system)
 
-  private def promoteConnection(): Unit = if ((maxConnections <= 0 || syncSet.size < maxConnections) && backSet.nonEmpty) {
+  private def upgradeConnection(): Unit = if ((maxConnections <= 0 || syncSet.size < maxConnections) && backSet.nonEmpty) {
     var connections = backSet.toSeq
     backSet.filterNot(connection => selfAddress.host.contains(connection.host)).foreach { conn =>
       connections = connections :+ conn

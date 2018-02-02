@@ -245,7 +245,7 @@ trait EventLogSPI[A] { this: Actor =>
  * @tparam A Event log state type (a subtype of [[EventLogState]]).
  */
 abstract class EventLog[A <: EventLogState](id: String) extends Actor with EventLogSPI[A] with Stash {
-  import NotificationChannel._
+  import SubscriberChannel._
   import EventLog._
 
   private case class RecoverStateSuccess(state: A)
@@ -322,7 +322,7 @@ abstract class EventLog[A <: EventLogState](id: String) extends Actor with Event
    */
   private val channel: Option[ActorRef] =
     if (context.system.settings.config.getBoolean("eventuate.log.replication.update-notifications"))
-      Some(context.actorOf(Props(new NotificationChannel(id))))
+      Some(context.actorOf(Props(new SubscriberChannel(id))))
     else
       None
 

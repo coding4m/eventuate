@@ -22,14 +22,14 @@ import akka.testkit._
 import com.rbmhtechnology.eventuate._
 import com.rbmhtechnology.eventuate.ReplicationFilter._
 import com.rbmhtechnology.eventuate.ReplicationProtocol._
-import com.rbmhtechnology.eventuate.log.NotificationChannel._
+import com.rbmhtechnology.eventuate.log.SubscriberChannel._
 
 import org.scalatest._
 
 import scala.collection.immutable.Seq
 import scala.concurrent.duration._
 
-object NotificationChannelSpec {
+object SubscriberChannelSpec {
   class PayloadFilter(accept: Any) extends ReplicationFilter {
     override def apply(event: DurableEvent): Boolean =
       event.payload == accept
@@ -48,8 +48,8 @@ object NotificationChannelSpec {
     VectorTime(sourceLogId -> s, targetLogId1 -> t1, targetLogId2 -> t2)
 }
 
-class NotificationChannelSpec extends TestKit(ActorSystem("test")) with WordSpecLike with Matchers with BeforeAndAfterAll with BeforeAndAfterEach {
-  import NotificationChannelSpec._
+class SubscriberChannelSpec extends TestKit(ActorSystem("test")) with WordSpecLike with Matchers with BeforeAndAfterAll with BeforeAndAfterEach {
+  import SubscriberChannelSpec._
 
   private var channel: ActorRef = _
   private var probe: TestProbe = _
@@ -58,7 +58,7 @@ class NotificationChannelSpec extends TestKit(ActorSystem("test")) with WordSpec
     TestKit.shutdownActorSystem(system)
 
   override def beforeEach(): Unit = {
-    channel = system.actorOf(Props(new NotificationChannel(sourceLogId)))
+    channel = system.actorOf(Props(new SubscriberChannel(sourceLogId)))
     probe = TestProbe()
   }
 

@@ -23,15 +23,15 @@ import com.rbmhtechnology.eventuate.ReplicationProtocol._
 
 import scala.collection.immutable.Seq
 
-object NotificationChannel {
+object SubscriberChannel {
   case class Updated(events: Seq[DurableEvent])
 }
 
 /**
  * Notifies registered replicators about source log updates.
  */
-class NotificationChannel(logId: String) extends Actor {
-  import NotificationChannel._
+class SubscriberChannel(logId: String) extends Actor {
+  import SubscriberChannel._
 
   // targetLogId -> subscription
   private var registry: Map[String, ReplicationRead] = Map.empty

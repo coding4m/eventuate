@@ -199,7 +199,6 @@ class LeveldbEventLog(id: String) extends EventLog[LeveldbEventLogState](id) wit
     }
 
     updateCount += events.size
-
     if (updateCount >= settings.stateSnapshotLimit) {
       writeEventLogClockSnapshotSync(clock, batch)
       updateCount = 0
