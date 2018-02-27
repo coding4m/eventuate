@@ -25,7 +25,7 @@ private[eventuate] trait CassandraStatements {
     """
 
   def table(suffix: String): String =
-    s"${settings.keyspace}.${settings.tablePrefix}_${suffix}"
+    s"${settings.keyspace}.${settings.tablePrefix}_$suffix"
 }
 
 private[eventuate] trait CassandraEventStatements extends CassandraStatements {
@@ -82,19 +82,19 @@ private[eventuate] trait CassandraAggregateEventStatements extends CassandraStat
 
 private[eventuate] trait CassandraEventLogClockStatements extends CassandraStatements {
   def createEventLogClockTableStatement = s"""
-      CREATE TABLE IF NOT EXISTS ${eventLogClockTable} (
+      CREATE TABLE IF NOT EXISTS $eventLogClockTable (
         log_id text,
         clock blob,
         PRIMARY KEY (log_id))
     """
 
   def writeEventLogClockStatement = s"""
-      INSERT INTO ${eventLogClockTable} (log_id, clock)
+      INSERT INTO $eventLogClockTable (log_id, clock)
       VALUES (?, ?)
     """
 
   def readEventLogClockStatement = s"""
-      SELECT * FROM ${eventLogClockTable} WHERE
+      SELECT * FROM $eventLogClockTable WHERE
         log_id = ?
     """
 
@@ -103,7 +103,7 @@ private[eventuate] trait CassandraEventLogClockStatements extends CassandraState
 
 private[eventuate] trait CassandraReplicationProgressStatements extends CassandraStatements {
   def createReplicationProgressTableStatement = s"""
-      CREATE TABLE IF NOT EXISTS ${replicationProgressTable} (
+      CREATE TABLE IF NOT EXISTS $replicationProgressTable (
         log_id text,
         source_log_id text,
         source_log_read_pos bigint,
@@ -111,18 +111,18 @@ private[eventuate] trait CassandraReplicationProgressStatements extends Cassandr
     """
 
   def writeReplicationProgressStatement: String = s"""
-      INSERT INTO ${replicationProgressTable} (log_id, source_log_id, source_log_read_pos)
+      INSERT INTO $replicationProgressTable (log_id, source_log_id, source_log_read_pos)
       VALUES (?, ?, ?)
     """
 
   def readReplicationProgressStatement: String = s"""
-      SELECT * FROM ${replicationProgressTable} WHERE
+      SELECT * FROM $replicationProgressTable WHERE
         log_id = ? AND
         source_log_id = ?
     """
 
   def readReplicationProgressesStatement: String = s"""
-      SELECT * FROM ${replicationProgressTable} WHERE
+      SELECT * FROM $replicationProgressTable WHERE
         log_id = ?
     """
 
@@ -131,19 +131,19 @@ private[eventuate] trait CassandraReplicationProgressStatements extends Cassandr
 
 private[eventuate] trait CassandraDeletedToStatements extends CassandraStatements {
   def createDeletedToTableStatement = s"""
-      CREATE TABLE IF NOT EXISTS ${deletedToTable} (
+      CREATE TABLE IF NOT EXISTS $deletedToTable (
         log_id text,
         deleted_to bigint,
         PRIMARY KEY (log_id))
     """
 
   def writeDeletedToStatement: String = s"""
-      INSERT INTO ${deletedToTable} (log_id, deleted_to)
+      INSERT INTO $deletedToTable (log_id, deleted_to)
       VALUES (?, ?)
     """
 
   def readDeletedToStatement: String = s"""
-      SELECT deleted_to FROM ${deletedToTable}
+      SELECT deleted_to FROM $deletedToTable
       WHERE log_id = ?
     """
 
