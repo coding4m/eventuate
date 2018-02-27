@@ -124,9 +124,9 @@ public final class ProcessBuilder {
      *
      * @return the configured {@link AbstractEventsourcedProcessor.Process}
      */
-    public AbstractEventsourcedProcessor.Process build() {
-        return new AbstractEventsourcedProcessor.Process(underlying.build());
-    }
+//    public AbstractEventsourcedProcessor.Process build() {
+//        return new AbstractEventsourcedProcessor.Process(underlying.build());
+//    }
 
     public interface IterableApply<T> extends FI.Apply<T, Iterable<Object>> {
     }

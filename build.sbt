@@ -4,8 +4,9 @@ import com.typesafe.sbt.SbtMultiJvm.MultiJvmKeys._
 import sbt.Keys._
 import sbt._
 
-version in ThisBuild := "v0.9-SNAPSHOT"
+version in ThisBuild := "v0.10-SNAPSHOT"
 
+compileOrder := CompileOrder.JavaThenScala
 scalaVersion in ThisBuild := "2.12.4"
 crossScalaVersions := Seq("2.12.4", "2.11.12")
 
@@ -137,13 +138,13 @@ lazy val adapterStream = (project in file("eventuate-adapter-stream"))
 //  .configs(IntegrationTest)
 //  .enablePlugins(HeaderPlugin, AutomateHeaderPlugin)
 
-lazy val examples = (project in file("eventuate-examples"))
-  .dependsOn(core, logLeveldb, logRocksdb)
-  .settings(name := "eventuate-examples")
-  .settings(commonSettings: _*)
-  .settings(exampleSettings: _*)
-  .settings(libraryDependencies ++= Seq(AkkaRemote, CassandraDriver, Javaslang, Log4jApi, Log4jCore, Log4jSlf4j))
-  .enablePlugins(HeaderPlugin, AutomateHeaderPlugin)
+//lazy val examples = (project in file("eventuate-examples"))
+//  .dependsOn(core, logLeveldb, logRocksdb)
+//  .settings(name := "eventuate-examples")
+//  .settings(commonSettings: _*)
+//  .settings(exampleSettings: _*)
+//  .settings(libraryDependencies ++= Seq(AkkaRemote, CassandraDriver, Javaslang, Log4jApi, Log4jCore, Log4jSlf4j))
+//  .enablePlugins(HeaderPlugin, AutomateHeaderPlugin)
 
 //lazy val exampleStream = (project in file("eventuate-example-stream"))
 //  .dependsOn(core, logLeveldb, adapterStream)

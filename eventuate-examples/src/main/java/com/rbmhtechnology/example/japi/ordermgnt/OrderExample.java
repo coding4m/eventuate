@@ -154,7 +154,7 @@ public class OrderExample extends AbstractActor {
         }
 
         ActorSystem system = ActorSystem.create(ReplicationConnection.DefaultRemoteSystemName(), ConfigFactory.load(args[0]));
-        ReplicationEndpoint endpoint = ReplicationEndpoint.create(id -> LeveldbEventLog.props(id, "j", true), system);
+        ReplicationEndpoint endpoint = ReplicationEndpoint.create(id -> LeveldbEventLog.props(id, true), system);
 
         ActorRef manager = system.actorOf(Props.create(OrderManager.class, endpoint.id(), endpoint.logs().apply(ReplicationEndpoint.DefaultLogName())));
         ActorRef view = system.actorOf(Props.create(OrderView.class, endpoint.id(), endpoint.logs().apply(ReplicationEndpoint.DefaultLogName())));

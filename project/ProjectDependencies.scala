@@ -18,7 +18,7 @@ import sbt._
 
 object ProjectDependencyVersions {
   val AkkaVersion = "2.5.9"
-  val CassandraVersion = "3.4"
+  val CassandraVersion = "3.4.0"
   val Log4jVersion = "2.5"
   val ProtobufVersion = "3.3.0"
   val SparkVersion = "1.6.1"
@@ -29,7 +29,7 @@ object ProjectDependencyVersions {
 object ProjectDependencies {
   import ProjectDependencyVersions._
 
-  val CassandraDriver =      "com.datastax.cassandra"     % "cassandra-driver-core"     % "3.2.0"
+  val CassandraDriver =      "com.datastax.cassandra"     % "cassandra-driver-core"     % CassandraVersion
   val CassandraConnector =   "com.datastax.spark"         % "spark-cassandra-connector_2.11" % "1.6.6"
   val Javaslang =            "io.javaslang"              % "javaslang"                  % "2.0.6"
   val Protobuf =             "com.google.protobuf"        % "protobuf-java"             % ProtobufVersion
@@ -42,7 +42,7 @@ object ProjectDependencies {
   val AkkaTestkit =          "com.typesafe.akka"         %% "akka-testkit"              % AkkaVersion
   val AkkaTestkitMultiNode = "com.typesafe.akka"         %% "akka-multi-node-testkit"   % AkkaVersion
   val CommonsIo =            "commons-io"                 % "commons-io"                % "2.4"
-  val CassandraClientUtil =  "org.apache.cassandra"       % "cassandra-clientutil"      % CassandraVersion
+//  val CassandraClientUtil =  "org.apache.cassandra"       % "cassandra-clientutil"      % CassandraVersion
   val Log4jApi =             "org.apache.logging.log4j"   % "log4j-api"                 % Log4jVersion
   val Log4jCore =            "org.apache.logging.log4j"   % "log4j-core"                % Log4jVersion
   val Log4jSlf4j =           "org.apache.logging.log4j"   % "log4j-slf4j-impl"          % Log4jVersion
