@@ -16,8 +16,8 @@
 
 package com.rbmhtechnology.example.japi.querydb;
 
+import akka.actor.AbstractActor;
 import akka.actor.ActorRef;
-import akka.japi.pf.ReceiveBuilder;
 import com.rbmhtechnology.eventuate.AbstractEventsourcedActor;
 import com.rbmhtechnology.eventuate.ResultHandler;
 
@@ -29,32 +29,32 @@ public class Emitter extends AbstractEventsourcedActor {
 
     public Emitter(String id, ActorRef eventLog) {
         super(id, eventLog);
+    }
 
-        setOnCommand(ReceiveBuilder
-                .create()
-                .match(CreateCustomer.class,
-                        cmd -> persist(new CustomerCreated(highestCustomerId + 1, cmd.first, cmd.last, cmd.address), ResultHandler.on(
-                                c -> sender().tell(c, self()),
-                                this::handleFailure
-                        )))
-                .match(UpdateAddress.class, cmd -> cmd.cid <= highestCustomerId,
-                        cmd -> persist(new AddressUpdated(cmd.cid, cmd.address), ResultHandler.on(
-                                c -> sender().tell(c, self()),
-                                this::handleFailure
-                        )))
-                .match(UpdateAddress.class,
-                        cmd -> sender().tell(new Exception(String.format("Customer with %s does not exist", cmd.cid)), self())
-                )
-                .build()
-        .onMessage());
+    @Override
+    public AbstractActor.Receive createOnCommand() {
+        return receiveBuilder()
+            .match(CreateCustomer.class,
+                cmd -> persist(new CustomerCreated(highestCustomerId + 1, cmd.first, cmd.last, cmd.address), ResultHandler.on(
+                    c -> getSender().tell(c, getSelf()),
+                    this::handleFailure
+                )))
+            .match(UpdateAddress.class, cmd -> cmd.cid <= highestCustomerId,
+                cmd -> persist(new AddressUpdated(cmd.cid, cmd.address), ResultHandler.on(
+                    c -> getSender().tell(c, getSelf()),
+                    this::handleFailure
+                )))
+            .match(UpdateAddress.class,
+                cmd -> getSender().tell(new Exception(String.format("Customer with %s does not exist", cmd.cid)), getSelf())
+            )
+            .build();
+    }
 
-        setOnEvent(ReceiveBuilder
-                .create()
-                .match(CustomerCreated.class,
-                        evt -> highestCustomerId = evt.cid
-                )
-                .build()
-        .onMessage());
+    @Override
+    public AbstractActor.Receive createOnEvent() {
+        return receiveBuilder()
+            .match(CustomerCreated.class, evt -> highestCustomerId = evt.cid)
+            .build();
     }
 
     private void handleFailure(final Throwable failure) {

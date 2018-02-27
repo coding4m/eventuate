@@ -16,8 +16,8 @@
 
 package com.rbmhtechnology.example.japi.ordermgnt;
 
+import akka.actor.AbstractActor;
 import akka.actor.ActorRef;
-import akka.japi.pf.ReceiveBuilder;
 import com.rbmhtechnology.eventuate.AbstractEventsourcedView;
 import com.rbmhtechnology.example.japi.ordermgnt.OrderActor.OrderEvent;
 import javaslang.collection.HashMap;
@@ -29,23 +29,25 @@ public class OrderView extends AbstractEventsourcedView {
     public OrderView(String replicaId, ActorRef eventLog) {
         super(String.format("j-ov-%s", replicaId), eventLog);
         this.updateCounts = HashMap.empty();
+    }
 
-        setOnCommand(ReceiveBuilder
-                .create()
-                .match(GetUpdateCount.class, this::handleGetUpdateCount)
-                .build()
-        .onMessage());
-
-        setOnEvent(ReceiveBuilder
-                .create()
-                .match(OrderEvent.class, this::handleOrderEvent)
-                .build()
-        .onMessage());
+    @Override
+    public AbstractActor.Receive createOnCommand() {
+        return receiveBuilder()
+            .match(GetUpdateCount.class, this::handleGetUpdateCount)
+            .build();
     }
 
     public void handleGetUpdateCount(final GetUpdateCount cmd) {
         final String orderId = cmd.orderId;
-        sender().tell(new GetUpdateCountSuccess(orderId, updateCounts.get(orderId).getOrElse(0)), self());
+        sender().tell(new GetUpdateCountSuccess(orderId, updateCounts.get(orderId).getOrElse(0)), getSelf());
+    }
+
+    @Override
+    public AbstractActor.Receive createOnEvent() {
+        return receiveBuilder()
+            .match(OrderEvent.class, this::handleOrderEvent)
+            .build();
     }
 
     public void handleOrderEvent(final OrderEvent evt) {

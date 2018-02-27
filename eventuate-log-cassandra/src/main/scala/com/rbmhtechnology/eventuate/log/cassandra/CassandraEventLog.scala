@@ -19,6 +19,7 @@ package com.rbmhtechnology.eventuate.log.cassandra
 import java.io.Closeable
 
 import akka.actor._
+import akka.pattern.pipe
 
 import com.datastax.driver.core.QueryOptions
 import com.datastax.driver.core.exceptions._
@@ -65,11 +66,13 @@ case class CassandraEventLogState(eventLogClock: EventLogClock, eventLogClockSna
  *    [[EventsourcedView#aggregateId aggregateId]] defined.
  *
  * @param id unique log id.
+ * @param aggregateIndexing `true` if the event log shall process aggregate indexing (recommended).
+ *                          Turn this off only if you don't use aggregate IDs on this event log!
  *
  * @see [[Cassandra]]
  * @see [[DurableEvent]]
  */
-class CassandraEventLog(id: String) extends EventLog[CassandraEventLogState](id) {
+class CassandraEventLog(id: String, aggregateIndexing: Boolean) extends EventLog[CassandraEventLogState](id) {
   import CassandraEventLog._
   import CassandraIndex._
 
@@ -101,8 +104,12 @@ class CassandraEventLog(id: String) extends EventLog[CassandraEventLogState](id)
   }
 
   override def recoverStateSuccess(state: CassandraEventLogState): Unit = {
-    index = createIndex(cassandra, state.eventLogClockSnapshot, indexStore, eventLogStore, id)
-    indexSequenceNr = state.eventLogClockSnapshot.sequenceNr
+    // if we are not using `aggregateIndexing` set the index' clock to the empty clock
+    // so the index will replay the whole event log in case it is requested
+    // (which shouldn't happen in the first place if you don't want to use `aggregateIndexing`)
+    val indexClock = if (aggregateIndexing) state.eventLogClockSnapshot else EventLogClock()
+    index = createIndex(cassandra, indexClock, indexStore, eventLogStore, id)
+    indexSequenceNr = indexClock.sequenceNr
     updateCount = state.eventLogClock.sequenceNr - indexSequenceNr
     context.parent ! ServiceInitialized(id)
   }
@@ -130,7 +137,7 @@ class CassandraEventLog(id: String) extends EventLog[CassandraEventLogState](id)
 
   override def writeEventLogClockSnapshot(clock: EventLogClock): Future[Unit] = {
     import context.dispatcher
-    indexStore.writeEventLogClockSnapshotAsync(clock).map(_ => ())
+    updateIndex(clock).flatMap(_ => indexStore.writeEventLogClockSnapshotAsync(clock)).map(_ => ())
   }
 
   override def write(events: Seq[DurableEvent], partition: Long, clock: EventLogClock): Unit =
@@ -177,16 +184,27 @@ class CassandraEventLog(id: String) extends EventLog[CassandraEventLogState](id)
     eventLogStore.write(events, partition)
     updateCount += events.size
     if (updateCount >= cassandra.settings.indexUpdateLimit) {
-      index ! UpdateIndex(null, clock.sequenceNr)
+      updateIndex(clock)
       updateCount = 0L
     }
+  }
+
+  private def updateIndex(clock: EventLogClock): Future[EventLogClock] = {
+    import context.dispatcher
+    if (aggregateIndexing) {
+      // asynchronously update the index
+      val promise = Promise[UpdateIndexSuccess]
+      index ! UpdateIndex(null, clock.sequenceNr, promise)
+      promise.future.pipeTo(self)
+      promise.future.map(_.clock)
+    } else
+      // otherwise update the event log clock snapshot only
+      indexStore.writeEventLogClockSnapshotAsync(clock)
   }
 
   override def unhandled(message: Any): Unit = message match {
     case u @ UpdateIndexSuccess(clock, _) =>
       indexSequenceNr = clock.sequenceNr
-      onIndexEvent(u)
-    case u @ UpdateIndexFailure(_) =>
       onIndexEvent(u)
     case other =>
       super.unhandled(other)
@@ -281,9 +299,11 @@ object CassandraEventLog {
    *
    * @param logId unique log id.
    * @param batching `true` if write-batching shall be enabled (recommended).
+   * @param aggregateIndexing `true` if aggregates should be indexed (recommended)
+   *                          Turn this off only if you don't use aggregate IDs on this event log!
    */
-  def props(logId: String, batching: Boolean = true): Props = {
-    val logProps = Props(new CassandraEventLog(logId)).withDispatcher("eventuate.log.dispatchers.write-dispatcher")
+  def props(logId: String, batching: Boolean = true, aggregateIndexing: Boolean = true): Props = {
+    val logProps = Props(new CassandraEventLog(logId, aggregateIndexing)).withDispatcher("eventuate.log.dispatchers.write-dispatcher")
     Props(new CircuitBreaker(logProps, batching))
   }
 }
