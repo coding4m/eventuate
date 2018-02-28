@@ -104,16 +104,6 @@ object ReplicationProtocol {
   case object ReplicationDue extends Format
 
   /**
-   * Requests the clock from an event log.
-   */
-  case object GetEventLogClock
-
-  /**
-   * Success reply after a [[GetEventLogClock]].
-   */
-  case class GetEventLogClockSuccess(clock: EventLogClock)
-
-  /**
    * Requests all local replication progresses from a log. The local replication progress is the sequence number
    * in the remote log up to which the local log has replicated all events from the remote log.
    */
@@ -263,6 +253,21 @@ object ReplicationProtocol {
    * Indicates that a [[ReplicationRead]] request timed out.
    */
   case class ReplicationReadTimeoutException(timeout: FiniteDuration) extends ReplicationReadException(s"Replication read timed out after $timeout")
+
+  /**
+   * Requests the clock from an event log.
+   */
+  case object GetEventLogClock
+
+  /**
+   * Success reply after a [[GetEventLogClock]].
+   */
+  case class GetEventLogClockSuccess(clock: EventLogClock)
+
+  /**
+   * Failure reply after a [[GetEventLogClock]].
+   */
+  case class GetEventLogClockFailure(cause: Throwable)
 
   /**
    * Instruct a log to adjust the sequence nr of the internal [[EventLogClock]] to the version vector.
