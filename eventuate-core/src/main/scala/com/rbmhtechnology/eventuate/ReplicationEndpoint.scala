@@ -71,7 +71,6 @@ object ReplicationEndpoint {
 
     def unapply(s: String): Option[(String, Int)] = s match {
       case hostAndPort(host, port) => Some((host, port.toInt))
-      case _                       => None
     }
   }
 
@@ -80,7 +79,6 @@ object ReplicationEndpoint {
 
     def unapply(s: String): Option[(String, String, Int)] = s match {
       case hostAndPortWithName(name, host, port) => Some((name, host, port.toInt))
-      case _                                     => None
     }
   }
 
@@ -268,12 +266,13 @@ object ReplicationEndpoint {
     endpointFilters: EndpointFilters,
     applicationName: String,
     applicationVersion: ApplicationVersion,
-    system: ActorSystem): ReplicationEndpoint =
+    system: ActorSystem
+  ): ReplicationEndpoint =
     new ReplicationEndpoint(id, logNames.asScala.toSet, id => logFactory.apply(id), connections.asScala.toSet, Set.empty, 0, endpointFilters, applicationName, applicationVersion)(system)
 
   private def getConnections(config: Config)(implicit system: ActorSystem) = {
     Try(config.getStringList("eventuate.endpoint.connections").asScala.toSet)
-      .getOrElse(config.getString("eventuate.endpoint.connections").split(",").toSet[String])
+      .getOrElse(config.getString("eventuate.endpoint.connections").split(",").toSet)
       .collect {
         case Address(host, port)               => ReplicationConnection(host, port, system.name)
         case AddressWithName(name, host, port) => ReplicationConnection(host, port, name)
@@ -341,7 +340,7 @@ class ReplicationEndpoint(
    * The log actors managed by this endpoint, indexed by their name.
    */
   val logs: Map[String, ActorRef] =
-    logNames.map(logName => logName -> system.actorOf(logFactory(logName), logName)).toMap
+    logNames.map(logName => logName -> system.actorOf(logFactory(logId(logName)), logId(logName))).toMap
 
   // lazy to make sure concurrently running (created actors) do not access null-reference
   // https://github.com/RBMHTechnology/eventuate/issues/183

@@ -34,7 +34,7 @@ object ReplicationProtocol {
      * Creates a log identifier from `endpointId` and `logName`.
      */
     def logId(endpointId: String, logName: String): String =
-      s"${endpointId}_${logName}"
+      s"${endpointId}_$logName"
   }
 
   /**
