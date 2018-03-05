@@ -365,8 +365,8 @@ class ReplicationEndpoint(
     import system.dispatcher
     val recovery = new Recovery(this)
     for {
-      connections <- recovery.awaitConnections
-    } yield recovery.activateConnections(connections)
+      connections <- recovery.await
+    } yield recovery.activate(connections)
   } else Future.failed(new IllegalStateException("Replication running or endpoint already activated"))
 
   /**
@@ -409,7 +409,7 @@ class ReplicationEndpoint(
     // log's version vector
     val recovery = new Recovery(this)
     for {
-      connections <- recovery.awaitConnections.recoverWith(recoveryFailure(partialUpdate = false))
+      connections <- recovery.await.recoverWith(recoveryFailure(partialUpdate = false))
       endpointInfo <- recovery.readReplicationInfo.recoverWith(recoveryFailure(partialUpdate = false))
       _ = logRecoverySequenceNrs(connections, endpointInfo)
       recoveryLinks <- recovery.recoveryLinks(connections, endpointInfo).recoverWith(recoveryFailure(partialUpdate = false))
