@@ -32,11 +32,11 @@ object EventLogAdapter {
 
   def apply(logId: String, batching: Boolean = true)(implicit system: ActorSystem): Props = {
     val settings = new EventLogAdapterSettings(system)
-    if (settings.adapterName == LevelDB) {
+    if (settings.storage == LevelDB) {
       LeveldbEventLog.props(logId, batching = batching)
-    } else if (settings.adapterName == RocksDB) {
+    } else if (settings.storage == RocksDB) {
       RocksdbEventLog.props(logId, batching = batching)
-    } else if (settings.adapterName == Cassandra) {
+    } else if (settings.storage == Cassandra) {
       CassandraEventLog.props(logId, batching = batching)
     } else throw new EventLogUnsupportedException
   }

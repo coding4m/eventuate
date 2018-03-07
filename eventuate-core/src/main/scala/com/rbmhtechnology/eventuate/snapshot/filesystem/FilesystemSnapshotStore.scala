@@ -19,6 +19,7 @@ package com.rbmhtechnology.eventuate.snapshot.filesystem
 import java.io._
 import java.net.URLEncoder
 
+import akka.actor.ActorSystem
 import akka.event.{ LogSource, Logging }
 import com.rbmhtechnology.eventuate._
 import com.rbmhtechnology.eventuate.snapshot.SnapshotStore
@@ -39,32 +40,41 @@ object FilesystemSnapshotStore {
  *
  * @see Configuration key `eventuate.snapshot.filesystem.snapshots-per-emitter-max`.
  */
-class FilesystemSnapshotStore(settings: FilesystemSnapshotStoreSettings, logId: String) extends SnapshotStore {
+class FilesystemSnapshotStore(system: ActorSystem, logId: String) extends SnapshotStore(system, logId) {
+  private val settings = new FilesystemSnapshotStoreSettings(system)
   private val log = Logging(settings.system, classOf[FilesystemSnapshotStore])
   private val rootDir = new File(settings.rootDir, URLEncoder.encode(logId, "UTF-8"))
 
   rootDir.mkdirs()
 
-  override def deleteAsync(lowerSequenceNr: Long): Future[Unit] = {
-    import settings.writeDispatcher
-    Future(delete(lowerSequenceNr))
-  }
-
-  override def saveAsync(snapshot: Snapshot): Future[Unit] = {
-    import settings.writeDispatcher
-    Future(withOutputStream(dstDir(snapshot.metadata.emitterId), snapshot.metadata.sequenceNr)(serialize(_, snapshot)))
-  }
-
-  override def loadAsync(emitterId: String): Future[Option[Snapshot]] = {
+  override def load(emitterId: String): Future[Option[Snapshot]] = {
     import settings.readDispatcher
     Future(load(dstDir(emitterId)))
   }
 
-  def delete(lowerSequenceNr: Long): Unit = for {
-    emitterId <- rootDir.listFiles
-    emitterDir = dstDir(emitterId.getName)
-    sequenceNr <- decreasingSequenceNrs(emitterDir) if sequenceNr >= lowerSequenceNr
-  } dstFile(emitterDir, sequenceNr).delete()
+  override def save(snapshot: Snapshot): Future[Unit] = {
+    import settings.writeDispatcher
+    Future(withOutputStream(dstDir(snapshot.metadata.emitterId), snapshot.metadata.sequenceNr)(serialize(_, snapshot)))
+  }
+
+  override def delete(emitterId: String): Future[Unit] = {
+    import settings.writeDispatcher
+    Future {
+      val emitterDir = dstDir(emitterId)
+      decreasingSequenceNrs(emitterDir).foreach(it => dstFile(emitterDir, it).delete())
+    }
+  }
+
+  override def delete(lowerSequenceNr: Long) = {
+    import settings.writeDispatcher
+    Future {
+      for {
+        emitterId <- rootDir.listFiles
+        emitterDir = dstDir(emitterId.getName)
+        sequenceNr <- decreasingSequenceNrs(emitterDir) if sequenceNr >= lowerSequenceNr
+      } dstFile(emitterDir, sequenceNr).delete()
+    }
+  }
 
   def load(dir: File): Option[Snapshot] = {
     @annotation.tailrec
@@ -95,7 +105,7 @@ class FilesystemSnapshotStore(settings: FilesystemSnapshotStoreSettings, logId: 
     tmp.renameTo(dst)
 
     // do not keep more than the configured maximum number of snapshot files
-    decreasingSequenceNrs(dir).drop(settings.snapshotsPerEmitterMax).foreach { snr =>
+    decreasingSequenceNrs(dir).drop(settings.snapshotsPerMax).foreach { snr =>
       dstFile(dir, snr).delete()
     }
   }

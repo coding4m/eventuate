@@ -19,11 +19,10 @@ package com.rbmhtechnology.eventuate.log
 import akka.actor._
 import akka.dispatch.MessageDispatcher
 import akka.event.{ Logging, LoggingAdapter }
-
-import com.rbmhtechnology.eventuate._
 import com.rbmhtechnology.eventuate.EventsourcingProtocol._
 import com.rbmhtechnology.eventuate.ReplicationProtocol._
-import com.rbmhtechnology.eventuate.snapshot.filesystem._
+import com.rbmhtechnology.eventuate._
+import com.rbmhtechnology.eventuate.snapshot.{ SnapshotStore, SnapshotStorage }
 
 import scala.collection.immutable.Seq
 import scala.concurrent._
@@ -245,8 +244,8 @@ trait EventLogSPI[A] { this: Actor =>
  * @tparam A Event log state type (a subtype of [[EventLogState]]).
  */
 abstract class EventLog[A <: EventLogState](id: String) extends Actor with EventLogSPI[A] with Stash {
-  import SubscriberChannel._
   import EventLog._
+  import SubscriberChannel._
 
   private case class RecoverStateSuccess(state: A)
   private case class RecoverStateFailure(cause: Throwable)
@@ -329,8 +328,8 @@ abstract class EventLog[A <: EventLogState](id: String) extends Actor with Event
   /**
    * This event log's snapshot store.
    */
-  private val snapshotStore: FilesystemSnapshotStore =
-    new FilesystemSnapshotStore(new FilesystemSnapshotStoreSettings(context.system), id)
+  private val snapshotStore: SnapshotStore =
+    SnapshotStorage(context.system).storeOf(id)
 
   /**
    * This event log's logging adapter.
@@ -471,21 +470,28 @@ abstract class EventLog[A <: EventLogState](id: String) extends Actor with Event
     case LoadSnapshot(emitterId, iid) =>
       import services.readDispatcher
       val sdr = sender()
-      snapshotStore.loadAsync(emitterId) onComplete {
+      snapshotStore.load(emitterId) onComplete {
         case Success(s) => sdr ! LoadSnapshotSuccess(s, iid)
         case Failure(e) => sdr ! LoadSnapshotFailure(e, iid)
       }
     case SaveSnapshot(snapshot, initiator, iid) =>
       import context.dispatcher
       val sdr = sender()
-      snapshotStore.saveAsync(snapshot) onComplete {
+      snapshotStore.save(snapshot) onComplete {
         case Success(_) => sdr.tell(SaveSnapshotSuccess(snapshot.metadata, iid), initiator)
         case Failure(e) => sdr.tell(SaveSnapshotFailure(snapshot.metadata, e, iid), initiator)
+      }
+    case DeleteSnapshot(emitterId, iid) =>
+      import context.dispatcher
+      val sdr = sender()
+      snapshotStore.delete(emitterId) onComplete {
+        case Success(_) => sdr ! DeleteSnapshotSuccess(iid)
+        case Failure(e) => sdr ! DeleteSnapshotFailure(e, iid)
       }
     case DeleteSnapshots(lowerSequenceNr) =>
       import context.dispatcher
       val sdr = sender()
-      snapshotStore.deleteAsync(lowerSequenceNr) onComplete {
+      snapshotStore.delete(lowerSequenceNr) onComplete {
         case Success(_) => sdr ! DeleteSnapshotsSuccess
         case Failure(e) => sdr ! DeleteSnapshotsFailure(e)
       }

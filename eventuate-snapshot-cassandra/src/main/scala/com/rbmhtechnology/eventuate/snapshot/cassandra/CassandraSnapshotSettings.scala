@@ -14,14 +14,11 @@
  * limitations under the License.
  */
 
-package com.rbmhtechnology.eventuate.log
-
-import akka.actor.ActorSystem
+package com.rbmhtechnology.eventuate.snapshot.cassandra
 
 /**
  * @author siuming
  */
-private[log] class EventLogAdapterSettings(system: ActorSystem) {
-  val storage: String =
-    system.settings.config.getString("eventuate.log.storage")
+class CassandraSnapshotSettings {
+
 }

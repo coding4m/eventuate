@@ -45,7 +45,7 @@ class FilesystemSnapshotStoreSpec extends WordSpec with Matchers with BeforeAndA
 
   val system = ActorSystem("test", config)
   val settings = new FilesystemSnapshotStoreSettings(system)
-  val store = new FilesystemSnapshotStore(settings, "a")
+  val store = new FilesystemSnapshotStore(system, "a")
 
   var emitterIdCtr = 0
 
@@ -70,39 +70,39 @@ class FilesystemSnapshotStoreSpec extends WordSpec with Matchers with BeforeAndA
 
   "A FilesystemSnapshotStore" must {
     "store a snapshot" in {
-      store.saveAsync(snapshot("s1", 10L)).await
+      store.save(snapshot("s1", 10L)).await
       storedSequenceNrs() should be(List(10L))
     }
     "store several snapshots" in {
-      store.saveAsync(snapshot("s1", 10L)).await
-      store.saveAsync(snapshot("s2", 11L)).await
+      store.save(snapshot("s1", 10L)).await
+      store.save(snapshot("s2", 11L)).await
       storedSequenceNrs() should be(List(11L, 10L))
     }
     "store several snapshots up to a configured maximum number" in {
-      store.saveAsync(snapshot("s1", 10L)).await
-      store.saveAsync(snapshot("s2", 11L)).await
-      store.saveAsync(snapshot("s3", 12L)).await
-      store.saveAsync(snapshot("s4", 13L)).await
+      store.save(snapshot("s1", 10L)).await
+      store.save(snapshot("s2", 11L)).await
+      store.save(snapshot("s3", 12L)).await
+      store.save(snapshot("s4", 13L)).await
       storedSequenceNrs() should be(List(13L, 12L, 11L))
     }
     "return None when loading a non-existing snapshot" in {
-      store.loadAsync(emitterId).await should be(None)
+      store.load(emitterId).await should be(None)
     }
     "load a stored snapshot" in {
-      store.saveAsync(snapshot("s1", 10L)).await
-      store.loadAsync(emitterId).await should be(Some(snapshot("s1", 10L)))
+      store.save(snapshot("s1", 10L)).await
+      store.load(emitterId).await should be(Some(snapshot("s1", 10L)))
     }
     "load the latest of several stored snapshots" in {
-      store.saveAsync(snapshot("s1", 10L)).await
-      store.saveAsync(snapshot("s2", 11L)).await
-      store.loadAsync(emitterId).await should be(Some(snapshot("s2", 11L)))
+      store.save(snapshot("s1", 10L)).await
+      store.save(snapshot("s2", 11L)).await
+      store.load(emitterId).await should be(Some(snapshot("s2", 11L)))
     }
     "fallback to an older snapshot if loading fails" in {
       val dir = store.dstDir(emitterId)
 
-      store.saveAsync(snapshot("s1", 10L)).await
+      store.save(snapshot("s1", 10L)).await
       FileUtils.write(store.dstFile(dir, 11L), "blah")
-      store.loadAsync(emitterId).await should be(Some(snapshot("s1", 10L)))
+      store.load(emitterId).await should be(Some(snapshot("s1", 10L)))
     }
     "return None when loading of all snapshots fails" in {
       val dir = store.dstDir(emitterId)
@@ -110,17 +110,17 @@ class FilesystemSnapshotStoreSpec extends WordSpec with Matchers with BeforeAndA
       FileUtils.write(store.dstFile(dir, 10L), "blah")
       FileUtils.write(store.dstFile(dir, 11L), "blah")
       FileUtils.write(store.dstFile(dir, 12L), "blah")
-      store.loadAsync(emitterId).await should be(None)
+      store.load(emitterId).await should be(None)
     }
     "delete snapshots greater than or equal to a lower sequence number limit" in {
       val emitterA = s"${emitterId}-A"
       val emitterB = s"${emitterId}-B"
 
-      store.saveAsync(snapshot("s1", 9L, emitterA)).await
-      store.saveAsync(snapshot("s2", 11L, emitterA)).await
-      store.saveAsync(snapshot("s3", 10L, emitterB)).await
-      store.saveAsync(snapshot("s4", 13L, emitterB)).await
-      store.deleteAsync(11L).await
+      store.save(snapshot("s1", 9L, emitterA)).await
+      store.save(snapshot("s2", 11L, emitterA)).await
+      store.save(snapshot("s3", 10L, emitterB)).await
+      store.save(snapshot("s4", 13L, emitterB)).await
+      store.delete(11L).await
 
       storedSequenceNrs(emitterA) should be(List(9L))
       storedSequenceNrs(emitterB) should be(List(10L))

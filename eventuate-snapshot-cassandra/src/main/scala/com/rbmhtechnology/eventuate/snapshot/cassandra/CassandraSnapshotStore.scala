@@ -14,37 +14,34 @@
  * limitations under the License.
  */
 
-package com.rbmhtechnology.eventuate.snapshot
+package com.rbmhtechnology.eventuate.snapshot.cassandra
 
 import akka.actor.ActorSystem
 import com.rbmhtechnology.eventuate.Snapshot
-
-import scala.concurrent.Future
+import com.rbmhtechnology.eventuate.snapshot.SnapshotStore
 
 /**
- * Snapshot store provider interface.
+ * @author siuming
  */
-trait SnapshotStoreSPI {
-
+class CassandraSnapshotStore(system: ActorSystem, id: String) extends SnapshotStore(system, id) {
   /**
    * Asynchronously loads the latest snapshot saved by an event-sourced actor, view, writer or processor
    * identified by `emitterId`.
    */
-  def load(emitterId: String): Future[Option[Snapshot]]
+  override def load(emitterId: String) = ???
 
   /**
    * Asynchronously saves the given `snapshot`.
    */
-  def save(snapshot: Snapshot): Future[Unit]
+  override def save(snapshot: Snapshot) = ???
 
   /**
    * Asynchronously deletes all snapshots with `emitterId`.
    */
-  def delete(emitterId: String): Future[Unit]
+  override def delete(emitterId: String) = ???
 
   /**
    * Asynchronously deletes all snapshots with a sequence number greater than or equal `lowerSequenceNr`.
    */
-  def delete(lowerSequenceNr: Long): Future[Unit]
+  override def delete(lowerSequenceNr: Long) = ???
 }
-abstract class SnapshotStore(actorSystem: ActorSystem, id: String) extends SnapshotStoreSPI

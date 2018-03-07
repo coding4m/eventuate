@@ -14,29 +14,33 @@
  * limitations under the License.
  */
 
-package com.rbmhtechnology.eventuate.snapshot.filesystem
+package com.rbmhtechnology.eventuate.snapshot.leveldb
 
 import akka.actor.ActorSystem
-import akka.serialization._
+import com.typesafe.config.Config
 
 import scala.concurrent.ExecutionContextExecutor
 
 /**
- * [[FilesystemSnapshotStore]] configuration object.
+ * @author siuming
  */
-class FilesystemSnapshotStoreSettings(val system: ActorSystem) {
+class LeveldbSnapshotSettings(system: ActorSystem) {
+
   implicit val readDispatcher: ExecutionContextExecutor =
     system.dispatchers.lookup("eventuate.snapshot.dispatchers.read-dispatcher")
 
   implicit val writeDispatcher: ExecutionContextExecutor =
     system.dispatchers.lookup("eventuate.snapshot.dispatchers.write-dispatcher")
 
-  val serialization: Serialization =
-    SerializationExtension(system)
+  val prefix: String =
+    system.settings.config.getString("eventuate.snapshot.leveldb.prefix")
 
   val rootDir: String =
-    system.settings.config.getString("eventuate.snapshot.filesystem.dir")
+    system.settings.config.getString("eventuate.snapshot.leveldb.dir")
+
+  val fsync: Boolean =
+    system.settings.config.getBoolean("eventuate.snapshot.leveldb.fsync")
 
   val snapshotsPerMax: Int =
-    system.settings.config.getInt("eventuate.snapshot.filesystem.snapshots-per-max")
+    system.settings.config.getInt("eventuate.snapshot.leveldb.snapshots-per-max")
 }

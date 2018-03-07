@@ -152,6 +152,21 @@ object EventsourcingProtocol {
   case class LoadSnapshotFailure(cause: Throwable, instanceId: Int)
 
   /**
+   * Instructs an event log to load the most recent snapshot for `emitterId`.
+   */
+  case class DeleteSnapshot(emitterId: String, instanceId: Int)
+
+  /**
+   * Success reply after a [[LoadSnapshot]].
+   */
+  case class DeleteSnapshotSuccess(instanceId: Int)
+
+  /**
+   * Failure reply after a [[LoadSnapshot]].
+   */
+  case class DeleteSnapshotFailure(cause: Throwable, instanceId: Int)
+
+  /**
    * Instructs an event log to delete all snapshots with a sequence number greater than or equal to `lowerSequenceNr`.
    */
   case class DeleteSnapshots(lowerSequenceNr: Long)
