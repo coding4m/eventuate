@@ -16,6 +16,8 @@
 
 package com.rbmhtechnology.eventuate.snapshot
 
+import java.io.Closeable
+
 import akka.actor.ActorSystem
 import com.rbmhtechnology.eventuate.Snapshot
 
@@ -24,7 +26,7 @@ import scala.concurrent.Future
 /**
  * Snapshot store provider interface.
  */
-trait SnapshotStoreSPI {
+trait SnapshotStoreSPI extends Closeable {
 
   /**
    * Asynchronously loads the latest snapshot saved by an event-sourced actor, view, writer or processor

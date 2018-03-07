@@ -44,4 +44,6 @@ class CassandraSnapshotStore(system: ActorSystem, id: String) extends SnapshotSt
    * Asynchronously deletes all snapshots with a sequence number greater than or equal `lowerSequenceNr`.
    */
   override def delete(lowerSequenceNr: Long) = ???
+
+  override def close() = ???
 }

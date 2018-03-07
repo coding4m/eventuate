@@ -76,7 +76,10 @@ class FilesystemSnapshotStore(system: ActorSystem, logId: String) extends Snapsh
     }
   }
 
-  def load(dir: File): Option[Snapshot] = {
+  override def close() = {
+  }
+
+  private def load(dir: File): Option[Snapshot] = {
     @annotation.tailrec
     def go(snrs: Seq[Long]): Option[Snapshot] = snrs.headOption match {
       case None => None

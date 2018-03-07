@@ -93,14 +93,14 @@ class LeveldbEventLog(id: String) extends EventLog[LeveldbEventLogState](id) wit
 
   private val leveldbDir = new File(settings.rootDir, s"${settings.prefix}_$id"); leveldbDir.mkdirs()
   private val leveldbOptions = new Options().createIfMissing(true)
-  protected def leveldbReadOptions = new ReadOptions().verifyChecksums(false)
-  protected val leveldbWriteOptions = new WriteOptions().sync(settings.fsync).snapshot(false)
   protected val leveldb = factory.open(leveldbDir, leveldbOptions)
+  protected val writeOptions = new WriteOptions().sync(settings.fsync).snapshot(false)
+  protected def readOptions = new ReadOptions().verifyChecksums(false)
 
-  private val aggregateIdMap = new LeveldbNumericIdentifierStore(leveldb, -1)
-  private val eventLogIdMap = new LeveldbNumericIdentifierStore(leveldb, -2)
-  private val replicationProgressMap = new LeveldbReplicationProgressStore(leveldb, -3, eventLogIdMap.numericId, eventLogIdMap.findId)
-  private val deletionMetadataStore = new LeveldbDeletionMetadataStore(leveldb, leveldbWriteOptions, -4)
+  private val aggregateIdMap = new NumericStore(leveldb, -1)
+  private val eventLogIdMap = new NumericStore(leveldb, -2)
+  private val replicationProgressMap = new ProgressStore(leveldb, -3, eventLogIdMap.numericId, eventLogIdMap.findId)
+  private val deletionMetadataStore = new DeletionStore(leveldb, writeOptions, -4)
 
   private var updateCount: Long = 0L
 
@@ -156,7 +156,7 @@ class LeveldbEventLog(id: String) extends EventLog[LeveldbEventLogState](id) wit
   }
 
   private def spawnDeletionActor(toSequenceNr: Long, promise: Promise[Unit]): ActorRef =
-    context.actorOf(LeveldbDeletionActor.props(leveldb, leveldbReadOptions, leveldbWriteOptions, settings.deletionBatchSize, toSequenceNr, promise))
+    context.actorOf(DeletionActor.props(leveldb, readOptions, writeOptions, settings.deletionBatchSize, toSequenceNr, promise))
 
   private def readEventLogClockSnapshot: EventLogClock = {
     leveldb.get(clockKeyBytes) match {
@@ -261,7 +261,7 @@ class LeveldbEventLog(id: String) extends EventLog[LeveldbEventLogState](id) wit
     serialization.deserialize(a, classOf[EventLogClock]).get
 
   private def snapshotOptions(): ReadOptions =
-    leveldbReadOptions.snapshot(leveldb.getSnapshot)
+    readOptions.snapshot(leveldb.getSnapshot)
 
   override def preStart(): Unit = {
     withIterator(iter => aggregateIdMap.readIdMap(iter))
@@ -337,13 +337,13 @@ object LeveldbEventLog {
 
   private[leveldb] trait WithBatch {
     protected def leveldb: DB
-    protected def leveldbWriteOptions: WriteOptions
+    protected def writeOptions: WriteOptions
 
     protected def withBatch[R](body: WriteBatch => R): R = {
       val batch = leveldb.createWriteBatch()
       try {
         val r = body(batch)
-        leveldb.write(batch, leveldbWriteOptions)
+        leveldb.write(batch, writeOptions)
         r
       } finally {
         batch.close()

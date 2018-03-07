@@ -23,13 +23,13 @@ import org.rocksdb.{ RocksDB, WriteBatch, WriteOptions }
  */
 private[rocksdb] trait RocksdbBatchLayer {
   protected def rocksdb: RocksDB
-  protected def rocksdbWriteOptions: WriteOptions
+  protected def writeOptions: WriteOptions
 
   protected def withBatch[R](body: WriteBatch => R): R = {
     val batch = new WriteBatch()
     try {
       val r = body(batch)
-      rocksdb.write(rocksdbWriteOptions, batch)
+      rocksdb.write(writeOptions, batch)
       r
     } finally {
       batch.close()

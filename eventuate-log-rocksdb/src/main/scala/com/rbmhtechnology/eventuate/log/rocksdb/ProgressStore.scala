@@ -16,34 +16,37 @@
 
 package com.rbmhtechnology.eventuate.log.rocksdb
 
-import org.rocksdb.{ ColumnFamilyHandle, RocksDB, RocksIterator, WriteBatch }
+import org.rocksdb._
 
 import scala.annotation.tailrec
 
-private class RocksdbProgressStore(rocksdb: RocksDB, columnHandle: ColumnFamilyHandle) {
-  import RocksdbEventLog._
+private class ProgressStore(val rocksdb: RocksDB, val writeOptions: WriteOptions, columnHandle: ColumnFamilyHandle) extends RocksdbBatchLayer {
+  import EventKeys._
 
-  def writeReplicationProgress(logId: String, logSnr: Long, batch: WriteBatch): Unit = {
-    batch.put(columnHandle, stringBytes(logId), longBytes(logSnr))
+  def writeProgresses(progresses: Map[String, Long]): Unit = withBatch { batch =>
+    progresses.foreach(it => batch.put(columnHandle, stringBytes(it._1), longBytes(it._2)))
+    rocksdb.write(writeOptions, batch)
   }
 
-  def readReplicationProgress(logId: String): Long = {
+  def readProgress(logId: String): Long = {
     val progress = rocksdb.get(columnHandle, stringBytes(logId))
     if (progress == null) 0L else longFromBytes(progress)
   }
 
-  def readReplicationProgresses(iter: RocksIterator): Map[String, Long] = {
+  def readProgresses(): Map[String, Long] = {
+    val options = new ReadOptions().setVerifyChecksums(false).setSnapshot(rocksdb.getSnapshot)
+    val iter = rocksdb.newIterator(columnHandle, options)
     iter.seekToFirst()
-    readReplicationProgresses(Map.empty[String, Long], iter)
+    readProgresses(Map.empty[String, Long], iter)
   }
 
   @tailrec
-  private def readReplicationProgresses(rpMap: Map[String, Long], iter: RocksIterator): Map[String, Long] = {
-    if (!iter.isValid) rpMap else {
+  private def readProgresses(progresses: Map[String, Long], iter: RocksIterator): Map[String, Long] = {
+    if (!iter.isValid) progresses else {
       val key = stringFromBytes(iter.key())
       val value = longFromBytes(iter.value())
       iter.next()
-      readReplicationProgresses(rpMap + (key -> value), iter)
+      readProgresses(progresses + (key -> value), iter)
     }
   }
 }

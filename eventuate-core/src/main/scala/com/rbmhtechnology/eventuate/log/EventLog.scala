@@ -628,6 +628,11 @@ abstract class EventLog[A <: EventLogState](id: String) extends Actor with Event
       case Failure(e) => self ! RecoverStateFailure(e)
     }
   }
+
+  override def postStop(): Unit = {
+    super.postStop()
+    snapshotStore.close()
+  }
 }
 
 object EventLog {

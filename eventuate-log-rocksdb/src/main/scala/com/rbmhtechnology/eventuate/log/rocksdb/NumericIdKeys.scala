@@ -16,9 +16,16 @@
 
 package com.rbmhtechnology.eventuate.log.rocksdb
 
+import com.rbmhtechnology.eventuate.log.rocksdb.EventKeys.{ longBytes, stringBytes }
+
 /**
  * @author siuming
  */
-class EventIterator {
+private[rocksdb] trait NumericIdKeys {
+  val IdSequence = "$$SEQUENCE$$"
+  val IdSequenceBytes = stringBytes(IdSequence)
 
+  val IdSequenceInc = 1
+  val IdSequenceIncBytes = longBytes(IdSequenceInc)
 }
+private[rocksdb] object NumericIdKeys extends NumericIdKeys

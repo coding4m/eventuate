@@ -36,8 +36,8 @@ class RocksdbSnapshotStore(system: ActorSystem, id: String) extends SnapshotStor
 
   private val rocksdbDir = Paths.get(settings.rootDir, s"${settings.prefix}_$id"); Files.createDirectories(rocksdbDir)
   private val rocksdbOptions = new Options().setCreateIfMissing(true).setCreateMissingColumnFamilies(true)
-  protected val rocksdbWriteOptions = new WriteOptions().setSync(settings.fsync)
   protected val rocksdb = RocksDB.open(rocksdbOptions, rocksdbDir.toAbsolutePath.toString)
+  protected val writeOptions = new WriteOptions().setSync(settings.fsync)
 
   /**
    * Asynchronously loads the latest snapshot saved by an event-sourced actor, view, writer or processor
@@ -68,7 +68,7 @@ class RocksdbSnapshotStore(system: ActorSystem, id: String) extends SnapshotStor
           .takeWhile(_.emitterId == snapshot.metadata.emitterId)
           .foreach(it => batch.remove(it.key))
 
-        rocksdb.write(rocksdbWriteOptions, batch)
+        rocksdb.write(writeOptions, batch)
       }
     }
   }
@@ -82,7 +82,7 @@ class RocksdbSnapshotStore(system: ActorSystem, id: String) extends SnapshotStor
       withIterator[Unit](new ReadOptions().setSnapshot(rocksdb.getSnapshot), reserved = false) { it =>
         val batch = new WriteBatch()
         it.first(emitterId).takeWhile(_.emitterId == emitterId).foreach(item => batch.remove(item.key))
-        rocksdb.write(rocksdbWriteOptions, batch)
+        rocksdb.write(writeOptions, batch)
       }
     }
   }
@@ -98,6 +98,10 @@ class RocksdbSnapshotStore(system: ActorSystem, id: String) extends SnapshotStor
         it.seekToFirst().filter(_.sequenceNr >= lowerSequenceNr).foreach(item => rocksdb.delete(item.key))
       }
     }
+  }
+
+  override def close() = {
+    rocksdb.close()
   }
 
   private def withIterator[T](options: ReadOptions, reserved: Boolean)(body: SnapshotIterator => T): T = {

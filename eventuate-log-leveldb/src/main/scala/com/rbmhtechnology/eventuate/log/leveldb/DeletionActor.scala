@@ -14,41 +14,39 @@
  * limitations under the License.
  */
 
-package com.rbmhtechnology.eventuate.log.rocksdb
+package com.rbmhtechnology.eventuate.log.leveldb
 
 import java.io.Closeable
 
-import akka.actor.{ Actor, PoisonPill, Props }
-import org.rocksdb.{ ColumnFamilyHandle, ReadOptions, RocksDB, WriteOptions }
+import akka.actor.Actor
+import akka.actor.PoisonPill
+import akka.actor.Props
+import com.rbmhtechnology.eventuate.log.leveldb.LeveldbEventLog._
+
+import org.iq80.leveldb.DB
+import org.iq80.leveldb.ReadOptions
+import org.iq80.leveldb.WriteOptions
 
 import scala.annotation.tailrec
 import scala.concurrent.Promise
 
-private object RocksdbDeletionActor {
+private object DeletionActor {
   case object DeleteBatch
 
-  def props(
-    rocksdb: RocksDB,
-    rocksdbReadOptions: ReadOptions,
-    rocksdbWriteOptions: WriteOptions,
-    columnHandle: ColumnFamilyHandle,
-    batchSize: Int,
-    toSequenceNr: Long,
-    promise: Promise[Unit]): Props =
-    Props(new RocksdbDeletionActor(rocksdb, rocksdbReadOptions, rocksdbWriteOptions, columnHandle, batchSize, toSequenceNr, promise))
+  def props(leveldb: DB, readOptions: ReadOptions, writeOptions: WriteOptions, deleteBatch: Int, deleteTo: Long, promise: Promise[Unit]): Props =
+    Props(new DeletionActor(leveldb, readOptions, writeOptions, deleteBatch, deleteTo, promise))
 }
-private class RocksdbDeletionActor(
-  val rocksdb: RocksDB,
-  val rocksdbReadOptions: ReadOptions,
-  val rocksdbWriteOptions: WriteOptions,
-  columnHandle: ColumnFamilyHandle,
-  batchSize: Int,
-  toSequenceNr: Long,
-  promise: Promise[Unit])
-  extends Actor with RocksdbBatchLayer {
 
-  import RocksdbEventLog._
-  import RocksdbDeletionActor._
+private class DeletionActor(
+  val leveldb: DB,
+  val leveldbReadOptions: ReadOptions,
+  val writeOptions: WriteOptions,
+  deleteBatch: Int,
+  deleteTo: Long,
+  promise: Promise[Unit])
+  extends Actor with WithBatch {
+
+  import DeletionActor._
 
   val eventKeyIterator: CloseableIterator[EventKey] = newEventKeyIterator
 
@@ -59,8 +57,8 @@ private class RocksdbDeletionActor(
   override def receive = {
     case DeleteBatch =>
       withBatch { batch =>
-        eventKeyIterator.take(batchSize).foreach { eventKey =>
-          batch.remove(columnHandle, eventKeyBytes(eventKey.classifier, eventKey.sequenceNr))
+        eventKeyIterator.take(deleteBatch).foreach { eventKey =>
+          batch.delete(eventKeyBytes(eventKey.classifier, eventKey.sequenceNr))
         }
       }
       if (eventKeyIterator.hasNext) {
@@ -73,27 +71,23 @@ private class RocksdbDeletionActor(
 
   private def newEventKeyIterator: CloseableIterator[EventKey] = {
     new Iterator[EventKey] with Closeable {
-      val iterator = rocksdb.newIterator(columnHandle, rocksdbReadOptions)
+      val iterator = leveldb.iterator(leveldbReadOptions.snapshot(leveldb.getSnapshot))
       iterator.seek(eventKeyBytes(EventKey.DefaultClassifier, 1L))
 
       @tailrec
       override def hasNext: Boolean = {
-        val key = if (iterator.isValid) eventKeyFromBytes(iterator.key()) else eventKeyEnd
+        val key = eventKey(iterator.peekNext().getKey)
         key != eventKeyEnd &&
-          (key.sequenceNr <= toSequenceNr || {
+          (key.sequenceNr <= deleteTo || {
             iterator.seek(eventKeyBytes(key.classifier + 1, 1L))
             hasNext
           })
       }
 
-      override def next() = {
-        val res = eventKeyFromBytes(iterator.key())
-        iterator.next()
-        res
-      }
+      override def next() = eventKey(iterator.next().getKey)
       override def close() = {
         iterator.close()
-        rocksdbReadOptions.snapshot().close()
+        leveldbReadOptions.snapshot().close()
       }
     }
   }

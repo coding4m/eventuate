@@ -20,7 +20,7 @@ import java.nio.ByteBuffer
 
 import org.iq80.leveldb.{ DB, DBIterator, WriteBatch }
 
-private class LeveldbReplicationProgressStore(leveldb: DB, classifier: Int, numericId: String => Int, findId: Int => Option[String]) {
+private class ProgressStore(leveldb: DB, classifier: Int, numericId: String => Int, findId: Int => Option[String]) {
   private val rpKeyEnd: Int =
     Int.MaxValue
 

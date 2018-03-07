@@ -20,7 +20,7 @@ import java.nio.ByteBuffer
 
 import org.iq80.leveldb.{ DB, DBIterator }
 
-private class LeveldbNumericIdentifierStore(leveldb: DB, classifier: Int) {
+private class NumericStore(leveldb: DB, classifier: Int) {
   private var idMap: Map[String, Int] =
     Map.empty
 

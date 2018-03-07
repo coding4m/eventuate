@@ -24,7 +24,7 @@ import com.rbmhtechnology.eventuate.log.leveldb.LeveldbEventLog.longBytes
 import org.iq80.leveldb.DB
 import org.iq80.leveldb.WriteOptions
 
-private class LeveldbDeletionMetadataStore(val leveldb: DB, val leveldbWriteOptions: WriteOptions, classifier: Int) extends WithBatch {
+private class DeletionStore(val leveldb: DB, val writeOptions: WriteOptions, classifier: Int) extends WithBatch {
   private val DeletedToSequenceNrKey: Int = 1
   private val RemoteLogIdsKey: Int = 2
 

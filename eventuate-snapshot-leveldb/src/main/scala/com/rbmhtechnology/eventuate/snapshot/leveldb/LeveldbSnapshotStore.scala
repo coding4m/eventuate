@@ -99,6 +99,10 @@ class LeveldbSnapshotStore(system: ActorSystem, id: String) extends SnapshotStor
     }
   }
 
+  override def close() = {
+    leveldb.close()
+  }
+
   private def withIterator[T](options: ReadOptions, reserved: Boolean)(body: SnapshotIterator => T): T = {
     val iterator = SnapshotIterator(leveldb.iterator(options), reserved)
     try {

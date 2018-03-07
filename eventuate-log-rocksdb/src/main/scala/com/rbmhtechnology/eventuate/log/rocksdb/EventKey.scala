@@ -19,6 +19,4 @@ package com.rbmhtechnology.eventuate.log.rocksdb
 /**
  * @author siuming
  */
-class AggregateEventIterator {
-
-}
+private case class EventKey(classifier: Int, sequenceNr: Long)
