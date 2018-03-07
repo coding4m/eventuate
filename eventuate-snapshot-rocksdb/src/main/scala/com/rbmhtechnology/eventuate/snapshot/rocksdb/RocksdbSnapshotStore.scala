@@ -101,11 +101,11 @@ class RocksdbSnapshotStore(system: ActorSystem, id: String) extends SnapshotStor
   }
 
   private def withIterator[T](options: ReadOptions, reserved: Boolean)(body: SnapshotIterator => T): T = {
-    val sit = SnapshotIterator(rocksdb.newIterator(options), reserved)
+    val iterator = SnapshotIterator(rocksdb.newIterator(options), reserved)
     try {
-      body(sit)
+      body(iterator)
     } finally {
-      sit.close()
+      iterator.close()
       options.snapshot().close()
     }
   }

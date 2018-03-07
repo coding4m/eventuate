@@ -100,11 +100,11 @@ class LeveldbSnapshotStore(system: ActorSystem, id: String) extends SnapshotStor
   }
 
   private def withIterator[T](options: ReadOptions, reserved: Boolean)(body: SnapshotIterator => T): T = {
-    val sit = SnapshotIterator(leveldb.iterator(options), reserved)
+    val iterator = SnapshotIterator(leveldb.iterator(options), reserved)
     try {
-      body(sit)
+      body(iterator)
     } finally {
-      sit.close()
+      iterator.close()
       options.snapshot().close()
     }
   }
