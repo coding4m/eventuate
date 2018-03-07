@@ -46,7 +46,7 @@ class RocksdbSnapshotStore(system: ActorSystem, id: String) extends SnapshotStor
   override def load(emitterId: String) = {
     import settings.readDispatcher
     Future {
-      withIterator[Option[Snapshot]](newIterator(), reserved = true) { it =>
+      withIterator[Option[Snapshot]](new ReadOptions().setSnapshot(rocksdb.getSnapshot), reserved = true) { it =>
         it.lastForPrev(emitterId).find(_.emitterId == emitterId).map(_.snapshot)
       }
     }
@@ -58,7 +58,7 @@ class RocksdbSnapshotStore(system: ActorSystem, id: String) extends SnapshotStor
   override def save(snapshot: Snapshot) = {
     import settings.writeDispatcher
     Future {
-      withIterator[Unit](newIterator(), reserved = true) { it =>
+      withIterator[Unit](new ReadOptions().setSnapshot(rocksdb.getSnapshot), reserved = true) { it =>
         val batch = new WriteBatch()
         val key = SnapshotItem.itemKey(snapshot.metadata.emitterId, snapshot.metadata.sequenceNr)
         val value = SnapshotItem.itemValue(snapshot)
@@ -79,7 +79,7 @@ class RocksdbSnapshotStore(system: ActorSystem, id: String) extends SnapshotStor
   override def delete(emitterId: String) = {
     import settings.writeDispatcher
     Future {
-      withIterator[Unit](newIterator(), reserved = false) { it =>
+      withIterator[Unit](new ReadOptions().setSnapshot(rocksdb.getSnapshot), reserved = false) { it =>
         val batch = new WriteBatch()
         it.first(emitterId).takeWhile(_.emitterId == emitterId).foreach(item => batch.remove(item.key))
         rocksdb.write(rocksdbWriteOptions, batch)
@@ -94,22 +94,19 @@ class RocksdbSnapshotStore(system: ActorSystem, id: String) extends SnapshotStor
     // todo use batch
     import settings.writeDispatcher
     Future {
-      withIterator[Unit](newIterator(), reserved = false) { it =>
+      withIterator[Unit](new ReadOptions().setSnapshot(rocksdb.getSnapshot), reserved = false) { it =>
         it.seekToFirst().filter(_.sequenceNr >= lowerSequenceNr).foreach(item => rocksdb.delete(item.key))
       }
     }
   }
 
-  private def newIterator(): RocksIterator = {
-    rocksdb.newIterator(new ReadOptions().setSnapshot(rocksdb.getSnapshot))
-  }
-
-  private def withIterator[T](it: RocksIterator, reserved: Boolean)(body: SnapshotIterator => T): T = {
-    val sit = SnapshotIterator(it, reserved)
+  private def withIterator[T](options: ReadOptions, reserved: Boolean)(body: SnapshotIterator => T): T = {
+    val sit = SnapshotIterator(rocksdb.newIterator(options), reserved)
     try {
       body(sit)
     } finally {
       sit.close()
+      options.snapshot().close()
     }
   }
 }

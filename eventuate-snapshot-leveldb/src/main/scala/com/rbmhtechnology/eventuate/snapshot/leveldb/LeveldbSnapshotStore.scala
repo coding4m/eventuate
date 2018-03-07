@@ -23,7 +23,7 @@ import akka.serialization.SerializationExtension
 import com.rbmhtechnology.eventuate.Snapshot
 import com.rbmhtechnology.eventuate.snapshot.SnapshotStore
 import org.fusesource.leveldbjni.JniDBFactory.factory
-import org.iq80.leveldb.{ DBIterator, Options, ReadOptions, WriteOptions }
+import org.iq80.leveldb.{ Options, ReadOptions, WriteOptions }
 
 import scala.concurrent.Future
 
@@ -48,7 +48,7 @@ class LeveldbSnapshotStore(system: ActorSystem, id: String) extends SnapshotStor
   override def load(emitterId: String) = {
     import settings.readDispatcher
     Future {
-      withIterator[Option[Snapshot]](newIterator(), reserved = true) { it =>
+      withIterator[Option[Snapshot]](leveldbReadOptions.snapshot(leveldb.getSnapshot), reserved = true) { it =>
         it.last(emitterId).find(_.emitterId == emitterId).map(_.snapshot)
       }
     }
@@ -60,7 +60,7 @@ class LeveldbSnapshotStore(system: ActorSystem, id: String) extends SnapshotStor
   override def save(snapshot: Snapshot) = {
     import settings.writeDispatcher
     Future {
-      withIterator[Unit](newIterator(), reserved = true) { it =>
+      withIterator[Unit](leveldbReadOptions.snapshot(leveldb.getSnapshot), reserved = true) { it =>
         val batch = leveldb.createWriteBatch()
         val key = SnapshotItem.itemKey(snapshot.metadata.emitterId, snapshot.metadata.sequenceNr)
         val value = SnapshotItem.itemValue(snapshot)
@@ -78,7 +78,7 @@ class LeveldbSnapshotStore(system: ActorSystem, id: String) extends SnapshotStor
   override def delete(emitterId: String) = {
     import settings.writeDispatcher
     Future {
-      withIterator(newIterator(), reserved = false) { it =>
+      withIterator(leveldbReadOptions.snapshot(leveldb.getSnapshot), reserved = false) { it =>
         val batch = leveldb.createWriteBatch()
         it.first(emitterId).takeWhile(_.emitterId == emitterId).foreach(item => batch.delete(item.key))
         leveldb.write(batch)
@@ -90,25 +90,22 @@ class LeveldbSnapshotStore(system: ActorSystem, id: String) extends SnapshotStor
    * Asynchronously deletes all snapshots with a sequence number greater than or equal `lowerSequenceNr`.
    */
   override def delete(lowerSequenceNr: Long) = {
-    import settings.writeDispatcher
     // todo use batch
+    import settings.writeDispatcher
     Future {
-      withIterator(newIterator(), reserved = false) { it =>
+      withIterator(leveldbReadOptions.snapshot(leveldb.getSnapshot), reserved = false) { it =>
         it.seekToFirst().filter(_.sequenceNr >= lowerSequenceNr).foreach(item => leveldb.delete(item.key))
       }
     }
   }
 
-  private def newIterator(): DBIterator = {
-    leveldb.iterator(leveldbReadOptions.snapshot(leveldb.getSnapshot))
-  }
-
-  private def withIterator[T](it: DBIterator, reserved: Boolean)(body: SnapshotIterator => T): T = {
-    val sit = SnapshotIterator(it, reserved)
+  private def withIterator[T](options: ReadOptions, reserved: Boolean)(body: SnapshotIterator => T): T = {
+    val sit = SnapshotIterator(leveldb.iterator(options), reserved)
     try {
       body(sit)
     } finally {
       sit.close()
+      options.snapshot().close()
     }
   }
 }
