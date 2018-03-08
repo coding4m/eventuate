@@ -36,8 +36,10 @@ class RocksdbSnapshotStore(system: ActorSystem, id: String) extends SnapshotStor
 
   private val rocksdbDir = Paths.get(settings.rootDir, s"${settings.prefix}_$id"); Files.createDirectories(rocksdbDir)
   private val rocksdbOptions = new Options().setCreateIfMissing(true).setCreateMissingColumnFamilies(true)
-  protected val rocksdb = RocksDB.open(rocksdbOptions, rocksdbDir.toAbsolutePath.toString)
-  protected val writeOptions = new WriteOptions().setSync(settings.fsync)
+  private val rocksdb = RocksDB.open(rocksdbOptions, rocksdbDir.toAbsolutePath.toString)
+  private val writeOptions = new WriteOptions().setSync(settings.fsync)
+  private def readOptions = new ReadOptions().setVerifyChecksums(false)
+  private def snapshotOptions = readOptions.setSnapshot(rocksdb.getSnapshot)
 
   /**
    * Asynchronously loads the latest snapshot saved by an event-sourced actor, view, writer or processor
@@ -46,7 +48,7 @@ class RocksdbSnapshotStore(system: ActorSystem, id: String) extends SnapshotStor
   override def load(emitterId: String) = {
     import settings.readDispatcher
     Future {
-      withIterator[Option[Snapshot]](new ReadOptions().setSnapshot(rocksdb.getSnapshot), reserved = true) { it =>
+      withIterator[Option[Snapshot]](readOptions, reserved = true) { it =>
         it.lastForPrev(emitterId).find(_.emitterId == emitterId).map(_.snapshot)
       }
     }
@@ -58,7 +60,7 @@ class RocksdbSnapshotStore(system: ActorSystem, id: String) extends SnapshotStor
   override def save(snapshot: Snapshot) = {
     import settings.writeDispatcher
     Future {
-      withIterator[Unit](new ReadOptions().setSnapshot(rocksdb.getSnapshot), reserved = true) { it =>
+      withIterator[Unit](snapshotOptions, reserved = true) { it =>
         val batch = new WriteBatch()
         val key = SnapshotItem.itemKey(snapshot.metadata.emitterId, snapshot.metadata.sequenceNr)
         val value = SnapshotItem.itemValue(snapshot)
@@ -79,7 +81,7 @@ class RocksdbSnapshotStore(system: ActorSystem, id: String) extends SnapshotStor
   override def delete(emitterId: String) = {
     import settings.writeDispatcher
     Future {
-      withIterator[Unit](new ReadOptions().setSnapshot(rocksdb.getSnapshot), reserved = false) { it =>
+      withIterator[Unit](snapshotOptions, reserved = false) { it =>
         val batch = new WriteBatch()
         it.first(emitterId).takeWhile(_.emitterId == emitterId).foreach(item => batch.remove(item.key))
         rocksdb.write(writeOptions, batch)
@@ -94,7 +96,7 @@ class RocksdbSnapshotStore(system: ActorSystem, id: String) extends SnapshotStor
     // todo use batch
     import settings.writeDispatcher
     Future {
-      withIterator[Unit](new ReadOptions().setSnapshot(rocksdb.getSnapshot), reserved = false) { it =>
+      withIterator[Unit](snapshotOptions, reserved = false) { it =>
         it.seekToFirst().filter(_.sequenceNr >= lowerSequenceNr).foreach(item => rocksdb.delete(item.key))
       }
     }

@@ -32,28 +32,25 @@ import scala.concurrent.Promise
 
 private object DeletionActor {
   case object DeleteBatch
-
   def props(leveldb: DB, readOptions: ReadOptions, writeOptions: WriteOptions, deleteBatch: Int, deleteTo: Long, promise: Promise[Unit]): Props =
     Props(new DeletionActor(leveldb, readOptions, writeOptions, deleteBatch, deleteTo, promise))
 }
 
 private class DeletionActor(
   val leveldb: DB,
-  val leveldbReadOptions: ReadOptions,
+  val readOptions: ReadOptions,
   val writeOptions: WriteOptions,
   deleteBatch: Int,
   deleteTo: Long,
   promise: Promise[Unit])
-  extends Actor with WithBatch {
+  extends Actor with LeveldbBatchLayer {
 
   import DeletionActor._
 
   val eventKeyIterator: CloseableIterator[EventKey] = newEventKeyIterator
 
   override def preStart() = self ! DeleteBatch
-
   override def postStop() = eventKeyIterator.close()
-
   override def receive = {
     case DeleteBatch =>
       withBatch { batch =>
@@ -71,7 +68,7 @@ private class DeletionActor(
 
   private def newEventKeyIterator: CloseableIterator[EventKey] = {
     new Iterator[EventKey] with Closeable {
-      val iterator = leveldb.iterator(leveldbReadOptions.snapshot(leveldb.getSnapshot))
+      val iterator = leveldb.iterator(readOptions.snapshot(leveldb.getSnapshot))
       iterator.seek(eventKeyBytes(EventKey.DefaultClassifier, 1L))
 
       @tailrec
@@ -87,7 +84,7 @@ private class DeletionActor(
       override def next() = eventKey(iterator.next().getKey)
       override def close() = {
         iterator.close()
-        leveldbReadOptions.snapshot().close()
+        readOptions.snapshot().close()
       }
     }
   }

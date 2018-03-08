@@ -19,23 +19,21 @@ package com.rbmhtechnology.eventuate.log.leveldb
 import java.nio.ByteBuffer
 
 import com.rbmhtechnology.eventuate.log.DeletionMetadata
-import com.rbmhtechnology.eventuate.log.leveldb.LeveldbEventLog.WithBatch
-import com.rbmhtechnology.eventuate.log.leveldb.LeveldbEventLog.longBytes
 import org.iq80.leveldb.DB
 import org.iq80.leveldb.WriteOptions
 
-private class DeletionStore(val leveldb: DB, val writeOptions: WriteOptions, classifier: Int) extends WithBatch {
+private class DeletionStore(val leveldb: DB, val writeOptions: WriteOptions, classifier: Int) extends LeveldbBatchLayer {
   private val DeletedToSequenceNrKey: Int = 1
   private val RemoteLogIdsKey: Int = 2
 
   private val StringSetSeparatorChar = '\u0000'
 
-  def writeDeletionMetadata(info: DeletionMetadata): Unit = withBatch { batch =>
+  def writeDeletion(info: DeletionMetadata): Unit = withBatch { batch =>
     batch.put(idKeyBytes(DeletedToSequenceNrKey), longBytes(info.toSequenceNr))
     batch.put(idKeyBytes(RemoteLogIdsKey), stringSetBytes(info.remoteLogIds))
   }
 
-  def readDeletionMetadata(): DeletionMetadata = {
+  def readDeletion(): DeletionMetadata = {
     val toSequenceNr = longFromBytes(leveldb.get(idKeyBytes(DeletedToSequenceNrKey)))
     val remoteLogIds = stringSetFromBytes(leveldb.get(idKeyBytes(RemoteLogIdsKey)))
     DeletionMetadata(toSequenceNr, remoteLogIds)
@@ -48,8 +46,11 @@ private class DeletionStore(val leveldb: DB, val writeOptions: WriteOptions, cla
     bb.array
   }
 
+  private def longBytes(l: Long): Array[Byte] =
+    ByteBuffer.allocate(8).putLong(l).array
+
   private def longFromBytes(longBytes: Array[Byte]): Long =
-    if (longBytes == null) 0 else LeveldbEventLog.longFromBytes(longBytes)
+    if (longBytes == null) 0 else ByteBuffer.wrap(longBytes).getLong
 
   private def stringSetBytes(set: Set[String]): Array[Byte] =
     set.mkString(StringSetSeparatorChar.toString).getBytes("UTF-8")

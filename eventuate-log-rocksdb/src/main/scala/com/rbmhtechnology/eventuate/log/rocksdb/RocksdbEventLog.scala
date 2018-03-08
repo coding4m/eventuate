@@ -277,10 +277,11 @@ class RocksdbEventLog(id: String) extends EventLog[RocksdbEventLogState](id) wit
    * A backend that does not support physical deletion should not override this method.
    */
   override def delete(toSequenceNr: Long) = {
+    import context.dispatcher
     val adjusted = readEventLogClockSnapshotSync.sequenceNr min toSequenceNr
     val promise = Promise[Unit]()
     context.actorOf(DeletionActor.props(rocksdb, writeOptions, columnHandles.get(0), settings.deletionBatchSize, toSequenceNr, promise))
-    promise.future.map(_ => adjusted)(context.dispatcher)
+    promise.future.map(_ => adjusted)
   }
 
   override def postStop(): Unit = {

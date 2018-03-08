@@ -16,61 +16,45 @@
 
 package com.rbmhtechnology.eventuate.log.leveldb
 
-import java.nio.ByteBuffer
+import org.iq80.leveldb.{ DB, ReadOptions, WriteOptions }
 
-import org.iq80.leveldb.{ DB, DBIterator, WriteBatch }
+import scala.annotation.tailrec
 
-private class ProgressStore(leveldb: DB, classifier: Int, numericId: String => Int, findId: Int => Option[String]) {
-  private val rpKeyEnd: Int =
-    Int.MaxValue
+private[leveldb] class ProgressStore(val leveldb: DB, val writeOptions: WriteOptions, classifier: Int) extends LeveldbBatchLayer {
+  import ProgressKeys._
 
-  private val rpKeyEndBytes: Array[Byte] =
-    rpKeyBytes(rpKeyEnd)
-
-  leveldb.put(rpKeyEndBytes, Array.empty[Byte])
-
-  def writeReplicationProgress(logId: String, logSnr: Long, batch: WriteBatch): Unit = {
-    val nid = numericId(logId)
-    batch.put(rpKeyBytes(nid), LeveldbEventLog.longBytes(logSnr))
+  def writeProgresses(progresses: Map[String, Long]): Unit = withBatch { batch =>
+    progresses.foreach(it => batch.put(progressKeyBytes(classifier, it._1), longBytes(it._2)))
+    leveldb.write(batch, writeOptions)
   }
 
-  def readReplicationProgress(logId: String): Long = {
-    val nid = numericId(logId)
-    val progress = leveldb.get(rpKeyBytes(nid))
-    if (progress == null) 0L else LeveldbEventLog.longFromBytes(progress)
+  def readProgress(logId: String): Long = {
+    val progress = leveldb.get(progressKeyBytes(classifier, logId))
+    if (progress == null) 0L else longFromBytes(progress)
   }
 
-  def readReplicationProgresses(iter: DBIterator): Map[String, Long] = {
-    iter.seek(rpKeyBytes(0))
-    readReplicationProgresses(Map.empty, iter).foldLeft(Map.empty[String, Long]) {
-      case (acc, (nid, progress)) => findId(nid) match {
-        case Some(id) => acc + (id -> progress)
-        case None     => acc
-      }
+  def readProgresses(): Map[String, Long] = {
+    withIterator(new ReadOptions().verifyChecksums(false).snapshot(leveldb.getSnapshot)) { it =>
+      it.seekToFirst()
+      readProgresses(Map.empty[String, Long], it.seekToFirst())
     }
   }
 
-  private def readReplicationProgresses(rpMap: Map[Int, Long], iter: DBIterator): Map[Int, Long] = {
-    if (!iter.hasNext) rpMap else {
-      val nextEntry = iter.next()
-      val nextKey = rpKey(nextEntry.getKey)
-      if (nextKey == rpKeyEnd) rpMap else {
-        val nextVal = LeveldbEventLog.longFromBytes(nextEntry.getValue)
-        readReplicationProgresses(rpMap + (nextKey -> nextVal), iter)
-      }
+  @tailrec
+  private def readProgresses(progresses: Map[String, Long], iter: ProgressIterator): Map[String, Long] = {
+    if (!iter.hasNext) progresses else {
+      val entry = iter.next()
+      readProgresses(progresses + (entry.id -> entry.sequenceNr), iter)
     }
   }
 
-  private def rpKeyBytes(nid: Int): Array[Byte] = {
-    val bb = ByteBuffer.allocate(8)
-    bb.putInt(classifier)
-    bb.putInt(nid)
-    bb.array
-  }
-
-  private def rpKey(a: Array[Byte]): Int = {
-    val bb = ByteBuffer.wrap(a)
-    bb.getInt
-    bb.getInt
+  private def withIterator[T](options: ReadOptions)(body: ProgressIterator => T): T = {
+    val iterator = ProgressIterator(leveldb.iterator(options), classifier)
+    try {
+      body(iterator)
+    } finally {
+      iterator.close()
+      options.snapshot().close()
+    }
   }
 }

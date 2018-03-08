@@ -26,7 +26,6 @@ import akka.serialization.SerializationExtension
 
 import com.rbmhtechnology.eventuate.DurableEvent
 import com.rbmhtechnology.eventuate.log._
-import com.rbmhtechnology.eventuate.log.leveldb.LeveldbEventLog.WithBatch
 import com.typesafe.config.Config
 
 import org.fusesource.leveldbjni.JniDBFactory._
@@ -85,7 +84,7 @@ case class LeveldbEventLogState(eventLogClock: EventLogClock, deletionMetadata: 
  *
  * @param id unique log id.
  */
-class LeveldbEventLog(id: String) extends EventLog[LeveldbEventLogState](id) with WithBatch {
+class LeveldbEventLog(id: String) extends EventLog[LeveldbEventLogState](id) with LeveldbBatchLayer {
   import LeveldbEventLog._
 
   override val settings = new LeveldbEventLogSettings(context.system.settings.config)
@@ -95,12 +94,12 @@ class LeveldbEventLog(id: String) extends EventLog[LeveldbEventLogState](id) wit
   private val leveldbOptions = new Options().createIfMissing(true)
   protected val leveldb = factory.open(leveldbDir, leveldbOptions)
   protected val writeOptions = new WriteOptions().sync(settings.fsync).snapshot(false)
-  protected def readOptions = new ReadOptions().verifyChecksums(false)
+  private def readOptions = new ReadOptions().verifyChecksums(false)
+  private def snapshotOptions(): ReadOptions = readOptions.snapshot(leveldb.getSnapshot)
 
-  private val aggregateIdMap = new NumericStore(leveldb, -1)
-  private val eventLogIdMap = new NumericStore(leveldb, -2)
-  private val replicationProgressMap = new ProgressStore(leveldb, -3, eventLogIdMap.numericId, eventLogIdMap.findId)
-  private val deletionMetadataStore = new DeletionStore(leveldb, writeOptions, -4)
+  private val numericStore = new NumericIdStore(leveldb, writeOptions, -1)
+  private val progressStore = new ProgressStore(leveldb, writeOptions, -2)
+  private val deletionStore = new DeletionStore(leveldb, writeOptions, -3)
 
   private var updateCount: Long = 0L
 
@@ -111,7 +110,7 @@ class LeveldbEventLog(id: String) extends EventLog[LeveldbEventLogState](id) wit
     withBatch(batch => writeSync(events, clock, batch))
 
   override def writeReplicationProgresses(progresses: Map[String, Long]): Future[Unit] =
-    completed(withBatch(batch => progresses.foreach(p => replicationProgressMap.writeReplicationProgress(p._1, p._2, batch))))
+    completed(progressStore.writeProgresses(progresses))
 
   def writeEventLogClockSnapshot(clock: EventLogClock): Future[Unit] =
     withBatch(batch => Future.fromTry(Try(writeEventLogClockSnapshotSync(clock, batch))))
@@ -123,10 +122,10 @@ class LeveldbEventLog(id: String) extends EventLog[LeveldbEventLogState](id) wit
     context.actorOf(Props(new EventReader).withDispatcher("eventuate.log.dispatchers.read-dispatcher"))
 
   override def readReplicationProgresses: Future[Map[String, Long]] =
-    completed(withIterator(iter => replicationProgressMap.readReplicationProgresses(iter)))
+    completed(progressStore.readProgresses())
 
   override def readReplicationProgress(logId: String): Future[Long] =
-    completed(withIterator(iter => replicationProgressMap.readReplicationProgress(logId)))
+    completed(progressStore.readProgress(logId))
 
   override def replicationRead(fromSequenceNr: Long, toSequenceNr: Long, max: Int, scanLimit: Int, filter: DurableEvent => Boolean): Future[BatchReadResult] =
     eventReader().ask(EventReader.ReadSync(fromSequenceNr, toSequenceNr, EventKey.DefaultClassifier, max, scanLimit, filter))(settings.readTimeout, self).mapTo[BatchReadResult]
@@ -135,18 +134,18 @@ class LeveldbEventLog(id: String) extends EventLog[LeveldbEventLogState](id) wit
     eventReader().ask(EventReader.ReadSync(fromSequenceNr, toSequenceNr, EventKey.DefaultClassifier, max, Int.MaxValue, _ => true))(settings.readTimeout, self).mapTo[BatchReadResult]
 
   override def read(fromSequenceNr: Long, toSequenceNr: Long, max: Int, aggregateId: String): Future[BatchReadResult] =
-    eventReader().ask(EventReader.ReadSync(fromSequenceNr, toSequenceNr, aggregateIdMap.numericId(aggregateId), max, Int.MaxValue, _ => true))(settings.readTimeout, self).mapTo[BatchReadResult]
+    eventReader().ask(EventReader.ReadSync(fromSequenceNr, toSequenceNr, numericStore.numericId(aggregateId), max, Int.MaxValue, _ => true))(settings.readTimeout, self).mapTo[BatchReadResult]
 
   override def recoverState: Future[LeveldbEventLogState] = completed {
     val clockSnapshot = readEventLogClockSnapshot
     val clockRecovered = withEventIterator(clockSnapshot.sequenceNr + 1L, EventKey.DefaultClassifier) { iter =>
       iter.foldLeft(clockSnapshot)(_ update _)
     }
-    LeveldbEventLogState(clockRecovered, deletionMetadataStore.readDeletionMetadata())
+    LeveldbEventLogState(clockRecovered, deletionStore.readDeletion())
   }
 
   override def writeDeletionMetadata(deleteMetadata: DeletionMetadata) =
-    deletionMetadataStore.writeDeletionMetadata(deleteMetadata)
+    deletionStore.writeDeletion(deleteMetadata)
 
   override def delete(toSequenceNr: Long): Future[Long] = {
     val adjusted = readEventLogClockSnapshot.sequenceNr min toSequenceNr
@@ -167,10 +166,8 @@ class LeveldbEventLog(id: String) extends EventLog[LeveldbEventLogState](id) wit
 
   private def readSync(fromSequenceNr: Long, toSequenceNr: Long, classifier: Int, max: Int, scanLimit: Int, filter: DurableEvent => Boolean): BatchReadResult = {
     val builder = new VectorBuilder[DurableEvent]
-
     val first = 1L max fromSequenceNr
     var last = first - 1L
-
     var scanned = 0
     var filtered = 0
 
@@ -194,7 +191,7 @@ class LeveldbEventLog(id: String) extends EventLog[LeveldbEventLogState](id) wit
       val eventBytes = this.eventBytes(event)
       batch.put(eventKeyBytes(EventKey.DefaultClassifier, sequenceNr), eventBytes)
       event.destinationAggregateIds.foreach { id => // additionally index events by aggregate id
-        batch.put(eventKeyBytes(aggregateIdMap.numericId(id), sequenceNr), eventBytes)
+        batch.put(eventKeyBytes(numericStore.numericId(id), sequenceNr), eventBytes)
       }
     }
 
@@ -208,17 +205,6 @@ class LeveldbEventLog(id: String) extends EventLog[LeveldbEventLogState](id) wit
   private def writeEventLogClockSnapshotSync(clock: EventLogClock, batch: WriteBatch): Unit =
     batch.put(clockKeyBytes, clockBytes(clock))
 
-  private def withIterator[R](body: DBIterator => R): R = {
-    val so = snapshotOptions()
-    val iter = leveldb.iterator(so)
-    try {
-      body(iter)
-    } finally {
-      iter.close()
-      so.snapshot().close()
-    }
-  }
-
   private def withEventIterator[R](from: Long, classifier: Int)(body: EventIterator => R): R = {
     val iter = eventIterator(from, classifier)
     try {
@@ -229,22 +215,15 @@ class LeveldbEventLog(id: String) extends EventLog[LeveldbEventLogState](id) wit
   }
 
   private class EventIterator(from: Long, classifier: Int) extends Iterator[DurableEvent] with Closeable {
-    val opts = snapshotOptions()
-
-    val iter1 = leveldb.iterator(opts)
+    val options = snapshotOptions()
+    val iter1 = leveldb.iterator(options)
     val iter2 = iter1.asScala.takeWhile(entry => eventKey(entry.getKey).classifier == classifier).map(entry => event(entry.getValue))
-
     iter1.seek(eventKeyBytes(classifier, from))
-
-    override def hasNext: Boolean =
-      iter2.hasNext
-
-    override def next(): DurableEvent =
-      iter2.next()
-
+    override def hasNext: Boolean = iter2.hasNext
+    override def next(): DurableEvent = iter2.next()
     override def close(): Unit = {
       iter1.close()
-      opts.snapshot().close()
+      options.snapshot().close()
     }
   }
 
@@ -260,12 +239,7 @@ class LeveldbEventLog(id: String) extends EventLog[LeveldbEventLogState](id) wit
   private def clockFromBytes(a: Array[Byte]): EventLogClock =
     serialization.deserialize(a, classOf[EventLogClock]).get
 
-  private def snapshotOptions(): ReadOptions =
-    readOptions.snapshot(leveldb.getSnapshot)
-
   override def preStart(): Unit = {
-    withIterator(iter => aggregateIdMap.readIdMap(iter))
-    withIterator(iter => eventLogIdMap.readIdMap(iter))
     leveldb.put(eventKeyEndBytes, Array.empty[Byte])
     super.preStart()
   }
@@ -326,30 +300,8 @@ object LeveldbEventLog {
   private val eventKeyEndBytes: Array[Byte] =
     eventKeyBytes(eventKeyEnd.classifier, eventKeyEnd.sequenceNr)
 
-  private[leveldb] def longBytes(l: Long): Array[Byte] =
-    ByteBuffer.allocate(8).putLong(l).array
-
-  private[leveldb] def longFromBytes(a: Array[Byte]): Long =
-    ByteBuffer.wrap(a).getLong
-
   private def completed[A](body: => A): Future[A] =
     Future.fromTry(Try(body))
-
-  private[leveldb] trait WithBatch {
-    protected def leveldb: DB
-    protected def writeOptions: WriteOptions
-
-    protected def withBatch[R](body: WriteBatch => R): R = {
-      val batch = leveldb.createWriteBatch()
-      try {
-        val r = body(batch)
-        leveldb.write(batch, writeOptions)
-        r
-      } finally {
-        batch.close()
-      }
-    }
-  }
 
   /**
    * Creates a [[LeveldbEventLog]] configuration object.

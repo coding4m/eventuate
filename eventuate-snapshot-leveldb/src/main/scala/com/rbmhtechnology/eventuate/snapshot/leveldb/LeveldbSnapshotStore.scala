@@ -37,9 +37,10 @@ class LeveldbSnapshotStore(system: ActorSystem, id: String) extends SnapshotStor
 
   private val leveldbDir = new File(settings.rootDir, s"${settings.prefix}_$id"); leveldbDir.mkdirs()
   private val leveldbOptions = new Options().createIfMissing(true)
-  protected def leveldbReadOptions = new ReadOptions().verifyChecksums(false)
-  protected val leveldbWriteOptions = new WriteOptions().sync(settings.fsync).snapshot(false)
-  protected val leveldb = factory.open(leveldbDir, leveldbOptions)
+  private val leveldb = factory.open(leveldbDir, leveldbOptions)
+  private val writeOptions = new WriteOptions().sync(settings.fsync).snapshot(false)
+  private def readOptions = new ReadOptions().verifyChecksums(false).snapshot(leveldb.getSnapshot)
+  private def snapshotOptions = readOptions.snapshot(leveldb.getSnapshot)
 
   /**
    * Asynchronously loads the latest snapshot saved by an event-sourced actor, view, writer or processor
@@ -48,7 +49,7 @@ class LeveldbSnapshotStore(system: ActorSystem, id: String) extends SnapshotStor
   override def load(emitterId: String) = {
     import settings.readDispatcher
     Future {
-      withIterator[Option[Snapshot]](leveldbReadOptions.snapshot(leveldb.getSnapshot), reserved = true) { it =>
+      withIterator[Option[Snapshot]](readOptions, reserved = true) { it =>
         it.last(emitterId).find(_.emitterId == emitterId).map(_.snapshot)
       }
     }
@@ -60,7 +61,7 @@ class LeveldbSnapshotStore(system: ActorSystem, id: String) extends SnapshotStor
   override def save(snapshot: Snapshot) = {
     import settings.writeDispatcher
     Future {
-      withIterator[Unit](leveldbReadOptions.snapshot(leveldb.getSnapshot), reserved = true) { it =>
+      withIterator[Unit](snapshotOptions, reserved = true) { it =>
         val batch = leveldb.createWriteBatch()
         val key = SnapshotItem.itemKey(snapshot.metadata.emitterId, snapshot.metadata.sequenceNr)
         val value = SnapshotItem.itemValue(snapshot)
@@ -70,7 +71,7 @@ class LeveldbSnapshotStore(system: ActorSystem, id: String) extends SnapshotStor
           .takeWhile(_.emitterId == snapshot.metadata.emitterId)
           .foreach(it => batch.delete(it.key))
 
-        leveldb.write(batch)
+        leveldb.write(batch, writeOptions)
       }
     }
   }
@@ -78,10 +79,10 @@ class LeveldbSnapshotStore(system: ActorSystem, id: String) extends SnapshotStor
   override def delete(emitterId: String) = {
     import settings.writeDispatcher
     Future {
-      withIterator(leveldbReadOptions.snapshot(leveldb.getSnapshot), reserved = false) { it =>
+      withIterator(snapshotOptions, reserved = false) { it =>
         val batch = leveldb.createWriteBatch()
         it.first(emitterId).takeWhile(_.emitterId == emitterId).foreach(item => batch.delete(item.key))
-        leveldb.write(batch)
+        leveldb.write(batch, writeOptions)
       }
     }
   }
@@ -93,7 +94,7 @@ class LeveldbSnapshotStore(system: ActorSystem, id: String) extends SnapshotStor
     // todo use batch
     import settings.writeDispatcher
     Future {
-      withIterator(leveldbReadOptions.snapshot(leveldb.getSnapshot), reserved = false) { it =>
+      withIterator(snapshotOptions, reserved = false) { it =>
         it.seekToFirst().filter(_.sequenceNr >= lowerSequenceNr).foreach(item => leveldb.delete(item.key))
       }
     }

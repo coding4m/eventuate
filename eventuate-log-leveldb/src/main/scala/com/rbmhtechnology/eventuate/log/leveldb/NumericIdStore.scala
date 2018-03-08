@@ -14,30 +14,29 @@
  * limitations under the License.
  */
 
-package com.rbmhtechnology.eventuate.log.rocksdb
+package com.rbmhtechnology.eventuate.log.leveldb
 
-import org.rocksdb.{ ColumnFamilyHandle, RocksDB, WriteOptions }
+import org.iq80.leveldb.{ DB, WriteOptions }
 
-private class NumericIdStore(val rocksdb: RocksDB, val writeOptions: WriteOptions, columnHandle: ColumnFamilyHandle) extends RocksdbBatchLayer {
-  import EventKeys._
+private[leveldb] class NumericIdStore(val leveldb: DB, val writeOptions: WriteOptions, classifier: Int) extends LeveldbBatchLayer {
   import NumericIdKeys._
 
-  if (null == rocksdb.get(columnHandle, IdSequenceBytes)) {
-    rocksdb.put(columnHandle, IdSequenceBytes, longBytes(1L))
+  if (null == leveldb.get(IdSequenceBytes)) {
+    leveldb.put(IdSequenceBytes, intBytes(1))
   }
 
   def numericId(stringId: String): Int = {
     assert(stringId != IdSequence, s"id must not eq $IdSequence .")
-    val res = rocksdb.get(columnHandle, stringBytes(stringId))
-    if (null == res) writeNumericId(stringId) else longFromBytes(res).toInt
+    val nid = leveldb.get(idBytes(classifier, stringId))
+    if (null == nid) writeNumericId(stringId) else intFromBytes(nid)
   }
 
   private def writeNumericId(stringId: String) = withBatch { batch =>
-    val nidBytes = rocksdb.get(columnHandle, IdSequenceBytes)
-    val nid = longFromBytes(nidBytes)
-    batch.put(columnHandle, stringBytes(stringId), nidBytes)
-    batch.merge(columnHandle, IdSequenceBytes, IdSequenceIncBytes)
-    rocksdb.write(writeOptions, batch)
-    nid.toInt
+    val nidBytes = leveldb.get(IdSequenceBytes)
+    val nid = intFromBytes(nidBytes)
+    batch.put(idBytes(classifier, stringId), nidBytes)
+    batch.put(IdSequenceBytes, intBytes(nid + 1))
+    leveldb.write(batch, writeOptions)
+    nid
   }
 }
