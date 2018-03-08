@@ -217,7 +217,7 @@ class LeveldbEventLog(id: String) extends EventLog[LeveldbEventLogState](id) wit
   private class EventIterator(from: Long, classifier: Long) extends Iterator[DurableEvent] with Closeable {
     val options = snapshotOptions()
     val iter1 = leveldb.iterator(options)
-    val iter2 = iter1.asScala.takeWhile(entry => eventKey(entry.getKey).classifier == classifier).map(entry => event(entry.getValue))
+    val iter2 = iter1.asScala.takeWhile(entry => eventKey(entry.getKey).classifier == classifier && !eventKeyEndBytes.sameElements(entry.getKey)).map(entry => event(entry.getValue))
     iter1.seek(eventKeyBytes(classifier, from))
     override def hasNext: Boolean = iter2.hasNext
     override def next(): DurableEvent = iter2.next()
@@ -279,9 +279,6 @@ object LeveldbEventLog {
     val DefaultClassifier: Long = 0L
   }
 
-  private[leveldb] val eventKeyEnd: EventKey =
-    EventKey(Long.MaxValue, Long.MaxValue)
-
   private[leveldb] def eventKeyBytes(classifier: Long, sequenceNr: Long): Array[Byte] = {
     val bb = ByteBuffer.allocate(16)
     bb.putLong(classifier)
@@ -294,13 +291,16 @@ object LeveldbEventLog {
     EventKey(bb.getLong, bb.getLong)
   }
 
-  private val clockKeyBytes: Array[Byte] =
-    eventKeyBytes(0L, 0L)
+  private[leveldb] val eventKeyEnd: EventKey =
+    EventKey(Long.MaxValue, Long.MaxValue)
 
-  private val eventKeyEndBytes: Array[Byte] =
+  private[leveldb] val eventKeyEndBytes: Array[Byte] =
     eventKeyBytes(eventKeyEnd.classifier, eventKeyEnd.sequenceNr)
 
-  private def completed[A](body: => A): Future[A] =
+  private[leveldb] val clockKeyBytes: Array[Byte] =
+    eventKeyBytes(0L, 0L)
+
+  private[leveldb] def completed[A](body: => A): Future[A] =
     Future.fromTry(Try(body))
 
   /**

@@ -100,7 +100,7 @@ class RocksdbEventLog(id: String) extends EventLog[RocksdbEventLogState](id) wit
 
   // default column family must specified.
   private val columnFamilies = new JList[ColumnFamilyDescriptor]() {
-    add(0, new ColumnFamilyDescriptor(RocksDB.DEFAULT_COLUMN_FAMILY, new ColumnFamilyOptions().useFixedLengthPrefixExtractor(4)))
+    add(0, new ColumnFamilyDescriptor(RocksDB.DEFAULT_COLUMN_FAMILY, new ColumnFamilyOptions().useFixedLengthPrefixExtractor(8)))
     add(1, new ColumnFamilyDescriptor(stringBytes("aggregates"), new ColumnFamilyOptions().setMergeOperatorName("uint64add")))
     add(2, new ColumnFamilyDescriptor(stringBytes("progresses")))
     add(3, new ColumnFamilyDescriptor(stringBytes("metadata")))
@@ -311,7 +311,7 @@ class RocksdbEventLog(id: String) extends EventLog[RocksdbEventLogState](id) wit
         iter1.next()
         res
       }
-    }.takeWhile(entry => eventKeyFromBytes(entry._1).classifier == classifier).map(entry => eventFromBytes(entry._2))
+    }.takeWhile(entry => eventKeyFromBytes(entry._1).classifier == classifier && !eventKeyEndBytes.sameElements(entry._1)).map(entry => eventFromBytes(entry._2))
 
     override def hasNext: Boolean = iter2.hasNext
     override def next(): DurableEvent = iter2.next()
