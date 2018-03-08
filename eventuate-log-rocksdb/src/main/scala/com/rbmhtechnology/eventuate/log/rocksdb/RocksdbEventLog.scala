@@ -285,8 +285,8 @@ class RocksdbEventLog(id: String) extends EventLog[RocksdbEventLogState](id) wit
   }
 
   override def postStop(): Unit = {
-    super.postStop()
     rocksdb.close()
+    super.postStop()
   }
 
   private def withIterator[R](from: Long, classifier: Long)(body: EventIterator => R): R = {
