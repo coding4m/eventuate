@@ -158,10 +158,8 @@ class LeveldbEventLog(id: String) extends EventLog[LeveldbEventLogState](id) wit
     context.actorOf(DeletionActor.props(leveldb, readOptions, writeOptions, settings.deletionBatchSize, toSequenceNr, promise))
 
   private def readEventLogClockSnapshot: EventLogClock = {
-    leveldb.get(clockKeyBytes) match {
-      case null => EventLogClock()
-      case cval => clockFromBytes(cval)
-    }
+    val clock = leveldb.get(clockKeyBytes)
+    if (null == clock) EventLogClock() else clockFromBytes(clock)
   }
 
   private def readSync(fromSequenceNr: Long, toSequenceNr: Long, classifier: Long, max: Int, scanLimit: Int, filter: DurableEvent => Boolean): BatchReadResult = {
