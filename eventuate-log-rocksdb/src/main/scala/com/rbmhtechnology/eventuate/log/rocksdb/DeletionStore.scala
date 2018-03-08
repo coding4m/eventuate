@@ -37,5 +37,5 @@ private class DeletionStore(val rocksdb: RocksDB, val writeOptions: WriteOptions
   }
 
   private def longFromBytes(longBytes: Array[Byte]): Long =
-    if (longBytes == null) 0 else longFromBytes(longBytes)
+    if (longBytes == null) 0L else longFromBytes(longBytes)
 }

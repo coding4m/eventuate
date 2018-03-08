@@ -18,26 +18,26 @@ package com.rbmhtechnology.eventuate.log.leveldb
 
 import org.iq80.leveldb.{ DB, WriteOptions }
 
-private[leveldb] class NumericIdStore(val leveldb: DB, val writeOptions: WriteOptions, classifier: Int) extends LeveldbBatchLayer {
+private[leveldb] class NumericIdStore(val leveldb: DB, val writeOptions: WriteOptions, classifier: Long) extends LeveldbBatchLayer {
   import NumericIdKeys._
 
   if (null == leveldb.get(IdSequenceBytes)) {
-    leveldb.put(IdSequenceBytes, intBytes(1))
+    leveldb.put(IdSequenceBytes, longBytes(1L))
   }
 
-  def numericId(stringId: String, readOnly: Boolean = false): Int = {
+  def numericId(stringId: String, readOnly: Boolean = false): Long = {
     assert(stringId != IdSequence, s"id must not eq $IdSequence .")
     val nid = leveldb.get(idBytes(classifier, stringId))
     if (null == nid) {
-      if (readOnly) Int.MaxValue else writeNumericId(stringId)
-    } else intFromBytes(nid)
+      if (readOnly) Long.MaxValue else writeNumericId(stringId)
+    } else longFromBytes(nid)
   }
 
   private def writeNumericId(stringId: String) = withBatch { batch =>
     val nidBytes = leveldb.get(IdSequenceBytes)
-    val nid = intFromBytes(nidBytes)
+    val nid = longFromBytes(nidBytes)
     batch.put(idBytes(classifier, stringId), nidBytes)
-    batch.put(IdSequenceBytes, intBytes(nid + 1))
+    batch.put(IdSequenceBytes, longBytes(nid + 1L))
     leveldb.write(batch, writeOptions)
     nid
   }

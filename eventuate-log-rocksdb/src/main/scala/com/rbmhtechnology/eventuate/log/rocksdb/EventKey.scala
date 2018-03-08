@@ -19,4 +19,4 @@ package com.rbmhtechnology.eventuate.log.rocksdb
 /**
  * @author siuming
  */
-private case class EventKey(classifier: Int, sequenceNr: Long)
+private case class EventKey(classifier: Long, sequenceNr: Long)

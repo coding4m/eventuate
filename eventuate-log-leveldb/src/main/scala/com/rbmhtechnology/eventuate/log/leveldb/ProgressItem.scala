@@ -19,4 +19,4 @@ package com.rbmhtechnology.eventuate.log.leveldb
 /**
  * @author siuming
  */
-private[leveldb] case class ProgressItem(classifier: Int, id: String, sequenceNr: Long)
+private[leveldb] case class ProgressItem(classifier: Long, id: String, sequenceNr: Long)

@@ -25,15 +25,15 @@ import org.iq80.leveldb.DBIterator
  * @author siuming
  */
 private[leveldb] object ProgressIterator {
-  def apply(it: DBIterator, classifier: Int): ProgressIterator = new ProgressIterator(it, classifier)
+  def apply(it: DBIterator, classifier: Long): ProgressIterator = new ProgressIterator(it, classifier)
 }
-private[leveldb] class ProgressIterator(it: DBIterator, classifier: Int) extends Iterator[ProgressItem] with Closeable {
+private[leveldb] class ProgressIterator(it: DBIterator, classifier: Long) extends Iterator[ProgressItem] with Closeable {
   import ProgressKeys._
-  val iter1 = new Iterator[(Int, Array[Byte], Array[Byte])] {
+  val iter1 = new Iterator[(Long, Array[Byte], Array[Byte])] {
     override def hasNext = it.hasNext
     override def next() = {
       val entry = it.next()
-      (ByteBuffer.wrap(entry.getKey.slice(0, 4)).getInt, entry.getKey, entry.getValue)
+      (ByteBuffer.wrap(entry.getKey.slice(0, 8)).getLong, entry.getKey, entry.getValue)
     }
   }.takeWhile(_._1 == classifier)
   val iter2 = new Iterator[ProgressItem] {

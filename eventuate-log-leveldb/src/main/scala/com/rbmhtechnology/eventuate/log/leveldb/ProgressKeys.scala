@@ -27,15 +27,15 @@ private[leveldb] trait ProgressKeys {
 
   def progressKey(bytes: Array[Byte]): ProgressKey = {
     ProgressKey(
-      ByteBuffer.wrap(bytes.slice(0, 4)).getInt,
-      new String(bytes.slice(4, bytes.length), IdCharset)
+      ByteBuffer.wrap(bytes.slice(0, 8)).getLong,
+      new String(bytes.slice(8, bytes.length), IdCharset)
     )
   }
-  def progressKeyBytes(classifier: Int, id: String): Array[Byte] = {
+  def progressKeyBytes(classifier: Long, id: String): Array[Byte] = {
     val idBytes = id.getBytes(IdCharset)
     ByteBuffer
-      .allocate(idBytes.length + 4)
-      .putInt(classifier)
+      .allocate(idBytes.length + 8)
+      .putLong(classifier)
       .put(idBytes)
       .array()
   }

@@ -183,7 +183,7 @@ class RocksdbEventLog(id: String) extends EventLog[RocksdbEventLogState](id) wit
   override def replicationRead(fromSequenceNr: Long, toSequenceNr: Long, max: Int, scanLimit: Int, filter: (DurableEvent) => Boolean) =
     eventReader().ask(EventReader.ReadSync(fromSequenceNr, toSequenceNr, EventKeys.DefaultClassifier, max, scanLimit, filter))(settings.readTimeout, self).mapTo[BatchReadResult]
 
-  private def readSync(fromSequenceNr: Long, toSequenceNr: Long, classifier: Int, max: Int, scanLimit: Int, filter: DurableEvent => Boolean): BatchReadResult = {
+  private def readSync(fromSequenceNr: Long, toSequenceNr: Long, classifier: Long, max: Int, scanLimit: Int, filter: DurableEvent => Boolean): BatchReadResult = {
 
     val first = 1L max fromSequenceNr
     var last = first - 1L
@@ -289,7 +289,7 @@ class RocksdbEventLog(id: String) extends EventLog[RocksdbEventLogState](id) wit
     rocksdb.close()
   }
 
-  private def withIterator[R](from: Long, classifier: Int)(body: EventIterator => R): R = {
+  private def withIterator[R](from: Long, classifier: Long)(body: EventIterator => R): R = {
     val iter = eventIterator(from, classifier)
     try {
       body(iter)
@@ -298,15 +298,14 @@ class RocksdbEventLog(id: String) extends EventLog[RocksdbEventLogState](id) wit
     }
   }
 
-  private def eventIterator(from: Long, classifier: Int): EventIterator =
+  private def eventIterator(from: Long, classifier: Long): EventIterator =
     new EventIterator(from, classifier)
 
-  private class EventIterator(from: Long, classifier: Int) extends Iterator[DurableEvent] with Closeable {
+  private class EventIterator(from: Long, classifier: Long) extends Iterator[DurableEvent] with Closeable {
     val options = new ReadOptions().setVerifyChecksums(false).setPrefixSameAsStart(true).setSnapshot(rocksdb.getSnapshot)
     val iter1 = rocksdb.newIterator(columnHandles.get(0), options); iter1.seek(eventKeyBytes(classifier, from))
     val iter2 = new Iterator[(Array[Byte], Array[Byte])] {
       override def hasNext = iter1.isValid
-
       override def next() = {
         val res = (iter1.key(), iter1.value())
         iter1.next()
@@ -339,6 +338,6 @@ class RocksdbEventLog(id: String) extends EventLog[RocksdbEventLogState](id) wit
   }
 
   private object EventReader {
-    case class ReadSync(fromSequenceNr: Long, toSequenceNr: Long, classifier: Int, max: Int, scanLimit: Int, filter: DurableEvent => Boolean)
+    case class ReadSync(fromSequenceNr: Long, toSequenceNr: Long, classifier: Long, max: Int, scanLimit: Int, filter: DurableEvent => Boolean)
   }
 }

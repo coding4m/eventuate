@@ -22,7 +22,7 @@ import com.rbmhtechnology.eventuate.log.DeletionMetadata
 import org.iq80.leveldb.DB
 import org.iq80.leveldb.WriteOptions
 
-private class DeletionStore(val leveldb: DB, val writeOptions: WriteOptions, classifier: Int) extends LeveldbBatchLayer {
+private class DeletionStore(val leveldb: DB, val writeOptions: WriteOptions, classifier: Long) extends LeveldbBatchLayer {
   private val DeletedToSequenceNrKey: Int = 1
   private val RemoteLogIdsKey: Int = 2
 
@@ -40,8 +40,8 @@ private class DeletionStore(val leveldb: DB, val writeOptions: WriteOptions, cla
   }
 
   private def idKeyBytes(key: Int): Array[Byte] = {
-    val bb = ByteBuffer.allocate(8)
-    bb.putInt(classifier)
+    val bb = ByteBuffer.allocate(12)
+    bb.putLong(classifier)
     bb.putInt(key)
     bb.array
   }
@@ -50,7 +50,7 @@ private class DeletionStore(val leveldb: DB, val writeOptions: WriteOptions, cla
     ByteBuffer.allocate(8).putLong(l).array
 
   private def longFromBytes(longBytes: Array[Byte]): Long =
-    if (longBytes == null) 0 else ByteBuffer.wrap(longBytes).getLong
+    if (longBytes == null) 0L else ByteBuffer.wrap(longBytes).getLong
 
   private def stringSetBytes(set: Set[String]): Array[Byte] =
     set.mkString(StringSetSeparatorChar.toString).getBytes("UTF-8")

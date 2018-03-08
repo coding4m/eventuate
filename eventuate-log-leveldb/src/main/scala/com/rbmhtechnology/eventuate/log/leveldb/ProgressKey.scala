@@ -19,4 +19,4 @@ package com.rbmhtechnology.eventuate.log.leveldb
 /**
  * @author siuming
  */
-private[leveldb] case class ProgressKey(classifier: Int, id: String)
+private[leveldb] case class ProgressKey(classifier: Long, id: String)

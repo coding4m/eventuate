@@ -115,7 +115,7 @@ class LeveldbEventLog(id: String) extends EventLog[LeveldbEventLogState](id) wit
   def writeEventLogClockSnapshot(clock: EventLogClock): Future[Unit] =
     withBatch(batch => Future.fromTry(Try(writeEventLogClockSnapshotSync(clock, batch))))
 
-  private def eventIterator(from: Long, classifier: Int): EventIterator =
+  private def eventIterator(from: Long, classifier: Long): EventIterator =
     new EventIterator(from, classifier)
 
   private def eventReader(): ActorRef =
@@ -164,7 +164,7 @@ class LeveldbEventLog(id: String) extends EventLog[LeveldbEventLogState](id) wit
     }
   }
 
-  private def readSync(fromSequenceNr: Long, toSequenceNr: Long, classifier: Int, max: Int, scanLimit: Int, filter: DurableEvent => Boolean): BatchReadResult = {
+  private def readSync(fromSequenceNr: Long, toSequenceNr: Long, classifier: Long, max: Int, scanLimit: Int, filter: DurableEvent => Boolean): BatchReadResult = {
     val builder = new VectorBuilder[DurableEvent]
     val first = 1L max fromSequenceNr
     var last = first - 1L
@@ -205,7 +205,7 @@ class LeveldbEventLog(id: String) extends EventLog[LeveldbEventLogState](id) wit
   private def writeEventLogClockSnapshotSync(clock: EventLogClock, batch: WriteBatch): Unit =
     batch.put(clockKeyBytes, clockBytes(clock))
 
-  private def withEventIterator[R](from: Long, classifier: Int)(body: EventIterator => R): R = {
+  private def withEventIterator[R](from: Long, classifier: Long)(body: EventIterator => R): R = {
     val iter = eventIterator(from, classifier)
     try {
       body(iter)
@@ -214,7 +214,7 @@ class LeveldbEventLog(id: String) extends EventLog[LeveldbEventLogState](id) wit
     }
   }
 
-  private class EventIterator(from: Long, classifier: Int) extends Iterator[DurableEvent] with Closeable {
+  private class EventIterator(from: Long, classifier: Long) extends Iterator[DurableEvent] with Closeable {
     val options = snapshotOptions()
     val iter1 = leveldb.iterator(options)
     val iter2 = iter1.asScala.takeWhile(entry => eventKey(entry.getKey).classifier == classifier).map(entry => event(entry.getValue))
@@ -266,36 +266,36 @@ class LeveldbEventLog(id: String) extends EventLog[LeveldbEventLogState](id) wit
   }
 
   private object EventReader {
-    case class ReadSync(fromSequenceNr: Long, toSequenceNr: Long, classifier: Int, max: Int, scanLimit: Int, filter: DurableEvent => Boolean)
+    case class ReadSync(fromSequenceNr: Long, toSequenceNr: Long, classifier: Long, max: Int, scanLimit: Int, filter: DurableEvent => Boolean)
   }
 }
 
 object LeveldbEventLog {
   private[leveldb]type CloseableIterator[A] = Iterator[A] with Closeable
 
-  private[leveldb] case class EventKey(classifier: Int, sequenceNr: Long)
+  private[leveldb] case class EventKey(classifier: Long, sequenceNr: Long)
 
   private[leveldb] object EventKey {
-    val DefaultClassifier: Int = 0
+    val DefaultClassifier: Long = 0L
   }
 
   private[leveldb] val eventKeyEnd: EventKey =
-    EventKey(Int.MaxValue, Long.MaxValue)
+    EventKey(Long.MaxValue, Long.MaxValue)
 
-  private[leveldb] def eventKeyBytes(classifier: Int, sequenceNr: Long): Array[Byte] = {
-    val bb = ByteBuffer.allocate(12)
-    bb.putInt(classifier)
+  private[leveldb] def eventKeyBytes(classifier: Long, sequenceNr: Long): Array[Byte] = {
+    val bb = ByteBuffer.allocate(16)
+    bb.putLong(classifier)
     bb.putLong(sequenceNr)
     bb.array
   }
 
   private[leveldb] def eventKey(a: Array[Byte]): EventKey = {
     val bb = ByteBuffer.wrap(a)
-    EventKey(bb.getInt, bb.getLong)
+    EventKey(bb.getLong, bb.getLong)
   }
 
   private val clockKeyBytes: Array[Byte] =
-    eventKeyBytes(0, 0L)
+    eventKeyBytes(0L, 0L)
 
   private val eventKeyEndBytes: Array[Byte] =
     eventKeyBytes(eventKeyEnd.classifier, eventKeyEnd.sequenceNr)

@@ -23,7 +23,7 @@ import java.nio.charset.Charset
  * @author siuming
  */
 private[rocksdb] trait EventKeys {
-  val DefaultClassifier: Int = 0
+  val DefaultClassifier: Long = 0L
   val StringCharset = Charset.forName("UTF-8")
   val StringSetSeparator = '\u0000'
 
@@ -48,21 +48,21 @@ private[rocksdb] trait EventKeys {
   }
 
   val eventKeyEnd: EventKey =
-    EventKey(Int.MaxValue, Long.MaxValue)
+    EventKey(Long.MaxValue, Long.MaxValue)
 
   val eventKeyEndBytes: Array[Byte] =
     eventKeyBytes(eventKeyEnd.classifier, eventKeyEnd.sequenceNr)
 
-  def eventKeyBytes(classifier: Int, sequenceNr: Long): Array[Byte] = {
-    val bb = ByteBuffer.allocate(12)
-    bb.putInt(classifier)
+  def eventKeyBytes(classifier: Long, sequenceNr: Long): Array[Byte] = {
+    val bb = ByteBuffer.allocate(16)
+    bb.putLong(classifier)
     bb.putLong(sequenceNr)
     bb.array
   }
 
   def eventKeyFromBytes(a: Array[Byte]): EventKey = {
     val bb = ByteBuffer.wrap(a)
-    EventKey(bb.getInt, bb.getLong)
+    EventKey(bb.getLong, bb.getLong)
   }
 }
 private[rocksdb] object EventKeys extends EventKeys

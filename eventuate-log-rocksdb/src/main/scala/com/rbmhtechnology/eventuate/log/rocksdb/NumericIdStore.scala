@@ -26,12 +26,12 @@ private class NumericIdStore(val rocksdb: RocksDB, val writeOptions: WriteOption
     rocksdb.put(columnHandle, IdSequenceBytes, longBytes(1L))
   }
 
-  def numericId(stringId: String, readOnly: Boolean = false): Int = {
+  def numericId(stringId: String, readOnly: Boolean = false): Long = {
     assert(stringId != IdSequence, s"id must not eq $IdSequence .")
     val res = rocksdb.get(columnHandle, stringBytes(stringId))
     if (null == res) {
-      if (readOnly) Int.MaxValue else writeNumericId(stringId)
-    } else longFromBytes(res).toInt
+      if (readOnly) Long.MaxValue else writeNumericId(stringId)
+    } else longFromBytes(res)
   }
 
   private def writeNumericId(stringId: String) = withBatch { batch =>
@@ -40,6 +40,6 @@ private class NumericIdStore(val rocksdb: RocksDB, val writeOptions: WriteOption
     batch.put(columnHandle, stringBytes(stringId), nidBytes)
     batch.merge(columnHandle, IdSequenceBytes, IdSequenceIncBytes)
     rocksdb.write(writeOptions, batch)
-    nid.toInt
+    nid
   }
 }

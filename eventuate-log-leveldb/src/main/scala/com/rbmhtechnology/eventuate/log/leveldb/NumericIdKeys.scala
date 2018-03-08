@@ -27,19 +27,19 @@ private[leveldb] trait NumericIdKeys {
   val IdSequence = "$$SEQUENCE$$"
   val IdSequenceBytes = IdSequence.getBytes(IdCharset)
 
-  def idBytes(classifier: Int, id: String): Array[Byte] = {
+  def idBytes(classifier: Long, id: String): Array[Byte] = {
     val idBytes = id.getBytes(IdCharset)
     ByteBuffer
-      .allocate(idBytes.length + 4)
-      .putInt(classifier)
+      .allocate(idBytes.length + 8)
+      .putLong(classifier)
       .put(idBytes)
       .array()
   }
 
-  def intBytes(l: Int): Array[Byte] =
-    ByteBuffer.allocate(4).putInt(l).array
+  def longBytes(l: Long): Array[Byte] =
+    ByteBuffer.allocate(8).putLong(l).array
 
-  def intFromBytes(a: Array[Byte]): Int =
-    ByteBuffer.wrap(a).getInt
+  def longFromBytes(a: Array[Byte]): Long =
+    ByteBuffer.wrap(a).getLong
 }
 private[leveldb] object NumericIdKeys extends NumericIdKeys

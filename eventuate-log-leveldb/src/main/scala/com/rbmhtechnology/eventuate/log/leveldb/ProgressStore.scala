@@ -20,7 +20,7 @@ import org.iq80.leveldb.{ DB, ReadOptions, WriteOptions }
 
 import scala.annotation.tailrec
 
-private[leveldb] class ProgressStore(val leveldb: DB, val writeOptions: WriteOptions, classifier: Int) extends LeveldbBatchLayer {
+private[leveldb] class ProgressStore(val leveldb: DB, val writeOptions: WriteOptions, classifier: Long) extends LeveldbBatchLayer {
   import ProgressKeys._
 
   def writeProgresses(progresses: Map[String, Long]): Unit = withBatch { batch =>
