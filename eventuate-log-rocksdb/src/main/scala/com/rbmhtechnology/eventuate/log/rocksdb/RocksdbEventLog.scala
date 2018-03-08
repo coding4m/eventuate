@@ -170,7 +170,7 @@ class RocksdbEventLog(id: String) extends EventLog[RocksdbEventLogState](id) wit
    *                       or earlier if `max` events have already been read.
    */
   override def read(fromSequenceNr: Long, toSequenceNr: Long, max: Int, aggregateId: String) =
-    eventReader().ask(EventReader.ReadSync(fromSequenceNr, toSequenceNr, numericStore.numericId(aggregateId), max, Int.MaxValue, _ => true))(settings.readTimeout, self).mapTo[BatchReadResult]
+    eventReader().ask(EventReader.ReadSync(fromSequenceNr, toSequenceNr, numericStore.numericId(aggregateId, readOnly = true), max, Int.MaxValue, _ => true))(settings.readTimeout, self).mapTo[BatchReadResult]
 
   /**
    * Asynchronously batch-reads events from the raw event log. At most `max` events must be returned that are

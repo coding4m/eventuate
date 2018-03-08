@@ -25,10 +25,12 @@ private[leveldb] class NumericIdStore(val leveldb: DB, val writeOptions: WriteOp
     leveldb.put(IdSequenceBytes, intBytes(1))
   }
 
-  def numericId(stringId: String): Int = {
+  def numericId(stringId: String, readOnly: Boolean = false): Int = {
     assert(stringId != IdSequence, s"id must not eq $IdSequence .")
     val nid = leveldb.get(idBytes(classifier, stringId))
-    if (null == nid) writeNumericId(stringId) else intFromBytes(nid)
+    if (null == nid) {
+      if (readOnly) Int.MaxValue else writeNumericId(stringId)
+    } else intFromBytes(nid)
   }
 
   private def writeNumericId(stringId: String) = withBatch { batch =>

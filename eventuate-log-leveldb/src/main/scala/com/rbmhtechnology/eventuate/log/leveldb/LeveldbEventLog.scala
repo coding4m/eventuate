@@ -134,7 +134,7 @@ class LeveldbEventLog(id: String) extends EventLog[LeveldbEventLogState](id) wit
     eventReader().ask(EventReader.ReadSync(fromSequenceNr, toSequenceNr, EventKey.DefaultClassifier, max, Int.MaxValue, _ => true))(settings.readTimeout, self).mapTo[BatchReadResult]
 
   override def read(fromSequenceNr: Long, toSequenceNr: Long, max: Int, aggregateId: String): Future[BatchReadResult] =
-    eventReader().ask(EventReader.ReadSync(fromSequenceNr, toSequenceNr, numericStore.numericId(aggregateId), max, Int.MaxValue, _ => true))(settings.readTimeout, self).mapTo[BatchReadResult]
+    eventReader().ask(EventReader.ReadSync(fromSequenceNr, toSequenceNr, numericStore.numericId(aggregateId, readOnly = true), max, Int.MaxValue, _ => true))(settings.readTimeout, self).mapTo[BatchReadResult]
 
   override def recoverState: Future[LeveldbEventLogState] = completed {
     val clockSnapshot = readEventLogClockSnapshot
