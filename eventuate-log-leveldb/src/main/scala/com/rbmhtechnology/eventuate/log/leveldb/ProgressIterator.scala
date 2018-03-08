@@ -17,6 +17,7 @@
 package com.rbmhtechnology.eventuate.log.leveldb
 
 import java.io.Closeable
+import java.nio.ByteBuffer
 
 import org.iq80.leveldb.DBIterator
 
@@ -28,15 +29,22 @@ private[leveldb] object ProgressIterator {
 }
 private[leveldb] class ProgressIterator(it: DBIterator, classifier: Int) extends Iterator[ProgressItem] with Closeable {
   import ProgressKeys._
-  val iter = new Iterator[ProgressItem] {
+  val iter1 = new Iterator[(Int, Array[Byte], Array[Byte])] {
     override def hasNext = it.hasNext
     override def next() = {
       val entry = it.next()
-      val key = progressKey(entry.getKey)
-      val value = longFromBytes(entry.getValue)
-      ProgressItem(key.classifier, key.id, value)
+      (ByteBuffer.wrap(entry.getKey.slice(0, 4)).getInt, entry.getKey, entry.getValue)
     }
-  }.takeWhile(_.classifier == classifier)
+  }.takeWhile(_._1 == classifier)
+  val iter2 = new Iterator[ProgressItem] {
+    override def hasNext = iter1.hasNext
+    override def next() = {
+      val entry = iter1.next()
+      val key = progressKey(entry._2)
+      val value = longFromBytes(entry._3)
+      ProgressItem(entry._1, key.id, value)
+    }
+  }
 
   def seek(key: Array[Byte]) = {
     it.seek(key)
@@ -50,7 +58,7 @@ private[leveldb] class ProgressIterator(it: DBIterator, classifier: Int) extends
     it.seekToLast()
     this
   }
-  override def hasNext = iter.hasNext
-  override def next() = iter.next()
+  override def hasNext = iter2.hasNext
+  override def next() = iter2.next()
   override def close() = it.close()
 }

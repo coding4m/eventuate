@@ -50,7 +50,7 @@ class LeveldbSnapshotStore(system: ActorSystem, id: String) extends SnapshotStor
     import settings.readDispatcher
     Future {
       withIterator[Option[Snapshot]](readOptions, reserved = true) { it =>
-        it.last(emitterId).find(_.emitterId == emitterId).map(_.snapshot)
+        it.last(emitterId).takeWhile(_.emitterId == emitterId).find(_.emitterId == emitterId).map(_.snapshot)
       }
     }
   }
@@ -67,8 +67,8 @@ class LeveldbSnapshotStore(system: ActorSystem, id: String) extends SnapshotStor
         val value = SnapshotItem.itemValue(snapshot)
         batch.put(key, value)
         it.seek(key)
-          .drop(settings.snapshotsPerMax - 1)
           .takeWhile(_.emitterId == snapshot.metadata.emitterId)
+          .drop(settings.snapshotsPerMax - 1)
           .foreach(it => batch.delete(it.key))
 
         leveldb.write(batch, writeOptions)

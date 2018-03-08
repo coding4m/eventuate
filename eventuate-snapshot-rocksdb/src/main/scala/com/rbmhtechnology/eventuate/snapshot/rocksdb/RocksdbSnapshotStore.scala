@@ -49,7 +49,7 @@ class RocksdbSnapshotStore(system: ActorSystem, id: String) extends SnapshotStor
     import settings.readDispatcher
     Future {
       withIterator[Option[Snapshot]](readOptions, reserved = true) { it =>
-        it.lastForPrev(emitterId).find(_.emitterId == emitterId).map(_.snapshot)
+        it.lastForPrev(emitterId).takeWhile(_.emitterId == emitterId).find(_.emitterId == emitterId).map(_.snapshot)
       }
     }
   }
@@ -66,8 +66,8 @@ class RocksdbSnapshotStore(system: ActorSystem, id: String) extends SnapshotStor
         val value = SnapshotItem.itemValue(snapshot)
         batch.put(key, value)
         it.seekForPrev(key)
-          .drop(settings.snapshotsPerMax - 1)
           .takeWhile(_.emitterId == snapshot.metadata.emitterId)
+          .drop(settings.snapshotsPerMax - 1)
           .foreach(it => batch.remove(it.key))
 
         rocksdb.write(writeOptions, batch)
