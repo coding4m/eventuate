@@ -48,7 +48,7 @@ class RocksdbSnapshotStore(system: ActorSystem, id: String) extends SnapshotStor
   override def load(emitterId: String) = {
     import settings.readDispatcher
     Future {
-      withIterator[Option[Snapshot]](readOptions, reserved = true) { it =>
+      withIterator[Option[Snapshot]](snapshotOptions, reserved = true) { it =>
         it.lastForPrev(emitterId).takeWhile(_.emitterId == emitterId).find(_.emitterId == emitterId).map(_.snapshot)
       }
     }
