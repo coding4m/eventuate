@@ -17,7 +17,6 @@
 package com.rbmhtechnology.eventuate.snapshot.leveldb
 
 import akka.actor.ActorSystem
-import com.typesafe.config.Config
 
 import scala.concurrent.ExecutionContextExecutor
 
@@ -43,4 +42,7 @@ class LeveldbSnapshotSettings(system: ActorSystem) {
 
   val snapshotsPerMax: Int =
     system.settings.config.getInt("eventuate.snapshot.leveldb.snapshots-per-max")
+
+  val deletionBatchSize: Int =
+    system.settings.config.getInt("eventuate.snapshot.leveldb.deletion-batch-size")
 }

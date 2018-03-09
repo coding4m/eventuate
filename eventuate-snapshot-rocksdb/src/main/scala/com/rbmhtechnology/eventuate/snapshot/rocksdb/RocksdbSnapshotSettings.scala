@@ -17,7 +17,6 @@
 package com.rbmhtechnology.eventuate.snapshot.rocksdb
 
 import akka.actor.ActorSystem
-import com.typesafe.config.Config
 
 import scala.concurrent.ExecutionContextExecutor
 
@@ -33,14 +32,17 @@ class RocksdbSnapshotSettings(system: ActorSystem) {
     system.dispatchers.lookup("eventuate.snapshot.dispatchers.write-dispatcher")
 
   val prefix: String =
-    system.settings.config.getString("eventuate.snapshot.leveldb.prefix")
+    system.settings.config.getString("eventuate.snapshot.rocksdb.prefix")
 
   val rootDir: String =
-    system.settings.config.getString("eventuate.snapshot.leveldb.dir")
+    system.settings.config.getString("eventuate.snapshot.rocksdb.dir")
 
   val fsync: Boolean =
-    system.settings.config.getBoolean("eventuate.snapshot.leveldb.fsync")
+    system.settings.config.getBoolean("eventuate.snapshot.rocksdb.fsync")
 
   val snapshotsPerMax: Int =
-    system.settings.config.getInt("eventuate.snapshot.leveldb.snapshots-per-max")
+    system.settings.config.getInt("eventuate.snapshot.rocksdb.snapshots-per-max")
+
+  val deletionBatchSize: Int =
+    system.settings.config.getInt("eventuate.snapshot.rocksdb.deletion-batch-size")
 }

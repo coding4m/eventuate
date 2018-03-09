@@ -23,8 +23,9 @@ import akka.serialization.SerializationExtension
 import com.rbmhtechnology.eventuate.Snapshot
 import com.rbmhtechnology.eventuate.snapshot.SnapshotStore
 import org.fusesource.leveldbjni.JniDBFactory.factory
-import org.iq80.leveldb.{ Options, ReadOptions, WriteOptions }
+import org.iq80.leveldb.{ Options, ReadOptions, WriteBatch, WriteOptions }
 
+import scala.annotation.tailrec
 import scala.concurrent.Future
 
 /**
@@ -91,17 +92,35 @@ class LeveldbSnapshotStore(system: ActorSystem, id: String) extends SnapshotStor
    * Asynchronously deletes all snapshots with a sequence number greater than or equal `lowerSequenceNr`.
    */
   override def delete(lowerSequenceNr: Long) = {
-    // todo use batch
     import settings.writeDispatcher
     Future {
       withIterator(snapshotOptions, reserved = false) { it =>
-        it.seekToFirst().filter(_.sequenceNr >= lowerSequenceNr).foreach(item => leveldb.delete(item.key))
+        deleteBatch(it.seekToFirst().filter(_.sequenceNr >= lowerSequenceNr).map(_.key))
       }
+    }
+  }
+
+  @tailrec
+  private def deleteBatch(it: Iterator[Array[Byte]]): Unit = {
+    withBatch(batch => it.take(settings.deletionBatchSize).foreach(batch.delete))
+    if (it.hasNext) {
+      deleteBatch(it)
     }
   }
 
   override def close() = {
     leveldb.close()
+  }
+
+  private def withBatch[R](body: WriteBatch => R): R = {
+    val batch = leveldb.createWriteBatch()
+    try {
+      val r = body(batch)
+      leveldb.write(batch, writeOptions)
+      r
+    } finally {
+      batch.close()
+    }
   }
 
   private def withIterator[T](options: ReadOptions, reserved: Boolean)(body: SnapshotIterator => T): T = {

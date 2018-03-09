@@ -24,6 +24,7 @@ import com.rbmhtechnology.eventuate.Snapshot
 import com.rbmhtechnology.eventuate.snapshot.SnapshotStore
 import org.rocksdb._
 
+import scala.annotation.tailrec
 import scala.concurrent.Future
 
 /**
@@ -93,17 +94,35 @@ class RocksdbSnapshotStore(system: ActorSystem, id: String) extends SnapshotStor
    * Asynchronously deletes all snapshots with a sequence number greater than or equal `lowerSequenceNr`.
    */
   override def delete(lowerSequenceNr: Long) = {
-    // todo use batch
     import settings.writeDispatcher
     Future {
       withIterator[Unit](snapshotOptions, reserved = false) { it =>
-        it.seekToFirst().filter(_.sequenceNr >= lowerSequenceNr).foreach(item => rocksdb.delete(item.key))
+        deleteBatch(it.seekToFirst().filter(_.sequenceNr >= lowerSequenceNr).map(_.key))
       }
+    }
+  }
+
+  @tailrec
+  private def deleteBatch(it: Iterator[Array[Byte]]): Unit = {
+    withBatch(batch => it.take(settings.deletionBatchSize).foreach(batch.remove))
+    if (it.hasNext) {
+      deleteBatch(it)
     }
   }
 
   override def close() = {
     rocksdb.close()
+  }
+
+  private def withBatch[R](body: WriteBatch => R): R = {
+    val batch = new WriteBatch()
+    try {
+      val r = body(batch)
+      rocksdb.write(writeOptions, batch)
+      r
+    } finally {
+      batch.close()
+    }
   }
 
   private def withIterator[T](options: ReadOptions, reserved: Boolean)(body: SnapshotIterator => T): T = {
