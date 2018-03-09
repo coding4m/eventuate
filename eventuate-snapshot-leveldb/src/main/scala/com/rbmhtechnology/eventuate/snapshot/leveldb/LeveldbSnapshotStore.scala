@@ -63,16 +63,15 @@ class LeveldbSnapshotStore(system: ActorSystem, id: String) extends SnapshotStor
     import settings.writeDispatcher
     Future {
       withIterator[Unit](snapshotOptions, reserved = true) { it =>
-        val batch = leveldb.createWriteBatch()
-        val key = SnapshotItem.itemKey(snapshot.metadata.emitterId, snapshot.metadata.sequenceNr)
-        val value = SnapshotItem.itemValue(snapshot)
-        batch.put(key, value)
-        it.seek(key)
-          .takeWhile(_.emitterId == snapshot.metadata.emitterId)
-          .drop(settings.snapshotsPerMax - 1)
-          .foreach(it => batch.delete(it.key))
-
-        leveldb.write(batch, writeOptions)
+        withBatch { batch =>
+          val key = SnapshotItem.itemKey(snapshot.metadata.emitterId, snapshot.metadata.sequenceNr)
+          val value = SnapshotItem.itemValue(snapshot)
+          batch.put(key, value)
+          it.seek(key)
+            .takeWhile(_.emitterId == snapshot.metadata.emitterId)
+            .drop(settings.snapshotsPerMax - 1)
+            .foreach(it => batch.delete(it.key))
+        }
       }
     }
   }
@@ -81,9 +80,7 @@ class LeveldbSnapshotStore(system: ActorSystem, id: String) extends SnapshotStor
     import settings.writeDispatcher
     Future {
       withIterator(snapshotOptions, reserved = false) { it =>
-        val batch = leveldb.createWriteBatch()
-        it.first(emitterId).takeWhile(_.emitterId == emitterId).foreach(item => batch.delete(item.key))
-        leveldb.write(batch, writeOptions)
+        deleteBatch(it.first(emitterId).takeWhile(_.emitterId == emitterId).map(_.key))
       }
     }
   }

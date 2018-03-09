@@ -62,16 +62,15 @@ class RocksdbSnapshotStore(system: ActorSystem, id: String) extends SnapshotStor
     import settings.writeDispatcher
     Future {
       withIterator[Unit](snapshotOptions, reserved = true) { it =>
-        val batch = new WriteBatch()
-        val key = SnapshotItem.itemKey(snapshot.metadata.emitterId, snapshot.metadata.sequenceNr)
-        val value = SnapshotItem.itemValue(snapshot)
-        batch.put(key, value)
-        it.seekForPrev(key)
-          .takeWhile(_.emitterId == snapshot.metadata.emitterId)
-          .drop(settings.snapshotsPerMax - 1)
-          .foreach(it => batch.remove(it.key))
-
-        rocksdb.write(writeOptions, batch)
+        withBatch { batch =>
+          val key = SnapshotItem.itemKey(snapshot.metadata.emitterId, snapshot.metadata.sequenceNr)
+          val value = SnapshotItem.itemValue(snapshot)
+          batch.put(key, value)
+          it.seekForPrev(key)
+            .takeWhile(_.emitterId == snapshot.metadata.emitterId)
+            .drop(settings.snapshotsPerMax - 1)
+            .foreach(it => batch.remove(it.key))
+        }
       }
     }
   }
@@ -83,9 +82,7 @@ class RocksdbSnapshotStore(system: ActorSystem, id: String) extends SnapshotStor
     import settings.writeDispatcher
     Future {
       withIterator[Unit](snapshotOptions, reserved = false) { it =>
-        val batch = new WriteBatch()
-        it.first(emitterId).takeWhile(_.emitterId == emitterId).foreach(item => batch.remove(item.key))
-        rocksdb.write(writeOptions, batch)
+        deleteBatch(it.first(emitterId).takeWhile(_.emitterId == emitterId).map(_.key))
       }
     }
   }
