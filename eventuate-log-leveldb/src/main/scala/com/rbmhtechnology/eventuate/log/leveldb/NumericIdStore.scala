@@ -28,9 +28,9 @@ private[leveldb] class NumericIdStore(val leveldb: DB, val writeOptions: WriteOp
   def numericId(stringId: String, readOnly: Boolean = false): Long = {
     assert(stringId != IdSequence, s"id must not eq $IdSequence .")
     val nid = leveldb.get(idBytes(classifier, stringId))
-    if (null == nid) {
-      if (readOnly) Long.MaxValue else writeNumericId(stringId)
-    } else longFromBytes(nid)
+    if(null != nid) longFromBytes(nid)
+    else if(readOnly) Long.MaxValue
+    else writeNumericId(stringId)
   }
 
   private def writeNumericId(stringId: String) = withBatch { batch =>
@@ -38,7 +38,6 @@ private[leveldb] class NumericIdStore(val leveldb: DB, val writeOptions: WriteOp
     val nid = longFromBytes(nidBytes)
     batch.put(idBytes(classifier, stringId), nidBytes)
     batch.put(IdSequenceBytes, longBytes(nid + 1L))
-    leveldb.write(batch, writeOptions)
     nid
   }
 }

@@ -35,7 +35,6 @@ private[leveldb] class ProgressStore(val leveldb: DB, val writeOptions: WriteOpt
 
   def readProgresses(): Map[String, Long] = {
     withIterator(new ReadOptions().verifyChecksums(false).snapshot(leveldb.getSnapshot)) { it =>
-      it.seekToFirst()
       readProgresses(Map.empty[String, Long], it.seekToFirst())
     }
   }
