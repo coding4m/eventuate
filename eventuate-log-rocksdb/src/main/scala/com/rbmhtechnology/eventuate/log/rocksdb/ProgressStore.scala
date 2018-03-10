@@ -25,7 +25,6 @@ private class ProgressStore(val rocksdb: RocksDB, val writeOptions: WriteOptions
 
   def writeProgresses(progresses: Map[String, Long]): Unit = withBatch { batch =>
     progresses.foreach(it => batch.put(columnHandle, stringBytes(it._1), longBytes(it._2)))
-    rocksdb.write(writeOptions, batch)
   }
 
   def readProgress(logId: String): Long = {
@@ -36,8 +35,14 @@ private class ProgressStore(val rocksdb: RocksDB, val writeOptions: WriteOptions
   def readProgresses(): Map[String, Long] = {
     val options = new ReadOptions().setVerifyChecksums(false).setSnapshot(rocksdb.getSnapshot)
     val iter = rocksdb.newIterator(columnHandle, options)
-    iter.seekToFirst()
-    readProgresses(Map.empty[String, Long], iter)
+    try {
+      iter.seekToFirst()
+      readProgresses(Map.empty[String, Long], iter)
+    } finally {
+      iter.close()
+      options.snapshot().close()
+    }
+
   }
 
   @tailrec

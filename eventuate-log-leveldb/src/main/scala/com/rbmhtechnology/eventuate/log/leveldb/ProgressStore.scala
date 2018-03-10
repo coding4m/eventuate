@@ -25,7 +25,6 @@ private[leveldb] class ProgressStore(val leveldb: DB, val writeOptions: WriteOpt
 
   def writeProgresses(progresses: Map[String, Long]): Unit = withBatch { batch =>
     progresses.foreach(it => batch.put(progressKeyBytes(classifier, it._1), longBytes(it._2)))
-    leveldb.write(batch, writeOptions)
   }
 
   def readProgress(logId: String): Long = {

@@ -28,8 +28,8 @@ private[leveldb] class NumericIdStore(val leveldb: DB, val writeOptions: WriteOp
   def numericId(stringId: String, readOnly: Boolean = false): Long = {
     assert(stringId != IdSequence, s"id must not eq $IdSequence .")
     val nid = leveldb.get(idBytes(classifier, stringId))
-    if(null != nid) longFromBytes(nid)
-    else if(readOnly) Long.MaxValue
+    if (null != nid) longFromBytes(nid)
+    else if (readOnly) Long.MaxValue
     else writeNumericId(stringId)
   }
 
