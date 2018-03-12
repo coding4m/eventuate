@@ -198,7 +198,7 @@ class ConcurrentVersionsTree[A, B](private[eventuate] val root: ConcurrentVersio
       parent.addChild(new Node(versioned = n.versioned.copy(vectorTimestamp = vectorTimestamp, systemTimestamp = systemTimestamp)))
       leaves.foreach {
         case node if node.rejected => // ignore rejected leaf
-        case node if node.versioned.vectorTimestamp.conc(vectorTimestamp) => // ignore concurrent update
+        //        case node if node.versioned.vectorTimestamp.conc(vectorTimestamp) => // ignore concurrent update
         case node if node.versioned.vectorTimestamp == vectorTimestamp => // ignore
         case node => node.reject()
       }
