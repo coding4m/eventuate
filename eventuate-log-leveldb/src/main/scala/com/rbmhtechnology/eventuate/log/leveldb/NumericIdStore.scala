@@ -20,7 +20,7 @@ import org.iq80.leveldb.{ DB, WriteOptions }
 
 private[leveldb] class NumericIdStore(val leveldb: DB, val writeOptions: WriteOptions, classifier: Long) extends LeveldbBatchLayer {
   import NumericIdKeys._
-
+  val IdSequenceBytes = idBytes(classifier, IdSequence)
   if (null == leveldb.get(IdSequenceBytes)) {
     leveldb.put(IdSequenceBytes, longBytes(1L))
   }

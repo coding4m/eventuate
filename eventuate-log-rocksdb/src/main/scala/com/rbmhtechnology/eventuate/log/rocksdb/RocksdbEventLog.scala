@@ -311,7 +311,10 @@ class RocksdbEventLog(id: String) extends EventLog[RocksdbEventLogState](id) wit
         iter1.next()
         res
       }
-    }.takeWhile(entry => eventKeyFromBytes(entry._1).classifier == classifier && !eventKeyEndBytes.sameElements(entry._1)).map(entry => eventFromBytes(entry._2))
+    }.takeWhile { entry =>
+      val ek = eventKeyFromBytes(entry._1)
+      ek.classifier == classifier && ek != eventKeyEnd
+    }.map(entry => eventFromBytes(entry._2))
 
     override def hasNext: Boolean = iter2.hasNext
     override def next(): DurableEvent = iter2.next()

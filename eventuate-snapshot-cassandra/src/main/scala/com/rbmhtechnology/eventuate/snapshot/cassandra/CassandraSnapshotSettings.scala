@@ -16,9 +16,22 @@
 
 package com.rbmhtechnology.eventuate.snapshot.cassandra
 
+import com.typesafe.config.Config
+
 /**
  * @author siuming
  */
-class CassandraSnapshotSettings {
+class CassandraSnapshotSettings(config: Config) {
+  val keyspace: String =
+    config.getString("eventuate.snapshot.cassandra.keyspace")
+
+  val keyspaceAutoCreate: Boolean =
+    config.getBoolean("eventuate.snapshot.cassandra.keyspace-autocreate")
+
+  val replicationFactor: Int =
+    config.getInt("eventuate.snapshot.cassandra.replication-factor")
+
+  val tablePrefix: String =
+    config.getString("eventuate.snapshot.cassandra.table-prefix")
 
 }

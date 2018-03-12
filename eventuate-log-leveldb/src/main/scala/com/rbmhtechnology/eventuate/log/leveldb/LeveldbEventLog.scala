@@ -214,9 +214,11 @@ class LeveldbEventLog(id: String) extends EventLog[LeveldbEventLogState](id) wit
 
   private class EventIterator(from: Long, classifier: Long) extends Iterator[DurableEvent] with Closeable {
     val options = snapshotOptions()
-    val iter1 = leveldb.iterator(options)
-    val iter2 = iter1.asScala.takeWhile(entry => eventKey(entry.getKey).classifier == classifier && !eventKeyEndBytes.sameElements(entry.getKey)).map(entry => event(entry.getValue))
-    iter1.seek(eventKeyBytes(classifier, from))
+    val iter1 = leveldb.iterator(options); iter1.seek(eventKeyBytes(classifier, from))
+    val iter2 = iter1.asScala.takeWhile { entry =>
+      val ek = eventKey(entry.getKey)
+      ek.classifier == classifier && ek != eventKeyEnd
+    }.map(entry => event(entry.getValue))
     override def hasNext: Boolean = iter2.hasNext
     override def next(): DurableEvent = iter2.next()
     override def close(): Unit = {

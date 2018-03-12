@@ -14,31 +14,25 @@
  * limitations under the License.
  */
 
-package com.rbmhtechnology.eventuate.log.leveldb
-
-import java.nio.ByteBuffer
-import java.nio.charset.Charset
+package com.rbmhtechnology.eventuate.snapshot.cassandra
 
 /**
  * @author siuming
  */
-private[leveldb] trait NumericIdKeys {
-  val IdCharset = Charset.forName("UTF-8")
-  val IdSequence = "$$SEQUENCE$$"
+trait CassandraSnapshotStatements {
+  val settings: CassandraSnapshotSettings
 
-  def idBytes(classifier: Long, id: String): Array[Byte] = {
-    val idBytes = id.getBytes(IdCharset)
-    ByteBuffer
-      .allocate(idBytes.length + 8)
-      .putLong(classifier)
-      .put(idBytes)
-      .array()
-  }
+  def createKeySpaceStatement = s"""
+      CREATE KEYSPACE IF NOT EXISTS ${settings.keyspace}
+      WITH REPLICATION = { 'class' : 'SimpleStrategy', 'replication_factor' : ${settings.replicationFactor} }
+    """
 
-  def longBytes(l: Long): Array[Byte] =
-    ByteBuffer.allocate(8).putLong(l).array
-
-  def longFromBytes(a: Array[Byte]): Long =
-    ByteBuffer.wrap(a).getLong
+  def createSnapshotTableStatement(logId: String) = s"""
+      CREATE TABLE IF NOT EXISTS ${settings.keyspace}.${settings.tablePrefix}.$logId (
+        aggregate_id text,
+        sequence_nr bigint,
+        snapshot blob,
+        PRIMARY KEY (aggregate_id, sequence_nr)
+      ) WITH COMPACT STORAGE
+    """
 }
-private[leveldb] object NumericIdKeys extends NumericIdKeys
