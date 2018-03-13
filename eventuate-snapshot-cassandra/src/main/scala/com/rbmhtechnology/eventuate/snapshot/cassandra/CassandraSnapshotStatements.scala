@@ -33,6 +33,6 @@ trait CassandraSnapshotStatements {
         sequence_nr bigint,
         snapshot blob,
         PRIMARY KEY (aggregate_id, sequence_nr)
-      ) WITH COMPACT STORAGE
+      )
     """
 }
