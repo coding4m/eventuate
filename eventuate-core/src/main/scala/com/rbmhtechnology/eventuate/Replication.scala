@@ -380,10 +380,10 @@ private class Controller(endpoint: ReplicationEndpoint) extends Actor with Actor
 
   import Controller._
 
-  private var replicationRegistry = ReplicationRegistry()
-  private val replicationDetector = context.actorOf(
-    ReplicationDetector.props(endpoint.connections, endpoint.connectionRoles, endpoint.connectionLimits).withDispatcher(endpoint.settings.controllerDispatcher),
-    ReplicationDetector.Name
+  private var replicaRegistry = ReplicaRegistry()
+  private val replicaDetector = context.actorOf(
+    ReplicaDetector.props(endpoint.connections, endpoint.connectionRoles, endpoint.connectionLimits).withDispatcher(endpoint.settings.controllerDispatcher),
+    ReplicaDetector.Name
   )
 
   pipelineOuter {
@@ -406,12 +406,12 @@ private class Controller(endpoint: ReplicationEndpoint) extends Actor with Actor
   override def receive: Receive = {
 
     case ListConnection =>
-      replicationDetector forward ListConnection
+      replicaDetector forward ListConnection
 
     case ConnectionUp(connection) =>
       context.actorOf(Props(new ReplicatorInitializer(endpoint, connection)).withDispatcher(endpoint.settings.controllerDispatcher))
     case ConnectionDown(connection) =>
-      replicationRegistry.replicators.keys filter {
+      replicaRegistry.replicators.keys filter {
         endpoint.replicationAcceptor(connection) == _.source.acceptor
       } foreach {
         self ! ReplicatorDown(_)
@@ -432,35 +432,36 @@ private class Controller(endpoint: ReplicationEndpoint) extends Actor with Actor
 
   private def replicatorUp(link: ReplicationLink) = {
     val replicator = context.actorOf(Props(new Replicator(endpoint, link.target, link.source)).withDispatcher(endpoint.settings.controllerDispatcher))
-    replicationRegistry = replicationRegistry + (link, replicator)
+    replicaRegistry = replicaRegistry + (link, replicator)
   }
 
   private def replicatorDown(link: ReplicationLink) = {
-    replicationRegistry(link).foreach { r =>
-      replicationRegistry = replicationRegistry - link
+    replicaRegistry(link).foreach { r =>
+      replicaRegistry = replicaRegistry - link
       context stop r
     }
   }
 }
 
-private object ReplicationDetector {
-  val Name = "replication-detector"
+private object ReplicaDetector {
+  val Name = "replica-detector"
 
   def props(connections: Set[ReplicationConnection], connectionRoles: Set[String], maxConnections: Int): Props = {
     require(connections.nonEmpty || connectionRoles.nonEmpty, "connections and connectionRoles both empty.")
-    Props(new ReplicationDetector(connections, connectionRoles, maxConnections))
+    Props(new ReplicaDetector(connections, connectionRoles, maxConnections))
   }
 
   private case object ReplicaDetected
 }
-private class ReplicationDetector(connections: Set[ReplicationConnection], connectionRoles: Set[String], maxConnections: Int) extends Actor with ActorLogging with Stash {
+private class ReplicaDetector(connections: Set[ReplicationConnection], connectionRoles: Set[String], maxConnections: Int) extends Actor with ActorLogging with Stash {
 
   import Controller._
-  import ReplicationDetector._
+  import ReplicaDetector._
 
   private val cluster = Cluster(context.system)
   private val selfAddress = cluster.selfAddress
   private val selfUniqueAddress = cluster.selfUniqueAddress
+  private val selfConnection = ReplicationConnection(selfAddress.host.get, selfAddress.port.get, context.system.name)
 
   private var syncSet = Set.empty[ReplicationConnection]
   private var backSet = Set.empty[ReplicationConnection]
@@ -493,7 +494,7 @@ private class ReplicationDetector(connections: Set[ReplicationConnection], conne
 
   private def initiated: Receive = {
     case ListConnection =>
-      sender ! ConnectionList(connections ++ syncSet)
+      sender ! ConnectionList(listConnections())
     case MemberUp(member) if availableMember(member) =>
       availableConnection(member).foreach(connectionReachable)
     case ReachableMember(member) if availableMember(member) =>
@@ -552,15 +553,19 @@ private class ReplicationDetector(connections: Set[ReplicationConnection], conne
     }
   }
 
+  private def listConnections(): Set[ReplicationConnection] = {
+    (connections ++ syncSet).filterNot(_ == selfConnection)
+  }
+
   override def postStop(): Unit = if (connectionRoles.nonEmpty) cluster.unsubscribe(self)
 }
-private case class ReplicationRegistry(replicators: Map[ReplicationLink, ActorRef] = Map.empty) {
+private case class ReplicaRegistry(replicators: Map[ReplicationLink, ActorRef] = Map.empty) {
 
-  def +(link: ReplicationLink, replicator: ActorRef): ReplicationRegistry = {
+  def +(link: ReplicationLink, replicator: ActorRef): ReplicaRegistry = {
     copy(replicators = replicators + (link -> replicator))
   }
 
-  def -(link: ReplicationLink): ReplicationRegistry = {
+  def -(link: ReplicationLink): ReplicaRegistry = {
     copy(replicators = replicators - link)
   }
 
