@@ -23,10 +23,10 @@ import scala.concurrent.duration._
 /**
  * @author siuming
  */
-trait ShutdownOnTimeout extends Actor {
+trait RecycleOnTimeout extends Actor {
 
-  def deadline: ShutdownDeadline =
-    ShutdownDeadline(context.parent, Shutdown, 30.seconds)
+  def deadline: RecycleDeadline =
+    RecycleDeadline(context.parent, Recycle, 30.seconds)
 
   @scala.throws[Exception](classOf[Exception])
   override def preStart(): Unit = {
@@ -35,7 +35,7 @@ trait ShutdownOnTimeout extends Actor {
   }
 
   override def unhandled(message: Any): Unit = message match {
-    case ReceiveTimeout => deadline.target ! deadline.message
+    case ReceiveTimeout => recycle()
     case _              => super.unhandled(message)
   }
 
@@ -51,14 +51,12 @@ trait ShutdownOnTimeout extends Actor {
 
   protected final def suspend(): Unit = context.setReceiveTimeout(deadline.timeout)
 
-  protected final def shutdown(f: => Unit): Unit = {
-    try {
-      f
-    } finally {
-      shutdown()
-    }
+  protected final def recycle(f: => Unit): Unit = try {
+    f
+  } finally {
+    recycle()
   }
 
-  protected final def shutdown(): Unit = deadline.target ! deadline.message
+  protected final def recycle(): Unit = deadline.target ! deadline.message
 }
-case object Shutdown
+case object Recycle

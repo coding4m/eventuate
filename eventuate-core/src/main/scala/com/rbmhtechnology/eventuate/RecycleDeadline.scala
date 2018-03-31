@@ -23,4 +23,4 @@ import scala.concurrent.duration.Duration
 /**
  * @author siuming
  */
-case class ShutdownDeadline(target: ActorRef, message: AnyRef, timeout: Duration)
+case class RecycleDeadline(target: ActorRef, message: AnyRef, timeout: Duration)
