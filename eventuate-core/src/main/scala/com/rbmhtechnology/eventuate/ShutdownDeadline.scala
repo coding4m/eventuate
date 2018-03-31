@@ -16,7 +16,11 @@
 
 package com.rbmhtechnology.eventuate
 
+import akka.actor.ActorRef
+
+import scala.concurrent.duration.Duration
+
 /**
  * @author siuming
  */
-case object Terminating
+case class ShutdownDeadline(target: ActorRef, message: AnyRef, timeout: Duration)
