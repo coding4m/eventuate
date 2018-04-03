@@ -31,7 +31,7 @@ private[rocksdb] object SnapshotItem {
     SnapshotItem(
       key,
       new String(key.slice(0, key.length - 8), StringCharset),
-      ByteBuffer.wrap(key, key.length - 8, key.length).getLong,
+      ByteBuffer.wrap(key.slice(key.length - 8, key.length)).getLong,
       serialization.deserialize(value, classOf[Snapshot]).get
     )
   }
