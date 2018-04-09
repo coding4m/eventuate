@@ -173,7 +173,7 @@ lazy val adapterStream = (project in file("eventuate-adapter-stream"))
 //  .enablePlugins(HeaderPlugin, AutomateHeaderPlugin)
 
 //lazy val examples = (project in file("eventuate-examples"))
-//  .dependsOn(core, logLeveldb, logRocksdb)
+//  .dependsOn(core, logLeveldb, logRocksdb, snapshotLeveldb, snapshotRocksdb)
 //  .settings(name := "eventuate-examples")
 //  .settings(commonSettings: _*)
 //  .settings(exampleSettings: _*)

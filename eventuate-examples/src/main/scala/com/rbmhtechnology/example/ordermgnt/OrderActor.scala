@@ -156,5 +156,4 @@ class OrderActor(orderId: String, replicaId: String, val eventLog: ActorRef) ext
     case (order, OrderItemRemoved(`orderId`, item)) => order.removeItem(item)
   }
 
-
 }
