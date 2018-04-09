@@ -23,7 +23,7 @@ import akka.serialization.SerializationExtension
 import com.rbmhtechnology.eventuate.Snapshot
 import com.rbmhtechnology.eventuate.snapshot.SnapshotStore
 import org.fusesource.leveldbjni.JniDBFactory.factory
-import org.iq80.leveldb.{ Options, ReadOptions, WriteBatch, WriteOptions }
+import org.iq80.leveldb._
 
 import scala.annotation.tailrec
 import scala.concurrent.Future
@@ -40,7 +40,7 @@ class LeveldbSnapshotStore(system: ActorSystem, id: String) extends SnapshotStor
   private val leveldbOptions = new Options().createIfMissing(true)
   private val leveldb = factory.open(leveldbDir, leveldbOptions)
   private val writeOptions = new WriteOptions().sync(settings.fsync).snapshot(false)
-  private def readOptions = new ReadOptions().verifyChecksums(false).snapshot(leveldb.getSnapshot)
+  private def readOptions = new ReadOptions().verifyChecksums(false)
   private def snapshotOptions = readOptions.snapshot(leveldb.getSnapshot)
 
   /**
@@ -50,8 +50,10 @@ class LeveldbSnapshotStore(system: ActorSystem, id: String) extends SnapshotStor
   override def load(emitterId: String) = {
     import settings.readDispatcher
     Future {
-      withIterator[Option[Snapshot]](snapshotOptions, reserved = true) { it =>
-        it.last(emitterId).takeWhile(_.emitterId == emitterId).find(_.emitterId == emitterId).map(_.snapshot)
+      withIterator[Option[Snapshot]](snapshotOptions, reserved = false) { it =>
+        val snapshots = it.first(emitterId).takeWhile(_.emitterId == emitterId).toSeq
+        snapshots.foreach(println)
+        snapshots.lastOption.map(_.snapshot)
       }
     }
   }
@@ -62,13 +64,16 @@ class LeveldbSnapshotStore(system: ActorSystem, id: String) extends SnapshotStor
   override def save(snapshot: Snapshot) = {
     import settings.writeDispatcher
     Future {
-      withIterator[Unit](snapshotOptions, reserved = true) { it =>
-        withBatch { batch =>
-          val key = SnapshotItem.itemKey(snapshot.metadata.emitterId, snapshot.metadata.sequenceNr)
-          val value = SnapshotItem.itemValue(snapshot)
-          batch.put(key, value)
-          it.seek(key)
+      withBatch { batch =>
+        val key = SnapshotItem.itemKey(snapshot.metadata.emitterId, snapshot.metadata.sequenceNr)
+        val value = SnapshotItem.itemValue(snapshot)
+        batch.put(key, value)
+        withIterator[Unit](snapshotOptions, reserved = false) { it =>
+          it.first(snapshot.metadata.emitterId)
             .takeWhile(_.emitterId == snapshot.metadata.emitterId)
+            .filter(!_.key.sameElements(key))
+            .toSeq
+            .reverseIterator
             .drop(settings.snapshotsPerMax - 1)
             .foreach(it => batch.delete(it.key))
         }
