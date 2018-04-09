@@ -51,9 +51,7 @@ class LeveldbSnapshotStore(system: ActorSystem, id: String) extends SnapshotStor
     import settings.readDispatcher
     Future {
       withIterator[Option[Snapshot]](snapshotOptions, reserved = false) { it =>
-        val snapshots = it.first(emitterId).takeWhile(_.emitterId == emitterId).toSeq
-        snapshots.foreach(println)
-        snapshots.lastOption.map(_.snapshot)
+        it.first(emitterId).takeWhile(_.emitterId == emitterId).toSeq.lastOption.map(_.snapshot)
       }
     }
   }
