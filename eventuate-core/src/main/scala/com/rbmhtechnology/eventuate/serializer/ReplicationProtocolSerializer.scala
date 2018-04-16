@@ -36,12 +36,16 @@ class ReplicationProtocolSerializer(system: ExtendedActorSystem) extends Seriali
   import eventSerializer.commonSerializer
   import commonSerializer.payloadSerializer
 
+  val EndpointStateClass = classOf[EndpointState]
+  val EndpointLogClass = classOf[EndpointLog]
+
   val GetReplicationInfoClass = GetReplicationInfo.getClass
   val GetReplicationInfoSuccessClass = classOf[GetReplicationInfoSuccess]
   val SynchronizeReplicationProgressClass = classOf[SynchronizeReplicationProgress]
   val SynchronizeReplicationProgressSuccessClass = classOf[SynchronizeReplicationProgressSuccess]
   val SynchronizeReplicationProgressFailureClass = classOf[SynchronizeReplicationProgressFailure]
   val SynchronizeReplicationProgressSourceExceptionClass = classOf[SynchronizeReplicationProgressSourceException]
+
   val ReplicationReadEnvelopeClass = classOf[ReplicationReadEnvelope]
   val ReplicationReadClass = classOf[ReplicationRead]
   val ReplicationReadSuccessClass = classOf[ReplicationReadSuccess]
@@ -55,6 +59,11 @@ class ReplicationProtocolSerializer(system: ExtendedActorSystem) extends Seriali
 
   override def toBinary(o: AnyRef): Array[Byte] = {
     o match {
+      case m: EndpointState =>
+        endpointStateFormatBuilder(m).build().toByteArray
+      case m: EndpointLog =>
+        endpointLogFormatBuilder(m).build().toByteArray
+
       case GetReplicationInfo =>
         GetReplicationInfoFormat.newBuilder().build().toByteArray
       case m: GetReplicationInfoSuccess =>
@@ -89,6 +98,11 @@ class ReplicationProtocolSerializer(system: ExtendedActorSystem) extends Seriali
   override def fromBinary(bytes: Array[Byte], manifest: Option[Class[_]]): AnyRef = manifest match {
     case None => throw new IllegalArgumentException("manifest required")
     case Some(clazz) => clazz match {
+      case EndpointStateClass =>
+        endpointState(EndpointStateFormat.parseFrom(bytes))
+      case EndpointLogClass =>
+        endpointLog(EndpointLogFormat.parseFrom(bytes))
+
       case GetReplicationInfoClass =>
         GetReplicationInfo
       case GetReplicationInfoSuccessClass =>
@@ -116,13 +130,32 @@ class ReplicationProtocolSerializer(system: ExtendedActorSystem) extends Seriali
       case SynchronizeReplicationProgressSourceExceptionClass =>
         synchronizeReplicationProgressSourceException(SynchronizeReplicationProgressSourceExceptionFormat.parseFrom(bytes))
       case _ =>
-        throw new IllegalArgumentException(s"can't deserialize object of type ${clazz}")
+        throw new IllegalArgumentException(s"can't deserialize object of type $clazz")
     }
   }
 
   // --------------------------------------------------------------------------------
   //  toBinary helpers
   // --------------------------------------------------------------------------------
+
+  private def endpointStateFormatBuilder(state: EndpointState): EndpointStateFormat.Builder = {
+    val builder = EndpointStateFormat
+      .newBuilder()
+      .setEndpointId(state.endpointId)
+      .addAllLogs(state.logs.map(it => endpointLogFormatBuilder(it).build()).asJava)
+    state.host.foreach(builder.setHost)
+    state.port.foreach(builder.setPort)
+    builder
+  }
+
+  private def endpointLogFormatBuilder(log: EndpointLog): EndpointLogFormat.Builder = {
+    EndpointLogFormat
+      .newBuilder()
+      .setLogName(log.logName)
+      .setSequenceNr(log.sequenceNr)
+      .putAllClock(log.clock.asJava.asInstanceOf[java.util.Map[java.lang.String, java.lang.Long]])
+      .putAllReplicationProgresses(log.replicationProgresses.asJava.asInstanceOf[java.util.Map[java.lang.String, java.lang.Long]])
+  }
 
   private def replicationReadFailureFormatBuilder(message: ReplicationReadFailure): ReplicationReadFailureFormat.Builder = {
     val builder = ReplicationReadFailureFormat.newBuilder()
@@ -215,6 +248,28 @@ class ReplicationProtocolSerializer(system: ExtendedActorSystem) extends Seriali
   // --------------------------------------------------------------------------------
   //  fromBinary helpers
   // --------------------------------------------------------------------------------
+
+  private def endpointState(format: EndpointStateFormat): EndpointState = {
+    EndpointState(
+      Option(format.getHost),
+      Option(format.getPort),
+      format.getEndpointId,
+      format.getLogsList.asScala.map(endpointLog).toSet
+    )
+  }
+
+  private def endpointLog(format: EndpointLogFormat): EndpointLog = {
+    EndpointLog(
+      format.getLogName,
+      format.getSequenceNr,
+      format.getClockMap.asScala.iterator.foldLeft(Map.empty[String, Long]) {
+        case (result, entry) => result.updated(entry._1, entry._2)
+      },
+      format.getReplicationProgressesMap.asScala.iterator.foldLeft(Map.empty[String, Long]) {
+        case (result, entry) => result.updated(entry._1, entry._2)
+      }
+    )
+  }
 
   private def replicationReadFailure(messageFormat: ReplicationReadFailureFormat): ReplicationReadFailure =
     ReplicationReadFailure(

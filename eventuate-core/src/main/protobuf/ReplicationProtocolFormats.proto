@@ -103,3 +103,17 @@ message IncompatibleApplicationVersionExceptionFormat {
 message ReplicationDueFormat {
   // no fields
 }
+
+message EndpointLogFormat {
+  string logName = 1;
+  int64 sequenceNr = 2;
+  map<string, int64> clock = 3;
+  map<string, int64> replicationProgresses = 4;
+}
+
+message EndpointStateFormat {
+  string host = 1;
+  int32 port = 2;
+  string endpointId = 3;
+  repeated EndpointLogFormat logs = 4;
+}

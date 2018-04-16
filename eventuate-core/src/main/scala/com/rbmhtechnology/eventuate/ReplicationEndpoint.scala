@@ -26,7 +26,7 @@ import akka.util.Timeout
 import com.rbmhtechnology.eventuate.EndpointFilters.NoFilters
 import com.rbmhtechnology.eventuate.EventsourcingProtocol.{ Delete, DeleteFailure, DeleteSuccess }
 import com.rbmhtechnology.eventuate.ReplicationFilter.NoFilter
-import com.rbmhtechnology.eventuate.ReplicationProtocol.ReplicationInfo
+import com.rbmhtechnology.eventuate.ReplicationProtocol._
 import com.typesafe.config.Config
 
 import scala.collection.JavaConverters._
@@ -357,6 +357,28 @@ class ReplicationEndpoint(
    */
   def logId(logName: String): String =
     ReplicationInfo.logId(id, logName)
+
+  def state: Future[EndpointState] = {
+    import system.dispatcher
+    Future.traverse(logNames) { logName =>
+      for {
+        clock <- logs(logName).ask(GetEventLogClock)(settings.readTimeout) flatMap {
+          case GetEventLogClockSuccess(r) => Future.successful(r)
+          case GetEventLogClockFailure(e) => Future.failed(e)
+        }
+        progresses <- logs(logName).ask(GetReplicationProgresses)(settings.readTimeout) flatMap {
+          case GetReplicationProgressesSuccess(r) => Future.successful(r)
+          case GetReplicationProgressesFailure(e) => Future.failed(e)
+        }
+      } yield (logName, clock, progresses)
+    } map { results =>
+      val address = system match {
+        case sys: ExtendedActorSystem => Some(sys.provider.getDefaultAddress)
+        case _                        => None
+      }
+      EndpointState(address.flatMap(_.host), address.flatMap(_.port), id, results.map(it => EndpointLog(it._1, it._2.sequenceNr, it._2.versionVector.value, it._3)))
+    }
+  }
 
   /**
    * Activates this endpoint by starting event replication from remote endpoints to this endpoint.

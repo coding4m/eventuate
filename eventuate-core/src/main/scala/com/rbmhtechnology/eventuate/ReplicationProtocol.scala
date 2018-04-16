@@ -29,6 +29,10 @@ object ReplicationProtocol {
    */
   trait Format extends Serializable
 
+  case class EndpointState(host: Option[String], port: Option[Int], endpointId: String, logs: Set[EndpointLog] = Set.empty) extends Format
+
+  case class EndpointLog(logName: String, sequenceNr: Long, clock: Map[String, Long], replicationProgresses: Map[String, Long]) extends Format
+
   object ReplicationInfo {
     /**
      * Creates a log identifier from `endpointId` and `logName`.
