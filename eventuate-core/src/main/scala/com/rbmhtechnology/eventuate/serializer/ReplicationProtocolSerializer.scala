@@ -27,6 +27,7 @@ import com.rbmhtechnology.eventuate.serializer.ReplicationProtocolFormats._
 
 import scala.collection.JavaConverters._
 import scala.collection.breakOut
+import scala.collection.immutable.Seq
 import scala.collection.immutable.VectorBuilder
 
 class ReplicationProtocolSerializer(system: ExtendedActorSystem) extends Serializer {
@@ -254,7 +255,7 @@ class ReplicationProtocolSerializer(system: ExtendedActorSystem) extends Seriali
       Option(format.getHost),
       Option(format.getPort),
       format.getEndpointId,
-      format.getLogsList.asScala.map(endpointLog).toSet
+      format.getLogsList.asScala.map(endpointLog).foldLeft(Seq.empty[EndpointLog])(_ :+ _)
     )
   }
 

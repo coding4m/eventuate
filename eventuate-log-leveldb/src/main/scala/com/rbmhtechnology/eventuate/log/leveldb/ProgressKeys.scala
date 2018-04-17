@@ -25,17 +25,34 @@ import java.nio.charset.Charset
 private[leveldb] trait ProgressKeys {
   val IdCharset = Charset.forName("UTF-8")
 
+  def firstKey(classifier: Long): Array[Byte] = {
+    ByteBuffer
+      .allocate(12)
+      .putLong(classifier)
+      .putInt(0)
+      .array()
+  }
+
+  def lastKey(classifier: Long): Array[Byte] = {
+    ByteBuffer
+      .allocate(12)
+      .putLong(classifier)
+      .putInt(Int.MaxValue)
+      .array()
+  }
+
   def progressKey(bytes: Array[Byte]): ProgressKey = {
     ProgressKey(
       ByteBuffer.wrap(bytes.slice(0, 8)).getLong,
-      new String(bytes.slice(8, bytes.length), IdCharset)
+      new String(bytes.slice(12, bytes.length), IdCharset)
     )
   }
   def progressKeyBytes(classifier: Long, id: String): Array[Byte] = {
     val idBytes = id.getBytes(IdCharset)
     ByteBuffer
-      .allocate(idBytes.length + 8)
+      .allocate(idBytes.length + 12)
       .putLong(classifier)
+      .putInt(idBytes.length)
       .put(idBytes)
       .array()
   }

@@ -29,7 +29,7 @@ object ReplicationProtocol {
    */
   trait Format extends Serializable
 
-  case class EndpointState(host: Option[String], port: Option[Int], endpointId: String, logs: Set[EndpointLog] = Set.empty) extends Format
+  case class EndpointState(host: Option[String], port: Option[Int], endpointId: String, logs: Seq[EndpointLog] = Seq.empty) extends Format
 
   case class EndpointLog(logName: String, sequenceNr: Long, clock: Map[String, Long], replicationProgresses: Map[String, Long]) extends Format
 

@@ -376,7 +376,12 @@ class ReplicationEndpoint(
         case sys: ExtendedActorSystem => Some(sys.provider.getDefaultAddress)
         case _                        => None
       }
-      EndpointState(address.flatMap(_.host), address.flatMap(_.port), id, results.map(it => EndpointLog(it._1, it._2.sequenceNr, it._2.versionVector.value, it._3)))
+      EndpointState(
+        address.flatMap(_.host),
+        address.flatMap(_.port),
+        id,
+        results.map(it => EndpointLog(it._1, it._2.sequenceNr, it._2.versionVector.value, it._3)).foldLeft(Seq.empty[EndpointLog])(_ :+ _).sortBy(_.logName)
+      )
     }
   }
 

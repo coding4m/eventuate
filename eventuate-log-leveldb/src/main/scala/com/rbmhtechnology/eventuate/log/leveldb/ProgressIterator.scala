@@ -51,11 +51,11 @@ private[leveldb] class ProgressIterator(it: DBIterator, classifier: Long) extend
     this
   }
   def seekToFirst() = {
-    it.seekToFirst()
+    it.seek(ProgressKeys.firstKey(classifier))
     this
   }
   def seekToLast() = {
-    it.seekToLast()
+    it.seek(ProgressKeys.lastKey(classifier))
     this
   }
   override def hasNext = iter2.hasNext
