@@ -414,7 +414,7 @@ abstract class EventLog[A <: EventLogState](id: String) extends Actor with Event
       // target (for correctness).
       val currentTargetVersionVector = replicaVersionVectors(targetLogId)
       val updated = events.filterNot(_.before(currentTargetVersionVector))
-      val reply = r.copy(updated, currentSourceVersionVector = clock.versionVector)
+      val reply = r.copy(events, currentSourceVersionVector = clock.versionVector)
       sender() ! reply
       channel.foreach(_ ! reply)
       logFilterStatistics("source", events, updated)
@@ -617,7 +617,7 @@ abstract class EventLog[A <: EventLogState](id: String) extends Actor with Event
     if (al < bl) {
       val diff = bl - al
       val perc = diff * 100.0 / bl
-      logger.info(f"[$id] excluded $diff events ($perc%3.1f%% at $location)")
+      logger.warning(f"[$id] excluded $diff events ($perc%3.1f%% at $location)")
     }
   }
 

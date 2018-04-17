@@ -285,6 +285,16 @@ class RocksdbEventLog(id: String) extends EventLog[RocksdbEventLogState](id) wit
   }
 
   override def postStop(): Unit = {
+    import scala.collection.JavaConverters._
+
+    for (handle <- columnHandles.asScala) {
+      try {
+        handle.close()
+      } catch {
+        case _: Throwable =>
+      }
+    }
+
     rocksdb.close()
     super.postStop()
   }
