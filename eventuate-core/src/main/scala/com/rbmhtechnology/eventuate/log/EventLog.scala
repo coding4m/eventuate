@@ -617,7 +617,7 @@ abstract class EventLog[A <: EventLogState](id: String) extends Actor with Event
     if (al < bl) {
       val diff = bl - al
       val perc = diff * 100.0 / bl
-      logger.warning(f"[$id] excluded $diff events ($perc%3.1f%% at $location)")
+      logger.info(f"[$id] excluded $diff events ($perc%3.1f%% at $location)")
     }
   }
 
