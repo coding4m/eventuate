@@ -45,15 +45,21 @@ trait SnapshotOnEvent { this: EventsourcedView with MessagePipeline =>
       snapshotInProgress = false
       Inner(ss)
 
+    case ss: SaveSnapshotFailure =>
+      snapshotOffset = 0
+      snapshotInProgress = false
+      Inner(ss)
+
     case rs @ ReplaySuccess(events, _, _) =>
       snapshotOffset += events.size
       snapshotOrDelay()
       Inner(rs)
 
     case ws @ WriteSuccess(events, _, _) =>
-      snapshotOffset += events.size
-      snapshotOrDelay()
-      Inner(ws)
+      Inner(ws) andAfter {
+        snapshotOffset += events.size
+        snapshotOrDelay()
+      }
 
     // sent by an event log when replicate success
     case w: Written =>
