@@ -38,7 +38,7 @@ private class NumericIdStore(val rocksdb: RocksDB, val writeOptions: WriteOption
     val nidBytes = rocksdb.get(columnHandle, IdSequenceBytes)
     val nid = longFromBytes(nidBytes)
     batch.put(columnHandle, stringBytes(stringId), nidBytes)
-    batch.merge(columnHandle, IdSequenceBytes, IdSequenceIncBytes)
+    batch.put(IdSequenceBytes, longBytes(nid + 1L))
     nid
   }
 }
