@@ -51,7 +51,7 @@ object ProjectDependencies {
   val SparkStreaming =       "org.apache.spark"           % "spark-streaming_2.11"           % SparkVersion
   val CassandraUnit =        "org.cassandraunit"          % "cassandra-unit"            % "3.1.3.2"
   val Leveldb =              "org.fusesource.leveldbjni"  % "leveldbjni-all"            % "1.8"
-  val Rocksdb =              "org.rocksdb"                % "rocksdbjni"                % "5.11.3"
+  val Rocksdb =              "org.rocksdb"                % "rocksdbjni"                % "5.9.2"
   val Sigar =                "org.fusesource"             % "sigar"                     % "1.6.4"
   val Java8Compat =          "org.scala-lang.modules"    %% "scala-java8-compat"        % "0.8.0"
   val Scalatest =            "org.scalatest"             %% "scalatest"                 % "3.0.3"

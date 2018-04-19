@@ -25,7 +25,7 @@ private[rocksdb] trait NumericIdKeys {
   val IdSequence = "$$SEQUENCE$$"
   val IdSequenceBytes = stringBytes(IdSequence)
 
-  val IdSequenceInc = 1
+  val IdSequenceInc = 1L
   val IdSequenceIncBytes = longBytes(IdSequenceInc)
 }
 private[rocksdb] object NumericIdKeys extends NumericIdKeys
