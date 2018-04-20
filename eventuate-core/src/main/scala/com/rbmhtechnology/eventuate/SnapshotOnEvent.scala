@@ -51,9 +51,10 @@ trait SnapshotOnEvent { this: EventsourcedView with MessagePipeline =>
       Inner(ss)
 
     case rs @ ReplaySuccess(events, _, _) =>
-      snapshotOffset += events.size
-      snapshotOrDelay()
-      Inner(rs)
+      Inner(rs) andAfter {
+        snapshotOffset += events.size
+        snapshotOrDelay()
+      }
 
     case ws @ WriteSuccess(events, _, _) =>
       Inner(ws) andAfter {
@@ -63,9 +64,10 @@ trait SnapshotOnEvent { this: EventsourcedView with MessagePipeline =>
 
     // sent by an event log when replicate success
     case w: Written =>
-      snapshotOffset += 1
-      snapshotOrDelay()
-      Inner(w)
+      Inner(w) andAfter {
+        snapshotOffset += 1
+        snapshotOrDelay()
+      }
 
     case any =>
       Inner(any)
