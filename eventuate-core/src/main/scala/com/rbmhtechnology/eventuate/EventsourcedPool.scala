@@ -16,12 +16,12 @@
 
 package com.rbmhtechnology.eventuate
 
-import akka.actor.{ Actor, ActorRef, Props }
+import akka.actor.{ Actor, ActorRef, Props, Terminated }
 
 /**
  * @author siuming
  */
-trait EventsourcedPool[ID] { this: Actor =>
+trait EventsourcedPool[ID] extends Actor {
 
   var aggregateRefs: Map[ID, ActorRef] = Map.empty[ID, ActorRef]
 
@@ -50,8 +50,13 @@ trait EventsourcedPool[ID] { this: Actor =>
   private def aggregateOf(aggregateId: ID): ActorRef = aggregateRefs.get(aggregateId) match {
     case Some(actorRef) => actorRef
     case None =>
-      val actorRef = context.actorOf(aggregateProjection(aggregateId))
+      val actorRef = context.watch(context.actorOf(aggregateProjection(aggregateId)))
       aggregateRefs = aggregateRefs + (aggregateId -> actorRef)
       aggregateRefs(aggregateId)
+  }
+
+  override def unhandled(message: Any): Unit = message match {
+    case Terminated(actorRef) => aggregateRefs = aggregateRefs.filter(value => value._2 == actorRef)
+    case msg                  => super.unhandled(msg)
   }
 }
