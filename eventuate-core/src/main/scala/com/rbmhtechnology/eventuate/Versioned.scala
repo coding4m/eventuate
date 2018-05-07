@@ -190,11 +190,18 @@ class ConcurrentVersionsTree[A, B](private[eventuate] val root: ConcurrentVersio
   override def update(b: B, vectorTimestamp: VectorTime, systemTimestamp: Long = 0L, creator: String = ""): ConcurrentVersionsTree[A, B] = {
     val parent = pred(vectorTimestamp)
     parent.addChild(new Node(Versioned(_projection(parent.versioned.value, b), vectorTimestamp, systemTimestamp, creator)))
-    this
+
+    // purging versions.
+    @tailrec
+    def go(node: Node[A], depth: Int): Node[A] = if (node.root || depth <= 1) node else go(node.parent, depth - 1)
+    val minDepth = leaves.filterNot(_.rejected).minBy(_.depth)
+    val leafNode = go(minDepth, maxDepth)
+    val rootNode = new ConcurrentVersionsTree.Node(leafNode.versioned.copy(vectorTimestamp = VectorTime.Zero, systemTimestamp = 0L))
+    // append leaf node to root
+    new ConcurrentVersionsTree[A, B](rootNode.addChild(leafNode), maxDepth).withOwner(_owner).withProjection(_projection)
   }
 
   override def resolve(selectedTimestamp: VectorTime, vectorTimestamp: VectorTime, systemTimestamp: Long = 0L): ConcurrentVersionsTree[A, B] = {
-    //
     leaves.find(n => n.versioned.vectorTimestamp == selectedTimestamp).foreach(n => {
       val parent = merge(vectorTimestamp)
       parent.addChild(new Node(versioned = n.versioned.copy(vectorTimestamp = vectorTimestamp, systemTimestamp = systemTimestamp)))
@@ -205,16 +212,7 @@ class ConcurrentVersionsTree[A, B](private[eventuate] val root: ConcurrentVersio
         case node => node.reject()
       }
     })
-
-    // purging of old versions
-    leaves.filterNot(_.rejected).headOption.filter(_.depth <= maxDepth) map { leaf =>
-      @tailrec
-      def go(node: Node[A], depth: Int): Node[A] = if (node.root || depth <= 1) node else go(node.parent, depth - 1)
-      val leafNode = go(leaf, maxDepth)
-      val rootNode = new ConcurrentVersionsTree.Node(leafNode.versioned.copy(vectorTimestamp = VectorTime.Zero, systemTimestamp = 0L))
-      // append leaf node to root
-      new ConcurrentVersionsTree[A, B](rootNode.addChild(leafNode), maxDepth).withOwner(_owner).withProjection(_projection)
-    } getOrElse this
+    this
   }
 
   override def all: Seq[Versioned[A]] =
