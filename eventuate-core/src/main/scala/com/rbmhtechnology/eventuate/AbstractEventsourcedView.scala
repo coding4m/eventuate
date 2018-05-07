@@ -120,16 +120,6 @@ private[eventuate] abstract class AbstractEventsourcedComponent extends Eventsou
     save(snapshot)(handler.asScala)
 
   /**
-   * Java API of [[EventsourcedView.save save]].
-   *
-   * Must be supplied with a [[ResultHandler]] to process successful or failed results.
-   *
-   * @see [[com.rbmhtechnology.eventuate.EventsourcedView EventsourcedView]]
-   */
-  def save(snapshot: Any, purging: Boolean, handler: ResultHandler[SnapshotMetadata]): Unit =
-    save(snapshot, purging)(handler.asScala)
-
-  /**
    * Java API of the [[EventsourcedView.onCommand command]] handler.
    *
    * Returns a receive object that defines the actor's command handling behaviour.

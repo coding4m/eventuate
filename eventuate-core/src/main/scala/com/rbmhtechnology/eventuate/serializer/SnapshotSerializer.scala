@@ -131,6 +131,7 @@ class SnapshotSerializer(system: ExtendedActorSystem) extends Serializer {
     val builder = ConcurrentVersionsTreeFormat.newBuilder
     builder.setOwner(tree.owner)
     builder.setRoot(concurrentVersionsTreeNodeFormat(tree.root))
+    builder.setMaxDepth(tree.maxDepth)
     builder
   }
 
@@ -219,18 +220,16 @@ class SnapshotSerializer(system: ExtendedActorSystem) extends Serializer {
   }
 
   private def concurrentVersionsTree(treeFormat: ConcurrentVersionsTreeFormat): ConcurrentVersionsTree[Any, Any] = {
-    new ConcurrentVersionsTree(concurrentVersionsTreeNode(treeFormat.getRoot)).withOwner(treeFormat.getOwner)
+    new ConcurrentVersionsTree(concurrentVersionsTreeNode(treeFormat.getRoot), treeFormat.getMaxDepth).withOwner(treeFormat.getOwner)
   }
 
   // TODO: make tail recursive or create a trampolined version
   private def concurrentVersionsTreeNode(nodeFormat: ConcurrentVersionsTreeNodeFormat): ConcurrentVersionsTree.Node[Any] = {
     val node = new ConcurrentVersionsTree.Node(commonSerializer.versioned(nodeFormat.getVersioned))
     node.rejected = nodeFormat.getRejected
-
     nodeFormat.getChildrenList.iterator.asScala.foreach { childFormat =>
       node.addChild(concurrentVersionsTreeNode(childFormat))
     }
-
     node
   }
 

@@ -19,6 +19,7 @@ package com.rbmhtechnology.eventuate
 import java.util.function.BiFunction
 import java.util.{ List => JList }
 
+import scala.annotation.tailrec
 import scala.collection.JavaConverters._
 import scala.collection.immutable.Seq
 import scala.util.control.TailCalls._
@@ -179,7 +180,7 @@ case object ConcurrentVersionsList {
  * rather small). In later releases, manual and automated purging of old versions will be
  * supported.
  */
-class ConcurrentVersionsTree[A, B](private[eventuate] val root: ConcurrentVersionsTree.Node[A]) extends ConcurrentVersions[A, B] {
+class ConcurrentVersionsTree[A, B](private[eventuate] val root: ConcurrentVersionsTree.Node[A], val maxDepth: Int) extends ConcurrentVersions[A, B] {
   import ConcurrentVersionsTree._
 
   @transient
@@ -193,6 +194,7 @@ class ConcurrentVersionsTree[A, B](private[eventuate] val root: ConcurrentVersio
   }
 
   override def resolve(selectedTimestamp: VectorTime, vectorTimestamp: VectorTime, systemTimestamp: Long = 0L): ConcurrentVersionsTree[A, B] = {
+    //
     leaves.find(n => n.versioned.vectorTimestamp == selectedTimestamp).foreach(n => {
       val parent = merge(vectorTimestamp)
       parent.addChild(new Node(versioned = n.versioned.copy(vectorTimestamp = vectorTimestamp, systemTimestamp = systemTimestamp)))
@@ -203,7 +205,16 @@ class ConcurrentVersionsTree[A, B](private[eventuate] val root: ConcurrentVersio
         case node => node.reject()
       }
     })
-    this
+
+    // purging of old versions
+    leaves.filterNot(_.rejected).headOption.filter(_.depth <= maxDepth) map { leaf =>
+      @tailrec
+      def go(node: Node[A], depth: Int): Node[A] = if (node.root || depth <= 1) node else go(node.parent, depth - 1)
+      val leafNode = go(leaf, maxDepth)
+      val rootNode = new ConcurrentVersionsTree.Node(leafNode.versioned.copy(vectorTimestamp = VectorTime.Zero, systemTimestamp = 0L))
+      // append leaf node to root
+      new ConcurrentVersionsTree[A, B](rootNode.addChild(leafNode), maxDepth).withOwner(_owner).withProjection(_projection)
+    } getOrElse this
   }
 
   override def all: Seq[Versioned[A]] =
@@ -226,25 +237,7 @@ class ConcurrentVersionsTree[A, B](private[eventuate] val root: ConcurrentVersio
     withProjection((a, b) => f.apply(a, b))
 
   private[eventuate] def copy(): ConcurrentVersionsTree[A, B] =
-    new ConcurrentVersionsTree[A, B](root.copy()).withOwner(_owner).withProjection(_projection)
-
-  private[eventuate] def purge(): ConcurrentVersionsTree[A, B] = {
-    val leafNodes = leaves.filterNot(_.rejected)
-    if (leafNodes.length > 1) {
-      throw new IllegalStateException("versions conflicted.")
-    }
-
-    if (leafNodes.isEmpty) {
-      val rootNode = new ConcurrentVersionsTree.Node(root.versioned.copy())
-      new ConcurrentVersionsTree[A, B](rootNode).withOwner(_owner).withProjection(_projection)
-    } else {
-      val leafNode = leafNodes.head
-      // copy leaf value to root node, and reset vector time to zero.
-      val rootNode = new ConcurrentVersionsTree.Node(leafNode.versioned.copy(vectorTimestamp = VectorTime.Zero, systemTimestamp = 0L))
-      // append leaf node to root
-      new ConcurrentVersionsTree[A, B](rootNode.addChild(leafNode).copy()).withOwner(_owner).withProjection(_projection)
-    }
-  }
+    new ConcurrentVersionsTree[A, B](root.copy(), maxDepth).withOwner(_owner).withProjection(_projection)
 
   private[eventuate] def nodes: Seq[Node[A]] = foldLeft(root, Vector.empty[Node[A]]) {
     case (acc, n) => acc :+ n
@@ -278,6 +271,9 @@ class ConcurrentVersionsTree[A, B](private[eventuate] val root: ConcurrentVersio
 }
 
 object ConcurrentVersionsTree {
+
+  val DefaultMaxDepth = 16
+
   /**
    * Creates a new [[ConcurrentVersionsTree]] that uses projection function `f` to compute
    * new (potentially concurrent) versions from a parent version.
@@ -288,7 +284,7 @@ object ConcurrentVersionsTree {
    * @tparam B Update type
    */
   def apply[A, B](initial: A)(f: (A, B) => A): ConcurrentVersionsTree[A, B] =
-    new ConcurrentVersionsTree[A, B](new ConcurrentVersionsTree.Node(Versioned(initial, VectorTime.Zero))).withProjection(f)
+    new ConcurrentVersionsTree[A, B](new ConcurrentVersionsTree.Node(Versioned(initial, VectorTime.Zero)), DefaultMaxDepth).withProjection(f)
 
   /**
    * Creates a new [[ConcurrentVersionsTree]] that uses projection function `f` to compute
@@ -335,6 +331,11 @@ object ConcurrentVersionsTree {
 
     def leaf: Boolean = children.isEmpty
     def root: Boolean = parent == this
+    def depth: Int = {
+      @tailrec
+      def go(node: Node[A], n: Int): Int = if (node.root) n else go(node.parent, n + 1)
+      go(this, 1)
+    }
 
     def addChild(node: Node[A]): Node[A] = {
       node.parent = this

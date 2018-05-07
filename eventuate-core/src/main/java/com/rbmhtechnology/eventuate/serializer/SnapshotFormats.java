@@ -35,51 +35,51 @@ public final class SnapshotFormats {
       com.google.protobuf.MessageOrBuilder {
 
     /**
-     * <code>.PayloadFormat payload = 1;</code>
+     * <code>optional .PayloadFormat payload = 1;</code>
      */
     boolean hasPayload();
     /**
-     * <code>.PayloadFormat payload = 1;</code>
+     * <code>optional .PayloadFormat payload = 1;</code>
      */
     com.rbmhtechnology.eventuate.serializer.CommonFormats.PayloadFormat getPayload();
     /**
-     * <code>.PayloadFormat payload = 1;</code>
+     * <code>optional .PayloadFormat payload = 1;</code>
      */
     com.rbmhtechnology.eventuate.serializer.CommonFormats.PayloadFormatOrBuilder getPayloadOrBuilder();
 
     /**
-     * <code>string emitterId = 2;</code>
+     * <code>optional string emitterId = 2;</code>
      */
     java.lang.String getEmitterId();
     /**
-     * <code>string emitterId = 2;</code>
+     * <code>optional string emitterId = 2;</code>
      */
     com.google.protobuf.ByteString
         getEmitterIdBytes();
 
     /**
-     * <code>.DurableEventFormat lastEvent = 3;</code>
+     * <code>optional .DurableEventFormat lastEvent = 3;</code>
      */
     boolean hasLastEvent();
     /**
-     * <code>.DurableEventFormat lastEvent = 3;</code>
+     * <code>optional .DurableEventFormat lastEvent = 3;</code>
      */
     com.rbmhtechnology.eventuate.serializer.DurableEventFormats.DurableEventFormat getLastEvent();
     /**
-     * <code>.DurableEventFormat lastEvent = 3;</code>
+     * <code>optional .DurableEventFormat lastEvent = 3;</code>
      */
     com.rbmhtechnology.eventuate.serializer.DurableEventFormats.DurableEventFormatOrBuilder getLastEventOrBuilder();
 
     /**
-     * <code>.VectorTimeFormat currentTime = 4;</code>
+     * <code>optional .VectorTimeFormat currentTime = 4;</code>
      */
     boolean hasCurrentTime();
     /**
-     * <code>.VectorTimeFormat currentTime = 4;</code>
+     * <code>optional .VectorTimeFormat currentTime = 4;</code>
      */
     com.rbmhtechnology.eventuate.serializer.CommonFormats.VectorTimeFormat getCurrentTime();
     /**
-     * <code>.VectorTimeFormat currentTime = 4;</code>
+     * <code>optional .VectorTimeFormat currentTime = 4;</code>
      */
     com.rbmhtechnology.eventuate.serializer.CommonFormats.VectorTimeFormatOrBuilder getCurrentTimeOrBuilder();
 
@@ -132,7 +132,7 @@ public final class SnapshotFormats {
         int index);
 
     /**
-     * <code>int64 sequenceNr = 7;</code>
+     * <code>optional int64 sequenceNr = 7;</code>
      */
     long getSequenceNr();
   }
@@ -280,19 +280,19 @@ public final class SnapshotFormats {
     public static final int PAYLOAD_FIELD_NUMBER = 1;
     private com.rbmhtechnology.eventuate.serializer.CommonFormats.PayloadFormat payload_;
     /**
-     * <code>.PayloadFormat payload = 1;</code>
+     * <code>optional .PayloadFormat payload = 1;</code>
      */
     public boolean hasPayload() {
       return payload_ != null;
     }
     /**
-     * <code>.PayloadFormat payload = 1;</code>
+     * <code>optional .PayloadFormat payload = 1;</code>
      */
     public com.rbmhtechnology.eventuate.serializer.CommonFormats.PayloadFormat getPayload() {
       return payload_ == null ? com.rbmhtechnology.eventuate.serializer.CommonFormats.PayloadFormat.getDefaultInstance() : payload_;
     }
     /**
-     * <code>.PayloadFormat payload = 1;</code>
+     * <code>optional .PayloadFormat payload = 1;</code>
      */
     public com.rbmhtechnology.eventuate.serializer.CommonFormats.PayloadFormatOrBuilder getPayloadOrBuilder() {
       return getPayload();
@@ -301,7 +301,7 @@ public final class SnapshotFormats {
     public static final int EMITTERID_FIELD_NUMBER = 2;
     private volatile java.lang.Object emitterId_;
     /**
-     * <code>string emitterId = 2;</code>
+     * <code>optional string emitterId = 2;</code>
      */
     public java.lang.String getEmitterId() {
       java.lang.Object ref = emitterId_;
@@ -316,7 +316,7 @@ public final class SnapshotFormats {
       }
     }
     /**
-     * <code>string emitterId = 2;</code>
+     * <code>optional string emitterId = 2;</code>
      */
     public com.google.protobuf.ByteString
         getEmitterIdBytes() {
@@ -335,19 +335,19 @@ public final class SnapshotFormats {
     public static final int LASTEVENT_FIELD_NUMBER = 3;
     private com.rbmhtechnology.eventuate.serializer.DurableEventFormats.DurableEventFormat lastEvent_;
     /**
-     * <code>.DurableEventFormat lastEvent = 3;</code>
+     * <code>optional .DurableEventFormat lastEvent = 3;</code>
      */
     public boolean hasLastEvent() {
       return lastEvent_ != null;
     }
     /**
-     * <code>.DurableEventFormat lastEvent = 3;</code>
+     * <code>optional .DurableEventFormat lastEvent = 3;</code>
      */
     public com.rbmhtechnology.eventuate.serializer.DurableEventFormats.DurableEventFormat getLastEvent() {
       return lastEvent_ == null ? com.rbmhtechnology.eventuate.serializer.DurableEventFormats.DurableEventFormat.getDefaultInstance() : lastEvent_;
     }
     /**
-     * <code>.DurableEventFormat lastEvent = 3;</code>
+     * <code>optional .DurableEventFormat lastEvent = 3;</code>
      */
     public com.rbmhtechnology.eventuate.serializer.DurableEventFormats.DurableEventFormatOrBuilder getLastEventOrBuilder() {
       return getLastEvent();
@@ -356,19 +356,19 @@ public final class SnapshotFormats {
     public static final int CURRENTTIME_FIELD_NUMBER = 4;
     private com.rbmhtechnology.eventuate.serializer.CommonFormats.VectorTimeFormat currentTime_;
     /**
-     * <code>.VectorTimeFormat currentTime = 4;</code>
+     * <code>optional .VectorTimeFormat currentTime = 4;</code>
      */
     public boolean hasCurrentTime() {
       return currentTime_ != null;
     }
     /**
-     * <code>.VectorTimeFormat currentTime = 4;</code>
+     * <code>optional .VectorTimeFormat currentTime = 4;</code>
      */
     public com.rbmhtechnology.eventuate.serializer.CommonFormats.VectorTimeFormat getCurrentTime() {
       return currentTime_ == null ? com.rbmhtechnology.eventuate.serializer.CommonFormats.VectorTimeFormat.getDefaultInstance() : currentTime_;
     }
     /**
-     * <code>.VectorTimeFormat currentTime = 4;</code>
+     * <code>optional .VectorTimeFormat currentTime = 4;</code>
      */
     public com.rbmhtechnology.eventuate.serializer.CommonFormats.VectorTimeFormatOrBuilder getCurrentTimeOrBuilder() {
       return getCurrentTime();
@@ -447,7 +447,7 @@ public final class SnapshotFormats {
     public static final int SEQUENCENR_FIELD_NUMBER = 7;
     private long sequenceNr_;
     /**
-     * <code>int64 sequenceNr = 7;</code>
+     * <code>optional int64 sequenceNr = 7;</code>
      */
     public long getSequenceNr() {
       return sequenceNr_;
@@ -568,7 +568,7 @@ public final class SnapshotFormats {
         return memoizedHashCode;
       }
       int hash = 41;
-      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (19 * hash) + getDescriptorForType().hashCode();
       if (hasPayload()) {
         hash = (37 * hash) + PAYLOAD_FIELD_NUMBER;
         hash = (53 * hash) + getPayload().hashCode();
@@ -599,17 +599,6 @@ public final class SnapshotFormats {
       return hash;
     }
 
-    public static com.rbmhtechnology.eventuate.serializer.SnapshotFormats.SnapshotFormat parseFrom(
-        java.nio.ByteBuffer data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static com.rbmhtechnology.eventuate.serializer.SnapshotFormats.SnapshotFormat parseFrom(
-        java.nio.ByteBuffer data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
     public static com.rbmhtechnology.eventuate.serializer.SnapshotFormats.SnapshotFormat parseFrom(
         com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
@@ -959,13 +948,13 @@ public final class SnapshotFormats {
       private com.google.protobuf.SingleFieldBuilderV3<
           com.rbmhtechnology.eventuate.serializer.CommonFormats.PayloadFormat, com.rbmhtechnology.eventuate.serializer.CommonFormats.PayloadFormat.Builder, com.rbmhtechnology.eventuate.serializer.CommonFormats.PayloadFormatOrBuilder> payloadBuilder_;
       /**
-       * <code>.PayloadFormat payload = 1;</code>
+       * <code>optional .PayloadFormat payload = 1;</code>
        */
       public boolean hasPayload() {
         return payloadBuilder_ != null || payload_ != null;
       }
       /**
-       * <code>.PayloadFormat payload = 1;</code>
+       * <code>optional .PayloadFormat payload = 1;</code>
        */
       public com.rbmhtechnology.eventuate.serializer.CommonFormats.PayloadFormat getPayload() {
         if (payloadBuilder_ == null) {
@@ -975,7 +964,7 @@ public final class SnapshotFormats {
         }
       }
       /**
-       * <code>.PayloadFormat payload = 1;</code>
+       * <code>optional .PayloadFormat payload = 1;</code>
        */
       public Builder setPayload(com.rbmhtechnology.eventuate.serializer.CommonFormats.PayloadFormat value) {
         if (payloadBuilder_ == null) {
@@ -991,7 +980,7 @@ public final class SnapshotFormats {
         return this;
       }
       /**
-       * <code>.PayloadFormat payload = 1;</code>
+       * <code>optional .PayloadFormat payload = 1;</code>
        */
       public Builder setPayload(
           com.rbmhtechnology.eventuate.serializer.CommonFormats.PayloadFormat.Builder builderForValue) {
@@ -1005,7 +994,7 @@ public final class SnapshotFormats {
         return this;
       }
       /**
-       * <code>.PayloadFormat payload = 1;</code>
+       * <code>optional .PayloadFormat payload = 1;</code>
        */
       public Builder mergePayload(com.rbmhtechnology.eventuate.serializer.CommonFormats.PayloadFormat value) {
         if (payloadBuilder_ == null) {
@@ -1023,7 +1012,7 @@ public final class SnapshotFormats {
         return this;
       }
       /**
-       * <code>.PayloadFormat payload = 1;</code>
+       * <code>optional .PayloadFormat payload = 1;</code>
        */
       public Builder clearPayload() {
         if (payloadBuilder_ == null) {
@@ -1037,7 +1026,7 @@ public final class SnapshotFormats {
         return this;
       }
       /**
-       * <code>.PayloadFormat payload = 1;</code>
+       * <code>optional .PayloadFormat payload = 1;</code>
        */
       public com.rbmhtechnology.eventuate.serializer.CommonFormats.PayloadFormat.Builder getPayloadBuilder() {
         
@@ -1045,7 +1034,7 @@ public final class SnapshotFormats {
         return getPayloadFieldBuilder().getBuilder();
       }
       /**
-       * <code>.PayloadFormat payload = 1;</code>
+       * <code>optional .PayloadFormat payload = 1;</code>
        */
       public com.rbmhtechnology.eventuate.serializer.CommonFormats.PayloadFormatOrBuilder getPayloadOrBuilder() {
         if (payloadBuilder_ != null) {
@@ -1056,7 +1045,7 @@ public final class SnapshotFormats {
         }
       }
       /**
-       * <code>.PayloadFormat payload = 1;</code>
+       * <code>optional .PayloadFormat payload = 1;</code>
        */
       private com.google.protobuf.SingleFieldBuilderV3<
           com.rbmhtechnology.eventuate.serializer.CommonFormats.PayloadFormat, com.rbmhtechnology.eventuate.serializer.CommonFormats.PayloadFormat.Builder, com.rbmhtechnology.eventuate.serializer.CommonFormats.PayloadFormatOrBuilder> 
@@ -1074,7 +1063,7 @@ public final class SnapshotFormats {
 
       private java.lang.Object emitterId_ = "";
       /**
-       * <code>string emitterId = 2;</code>
+       * <code>optional string emitterId = 2;</code>
        */
       public java.lang.String getEmitterId() {
         java.lang.Object ref = emitterId_;
@@ -1089,7 +1078,7 @@ public final class SnapshotFormats {
         }
       }
       /**
-       * <code>string emitterId = 2;</code>
+       * <code>optional string emitterId = 2;</code>
        */
       public com.google.protobuf.ByteString
           getEmitterIdBytes() {
@@ -1105,7 +1094,7 @@ public final class SnapshotFormats {
         }
       }
       /**
-       * <code>string emitterId = 2;</code>
+       * <code>optional string emitterId = 2;</code>
        */
       public Builder setEmitterId(
           java.lang.String value) {
@@ -1118,7 +1107,7 @@ public final class SnapshotFormats {
         return this;
       }
       /**
-       * <code>string emitterId = 2;</code>
+       * <code>optional string emitterId = 2;</code>
        */
       public Builder clearEmitterId() {
         
@@ -1127,7 +1116,7 @@ public final class SnapshotFormats {
         return this;
       }
       /**
-       * <code>string emitterId = 2;</code>
+       * <code>optional string emitterId = 2;</code>
        */
       public Builder setEmitterIdBytes(
           com.google.protobuf.ByteString value) {
@@ -1145,13 +1134,13 @@ public final class SnapshotFormats {
       private com.google.protobuf.SingleFieldBuilderV3<
           com.rbmhtechnology.eventuate.serializer.DurableEventFormats.DurableEventFormat, com.rbmhtechnology.eventuate.serializer.DurableEventFormats.DurableEventFormat.Builder, com.rbmhtechnology.eventuate.serializer.DurableEventFormats.DurableEventFormatOrBuilder> lastEventBuilder_;
       /**
-       * <code>.DurableEventFormat lastEvent = 3;</code>
+       * <code>optional .DurableEventFormat lastEvent = 3;</code>
        */
       public boolean hasLastEvent() {
         return lastEventBuilder_ != null || lastEvent_ != null;
       }
       /**
-       * <code>.DurableEventFormat lastEvent = 3;</code>
+       * <code>optional .DurableEventFormat lastEvent = 3;</code>
        */
       public com.rbmhtechnology.eventuate.serializer.DurableEventFormats.DurableEventFormat getLastEvent() {
         if (lastEventBuilder_ == null) {
@@ -1161,7 +1150,7 @@ public final class SnapshotFormats {
         }
       }
       /**
-       * <code>.DurableEventFormat lastEvent = 3;</code>
+       * <code>optional .DurableEventFormat lastEvent = 3;</code>
        */
       public Builder setLastEvent(com.rbmhtechnology.eventuate.serializer.DurableEventFormats.DurableEventFormat value) {
         if (lastEventBuilder_ == null) {
@@ -1177,7 +1166,7 @@ public final class SnapshotFormats {
         return this;
       }
       /**
-       * <code>.DurableEventFormat lastEvent = 3;</code>
+       * <code>optional .DurableEventFormat lastEvent = 3;</code>
        */
       public Builder setLastEvent(
           com.rbmhtechnology.eventuate.serializer.DurableEventFormats.DurableEventFormat.Builder builderForValue) {
@@ -1191,7 +1180,7 @@ public final class SnapshotFormats {
         return this;
       }
       /**
-       * <code>.DurableEventFormat lastEvent = 3;</code>
+       * <code>optional .DurableEventFormat lastEvent = 3;</code>
        */
       public Builder mergeLastEvent(com.rbmhtechnology.eventuate.serializer.DurableEventFormats.DurableEventFormat value) {
         if (lastEventBuilder_ == null) {
@@ -1209,7 +1198,7 @@ public final class SnapshotFormats {
         return this;
       }
       /**
-       * <code>.DurableEventFormat lastEvent = 3;</code>
+       * <code>optional .DurableEventFormat lastEvent = 3;</code>
        */
       public Builder clearLastEvent() {
         if (lastEventBuilder_ == null) {
@@ -1223,7 +1212,7 @@ public final class SnapshotFormats {
         return this;
       }
       /**
-       * <code>.DurableEventFormat lastEvent = 3;</code>
+       * <code>optional .DurableEventFormat lastEvent = 3;</code>
        */
       public com.rbmhtechnology.eventuate.serializer.DurableEventFormats.DurableEventFormat.Builder getLastEventBuilder() {
         
@@ -1231,7 +1220,7 @@ public final class SnapshotFormats {
         return getLastEventFieldBuilder().getBuilder();
       }
       /**
-       * <code>.DurableEventFormat lastEvent = 3;</code>
+       * <code>optional .DurableEventFormat lastEvent = 3;</code>
        */
       public com.rbmhtechnology.eventuate.serializer.DurableEventFormats.DurableEventFormatOrBuilder getLastEventOrBuilder() {
         if (lastEventBuilder_ != null) {
@@ -1242,7 +1231,7 @@ public final class SnapshotFormats {
         }
       }
       /**
-       * <code>.DurableEventFormat lastEvent = 3;</code>
+       * <code>optional .DurableEventFormat lastEvent = 3;</code>
        */
       private com.google.protobuf.SingleFieldBuilderV3<
           com.rbmhtechnology.eventuate.serializer.DurableEventFormats.DurableEventFormat, com.rbmhtechnology.eventuate.serializer.DurableEventFormats.DurableEventFormat.Builder, com.rbmhtechnology.eventuate.serializer.DurableEventFormats.DurableEventFormatOrBuilder> 
@@ -1262,13 +1251,13 @@ public final class SnapshotFormats {
       private com.google.protobuf.SingleFieldBuilderV3<
           com.rbmhtechnology.eventuate.serializer.CommonFormats.VectorTimeFormat, com.rbmhtechnology.eventuate.serializer.CommonFormats.VectorTimeFormat.Builder, com.rbmhtechnology.eventuate.serializer.CommonFormats.VectorTimeFormatOrBuilder> currentTimeBuilder_;
       /**
-       * <code>.VectorTimeFormat currentTime = 4;</code>
+       * <code>optional .VectorTimeFormat currentTime = 4;</code>
        */
       public boolean hasCurrentTime() {
         return currentTimeBuilder_ != null || currentTime_ != null;
       }
       /**
-       * <code>.VectorTimeFormat currentTime = 4;</code>
+       * <code>optional .VectorTimeFormat currentTime = 4;</code>
        */
       public com.rbmhtechnology.eventuate.serializer.CommonFormats.VectorTimeFormat getCurrentTime() {
         if (currentTimeBuilder_ == null) {
@@ -1278,7 +1267,7 @@ public final class SnapshotFormats {
         }
       }
       /**
-       * <code>.VectorTimeFormat currentTime = 4;</code>
+       * <code>optional .VectorTimeFormat currentTime = 4;</code>
        */
       public Builder setCurrentTime(com.rbmhtechnology.eventuate.serializer.CommonFormats.VectorTimeFormat value) {
         if (currentTimeBuilder_ == null) {
@@ -1294,7 +1283,7 @@ public final class SnapshotFormats {
         return this;
       }
       /**
-       * <code>.VectorTimeFormat currentTime = 4;</code>
+       * <code>optional .VectorTimeFormat currentTime = 4;</code>
        */
       public Builder setCurrentTime(
           com.rbmhtechnology.eventuate.serializer.CommonFormats.VectorTimeFormat.Builder builderForValue) {
@@ -1308,7 +1297,7 @@ public final class SnapshotFormats {
         return this;
       }
       /**
-       * <code>.VectorTimeFormat currentTime = 4;</code>
+       * <code>optional .VectorTimeFormat currentTime = 4;</code>
        */
       public Builder mergeCurrentTime(com.rbmhtechnology.eventuate.serializer.CommonFormats.VectorTimeFormat value) {
         if (currentTimeBuilder_ == null) {
@@ -1326,7 +1315,7 @@ public final class SnapshotFormats {
         return this;
       }
       /**
-       * <code>.VectorTimeFormat currentTime = 4;</code>
+       * <code>optional .VectorTimeFormat currentTime = 4;</code>
        */
       public Builder clearCurrentTime() {
         if (currentTimeBuilder_ == null) {
@@ -1340,7 +1329,7 @@ public final class SnapshotFormats {
         return this;
       }
       /**
-       * <code>.VectorTimeFormat currentTime = 4;</code>
+       * <code>optional .VectorTimeFormat currentTime = 4;</code>
        */
       public com.rbmhtechnology.eventuate.serializer.CommonFormats.VectorTimeFormat.Builder getCurrentTimeBuilder() {
         
@@ -1348,7 +1337,7 @@ public final class SnapshotFormats {
         return getCurrentTimeFieldBuilder().getBuilder();
       }
       /**
-       * <code>.VectorTimeFormat currentTime = 4;</code>
+       * <code>optional .VectorTimeFormat currentTime = 4;</code>
        */
       public com.rbmhtechnology.eventuate.serializer.CommonFormats.VectorTimeFormatOrBuilder getCurrentTimeOrBuilder() {
         if (currentTimeBuilder_ != null) {
@@ -1359,7 +1348,7 @@ public final class SnapshotFormats {
         }
       }
       /**
-       * <code>.VectorTimeFormat currentTime = 4;</code>
+       * <code>optional .VectorTimeFormat currentTime = 4;</code>
        */
       private com.google.protobuf.SingleFieldBuilderV3<
           com.rbmhtechnology.eventuate.serializer.CommonFormats.VectorTimeFormat, com.rbmhtechnology.eventuate.serializer.CommonFormats.VectorTimeFormat.Builder, com.rbmhtechnology.eventuate.serializer.CommonFormats.VectorTimeFormatOrBuilder> 
@@ -1857,13 +1846,13 @@ public final class SnapshotFormats {
 
       private long sequenceNr_ ;
       /**
-       * <code>int64 sequenceNr = 7;</code>
+       * <code>optional int64 sequenceNr = 7;</code>
        */
       public long getSequenceNr() {
         return sequenceNr_;
       }
       /**
-       * <code>int64 sequenceNr = 7;</code>
+       * <code>optional int64 sequenceNr = 7;</code>
        */
       public Builder setSequenceNr(long value) {
         
@@ -1872,7 +1861,7 @@ public final class SnapshotFormats {
         return this;
       }
       /**
-       * <code>int64 sequenceNr = 7;</code>
+       * <code>optional int64 sequenceNr = 7;</code>
        */
       public Builder clearSequenceNr() {
         
@@ -1934,34 +1923,34 @@ public final class SnapshotFormats {
       com.google.protobuf.MessageOrBuilder {
 
     /**
-     * <code>string deliveryId = 1;</code>
+     * <code>optional string deliveryId = 1;</code>
      */
     java.lang.String getDeliveryId();
     /**
-     * <code>string deliveryId = 1;</code>
+     * <code>optional string deliveryId = 1;</code>
      */
     com.google.protobuf.ByteString
         getDeliveryIdBytes();
 
     /**
-     * <code>.PayloadFormat message = 2;</code>
+     * <code>optional .PayloadFormat message = 2;</code>
      */
     boolean hasMessage();
     /**
-     * <code>.PayloadFormat message = 2;</code>
+     * <code>optional .PayloadFormat message = 2;</code>
      */
     com.rbmhtechnology.eventuate.serializer.CommonFormats.PayloadFormat getMessage();
     /**
-     * <code>.PayloadFormat message = 2;</code>
+     * <code>optional .PayloadFormat message = 2;</code>
      */
     com.rbmhtechnology.eventuate.serializer.CommonFormats.PayloadFormatOrBuilder getMessageOrBuilder();
 
     /**
-     * <code>string destination = 3;</code>
+     * <code>optional string destination = 3;</code>
      */
     java.lang.String getDestination();
     /**
-     * <code>string destination = 3;</code>
+     * <code>optional string destination = 3;</code>
      */
     com.google.protobuf.ByteString
         getDestinationBytes();
@@ -2058,7 +2047,7 @@ public final class SnapshotFormats {
     public static final int DELIVERYID_FIELD_NUMBER = 1;
     private volatile java.lang.Object deliveryId_;
     /**
-     * <code>string deliveryId = 1;</code>
+     * <code>optional string deliveryId = 1;</code>
      */
     public java.lang.String getDeliveryId() {
       java.lang.Object ref = deliveryId_;
@@ -2073,7 +2062,7 @@ public final class SnapshotFormats {
       }
     }
     /**
-     * <code>string deliveryId = 1;</code>
+     * <code>optional string deliveryId = 1;</code>
      */
     public com.google.protobuf.ByteString
         getDeliveryIdBytes() {
@@ -2092,19 +2081,19 @@ public final class SnapshotFormats {
     public static final int MESSAGE_FIELD_NUMBER = 2;
     private com.rbmhtechnology.eventuate.serializer.CommonFormats.PayloadFormat message_;
     /**
-     * <code>.PayloadFormat message = 2;</code>
+     * <code>optional .PayloadFormat message = 2;</code>
      */
     public boolean hasMessage() {
       return message_ != null;
     }
     /**
-     * <code>.PayloadFormat message = 2;</code>
+     * <code>optional .PayloadFormat message = 2;</code>
      */
     public com.rbmhtechnology.eventuate.serializer.CommonFormats.PayloadFormat getMessage() {
       return message_ == null ? com.rbmhtechnology.eventuate.serializer.CommonFormats.PayloadFormat.getDefaultInstance() : message_;
     }
     /**
-     * <code>.PayloadFormat message = 2;</code>
+     * <code>optional .PayloadFormat message = 2;</code>
      */
     public com.rbmhtechnology.eventuate.serializer.CommonFormats.PayloadFormatOrBuilder getMessageOrBuilder() {
       return getMessage();
@@ -2113,7 +2102,7 @@ public final class SnapshotFormats {
     public static final int DESTINATION_FIELD_NUMBER = 3;
     private volatile java.lang.Object destination_;
     /**
-     * <code>string destination = 3;</code>
+     * <code>optional string destination = 3;</code>
      */
     public java.lang.String getDestination() {
       java.lang.Object ref = destination_;
@@ -2128,7 +2117,7 @@ public final class SnapshotFormats {
       }
     }
     /**
-     * <code>string destination = 3;</code>
+     * <code>optional string destination = 3;</code>
      */
     public com.google.protobuf.ByteString
         getDestinationBytes() {
@@ -2216,7 +2205,7 @@ public final class SnapshotFormats {
         return memoizedHashCode;
       }
       int hash = 41;
-      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (19 * hash) + getDescriptorForType().hashCode();
       hash = (37 * hash) + DELIVERYID_FIELD_NUMBER;
       hash = (53 * hash) + getDeliveryId().hashCode();
       if (hasMessage()) {
@@ -2230,17 +2219,6 @@ public final class SnapshotFormats {
       return hash;
     }
 
-    public static com.rbmhtechnology.eventuate.serializer.SnapshotFormats.DeliveryAttemptFormat parseFrom(
-        java.nio.ByteBuffer data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static com.rbmhtechnology.eventuate.serializer.SnapshotFormats.DeliveryAttemptFormat parseFrom(
-        java.nio.ByteBuffer data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
     public static com.rbmhtechnology.eventuate.serializer.SnapshotFormats.DeliveryAttemptFormat parseFrom(
         com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
@@ -2473,7 +2451,7 @@ public final class SnapshotFormats {
 
       private java.lang.Object deliveryId_ = "";
       /**
-       * <code>string deliveryId = 1;</code>
+       * <code>optional string deliveryId = 1;</code>
        */
       public java.lang.String getDeliveryId() {
         java.lang.Object ref = deliveryId_;
@@ -2488,7 +2466,7 @@ public final class SnapshotFormats {
         }
       }
       /**
-       * <code>string deliveryId = 1;</code>
+       * <code>optional string deliveryId = 1;</code>
        */
       public com.google.protobuf.ByteString
           getDeliveryIdBytes() {
@@ -2504,7 +2482,7 @@ public final class SnapshotFormats {
         }
       }
       /**
-       * <code>string deliveryId = 1;</code>
+       * <code>optional string deliveryId = 1;</code>
        */
       public Builder setDeliveryId(
           java.lang.String value) {
@@ -2517,7 +2495,7 @@ public final class SnapshotFormats {
         return this;
       }
       /**
-       * <code>string deliveryId = 1;</code>
+       * <code>optional string deliveryId = 1;</code>
        */
       public Builder clearDeliveryId() {
         
@@ -2526,7 +2504,7 @@ public final class SnapshotFormats {
         return this;
       }
       /**
-       * <code>string deliveryId = 1;</code>
+       * <code>optional string deliveryId = 1;</code>
        */
       public Builder setDeliveryIdBytes(
           com.google.protobuf.ByteString value) {
@@ -2544,13 +2522,13 @@ public final class SnapshotFormats {
       private com.google.protobuf.SingleFieldBuilderV3<
           com.rbmhtechnology.eventuate.serializer.CommonFormats.PayloadFormat, com.rbmhtechnology.eventuate.serializer.CommonFormats.PayloadFormat.Builder, com.rbmhtechnology.eventuate.serializer.CommonFormats.PayloadFormatOrBuilder> messageBuilder_;
       /**
-       * <code>.PayloadFormat message = 2;</code>
+       * <code>optional .PayloadFormat message = 2;</code>
        */
       public boolean hasMessage() {
         return messageBuilder_ != null || message_ != null;
       }
       /**
-       * <code>.PayloadFormat message = 2;</code>
+       * <code>optional .PayloadFormat message = 2;</code>
        */
       public com.rbmhtechnology.eventuate.serializer.CommonFormats.PayloadFormat getMessage() {
         if (messageBuilder_ == null) {
@@ -2560,7 +2538,7 @@ public final class SnapshotFormats {
         }
       }
       /**
-       * <code>.PayloadFormat message = 2;</code>
+       * <code>optional .PayloadFormat message = 2;</code>
        */
       public Builder setMessage(com.rbmhtechnology.eventuate.serializer.CommonFormats.PayloadFormat value) {
         if (messageBuilder_ == null) {
@@ -2576,7 +2554,7 @@ public final class SnapshotFormats {
         return this;
       }
       /**
-       * <code>.PayloadFormat message = 2;</code>
+       * <code>optional .PayloadFormat message = 2;</code>
        */
       public Builder setMessage(
           com.rbmhtechnology.eventuate.serializer.CommonFormats.PayloadFormat.Builder builderForValue) {
@@ -2590,7 +2568,7 @@ public final class SnapshotFormats {
         return this;
       }
       /**
-       * <code>.PayloadFormat message = 2;</code>
+       * <code>optional .PayloadFormat message = 2;</code>
        */
       public Builder mergeMessage(com.rbmhtechnology.eventuate.serializer.CommonFormats.PayloadFormat value) {
         if (messageBuilder_ == null) {
@@ -2608,7 +2586,7 @@ public final class SnapshotFormats {
         return this;
       }
       /**
-       * <code>.PayloadFormat message = 2;</code>
+       * <code>optional .PayloadFormat message = 2;</code>
        */
       public Builder clearMessage() {
         if (messageBuilder_ == null) {
@@ -2622,7 +2600,7 @@ public final class SnapshotFormats {
         return this;
       }
       /**
-       * <code>.PayloadFormat message = 2;</code>
+       * <code>optional .PayloadFormat message = 2;</code>
        */
       public com.rbmhtechnology.eventuate.serializer.CommonFormats.PayloadFormat.Builder getMessageBuilder() {
         
@@ -2630,7 +2608,7 @@ public final class SnapshotFormats {
         return getMessageFieldBuilder().getBuilder();
       }
       /**
-       * <code>.PayloadFormat message = 2;</code>
+       * <code>optional .PayloadFormat message = 2;</code>
        */
       public com.rbmhtechnology.eventuate.serializer.CommonFormats.PayloadFormatOrBuilder getMessageOrBuilder() {
         if (messageBuilder_ != null) {
@@ -2641,7 +2619,7 @@ public final class SnapshotFormats {
         }
       }
       /**
-       * <code>.PayloadFormat message = 2;</code>
+       * <code>optional .PayloadFormat message = 2;</code>
        */
       private com.google.protobuf.SingleFieldBuilderV3<
           com.rbmhtechnology.eventuate.serializer.CommonFormats.PayloadFormat, com.rbmhtechnology.eventuate.serializer.CommonFormats.PayloadFormat.Builder, com.rbmhtechnology.eventuate.serializer.CommonFormats.PayloadFormatOrBuilder> 
@@ -2659,7 +2637,7 @@ public final class SnapshotFormats {
 
       private java.lang.Object destination_ = "";
       /**
-       * <code>string destination = 3;</code>
+       * <code>optional string destination = 3;</code>
        */
       public java.lang.String getDestination() {
         java.lang.Object ref = destination_;
@@ -2674,7 +2652,7 @@ public final class SnapshotFormats {
         }
       }
       /**
-       * <code>string destination = 3;</code>
+       * <code>optional string destination = 3;</code>
        */
       public com.google.protobuf.ByteString
           getDestinationBytes() {
@@ -2690,7 +2668,7 @@ public final class SnapshotFormats {
         }
       }
       /**
-       * <code>string destination = 3;</code>
+       * <code>optional string destination = 3;</code>
        */
       public Builder setDestination(
           java.lang.String value) {
@@ -2703,7 +2681,7 @@ public final class SnapshotFormats {
         return this;
       }
       /**
-       * <code>string destination = 3;</code>
+       * <code>optional string destination = 3;</code>
        */
       public Builder clearDestination() {
         
@@ -2712,7 +2690,7 @@ public final class SnapshotFormats {
         return this;
       }
       /**
-       * <code>string destination = 3;</code>
+       * <code>optional string destination = 3;</code>
        */
       public Builder setDestinationBytes(
           com.google.protobuf.ByteString value) {
@@ -2779,7 +2757,7 @@ public final class SnapshotFormats {
       com.google.protobuf.MessageOrBuilder {
 
     /**
-     * <code>int64 sequenceNr = 1;</code>
+     * <code>optional int64 sequenceNr = 1;</code>
      */
     long getSequenceNr();
 
@@ -2808,20 +2786,20 @@ public final class SnapshotFormats {
         int index);
 
     /**
-     * <code>int32 instanceId = 3;</code>
+     * <code>optional int32 instanceId = 3;</code>
      */
     int getInstanceId();
 
     /**
-     * <code>.EventIdFormat eventId = 4;</code>
+     * <code>optional .EventIdFormat eventId = 4;</code>
      */
     boolean hasEventId();
     /**
-     * <code>.EventIdFormat eventId = 4;</code>
+     * <code>optional .EventIdFormat eventId = 4;</code>
      */
     com.rbmhtechnology.eventuate.serializer.DurableEventFormats.EventIdFormat getEventId();
     /**
-     * <code>.EventIdFormat eventId = 4;</code>
+     * <code>optional .EventIdFormat eventId = 4;</code>
      */
     com.rbmhtechnology.eventuate.serializer.DurableEventFormats.EventIdFormatOrBuilder getEventIdOrBuilder();
   }
@@ -2929,7 +2907,7 @@ public final class SnapshotFormats {
     public static final int SEQUENCENR_FIELD_NUMBER = 1;
     private long sequenceNr_;
     /**
-     * <code>int64 sequenceNr = 1;</code>
+     * <code>optional int64 sequenceNr = 1;</code>
      */
     public long getSequenceNr() {
       return sequenceNr_;
@@ -2973,7 +2951,7 @@ public final class SnapshotFormats {
     public static final int INSTANCEID_FIELD_NUMBER = 3;
     private int instanceId_;
     /**
-     * <code>int32 instanceId = 3;</code>
+     * <code>optional int32 instanceId = 3;</code>
      */
     public int getInstanceId() {
       return instanceId_;
@@ -2982,19 +2960,19 @@ public final class SnapshotFormats {
     public static final int EVENTID_FIELD_NUMBER = 4;
     private com.rbmhtechnology.eventuate.serializer.DurableEventFormats.EventIdFormat eventId_;
     /**
-     * <code>.EventIdFormat eventId = 4;</code>
+     * <code>optional .EventIdFormat eventId = 4;</code>
      */
     public boolean hasEventId() {
       return eventId_ != null;
     }
     /**
-     * <code>.EventIdFormat eventId = 4;</code>
+     * <code>optional .EventIdFormat eventId = 4;</code>
      */
     public com.rbmhtechnology.eventuate.serializer.DurableEventFormats.EventIdFormat getEventId() {
       return eventId_ == null ? com.rbmhtechnology.eventuate.serializer.DurableEventFormats.EventIdFormat.getDefaultInstance() : eventId_;
     }
     /**
-     * <code>.EventIdFormat eventId = 4;</code>
+     * <code>optional .EventIdFormat eventId = 4;</code>
      */
     public com.rbmhtechnology.eventuate.serializer.DurableEventFormats.EventIdFormatOrBuilder getEventIdOrBuilder() {
       return getEventId();
@@ -3083,7 +3061,7 @@ public final class SnapshotFormats {
         return memoizedHashCode;
       }
       int hash = 41;
-      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (19 * hash) + getDescriptorForType().hashCode();
       hash = (37 * hash) + SEQUENCENR_FIELD_NUMBER;
       hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
           getSequenceNr());
@@ -3102,17 +3080,6 @@ public final class SnapshotFormats {
       return hash;
     }
 
-    public static com.rbmhtechnology.eventuate.serializer.SnapshotFormats.PersistOnEventRequestFormat parseFrom(
-        java.nio.ByteBuffer data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static com.rbmhtechnology.eventuate.serializer.SnapshotFormats.PersistOnEventRequestFormat parseFrom(
-        java.nio.ByteBuffer data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
     public static com.rbmhtechnology.eventuate.serializer.SnapshotFormats.PersistOnEventRequestFormat parseFrom(
         com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
@@ -3389,13 +3356,13 @@ public final class SnapshotFormats {
 
       private long sequenceNr_ ;
       /**
-       * <code>int64 sequenceNr = 1;</code>
+       * <code>optional int64 sequenceNr = 1;</code>
        */
       public long getSequenceNr() {
         return sequenceNr_;
       }
       /**
-       * <code>int64 sequenceNr = 1;</code>
+       * <code>optional int64 sequenceNr = 1;</code>
        */
       public Builder setSequenceNr(long value) {
         
@@ -3404,7 +3371,7 @@ public final class SnapshotFormats {
         return this;
       }
       /**
-       * <code>int64 sequenceNr = 1;</code>
+       * <code>optional int64 sequenceNr = 1;</code>
        */
       public Builder clearSequenceNr() {
         
@@ -3655,13 +3622,13 @@ public final class SnapshotFormats {
 
       private int instanceId_ ;
       /**
-       * <code>int32 instanceId = 3;</code>
+       * <code>optional int32 instanceId = 3;</code>
        */
       public int getInstanceId() {
         return instanceId_;
       }
       /**
-       * <code>int32 instanceId = 3;</code>
+       * <code>optional int32 instanceId = 3;</code>
        */
       public Builder setInstanceId(int value) {
         
@@ -3670,7 +3637,7 @@ public final class SnapshotFormats {
         return this;
       }
       /**
-       * <code>int32 instanceId = 3;</code>
+       * <code>optional int32 instanceId = 3;</code>
        */
       public Builder clearInstanceId() {
         
@@ -3683,13 +3650,13 @@ public final class SnapshotFormats {
       private com.google.protobuf.SingleFieldBuilderV3<
           com.rbmhtechnology.eventuate.serializer.DurableEventFormats.EventIdFormat, com.rbmhtechnology.eventuate.serializer.DurableEventFormats.EventIdFormat.Builder, com.rbmhtechnology.eventuate.serializer.DurableEventFormats.EventIdFormatOrBuilder> eventIdBuilder_;
       /**
-       * <code>.EventIdFormat eventId = 4;</code>
+       * <code>optional .EventIdFormat eventId = 4;</code>
        */
       public boolean hasEventId() {
         return eventIdBuilder_ != null || eventId_ != null;
       }
       /**
-       * <code>.EventIdFormat eventId = 4;</code>
+       * <code>optional .EventIdFormat eventId = 4;</code>
        */
       public com.rbmhtechnology.eventuate.serializer.DurableEventFormats.EventIdFormat getEventId() {
         if (eventIdBuilder_ == null) {
@@ -3699,7 +3666,7 @@ public final class SnapshotFormats {
         }
       }
       /**
-       * <code>.EventIdFormat eventId = 4;</code>
+       * <code>optional .EventIdFormat eventId = 4;</code>
        */
       public Builder setEventId(com.rbmhtechnology.eventuate.serializer.DurableEventFormats.EventIdFormat value) {
         if (eventIdBuilder_ == null) {
@@ -3715,7 +3682,7 @@ public final class SnapshotFormats {
         return this;
       }
       /**
-       * <code>.EventIdFormat eventId = 4;</code>
+       * <code>optional .EventIdFormat eventId = 4;</code>
        */
       public Builder setEventId(
           com.rbmhtechnology.eventuate.serializer.DurableEventFormats.EventIdFormat.Builder builderForValue) {
@@ -3729,7 +3696,7 @@ public final class SnapshotFormats {
         return this;
       }
       /**
-       * <code>.EventIdFormat eventId = 4;</code>
+       * <code>optional .EventIdFormat eventId = 4;</code>
        */
       public Builder mergeEventId(com.rbmhtechnology.eventuate.serializer.DurableEventFormats.EventIdFormat value) {
         if (eventIdBuilder_ == null) {
@@ -3747,7 +3714,7 @@ public final class SnapshotFormats {
         return this;
       }
       /**
-       * <code>.EventIdFormat eventId = 4;</code>
+       * <code>optional .EventIdFormat eventId = 4;</code>
        */
       public Builder clearEventId() {
         if (eventIdBuilder_ == null) {
@@ -3761,7 +3728,7 @@ public final class SnapshotFormats {
         return this;
       }
       /**
-       * <code>.EventIdFormat eventId = 4;</code>
+       * <code>optional .EventIdFormat eventId = 4;</code>
        */
       public com.rbmhtechnology.eventuate.serializer.DurableEventFormats.EventIdFormat.Builder getEventIdBuilder() {
         
@@ -3769,7 +3736,7 @@ public final class SnapshotFormats {
         return getEventIdFieldBuilder().getBuilder();
       }
       /**
-       * <code>.EventIdFormat eventId = 4;</code>
+       * <code>optional .EventIdFormat eventId = 4;</code>
        */
       public com.rbmhtechnology.eventuate.serializer.DurableEventFormats.EventIdFormatOrBuilder getEventIdOrBuilder() {
         if (eventIdBuilder_ != null) {
@@ -3780,7 +3747,7 @@ public final class SnapshotFormats {
         }
       }
       /**
-       * <code>.EventIdFormat eventId = 4;</code>
+       * <code>optional .EventIdFormat eventId = 4;</code>
        */
       private com.google.protobuf.SingleFieldBuilderV3<
           com.rbmhtechnology.eventuate.serializer.DurableEventFormats.EventIdFormat, com.rbmhtechnology.eventuate.serializer.DurableEventFormats.EventIdFormat.Builder, com.rbmhtechnology.eventuate.serializer.DurableEventFormats.EventIdFormatOrBuilder> 
@@ -3849,15 +3816,15 @@ public final class SnapshotFormats {
       com.google.protobuf.MessageOrBuilder {
 
     /**
-     * <code>.PayloadFormat event = 1;</code>
+     * <code>optional .PayloadFormat event = 1;</code>
      */
     boolean hasEvent();
     /**
-     * <code>.PayloadFormat event = 1;</code>
+     * <code>optional .PayloadFormat event = 1;</code>
      */
     com.rbmhtechnology.eventuate.serializer.CommonFormats.PayloadFormat getEvent();
     /**
-     * <code>.PayloadFormat event = 1;</code>
+     * <code>optional .PayloadFormat event = 1;</code>
      */
     com.rbmhtechnology.eventuate.serializer.CommonFormats.PayloadFormatOrBuilder getEventOrBuilder();
 
@@ -3972,19 +3939,19 @@ public final class SnapshotFormats {
     public static final int EVENT_FIELD_NUMBER = 1;
     private com.rbmhtechnology.eventuate.serializer.CommonFormats.PayloadFormat event_;
     /**
-     * <code>.PayloadFormat event = 1;</code>
+     * <code>optional .PayloadFormat event = 1;</code>
      */
     public boolean hasEvent() {
       return event_ != null;
     }
     /**
-     * <code>.PayloadFormat event = 1;</code>
+     * <code>optional .PayloadFormat event = 1;</code>
      */
     public com.rbmhtechnology.eventuate.serializer.CommonFormats.PayloadFormat getEvent() {
       return event_ == null ? com.rbmhtechnology.eventuate.serializer.CommonFormats.PayloadFormat.getDefaultInstance() : event_;
     }
     /**
-     * <code>.PayloadFormat event = 1;</code>
+     * <code>optional .PayloadFormat event = 1;</code>
      */
     public com.rbmhtechnology.eventuate.serializer.CommonFormats.PayloadFormatOrBuilder getEventOrBuilder() {
       return getEvent();
@@ -4088,7 +4055,7 @@ public final class SnapshotFormats {
         return memoizedHashCode;
       }
       int hash = 41;
-      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (19 * hash) + getDescriptorForType().hashCode();
       if (hasEvent()) {
         hash = (37 * hash) + EVENT_FIELD_NUMBER;
         hash = (53 * hash) + getEvent().hashCode();
@@ -4102,17 +4069,6 @@ public final class SnapshotFormats {
       return hash;
     }
 
-    public static com.rbmhtechnology.eventuate.serializer.SnapshotFormats.PersistOnEventInvocationFormat parseFrom(
-        java.nio.ByteBuffer data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static com.rbmhtechnology.eventuate.serializer.SnapshotFormats.PersistOnEventInvocationFormat parseFrom(
-        java.nio.ByteBuffer data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
     public static com.rbmhtechnology.eventuate.serializer.SnapshotFormats.PersistOnEventInvocationFormat parseFrom(
         com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
@@ -4354,13 +4310,13 @@ public final class SnapshotFormats {
       private com.google.protobuf.SingleFieldBuilderV3<
           com.rbmhtechnology.eventuate.serializer.CommonFormats.PayloadFormat, com.rbmhtechnology.eventuate.serializer.CommonFormats.PayloadFormat.Builder, com.rbmhtechnology.eventuate.serializer.CommonFormats.PayloadFormatOrBuilder> eventBuilder_;
       /**
-       * <code>.PayloadFormat event = 1;</code>
+       * <code>optional .PayloadFormat event = 1;</code>
        */
       public boolean hasEvent() {
         return eventBuilder_ != null || event_ != null;
       }
       /**
-       * <code>.PayloadFormat event = 1;</code>
+       * <code>optional .PayloadFormat event = 1;</code>
        */
       public com.rbmhtechnology.eventuate.serializer.CommonFormats.PayloadFormat getEvent() {
         if (eventBuilder_ == null) {
@@ -4370,7 +4326,7 @@ public final class SnapshotFormats {
         }
       }
       /**
-       * <code>.PayloadFormat event = 1;</code>
+       * <code>optional .PayloadFormat event = 1;</code>
        */
       public Builder setEvent(com.rbmhtechnology.eventuate.serializer.CommonFormats.PayloadFormat value) {
         if (eventBuilder_ == null) {
@@ -4386,7 +4342,7 @@ public final class SnapshotFormats {
         return this;
       }
       /**
-       * <code>.PayloadFormat event = 1;</code>
+       * <code>optional .PayloadFormat event = 1;</code>
        */
       public Builder setEvent(
           com.rbmhtechnology.eventuate.serializer.CommonFormats.PayloadFormat.Builder builderForValue) {
@@ -4400,7 +4356,7 @@ public final class SnapshotFormats {
         return this;
       }
       /**
-       * <code>.PayloadFormat event = 1;</code>
+       * <code>optional .PayloadFormat event = 1;</code>
        */
       public Builder mergeEvent(com.rbmhtechnology.eventuate.serializer.CommonFormats.PayloadFormat value) {
         if (eventBuilder_ == null) {
@@ -4418,7 +4374,7 @@ public final class SnapshotFormats {
         return this;
       }
       /**
-       * <code>.PayloadFormat event = 1;</code>
+       * <code>optional .PayloadFormat event = 1;</code>
        */
       public Builder clearEvent() {
         if (eventBuilder_ == null) {
@@ -4432,7 +4388,7 @@ public final class SnapshotFormats {
         return this;
       }
       /**
-       * <code>.PayloadFormat event = 1;</code>
+       * <code>optional .PayloadFormat event = 1;</code>
        */
       public com.rbmhtechnology.eventuate.serializer.CommonFormats.PayloadFormat.Builder getEventBuilder() {
         
@@ -4440,7 +4396,7 @@ public final class SnapshotFormats {
         return getEventFieldBuilder().getBuilder();
       }
       /**
-       * <code>.PayloadFormat event = 1;</code>
+       * <code>optional .PayloadFormat event = 1;</code>
        */
       public com.rbmhtechnology.eventuate.serializer.CommonFormats.PayloadFormatOrBuilder getEventOrBuilder() {
         if (eventBuilder_ != null) {
@@ -4451,7 +4407,7 @@ public final class SnapshotFormats {
         }
       }
       /**
-       * <code>.PayloadFormat event = 1;</code>
+       * <code>optional .PayloadFormat event = 1;</code>
        */
       private com.google.protobuf.SingleFieldBuilderV3<
           com.rbmhtechnology.eventuate.serializer.CommonFormats.PayloadFormat, com.rbmhtechnology.eventuate.serializer.CommonFormats.PayloadFormat.Builder, com.rbmhtechnology.eventuate.serializer.CommonFormats.PayloadFormatOrBuilder> 
@@ -4614,27 +4570,32 @@ public final class SnapshotFormats {
       com.google.protobuf.MessageOrBuilder {
 
     /**
-     * <code>.ConcurrentVersionsTreeNodeFormat root = 1;</code>
+     * <code>optional .ConcurrentVersionsTreeNodeFormat root = 1;</code>
      */
     boolean hasRoot();
     /**
-     * <code>.ConcurrentVersionsTreeNodeFormat root = 1;</code>
+     * <code>optional .ConcurrentVersionsTreeNodeFormat root = 1;</code>
      */
     com.rbmhtechnology.eventuate.serializer.SnapshotFormats.ConcurrentVersionsTreeNodeFormat getRoot();
     /**
-     * <code>.ConcurrentVersionsTreeNodeFormat root = 1;</code>
+     * <code>optional .ConcurrentVersionsTreeNodeFormat root = 1;</code>
      */
     com.rbmhtechnology.eventuate.serializer.SnapshotFormats.ConcurrentVersionsTreeNodeFormatOrBuilder getRootOrBuilder();
 
     /**
-     * <code>string owner = 2;</code>
+     * <code>optional string owner = 2;</code>
      */
     java.lang.String getOwner();
     /**
-     * <code>string owner = 2;</code>
+     * <code>optional string owner = 2;</code>
      */
     com.google.protobuf.ByteString
         getOwnerBytes();
+
+    /**
+     * <code>optional int32 maxDepth = 3;</code>
+     */
+    int getMaxDepth();
   }
   /**
    * Protobuf type {@code ConcurrentVersionsTreeFormat}
@@ -4649,6 +4610,7 @@ public final class SnapshotFormats {
     }
     private ConcurrentVersionsTreeFormat() {
       owner_ = "";
+      maxDepth_ = 0;
     }
 
     @java.lang.Override
@@ -4695,6 +4657,11 @@ public final class SnapshotFormats {
               owner_ = s;
               break;
             }
+            case 24: {
+
+              maxDepth_ = input.readInt32();
+              break;
+            }
           }
         }
       } catch (com.google.protobuf.InvalidProtocolBufferException e) {
@@ -4721,19 +4688,19 @@ public final class SnapshotFormats {
     public static final int ROOT_FIELD_NUMBER = 1;
     private com.rbmhtechnology.eventuate.serializer.SnapshotFormats.ConcurrentVersionsTreeNodeFormat root_;
     /**
-     * <code>.ConcurrentVersionsTreeNodeFormat root = 1;</code>
+     * <code>optional .ConcurrentVersionsTreeNodeFormat root = 1;</code>
      */
     public boolean hasRoot() {
       return root_ != null;
     }
     /**
-     * <code>.ConcurrentVersionsTreeNodeFormat root = 1;</code>
+     * <code>optional .ConcurrentVersionsTreeNodeFormat root = 1;</code>
      */
     public com.rbmhtechnology.eventuate.serializer.SnapshotFormats.ConcurrentVersionsTreeNodeFormat getRoot() {
       return root_ == null ? com.rbmhtechnology.eventuate.serializer.SnapshotFormats.ConcurrentVersionsTreeNodeFormat.getDefaultInstance() : root_;
     }
     /**
-     * <code>.ConcurrentVersionsTreeNodeFormat root = 1;</code>
+     * <code>optional .ConcurrentVersionsTreeNodeFormat root = 1;</code>
      */
     public com.rbmhtechnology.eventuate.serializer.SnapshotFormats.ConcurrentVersionsTreeNodeFormatOrBuilder getRootOrBuilder() {
       return getRoot();
@@ -4742,7 +4709,7 @@ public final class SnapshotFormats {
     public static final int OWNER_FIELD_NUMBER = 2;
     private volatile java.lang.Object owner_;
     /**
-     * <code>string owner = 2;</code>
+     * <code>optional string owner = 2;</code>
      */
     public java.lang.String getOwner() {
       java.lang.Object ref = owner_;
@@ -4757,7 +4724,7 @@ public final class SnapshotFormats {
       }
     }
     /**
-     * <code>string owner = 2;</code>
+     * <code>optional string owner = 2;</code>
      */
     public com.google.protobuf.ByteString
         getOwnerBytes() {
@@ -4771,6 +4738,15 @@ public final class SnapshotFormats {
       } else {
         return (com.google.protobuf.ByteString) ref;
       }
+    }
+
+    public static final int MAXDEPTH_FIELD_NUMBER = 3;
+    private int maxDepth_;
+    /**
+     * <code>optional int32 maxDepth = 3;</code>
+     */
+    public int getMaxDepth() {
+      return maxDepth_;
     }
 
     private byte memoizedIsInitialized = -1;
@@ -4791,6 +4767,9 @@ public final class SnapshotFormats {
       if (!getOwnerBytes().isEmpty()) {
         com.google.protobuf.GeneratedMessageV3.writeString(output, 2, owner_);
       }
+      if (maxDepth_ != 0) {
+        output.writeInt32(3, maxDepth_);
+      }
     }
 
     public int getSerializedSize() {
@@ -4804,6 +4783,10 @@ public final class SnapshotFormats {
       }
       if (!getOwnerBytes().isEmpty()) {
         size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, owner_);
+      }
+      if (maxDepth_ != 0) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(3, maxDepth_);
       }
       memoizedSize = size;
       return size;
@@ -4828,6 +4811,8 @@ public final class SnapshotFormats {
       }
       result = result && getOwner()
           .equals(other.getOwner());
+      result = result && (getMaxDepth()
+          == other.getMaxDepth());
       return result;
     }
 
@@ -4837,29 +4822,20 @@ public final class SnapshotFormats {
         return memoizedHashCode;
       }
       int hash = 41;
-      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (19 * hash) + getDescriptorForType().hashCode();
       if (hasRoot()) {
         hash = (37 * hash) + ROOT_FIELD_NUMBER;
         hash = (53 * hash) + getRoot().hashCode();
       }
       hash = (37 * hash) + OWNER_FIELD_NUMBER;
       hash = (53 * hash) + getOwner().hashCode();
+      hash = (37 * hash) + MAXDEPTH_FIELD_NUMBER;
+      hash = (53 * hash) + getMaxDepth();
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
       return hash;
     }
 
-    public static com.rbmhtechnology.eventuate.serializer.SnapshotFormats.ConcurrentVersionsTreeFormat parseFrom(
-        java.nio.ByteBuffer data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static com.rbmhtechnology.eventuate.serializer.SnapshotFormats.ConcurrentVersionsTreeFormat parseFrom(
-        java.nio.ByteBuffer data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
     public static com.rbmhtechnology.eventuate.serializer.SnapshotFormats.ConcurrentVersionsTreeFormat parseFrom(
         com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
@@ -4981,6 +4957,8 @@ public final class SnapshotFormats {
         }
         owner_ = "";
 
+        maxDepth_ = 0;
+
         return this;
       }
 
@@ -5009,6 +4987,7 @@ public final class SnapshotFormats {
           result.root_ = rootBuilder_.build();
         }
         result.owner_ = owner_;
+        result.maxDepth_ = maxDepth_;
         onBuilt();
         return result;
       }
@@ -5057,6 +5036,9 @@ public final class SnapshotFormats {
           owner_ = other.owner_;
           onChanged();
         }
+        if (other.getMaxDepth() != 0) {
+          setMaxDepth(other.getMaxDepth());
+        }
         onChanged();
         return this;
       }
@@ -5087,13 +5069,13 @@ public final class SnapshotFormats {
       private com.google.protobuf.SingleFieldBuilderV3<
           com.rbmhtechnology.eventuate.serializer.SnapshotFormats.ConcurrentVersionsTreeNodeFormat, com.rbmhtechnology.eventuate.serializer.SnapshotFormats.ConcurrentVersionsTreeNodeFormat.Builder, com.rbmhtechnology.eventuate.serializer.SnapshotFormats.ConcurrentVersionsTreeNodeFormatOrBuilder> rootBuilder_;
       /**
-       * <code>.ConcurrentVersionsTreeNodeFormat root = 1;</code>
+       * <code>optional .ConcurrentVersionsTreeNodeFormat root = 1;</code>
        */
       public boolean hasRoot() {
         return rootBuilder_ != null || root_ != null;
       }
       /**
-       * <code>.ConcurrentVersionsTreeNodeFormat root = 1;</code>
+       * <code>optional .ConcurrentVersionsTreeNodeFormat root = 1;</code>
        */
       public com.rbmhtechnology.eventuate.serializer.SnapshotFormats.ConcurrentVersionsTreeNodeFormat getRoot() {
         if (rootBuilder_ == null) {
@@ -5103,7 +5085,7 @@ public final class SnapshotFormats {
         }
       }
       /**
-       * <code>.ConcurrentVersionsTreeNodeFormat root = 1;</code>
+       * <code>optional .ConcurrentVersionsTreeNodeFormat root = 1;</code>
        */
       public Builder setRoot(com.rbmhtechnology.eventuate.serializer.SnapshotFormats.ConcurrentVersionsTreeNodeFormat value) {
         if (rootBuilder_ == null) {
@@ -5119,7 +5101,7 @@ public final class SnapshotFormats {
         return this;
       }
       /**
-       * <code>.ConcurrentVersionsTreeNodeFormat root = 1;</code>
+       * <code>optional .ConcurrentVersionsTreeNodeFormat root = 1;</code>
        */
       public Builder setRoot(
           com.rbmhtechnology.eventuate.serializer.SnapshotFormats.ConcurrentVersionsTreeNodeFormat.Builder builderForValue) {
@@ -5133,7 +5115,7 @@ public final class SnapshotFormats {
         return this;
       }
       /**
-       * <code>.ConcurrentVersionsTreeNodeFormat root = 1;</code>
+       * <code>optional .ConcurrentVersionsTreeNodeFormat root = 1;</code>
        */
       public Builder mergeRoot(com.rbmhtechnology.eventuate.serializer.SnapshotFormats.ConcurrentVersionsTreeNodeFormat value) {
         if (rootBuilder_ == null) {
@@ -5151,7 +5133,7 @@ public final class SnapshotFormats {
         return this;
       }
       /**
-       * <code>.ConcurrentVersionsTreeNodeFormat root = 1;</code>
+       * <code>optional .ConcurrentVersionsTreeNodeFormat root = 1;</code>
        */
       public Builder clearRoot() {
         if (rootBuilder_ == null) {
@@ -5165,7 +5147,7 @@ public final class SnapshotFormats {
         return this;
       }
       /**
-       * <code>.ConcurrentVersionsTreeNodeFormat root = 1;</code>
+       * <code>optional .ConcurrentVersionsTreeNodeFormat root = 1;</code>
        */
       public com.rbmhtechnology.eventuate.serializer.SnapshotFormats.ConcurrentVersionsTreeNodeFormat.Builder getRootBuilder() {
         
@@ -5173,7 +5155,7 @@ public final class SnapshotFormats {
         return getRootFieldBuilder().getBuilder();
       }
       /**
-       * <code>.ConcurrentVersionsTreeNodeFormat root = 1;</code>
+       * <code>optional .ConcurrentVersionsTreeNodeFormat root = 1;</code>
        */
       public com.rbmhtechnology.eventuate.serializer.SnapshotFormats.ConcurrentVersionsTreeNodeFormatOrBuilder getRootOrBuilder() {
         if (rootBuilder_ != null) {
@@ -5184,7 +5166,7 @@ public final class SnapshotFormats {
         }
       }
       /**
-       * <code>.ConcurrentVersionsTreeNodeFormat root = 1;</code>
+       * <code>optional .ConcurrentVersionsTreeNodeFormat root = 1;</code>
        */
       private com.google.protobuf.SingleFieldBuilderV3<
           com.rbmhtechnology.eventuate.serializer.SnapshotFormats.ConcurrentVersionsTreeNodeFormat, com.rbmhtechnology.eventuate.serializer.SnapshotFormats.ConcurrentVersionsTreeNodeFormat.Builder, com.rbmhtechnology.eventuate.serializer.SnapshotFormats.ConcurrentVersionsTreeNodeFormatOrBuilder> 
@@ -5202,7 +5184,7 @@ public final class SnapshotFormats {
 
       private java.lang.Object owner_ = "";
       /**
-       * <code>string owner = 2;</code>
+       * <code>optional string owner = 2;</code>
        */
       public java.lang.String getOwner() {
         java.lang.Object ref = owner_;
@@ -5217,7 +5199,7 @@ public final class SnapshotFormats {
         }
       }
       /**
-       * <code>string owner = 2;</code>
+       * <code>optional string owner = 2;</code>
        */
       public com.google.protobuf.ByteString
           getOwnerBytes() {
@@ -5233,7 +5215,7 @@ public final class SnapshotFormats {
         }
       }
       /**
-       * <code>string owner = 2;</code>
+       * <code>optional string owner = 2;</code>
        */
       public Builder setOwner(
           java.lang.String value) {
@@ -5246,7 +5228,7 @@ public final class SnapshotFormats {
         return this;
       }
       /**
-       * <code>string owner = 2;</code>
+       * <code>optional string owner = 2;</code>
        */
       public Builder clearOwner() {
         
@@ -5255,7 +5237,7 @@ public final class SnapshotFormats {
         return this;
       }
       /**
-       * <code>string owner = 2;</code>
+       * <code>optional string owner = 2;</code>
        */
       public Builder setOwnerBytes(
           com.google.protobuf.ByteString value) {
@@ -5265,6 +5247,32 @@ public final class SnapshotFormats {
   checkByteStringIsUtf8(value);
         
         owner_ = value;
+        onChanged();
+        return this;
+      }
+
+      private int maxDepth_ ;
+      /**
+       * <code>optional int32 maxDepth = 3;</code>
+       */
+      public int getMaxDepth() {
+        return maxDepth_;
+      }
+      /**
+       * <code>optional int32 maxDepth = 3;</code>
+       */
+      public Builder setMaxDepth(int value) {
+        
+        maxDepth_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional int32 maxDepth = 3;</code>
+       */
+      public Builder clearMaxDepth() {
+        
+        maxDepth_ = 0;
         onChanged();
         return this;
       }
@@ -5322,20 +5330,20 @@ public final class SnapshotFormats {
       com.google.protobuf.MessageOrBuilder {
 
     /**
-     * <code>.VersionedFormat versioned = 1;</code>
+     * <code>optional .VersionedFormat versioned = 1;</code>
      */
     boolean hasVersioned();
     /**
-     * <code>.VersionedFormat versioned = 1;</code>
+     * <code>optional .VersionedFormat versioned = 1;</code>
      */
     com.rbmhtechnology.eventuate.serializer.CommonFormats.VersionedFormat getVersioned();
     /**
-     * <code>.VersionedFormat versioned = 1;</code>
+     * <code>optional .VersionedFormat versioned = 1;</code>
      */
     com.rbmhtechnology.eventuate.serializer.CommonFormats.VersionedFormatOrBuilder getVersionedOrBuilder();
 
     /**
-     * <code>bool rejected = 2;</code>
+     * <code>optional bool rejected = 2;</code>
      */
     boolean getRejected();
 
@@ -5461,19 +5469,19 @@ public final class SnapshotFormats {
     public static final int VERSIONED_FIELD_NUMBER = 1;
     private com.rbmhtechnology.eventuate.serializer.CommonFormats.VersionedFormat versioned_;
     /**
-     * <code>.VersionedFormat versioned = 1;</code>
+     * <code>optional .VersionedFormat versioned = 1;</code>
      */
     public boolean hasVersioned() {
       return versioned_ != null;
     }
     /**
-     * <code>.VersionedFormat versioned = 1;</code>
+     * <code>optional .VersionedFormat versioned = 1;</code>
      */
     public com.rbmhtechnology.eventuate.serializer.CommonFormats.VersionedFormat getVersioned() {
       return versioned_ == null ? com.rbmhtechnology.eventuate.serializer.CommonFormats.VersionedFormat.getDefaultInstance() : versioned_;
     }
     /**
-     * <code>.VersionedFormat versioned = 1;</code>
+     * <code>optional .VersionedFormat versioned = 1;</code>
      */
     public com.rbmhtechnology.eventuate.serializer.CommonFormats.VersionedFormatOrBuilder getVersionedOrBuilder() {
       return getVersioned();
@@ -5482,7 +5490,7 @@ public final class SnapshotFormats {
     public static final int REJECTED_FIELD_NUMBER = 2;
     private boolean rejected_;
     /**
-     * <code>bool rejected = 2;</code>
+     * <code>optional bool rejected = 2;</code>
      */
     public boolean getRejected() {
       return rejected_;
@@ -5597,7 +5605,7 @@ public final class SnapshotFormats {
         return memoizedHashCode;
       }
       int hash = 41;
-      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (19 * hash) + getDescriptorForType().hashCode();
       if (hasVersioned()) {
         hash = (37 * hash) + VERSIONED_FIELD_NUMBER;
         hash = (53 * hash) + getVersioned().hashCode();
@@ -5614,17 +5622,6 @@ public final class SnapshotFormats {
       return hash;
     }
 
-    public static com.rbmhtechnology.eventuate.serializer.SnapshotFormats.ConcurrentVersionsTreeNodeFormat parseFrom(
-        java.nio.ByteBuffer data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static com.rbmhtechnology.eventuate.serializer.SnapshotFormats.ConcurrentVersionsTreeNodeFormat parseFrom(
-        java.nio.ByteBuffer data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
     public static com.rbmhtechnology.eventuate.serializer.SnapshotFormats.ConcurrentVersionsTreeNodeFormat parseFrom(
         com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
@@ -5897,13 +5894,13 @@ public final class SnapshotFormats {
       private com.google.protobuf.SingleFieldBuilderV3<
           com.rbmhtechnology.eventuate.serializer.CommonFormats.VersionedFormat, com.rbmhtechnology.eventuate.serializer.CommonFormats.VersionedFormat.Builder, com.rbmhtechnology.eventuate.serializer.CommonFormats.VersionedFormatOrBuilder> versionedBuilder_;
       /**
-       * <code>.VersionedFormat versioned = 1;</code>
+       * <code>optional .VersionedFormat versioned = 1;</code>
        */
       public boolean hasVersioned() {
         return versionedBuilder_ != null || versioned_ != null;
       }
       /**
-       * <code>.VersionedFormat versioned = 1;</code>
+       * <code>optional .VersionedFormat versioned = 1;</code>
        */
       public com.rbmhtechnology.eventuate.serializer.CommonFormats.VersionedFormat getVersioned() {
         if (versionedBuilder_ == null) {
@@ -5913,7 +5910,7 @@ public final class SnapshotFormats {
         }
       }
       /**
-       * <code>.VersionedFormat versioned = 1;</code>
+       * <code>optional .VersionedFormat versioned = 1;</code>
        */
       public Builder setVersioned(com.rbmhtechnology.eventuate.serializer.CommonFormats.VersionedFormat value) {
         if (versionedBuilder_ == null) {
@@ -5929,7 +5926,7 @@ public final class SnapshotFormats {
         return this;
       }
       /**
-       * <code>.VersionedFormat versioned = 1;</code>
+       * <code>optional .VersionedFormat versioned = 1;</code>
        */
       public Builder setVersioned(
           com.rbmhtechnology.eventuate.serializer.CommonFormats.VersionedFormat.Builder builderForValue) {
@@ -5943,7 +5940,7 @@ public final class SnapshotFormats {
         return this;
       }
       /**
-       * <code>.VersionedFormat versioned = 1;</code>
+       * <code>optional .VersionedFormat versioned = 1;</code>
        */
       public Builder mergeVersioned(com.rbmhtechnology.eventuate.serializer.CommonFormats.VersionedFormat value) {
         if (versionedBuilder_ == null) {
@@ -5961,7 +5958,7 @@ public final class SnapshotFormats {
         return this;
       }
       /**
-       * <code>.VersionedFormat versioned = 1;</code>
+       * <code>optional .VersionedFormat versioned = 1;</code>
        */
       public Builder clearVersioned() {
         if (versionedBuilder_ == null) {
@@ -5975,7 +5972,7 @@ public final class SnapshotFormats {
         return this;
       }
       /**
-       * <code>.VersionedFormat versioned = 1;</code>
+       * <code>optional .VersionedFormat versioned = 1;</code>
        */
       public com.rbmhtechnology.eventuate.serializer.CommonFormats.VersionedFormat.Builder getVersionedBuilder() {
         
@@ -5983,7 +5980,7 @@ public final class SnapshotFormats {
         return getVersionedFieldBuilder().getBuilder();
       }
       /**
-       * <code>.VersionedFormat versioned = 1;</code>
+       * <code>optional .VersionedFormat versioned = 1;</code>
        */
       public com.rbmhtechnology.eventuate.serializer.CommonFormats.VersionedFormatOrBuilder getVersionedOrBuilder() {
         if (versionedBuilder_ != null) {
@@ -5994,7 +5991,7 @@ public final class SnapshotFormats {
         }
       }
       /**
-       * <code>.VersionedFormat versioned = 1;</code>
+       * <code>optional .VersionedFormat versioned = 1;</code>
        */
       private com.google.protobuf.SingleFieldBuilderV3<
           com.rbmhtechnology.eventuate.serializer.CommonFormats.VersionedFormat, com.rbmhtechnology.eventuate.serializer.CommonFormats.VersionedFormat.Builder, com.rbmhtechnology.eventuate.serializer.CommonFormats.VersionedFormatOrBuilder> 
@@ -6012,13 +6009,13 @@ public final class SnapshotFormats {
 
       private boolean rejected_ ;
       /**
-       * <code>bool rejected = 2;</code>
+       * <code>optional bool rejected = 2;</code>
        */
       public boolean getRejected() {
         return rejected_;
       }
       /**
-       * <code>bool rejected = 2;</code>
+       * <code>optional bool rejected = 2;</code>
        */
       public Builder setRejected(boolean value) {
         
@@ -6027,7 +6024,7 @@ public final class SnapshotFormats {
         return this;
       }
       /**
-       * <code>bool rejected = 2;</code>
+       * <code>optional bool rejected = 2;</code>
        */
       public Builder clearRejected() {
         
@@ -6329,20 +6326,20 @@ public final class SnapshotFormats {
       com.google.protobuf.MessageOrBuilder {
 
     /**
-     * <code>int64 sequenceNr = 1;</code>
+     * <code>optional int64 sequenceNr = 1;</code>
      */
     long getSequenceNr();
 
     /**
-     * <code>.VectorTimeFormat versionVector = 2;</code>
+     * <code>optional .VectorTimeFormat versionVector = 2;</code>
      */
     boolean hasVersionVector();
     /**
-     * <code>.VectorTimeFormat versionVector = 2;</code>
+     * <code>optional .VectorTimeFormat versionVector = 2;</code>
      */
     com.rbmhtechnology.eventuate.serializer.CommonFormats.VectorTimeFormat getVersionVector();
     /**
-     * <code>.VectorTimeFormat versionVector = 2;</code>
+     * <code>optional .VectorTimeFormat versionVector = 2;</code>
      */
     com.rbmhtechnology.eventuate.serializer.CommonFormats.VectorTimeFormatOrBuilder getVersionVectorOrBuilder();
   }
@@ -6430,7 +6427,7 @@ public final class SnapshotFormats {
     public static final int SEQUENCENR_FIELD_NUMBER = 1;
     private long sequenceNr_;
     /**
-     * <code>int64 sequenceNr = 1;</code>
+     * <code>optional int64 sequenceNr = 1;</code>
      */
     public long getSequenceNr() {
       return sequenceNr_;
@@ -6439,19 +6436,19 @@ public final class SnapshotFormats {
     public static final int VERSIONVECTOR_FIELD_NUMBER = 2;
     private com.rbmhtechnology.eventuate.serializer.CommonFormats.VectorTimeFormat versionVector_;
     /**
-     * <code>.VectorTimeFormat versionVector = 2;</code>
+     * <code>optional .VectorTimeFormat versionVector = 2;</code>
      */
     public boolean hasVersionVector() {
       return versionVector_ != null;
     }
     /**
-     * <code>.VectorTimeFormat versionVector = 2;</code>
+     * <code>optional .VectorTimeFormat versionVector = 2;</code>
      */
     public com.rbmhtechnology.eventuate.serializer.CommonFormats.VectorTimeFormat getVersionVector() {
       return versionVector_ == null ? com.rbmhtechnology.eventuate.serializer.CommonFormats.VectorTimeFormat.getDefaultInstance() : versionVector_;
     }
     /**
-     * <code>.VectorTimeFormat versionVector = 2;</code>
+     * <code>optional .VectorTimeFormat versionVector = 2;</code>
      */
     public com.rbmhtechnology.eventuate.serializer.CommonFormats.VectorTimeFormatOrBuilder getVersionVectorOrBuilder() {
       return getVersionVector();
@@ -6522,7 +6519,7 @@ public final class SnapshotFormats {
         return memoizedHashCode;
       }
       int hash = 41;
-      hash = (19 * hash) + getDescriptor().hashCode();
+      hash = (19 * hash) + getDescriptorForType().hashCode();
       hash = (37 * hash) + SEQUENCENR_FIELD_NUMBER;
       hash = (53 * hash) + com.google.protobuf.Internal.hashLong(
           getSequenceNr());
@@ -6535,17 +6532,6 @@ public final class SnapshotFormats {
       return hash;
     }
 
-    public static com.rbmhtechnology.eventuate.serializer.SnapshotFormats.EventLogClockFormat parseFrom(
-        java.nio.ByteBuffer data)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data);
-    }
-    public static com.rbmhtechnology.eventuate.serializer.SnapshotFormats.EventLogClockFormat parseFrom(
-        java.nio.ByteBuffer data,
-        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
-        throws com.google.protobuf.InvalidProtocolBufferException {
-      return PARSER.parseFrom(data, extensionRegistry);
-    }
     public static com.rbmhtechnology.eventuate.serializer.SnapshotFormats.EventLogClockFormat parseFrom(
         com.google.protobuf.ByteString data)
         throws com.google.protobuf.InvalidProtocolBufferException {
@@ -6770,13 +6756,13 @@ public final class SnapshotFormats {
 
       private long sequenceNr_ ;
       /**
-       * <code>int64 sequenceNr = 1;</code>
+       * <code>optional int64 sequenceNr = 1;</code>
        */
       public long getSequenceNr() {
         return sequenceNr_;
       }
       /**
-       * <code>int64 sequenceNr = 1;</code>
+       * <code>optional int64 sequenceNr = 1;</code>
        */
       public Builder setSequenceNr(long value) {
         
@@ -6785,7 +6771,7 @@ public final class SnapshotFormats {
         return this;
       }
       /**
-       * <code>int64 sequenceNr = 1;</code>
+       * <code>optional int64 sequenceNr = 1;</code>
        */
       public Builder clearSequenceNr() {
         
@@ -6798,13 +6784,13 @@ public final class SnapshotFormats {
       private com.google.protobuf.SingleFieldBuilderV3<
           com.rbmhtechnology.eventuate.serializer.CommonFormats.VectorTimeFormat, com.rbmhtechnology.eventuate.serializer.CommonFormats.VectorTimeFormat.Builder, com.rbmhtechnology.eventuate.serializer.CommonFormats.VectorTimeFormatOrBuilder> versionVectorBuilder_;
       /**
-       * <code>.VectorTimeFormat versionVector = 2;</code>
+       * <code>optional .VectorTimeFormat versionVector = 2;</code>
        */
       public boolean hasVersionVector() {
         return versionVectorBuilder_ != null || versionVector_ != null;
       }
       /**
-       * <code>.VectorTimeFormat versionVector = 2;</code>
+       * <code>optional .VectorTimeFormat versionVector = 2;</code>
        */
       public com.rbmhtechnology.eventuate.serializer.CommonFormats.VectorTimeFormat getVersionVector() {
         if (versionVectorBuilder_ == null) {
@@ -6814,7 +6800,7 @@ public final class SnapshotFormats {
         }
       }
       /**
-       * <code>.VectorTimeFormat versionVector = 2;</code>
+       * <code>optional .VectorTimeFormat versionVector = 2;</code>
        */
       public Builder setVersionVector(com.rbmhtechnology.eventuate.serializer.CommonFormats.VectorTimeFormat value) {
         if (versionVectorBuilder_ == null) {
@@ -6830,7 +6816,7 @@ public final class SnapshotFormats {
         return this;
       }
       /**
-       * <code>.VectorTimeFormat versionVector = 2;</code>
+       * <code>optional .VectorTimeFormat versionVector = 2;</code>
        */
       public Builder setVersionVector(
           com.rbmhtechnology.eventuate.serializer.CommonFormats.VectorTimeFormat.Builder builderForValue) {
@@ -6844,7 +6830,7 @@ public final class SnapshotFormats {
         return this;
       }
       /**
-       * <code>.VectorTimeFormat versionVector = 2;</code>
+       * <code>optional .VectorTimeFormat versionVector = 2;</code>
        */
       public Builder mergeVersionVector(com.rbmhtechnology.eventuate.serializer.CommonFormats.VectorTimeFormat value) {
         if (versionVectorBuilder_ == null) {
@@ -6862,7 +6848,7 @@ public final class SnapshotFormats {
         return this;
       }
       /**
-       * <code>.VectorTimeFormat versionVector = 2;</code>
+       * <code>optional .VectorTimeFormat versionVector = 2;</code>
        */
       public Builder clearVersionVector() {
         if (versionVectorBuilder_ == null) {
@@ -6876,7 +6862,7 @@ public final class SnapshotFormats {
         return this;
       }
       /**
-       * <code>.VectorTimeFormat versionVector = 2;</code>
+       * <code>optional .VectorTimeFormat versionVector = 2;</code>
        */
       public com.rbmhtechnology.eventuate.serializer.CommonFormats.VectorTimeFormat.Builder getVersionVectorBuilder() {
         
@@ -6884,7 +6870,7 @@ public final class SnapshotFormats {
         return getVersionVectorFieldBuilder().getBuilder();
       }
       /**
-       * <code>.VectorTimeFormat versionVector = 2;</code>
+       * <code>optional .VectorTimeFormat versionVector = 2;</code>
        */
       public com.rbmhtechnology.eventuate.serializer.CommonFormats.VectorTimeFormatOrBuilder getVersionVectorOrBuilder() {
         if (versionVectorBuilder_ != null) {
@@ -6895,7 +6881,7 @@ public final class SnapshotFormats {
         }
       }
       /**
-       * <code>.VectorTimeFormat versionVector = 2;</code>
+       * <code>optional .VectorTimeFormat versionVector = 2;</code>
        */
       private com.google.protobuf.SingleFieldBuilderV3<
           com.rbmhtechnology.eventuate.serializer.CommonFormats.VectorTimeFormat, com.rbmhtechnology.eventuate.serializer.CommonFormats.VectorTimeFormat.Builder, com.rbmhtechnology.eventuate.serializer.CommonFormats.VectorTimeFormatOrBuilder> 
@@ -7020,17 +7006,17 @@ public final class SnapshotFormats {
       "\n\ninstanceId\030\003 \001(\005\022\037\n\007eventId\030\004 \001(\0132\016.Ev" +
       "entIdFormat\"f\n\036PersistOnEventInvocationF" +
       "ormat\022\035\n\005event\030\001 \001(\0132\016.PayloadFormat\022%\n\035" +
-      "customDestinationAggregateIds\030\002 \003(\t\"^\n\034C" +
+      "customDestinationAggregateIds\030\002 \003(\t\"p\n\034C" +
       "oncurrentVersionsTreeFormat\022/\n\004root\030\001 \001(" +
       "\0132!.ConcurrentVersionsTreeNodeFormat\022\r\n\005",
-      "owner\030\002 \001(\t\"\216\001\n ConcurrentVersionsTreeNo" +
-      "deFormat\022#\n\tversioned\030\001 \001(\0132\020.VersionedF" +
-      "ormat\022\020\n\010rejected\030\002 \001(\010\0223\n\010children\030\003 \003(" +
-      "\0132!.ConcurrentVersionsTreeNodeFormat\"S\n\023" +
-      "EventLogClockFormat\022\022\n\nsequenceNr\030\001 \001(\003\022" +
-      "(\n\rversionVector\030\002 \001(\0132\021.VectorTimeForma" +
-      "tB+\n\'com.rbmhtechnology.eventuate.serial" +
-      "izerH\001b\006proto3"
+      "owner\030\002 \001(\t\022\020\n\010maxDepth\030\003 \001(\005\"\216\001\n Concur" +
+      "rentVersionsTreeNodeFormat\022#\n\tversioned\030" +
+      "\001 \001(\0132\020.VersionedFormat\022\020\n\010rejected\030\002 \001(" +
+      "\010\0223\n\010children\030\003 \003(\0132!.ConcurrentVersions" +
+      "TreeNodeFormat\"S\n\023EventLogClockFormat\022\022\n" +
+      "\nsequenceNr\030\001 \001(\003\022(\n\rversionVector\030\002 \001(\013" +
+      "2\021.VectorTimeFormatB+\n\'com.rbmhtechnolog" +
+      "y.eventuate.serializerH\001b\006proto3"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -7075,7 +7061,7 @@ public final class SnapshotFormats {
     internal_static_ConcurrentVersionsTreeFormat_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_ConcurrentVersionsTreeFormat_descriptor,
-        new java.lang.String[] { "Root", "Owner", });
+        new java.lang.String[] { "Root", "Owner", "MaxDepth", });
     internal_static_ConcurrentVersionsTreeNodeFormat_descriptor =
       getDescriptor().getMessageTypes().get(5);
     internal_static_ConcurrentVersionsTreeNodeFormat_fieldAccessorTable = new
