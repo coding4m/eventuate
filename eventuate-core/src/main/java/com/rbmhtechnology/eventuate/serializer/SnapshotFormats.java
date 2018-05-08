@@ -4591,11 +4591,6 @@ public final class SnapshotFormats {
      */
     com.google.protobuf.ByteString
         getOwnerBytes();
-
-    /**
-     * <code>optional int32 maxDepth = 3;</code>
-     */
-    int getMaxDepth();
   }
   /**
    * Protobuf type {@code ConcurrentVersionsTreeFormat}
@@ -4610,7 +4605,6 @@ public final class SnapshotFormats {
     }
     private ConcurrentVersionsTreeFormat() {
       owner_ = "";
-      maxDepth_ = 0;
     }
 
     @java.lang.Override
@@ -4655,11 +4649,6 @@ public final class SnapshotFormats {
               java.lang.String s = input.readStringRequireUtf8();
 
               owner_ = s;
-              break;
-            }
-            case 24: {
-
-              maxDepth_ = input.readInt32();
               break;
             }
           }
@@ -4740,15 +4729,6 @@ public final class SnapshotFormats {
       }
     }
 
-    public static final int MAXDEPTH_FIELD_NUMBER = 3;
-    private int maxDepth_;
-    /**
-     * <code>optional int32 maxDepth = 3;</code>
-     */
-    public int getMaxDepth() {
-      return maxDepth_;
-    }
-
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
       byte isInitialized = memoizedIsInitialized;
@@ -4767,9 +4747,6 @@ public final class SnapshotFormats {
       if (!getOwnerBytes().isEmpty()) {
         com.google.protobuf.GeneratedMessageV3.writeString(output, 2, owner_);
       }
-      if (maxDepth_ != 0) {
-        output.writeInt32(3, maxDepth_);
-      }
     }
 
     public int getSerializedSize() {
@@ -4783,10 +4760,6 @@ public final class SnapshotFormats {
       }
       if (!getOwnerBytes().isEmpty()) {
         size += com.google.protobuf.GeneratedMessageV3.computeStringSize(2, owner_);
-      }
-      if (maxDepth_ != 0) {
-        size += com.google.protobuf.CodedOutputStream
-          .computeInt32Size(3, maxDepth_);
       }
       memoizedSize = size;
       return size;
@@ -4811,8 +4784,6 @@ public final class SnapshotFormats {
       }
       result = result && getOwner()
           .equals(other.getOwner());
-      result = result && (getMaxDepth()
-          == other.getMaxDepth());
       return result;
     }
 
@@ -4829,8 +4800,6 @@ public final class SnapshotFormats {
       }
       hash = (37 * hash) + OWNER_FIELD_NUMBER;
       hash = (53 * hash) + getOwner().hashCode();
-      hash = (37 * hash) + MAXDEPTH_FIELD_NUMBER;
-      hash = (53 * hash) + getMaxDepth();
       hash = (29 * hash) + unknownFields.hashCode();
       memoizedHashCode = hash;
       return hash;
@@ -4957,8 +4926,6 @@ public final class SnapshotFormats {
         }
         owner_ = "";
 
-        maxDepth_ = 0;
-
         return this;
       }
 
@@ -4987,7 +4954,6 @@ public final class SnapshotFormats {
           result.root_ = rootBuilder_.build();
         }
         result.owner_ = owner_;
-        result.maxDepth_ = maxDepth_;
         onBuilt();
         return result;
       }
@@ -5035,9 +5001,6 @@ public final class SnapshotFormats {
         if (!other.getOwner().isEmpty()) {
           owner_ = other.owner_;
           onChanged();
-        }
-        if (other.getMaxDepth() != 0) {
-          setMaxDepth(other.getMaxDepth());
         }
         onChanged();
         return this;
@@ -5247,32 +5210,6 @@ public final class SnapshotFormats {
   checkByteStringIsUtf8(value);
         
         owner_ = value;
-        onChanged();
-        return this;
-      }
-
-      private int maxDepth_ ;
-      /**
-       * <code>optional int32 maxDepth = 3;</code>
-       */
-      public int getMaxDepth() {
-        return maxDepth_;
-      }
-      /**
-       * <code>optional int32 maxDepth = 3;</code>
-       */
-      public Builder setMaxDepth(int value) {
-        
-        maxDepth_ = value;
-        onChanged();
-        return this;
-      }
-      /**
-       * <code>optional int32 maxDepth = 3;</code>
-       */
-      public Builder clearMaxDepth() {
-        
-        maxDepth_ = 0;
         onChanged();
         return this;
       }
@@ -7006,17 +6943,17 @@ public final class SnapshotFormats {
       "\n\ninstanceId\030\003 \001(\005\022\037\n\007eventId\030\004 \001(\0132\016.Ev" +
       "entIdFormat\"f\n\036PersistOnEventInvocationF" +
       "ormat\022\035\n\005event\030\001 \001(\0132\016.PayloadFormat\022%\n\035" +
-      "customDestinationAggregateIds\030\002 \003(\t\"p\n\034C" +
+      "customDestinationAggregateIds\030\002 \003(\t\"^\n\034C" +
       "oncurrentVersionsTreeFormat\022/\n\004root\030\001 \001(" +
       "\0132!.ConcurrentVersionsTreeNodeFormat\022\r\n\005",
-      "owner\030\002 \001(\t\022\020\n\010maxDepth\030\003 \001(\005\"\216\001\n Concur" +
-      "rentVersionsTreeNodeFormat\022#\n\tversioned\030" +
-      "\001 \001(\0132\020.VersionedFormat\022\020\n\010rejected\030\002 \001(" +
-      "\010\0223\n\010children\030\003 \003(\0132!.ConcurrentVersions" +
-      "TreeNodeFormat\"S\n\023EventLogClockFormat\022\022\n" +
-      "\nsequenceNr\030\001 \001(\003\022(\n\rversionVector\030\002 \001(\013" +
-      "2\021.VectorTimeFormatB+\n\'com.rbmhtechnolog" +
-      "y.eventuate.serializerH\001b\006proto3"
+      "owner\030\002 \001(\t\"\216\001\n ConcurrentVersionsTreeNo" +
+      "deFormat\022#\n\tversioned\030\001 \001(\0132\020.VersionedF" +
+      "ormat\022\020\n\010rejected\030\002 \001(\010\0223\n\010children\030\003 \003(" +
+      "\0132!.ConcurrentVersionsTreeNodeFormat\"S\n\023" +
+      "EventLogClockFormat\022\022\n\nsequenceNr\030\001 \001(\003\022" +
+      "(\n\rversionVector\030\002 \001(\0132\021.VectorTimeForma" +
+      "tB+\n\'com.rbmhtechnology.eventuate.serial" +
+      "izerH\001b\006proto3"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -7061,7 +6998,7 @@ public final class SnapshotFormats {
     internal_static_ConcurrentVersionsTreeFormat_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_ConcurrentVersionsTreeFormat_descriptor,
-        new java.lang.String[] { "Root", "Owner", "MaxDepth", });
+        new java.lang.String[] { "Root", "Owner", });
     internal_static_ConcurrentVersionsTreeNodeFormat_descriptor =
       getDescriptor().getMessageTypes().get(5);
     internal_static_ConcurrentVersionsTreeNodeFormat_fieldAccessorTable = new

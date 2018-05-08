@@ -27,34 +27,16 @@ trait SnapshotOnEvent { this: EventsourcedView with MessagePipeline =>
   import EventsourcingProtocol._
 
   private var snapshotOffset: Int = 0
-  private var snapshotInProgress: Boolean = false
   private val snapshotSettings = new SnapshotSettings(context.system.settings.config)
 
   private def snapshotOrDelay() = {
-    val extraOffset = if (snapshotInProgress) snapshotSettings.interval else 0
-    if (snapshotOffset - extraOffset >= snapshotSettings.interval) {
+    if (snapshotOffset >= snapshotSettings.interval) {
       self ! Snapshotting
-      snapshotInProgress = true
+      snapshotOffset -= snapshotSettings.interval
     }
   }
 
   pipelineOuter {
-
-    case ss: SaveSnapshotSuccess =>
-      snapshotOffset = 0
-      snapshotInProgress = false
-      Inner(ss)
-
-    case ss: SaveSnapshotFailure =>
-      snapshotOffset = 0
-      snapshotInProgress = false
-      Inner(ss)
-
-    case rs @ ReplaySuccess(events, _, _) =>
-      Inner(rs) andAfter {
-        snapshotOffset += events.size
-        snapshotOrDelay()
-      }
 
     case ws @ WriteSuccess(events, _, _) =>
       Inner(ws) andAfter {

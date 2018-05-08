@@ -51,7 +51,6 @@ message PersistOnEventInvocationFormat {
 message ConcurrentVersionsTreeFormat {
   ConcurrentVersionsTreeNodeFormat root = 1;
   string owner = 2;
-  int32 maxDepth = 3;
 }
 
 message ConcurrentVersionsTreeNodeFormat {
