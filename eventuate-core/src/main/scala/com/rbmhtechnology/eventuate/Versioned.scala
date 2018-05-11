@@ -265,8 +265,6 @@ class ConcurrentVersionsTree[A, B](private[eventuate] val root: ConcurrentVersio
 
 object ConcurrentVersionsTree {
 
-  val DefaultMaxDepth = 8
-
   /**
    * Creates a new [[ConcurrentVersionsTree]] that uses projection function `f` to compute
    * new (potentially concurrent) versions from a parent version.
