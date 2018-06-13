@@ -191,7 +191,8 @@ class ConcurrentVersionsTree[A, B](private[eventuate] val root: ConcurrentVersio
     parent.addChild(new Node(Versioned(_projection(parent.versioned.value, b), vectorTimestamp, systemTimestamp, creator)))
 
     // purging versions.
-    val ancestor = new Node(root.versioned)
+    // to avoid NPE, copy parent value.
+    val ancestor = new Node(root.versioned.copy(value = parent.versioned.value))
     leaves.foreach(leaf => ancestor.addChild(leaf))
     new ConcurrentVersionsTree[A, B](ancestor).withOwner(_owner).withProjection(_projection)
   }
